@@ -30,7 +30,6 @@ public class Enrollment {
     @JoinColumn(name = "class_id", referencedColumnName = "id")
     private Classe classe;
 
-    @Column(columnDefinition = "Timestamp")
     private LocalDateTime enrollmentDate;
 
     private boolean isArchived;

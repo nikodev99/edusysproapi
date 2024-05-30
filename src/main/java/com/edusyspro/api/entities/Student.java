@@ -79,10 +79,8 @@ public class Student {
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     private School school;
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modifyAt;
 
     @PrePersist
@@ -91,4 +89,8 @@ public class Student {
         modifyAt = LocalDateTime.now();
     }
 
+    @PreUpdate
+    public void preUpdate() {
+        modifyAt = LocalDateTime.now();
+    }
 }

@@ -24,12 +24,14 @@ public class AcademicYear {
 
     private LocalDate endDate;
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime lastUpdate;
 
     @OneToOne(cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     private School school;
 
-
+    @PreUpdate
+    public void preUpdate() {
+        lastUpdate = LocalDateTime.now();
+    }
 }

@@ -35,11 +35,20 @@ public class Grade {
     @OneToMany(mappedBy = "grade", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Planning> planning;
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modifyAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        modifyAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        modifyAt = LocalDateTime.now();
+    }
 
     @Override
     public String toString() {
