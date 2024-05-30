@@ -10,9 +10,9 @@ import java.util.UUID;
 @Repository
 public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
 
-    @Query("select t from Teacher t join t.classes c where c.name = ?1")
+    @Query("select t from Teacher t join t.aClasses c where c.name = ?1")
     Teacher getTeacherByClassesName(String className);
 
-    @Query("select t from Teacher t join t.classes c join t.courses o where c.name = ?1 and o.id = ?2")
+    @Query("select t from Teacher t join t.aClasses c join t.courses o where c.name = ?1 and o.id = ?2")
     Teacher getTeacherByClassesNameAndCourseId(String className, int courseId);
 }

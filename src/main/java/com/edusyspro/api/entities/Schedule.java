@@ -1,5 +1,6 @@
 package com.edusyspro.api.entities;
 
+import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.enums.Day;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class Schedule {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
-    private Classe classe;
+    private ClasseEntity classeEntity;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")

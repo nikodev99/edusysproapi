@@ -1,5 +1,6 @@
 package com.edusyspro.api.entities;
 
+import com.edusyspro.api.classes.ClasseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +29,7 @@ public class Enrollment {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
-    private Classe classe;
+    private ClasseEntity classeEntity;
 
     private LocalDateTime enrollmentDate;
 
@@ -44,7 +45,7 @@ public class Enrollment {
                 "id=" + id +
                 ", academicYear='" + academicYear + '\'' +
                 //", student=" + student +
-                ", classe=" + classe +
+                ", classe=" + classeEntity +
                 ", enrollmentDate=" + enrollmentDate +
                 ", isArchived=" + isArchived +
                 ", school=" + school +

@@ -1,5 +1,6 @@
 package com.edusyspro.api.entities;
 
+import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.enums.AttendanceStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class Attendance {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "class_id", referencedColumnName = "id")
-    private Classe classe;
+    private ClasseEntity classeEntity;
 
     private LocalDate attendanceDate;
 

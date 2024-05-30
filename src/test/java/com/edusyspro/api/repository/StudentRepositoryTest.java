@@ -1,6 +1,7 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.entities.Classe;
+import com.edusyspro.api.classes.ClassRepository;
+import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.School;
 import com.edusyspro.api.entities.Student;
 import com.edusyspro.api.utils.Fake;
@@ -37,7 +38,7 @@ class StudentRepositoryTest {
         return schoolRepository.getSchoolById(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"));
     }
 
-    private Classe getClasse(int id) {
+    private ClasseEntity getClasse(int id) {
         return classRepository.getClasseById(id);
     }
 

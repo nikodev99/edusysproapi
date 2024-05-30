@@ -1,5 +1,7 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.classes.ClassRepository;
+import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Day;
 import org.junit.jupiter.api.Test;
@@ -31,11 +33,11 @@ class ScheduleRepositoryTest {
 
     @Test
     public void SavePrimarySchoolClassScheduleTest() {
-        Classe classe = getClasse(7);
-        Teacher teacher = getTeacher(classe.getName());
+        ClasseEntity classeEntity = getClasse(7);
+        Teacher teacher = getTeacher(classeEntity.getName());
         List<Schedule> schedules = List.of(
                 Schedule.builder()
-                        .classe(classe)
+                        .classeEntity(classeEntity)
                         .teacher(teacher)
                         .dayOfWeek(Day.ALL_DAYS)
                         .designation("Première partie des cours")
@@ -44,7 +46,7 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
+                        .classeEntity(classeEntity)
                         .dayOfWeek(Day.ALL_DAYS)
                         .designation("Première récréation")
                         .startTime(time(9, 15))
@@ -52,7 +54,7 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
+                        .classeEntity(classeEntity)
                         .teacher(teacher)
                         .dayOfWeek(Day.ALL_DAYS)
                         .designation("Deuxième partie des cours")
@@ -61,7 +63,7 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
+                        .classeEntity(classeEntity)
                         .dayOfWeek(Day.ALL_DAYS)
                         .designation("Deuxième récréation")
                         .startTime(time(11, 0))
@@ -69,7 +71,7 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
+                        .classeEntity(classeEntity)
                         .teacher(teacher)
                         .dayOfWeek(Day.ALL_DAYS)
                         .designation("Troisième partie des cours")
@@ -83,11 +85,11 @@ class ScheduleRepositoryTest {
 
     @Test
     public void SaveSecondarySchoolClassScheduleTest() {
-        Classe classe = getClasse(11);
+        ClasseEntity classeEntity = getClasse(11);
         List<Schedule> schedules = List.of(
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("FRA").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("FRA").getId()))
                         .course(getCourse("FRA"))
                         .dayOfWeek(Day.MONDAY)
                         .designation("Deux heures de Français")
@@ -96,8 +98,8 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("ECM").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("ECM").getId()))
                         .course(getCourse("ECM"))
                         .dayOfWeek(Day.MONDAY)
                         .designation("Une heure d'ECM")
@@ -106,7 +108,7 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
+                        .classeEntity(classeEntity)
                         .dayOfWeek(Day.MONDAY)
                         .designation("Récréation")
                         .startTime(time(10, 0))
@@ -114,8 +116,8 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("PC").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("PC").getId()))
                         .course(getCourse("PC"))
                         .dayOfWeek(Day.MONDAY)
                         .designation("Deux heures de Physique Chimie")
@@ -124,8 +126,8 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("Maths").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("Maths").getId()))
                         .course(getCourse("Maths"))
                         .dayOfWeek(Day.TUESDAY)
                         .designation("Trois heures de Maths")
@@ -134,7 +136,7 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
+                        .classeEntity(classeEntity)
                         .dayOfWeek(Day.TUESDAY)
                         .designation("Récréation")
                         .startTime(time(10, 0))
@@ -142,8 +144,8 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("SVT").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("SVT").getId()))
                         .course(getCourse("SVT"))
                         .dayOfWeek(Day.TUESDAY)
                         .designation("Deux heures des SVT")
@@ -157,11 +159,11 @@ class ScheduleRepositoryTest {
 
     @Test
     public void saveSchedules() {
-        Classe classe = getClasse(11);
+        ClasseEntity classeEntity = getClasse(11);
         List<Schedule> schedules = List.of(
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("HG").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("HG").getId()))
                         .course(getCourse("HG"))
                         .dayOfWeek(Day.WEDNESDAY)
                         .designation("Deux heures de Histoire Géographie")
@@ -170,8 +172,8 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("EPS").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("EPS").getId()))
                         .course(getCourse("EPS"))
                         .dayOfWeek(Day.WEDNESDAY)
                         .designation("Une heure d'EPS")
@@ -180,7 +182,7 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
+                        .classeEntity(classeEntity)
                         .dayOfWeek(Day.WEDNESDAY)
                         .designation("Récréation")
                         .startTime(time(10, 0))
@@ -188,8 +190,8 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("Dessin").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("Dessin").getId()))
                         .course(getCourse("Dessin"))
                         .dayOfWeek(Day.WEDNESDAY)
                         .designation("Deux heures de Dessin")
@@ -198,8 +200,8 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("SVT").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("SVT").getId()))
                         .course(getCourse("SVT"))
                         .dayOfWeek(Day.THURSDAY)
                         .designation("Trois heures de biologie")
@@ -208,7 +210,7 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
+                        .classeEntity(classeEntity)
                         .dayOfWeek(Day.THURSDAY)
                         .designation("Récréation")
                         .startTime(time(10, 0))
@@ -216,8 +218,8 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("PC").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("PC").getId()))
                         .course(getCourse("PC"))
                         .dayOfWeek(Day.THURSDAY)
                         .designation("Deux heures des Physique Chimie")
@@ -231,11 +233,11 @@ class ScheduleRepositoryTest {
 
     @Test
     public void saveSchedulesExt() {
-        Classe classe = getClasse(11);
+        ClasseEntity classeEntity = getClasse(11);
         List<Schedule> schedules = List.of(
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("FRA").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("FRA").getId()))
                         .course(getCourse("FRA"))
                         .dayOfWeek(Day.FRIDAY)
                         .designation("Deux heures de Histoire Français")
@@ -244,8 +246,8 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("Lat").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("Lat").getId()))
                         .course(getCourse("Lat"))
                         .dayOfWeek(Day.FRIDAY)
                         .designation("Une heure de Latin")
@@ -254,7 +256,7 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
+                        .classeEntity(classeEntity)
                         .dayOfWeek(Day.FRIDAY)
                         .designation("Récréation")
                         .startTime(time(10, 0))
@@ -262,8 +264,8 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("Musc").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("Musc").getId()))
                         .course(getCourse("Musc"))
                         .dayOfWeek(Day.FRIDAY)
                         .designation("Une heure de Musique")
@@ -272,8 +274,8 @@ class ScheduleRepositoryTest {
                         .school(getSchool())
                         .build(),
                 Schedule.builder()
-                        .classe(classe)
-                        .teacher(getTeacher(classe.getName(), getCourse("Math").getId()))
+                        .classeEntity(classeEntity)
+                        .teacher(getTeacher(classeEntity.getName(), getCourse("Math").getId()))
                         .course(getCourse("Math"))
                         .dayOfWeek(Day.FRIDAY)
                         .designation("Une heure de Math")
@@ -285,7 +287,7 @@ class ScheduleRepositoryTest {
         scheduleRepository.saveAll(schedules);
     }
 
-    private Classe getClasse(int id) {
+    private ClasseEntity getClasse(int id) {
         return classRepository.getClasseById(id);
     }
 

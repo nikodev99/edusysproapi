@@ -1,5 +1,6 @@
-package com.edusyspro.api.entities;
+package com.edusyspro.api.classes;
 
+import com.edusyspro.api.entities.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Classe {
+@Table(name = "classe")
+public class ClasseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +32,7 @@ public class Classe {
     @JoinColumn(name = "grade_id", referencedColumnName = "id")
     private Grade grade;
 
-    @OneToMany(mappedBy = "classe", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "classeEntity", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private List<Schedule> schedule;
 
     private int roomNumber;
@@ -47,10 +49,10 @@ public class Classe {
     @JoinColumn(name = "principal_course_id", referencedColumnName = "id")
     private Course principalCourse;
 
-    @OneToMany(mappedBy = "classe", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "classeEntity", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private List<Enrollment> students;
 
-    @ManyToMany(mappedBy = "classes", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "aClasses", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private List<Teacher> teachers;
 
     private double monthCost;

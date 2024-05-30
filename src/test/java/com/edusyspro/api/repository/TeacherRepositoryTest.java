@@ -1,5 +1,7 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.classes.ClassRepository;
+import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.utils.Fake;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,7 @@ class TeacherRepositoryTest {
         List<Teacher> teachers = Fake.getMultipleTeachers(
                 7,
                 getSchool(),
-                new Classe[][]{
+                new ClasseEntity[][]{
                         { getClasse(11), getClasse(13) },
                         { getClasse(11) },
                         { getClasse(11), getClasse(12), getClasse(13) },
@@ -57,7 +59,7 @@ class TeacherRepositoryTest {
 
     @Test
     public void saveMathTeacher() {
-        Teacher teacher = Fake.getTeacher(getSchool(), new Classe[] { getClasse(11) }, new Course[]{ getCourse("Maths") });
+        Teacher teacher = Fake.getTeacher(getSchool(), new ClasseEntity[] { getClasse(11) }, new Course[]{ getCourse("Maths") });
         teacherRepository.save(teacher);
     }
 
@@ -89,7 +91,7 @@ class TeacherRepositoryTest {
         return departmentRepository.getDepartmentByCode(code);
     }
 
-    private Classe getClasse(int id) {
+    private ClasseEntity getClasse(int id) {
         return classRepository.getClasseById(id);
     }
 

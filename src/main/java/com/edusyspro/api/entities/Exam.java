@@ -1,5 +1,6 @@
 package com.edusyspro.api.entities;
 
+import com.edusyspro.api.classes.ClasseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class Exam {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "class_id", referencedColumnName = "id")
-    private Classe classe;
+    private ClasseEntity classeEntity;
 
     private String examName;
 

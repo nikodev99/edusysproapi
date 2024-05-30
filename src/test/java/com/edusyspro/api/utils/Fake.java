@@ -4,6 +4,7 @@ import com.arakelian.faker.model.Gender;
 import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
+import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Status;
 
@@ -23,17 +24,17 @@ public class Fake {
     public static List<Teacher> getMultipleTeachers(
             int numberOfTeacher,
             School school,
-            Classe[][] classes,
+            ClasseEntity[][] aClasses,
             Course[][] courses
     ) {
         List<Teacher> teachers = new ArrayList<>();
         for (int i = 0; i < numberOfTeacher; i++) {
-            teachers.add(getTeacher(school, classes[i], courses[i]));
+            teachers.add(getTeacher(school, aClasses[i], courses[i]));
         }
         return teachers;
     }
 
-    public static Teacher getTeacher(School school, Classe[] classes, Course[] courses) {
+    public static Teacher getTeacher(School school, ClasseEntity[] aClasses, Course[] courses) {
         Person p = RandomPerson.get().next();
         com.arakelian.faker.model.Address a = RandomAddress.get().next();
 
@@ -62,7 +63,7 @@ public class Fake {
                         .zipCode(a.getPostalCode())
                         .build()
                 )
-                .classes(List.of(classes))
+                .aClasses(List.of(aClasses))
                 .courses(courseList.isEmpty() ? null : courseList)
                 .school(school)
                 .salaryByHour(1500.00)
@@ -124,17 +125,17 @@ public class Fake {
                 .build();
     }
 
-    public static List<Enrollment> studentToEnroll(int numberOfStudents, String academicYear, School school, Classe classe) {
+    public static List<Enrollment> studentToEnroll(int numberOfStudents, String academicYear, School school, ClasseEntity classeEntity) {
         return IntStream.range(0, numberOfStudents)
-                .mapToObj(i -> setEnrollment(academicYear, school, classe))
+                .mapToObj(i -> setEnrollment(academicYear, school, classeEntity))
                 .toList();
     }
 
-    private static Enrollment setEnrollment(String academicYear, School school, Classe classe) {
+    private static Enrollment setEnrollment(String academicYear, School school, ClasseEntity classeEntity) {
         return Enrollment.builder()
                 .academicYear(academicYear)
                 .student(getStudent(school))
-                .classe(classe)
+                .classeEntity(classeEntity)
                 .enrollmentDate(LocalDateTime.now())
                 .isArchived(false)
                 .school(school)

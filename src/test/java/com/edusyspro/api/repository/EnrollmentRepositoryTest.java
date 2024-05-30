@@ -1,6 +1,7 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.entities.Classe;
+import com.edusyspro.api.classes.ClassRepository;
+import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.Enrollment;
 import com.edusyspro.api.entities.School;
 import com.edusyspro.api.entities.Student;
@@ -94,7 +95,7 @@ class EnrollmentRepositoryTest {
         Enrollment enrollment = Enrollment.builder()
                 .academicYear(academicYear(school))
                 .student(e.getStudent())
-                .classe(getClasse(14))
+                .classeEntity(getClasse(14))
                 .enrollmentDate(LocalDateTime.now())
                 .isArchived(false)
                 .school(school)
@@ -103,7 +104,7 @@ class EnrollmentRepositoryTest {
             enrollmentRepository.save(enrollment);
     }
     
-    private Classe getClasse(int id) {
+    private ClasseEntity getClasse(int id) {
         return classRepository.getClasseById(id);
     }
 
