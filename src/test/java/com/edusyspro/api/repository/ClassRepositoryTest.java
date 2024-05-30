@@ -30,37 +30,37 @@ class ClassRepositoryTest {
         List<Classe> classeList = List.of(
                 Classe.builder()
                         .name("CP1")
-                        .category("Cours Préparatoire")
+                        .category("Cours Préparatoire 1")
                         .grade(getGrade(Section.PRIMAIRE))
                         .school(getSchool())
                         .build(),
                 Classe.builder()
                         .name("CP2")
-                        .category("Cours Préparatoire")
+                        .category("Cours Préparatoire 1")
                         .grade(getGrade(Section.PRIMAIRE))
                         .school(getSchool())
                         .build(),
                 Classe.builder()
                         .name("CE1")
-                        .category("Cours Elémentaire")
+                        .category("Cours Élémentaire 1")
                         .grade(getGrade(Section.PRIMAIRE))
                         .school(getSchool())
                         .build(),
                 Classe.builder()
                         .name("CE2")
-                        .category("Cours Elémentaire")
+                        .category("Cours Élémentaire 2")
                         .grade(getGrade(Section.PRIMAIRE))
                         .school(getSchool())
                         .build(),
                 Classe.builder()
                         .name("CM1")
-                        .category("Cours Moyen")
+                        .category("Cours Moyen 1")
                         .grade(getGrade(Section.PRIMAIRE))
                         .school(getSchool())
                         .build(),
                 Classe.builder()
                         .name("CM2")
-                        .category("Cours Moyen")
+                        .category("Cours Moyen 2")
                         .grade(getGrade(Section.PRIMAIRE))
                         .school(getSchool())
                         .build()
@@ -198,7 +198,7 @@ class ClassRepositoryTest {
     }
 
     private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"));
+        Optional<School> school = schoolRepository.findById(UUID.fromString("27a58e8a-a588-45dd-917e-6b690acd4b22"));
         return school.orElseThrow();
     }
 

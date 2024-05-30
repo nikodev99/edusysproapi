@@ -144,7 +144,7 @@ class CourseRepositoryTest {
     }
 
     private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"));
+        Optional<School> school = schoolRepository.findById(UUID.fromString("27a58e8a-a588-45dd-917e-6b690acd4b22"));
         return school.orElse(School.builder().build());
     }
 

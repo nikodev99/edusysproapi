@@ -62,8 +62,6 @@ class SchoolRepositoryTest {
                 .street("Rue Bingola")
                 .number(5)
                 .zipCode(null)
-                .createdAt(LocalDateTime.now())
-                .modifyAt(LocalDateTime.now())
                 .build();
 
         School school = School.builder()
@@ -76,8 +74,6 @@ class SchoolRepositoryTest {
                 .phoneNumber("+242065442559")
                 .address(address)
                 .websiteURL(null)
-                .createdAt(LocalDateTime.now())
-                .modifyAt(LocalDateTime.now())
                 .build();
 
         schoolRepository.save(school);
@@ -117,13 +113,13 @@ class SchoolRepositoryTest {
 
     @Test
     public void printASchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"));
+        Optional<School> school = schoolRepository.findById(UUID.fromString("27a58e8a-a588-45dd-917e-6b690acd4b22"));
         System.out.println("School retrieved=" + school.orElseThrow());
     }
 
     @Test
     public void updateASchool() {
-        int updatedRow = schoolRepository.updateSchoolNameById("Complexe Scolaire les Doux Echos", UUID.fromString("79485a99-3a98-4c8c-a017-9a931b34fbca"));
+        int updatedRow = schoolRepository.updateSchoolNameById("Complexe Scolaire les Doux Echos", UUID.fromString("27a58e8a-a588-45dd-917e-6b690acd4b22"));
         System.out.println("Row updated=" + updatedRow);
     }
 
