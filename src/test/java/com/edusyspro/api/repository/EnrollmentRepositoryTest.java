@@ -83,8 +83,8 @@ class EnrollmentRepositoryTest {
         enrollments.addAll(Fake.studentToEnroll(10, year, school, getClasse(22)));
         enrollments.addAll(Fake.studentToEnroll(10, year, school, getClasse(23)));
         enrollments.addAll(Fake.studentToEnroll(10, year, school, getClasse(24)));
-
-        enrollmentRepository.saveAll(enrollments);
+        System.out.println(enrollments);
+        //enrollmentRepository.saveAll(enrollments);
     }
 
     @Test
