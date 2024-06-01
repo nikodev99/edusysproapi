@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,19 +57,19 @@ public class Guardian {
     @OneToMany(mappedBy = "guardian", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Student> student;
 
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
-    private LocalDateTime modifyAt;
+    private ZonedDateTime modifyAt;
 
     @PrePersist
     public void prePersist() {
-        createdAt = LocalDateTime.now();
-        modifyAt = LocalDateTime.now();
+        createdAt = ZonedDateTime.now();
+        modifyAt = ZonedDateTime.now();
     }
 
     @PreUpdate
     public void preUpdate() {
-        modifyAt = LocalDateTime.now();
+        modifyAt = ZonedDateTime.now();
     }
 
     @Override

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -38,19 +39,19 @@ public class Address {
     @Column(length = 100)
     private String country;
 
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
-    private LocalDateTime modifyAt;
+    private ZonedDateTime modifyAt;
 
     @PrePersist
     public void prePersist() {
-        createdAt = LocalDateTime.now();
-        modifyAt = LocalDateTime.now();
+        createdAt = ZonedDateTime.now();
+        modifyAt = ZonedDateTime.now();
     }
 
     @PreUpdate
     public void preUpdate() {
-        modifyAt = LocalDateTime.now();
+        modifyAt = ZonedDateTime.now();
     }
 
 }

@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -24,7 +24,7 @@ public class AcademicYear {
 
     private LocalDate endDate;
 
-    private LocalDateTime lastUpdate;
+    private ZonedDateTime lastUpdate;
 
     @OneToOne(cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
@@ -32,6 +32,6 @@ public class AcademicYear {
 
     @PreUpdate
     public void preUpdate() {
-        lastUpdate = LocalDateTime.now();
+        lastUpdate = ZonedDateTime.now();
     }
 }

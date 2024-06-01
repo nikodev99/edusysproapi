@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -31,7 +31,7 @@ public class Enrollment {
     @JoinColumn(name = "class_id", referencedColumnName = "id")
     private ClasseEntity classeEntity;
 
-    private LocalDateTime enrollmentDate;
+    private ZonedDateTime enrollmentDate;
 
     private boolean isArchived;
 
