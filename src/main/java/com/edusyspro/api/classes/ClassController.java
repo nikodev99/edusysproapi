@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = {"/api/v1"})
+@RequestMapping(value = {"/classes"})
 public class ClassController {
 
     private final ClassService classService;
@@ -20,12 +20,12 @@ public class ClassController {
         this.classService = classService;
     }
 
-    @GetMapping("/classes/basic")
+    @GetMapping("/basic")
     ResponseEntity<List<ClassBasicValue>> getAllClassesBasicValue() {
-        return ResponseEntity.ok(classService.getClassBasicValues(UUID.fromString("27a58e8a-a588-45dd-917e-6b690acd4b22")));
+        return ResponseEntity.ok(classService.getClassBasicValues(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548")));
     }
 
-    @GetMapping(value = {"/classes", "/classe/all"})
+    @GetMapping(value = {"", "/all"})
     ResponseEntity<List<Classe>> getClasses() {
         return ResponseEntity.ok(classService.getClasses());
     }

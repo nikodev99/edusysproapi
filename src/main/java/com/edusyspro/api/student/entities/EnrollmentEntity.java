@@ -1,6 +1,7 @@
-package com.edusyspro.api.entities;
+package com.edusyspro.api.student.entities;
 
 import com.edusyspro.api.classes.ClasseEntity;
+import com.edusyspro.api.entities.School;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,8 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Enrollment {
+@Table(name = "enrollment")
+public class EnrollmentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +27,7 @@ public class Enrollment {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "student_id", referencedColumnName = "id")
-    private Student student;
+    private StudentEntity studentEntity;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
@@ -44,7 +46,7 @@ public class Enrollment {
         return "Enrollment{" +
                 "id=" + id +
                 ", academicYear='" + academicYear + '\'' +
-                //", student=" + student +
+                ", student=" + studentEntity +
                 ", classe=" + classeEntity +
                 ", enrollmentDate=" + enrollmentDate +
                 ", isArchived=" + isArchived +

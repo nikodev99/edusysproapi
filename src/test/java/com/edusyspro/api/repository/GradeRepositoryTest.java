@@ -36,8 +36,6 @@ class GradeRepositoryTest {
         Grade grade = Grade.builder()
                 .section(Section.PRIMAIRE)
                 .school(getSchool())
-                .createdAt(LocalDateTime.now())
-                .modifyAt(LocalDateTime.now())
                 .build();
         grade.setPlanning(plannings(grade));
         gradeRepository.save(grade);
@@ -48,8 +46,6 @@ class GradeRepositoryTest {
         Grade grade = Grade.builder()
                 .section(Section.COLLEGE)
                 .school(getSchool())
-                .createdAt(LocalDateTime.now())
-                .modifyAt(LocalDateTime.now())
                 .build();
         grade.setPlanning(plannings2(grade));
         gradeRepository.save(grade);
@@ -60,8 +56,6 @@ class GradeRepositoryTest {
         Grade grade = Grade.builder()
                 .section(Section.LYCEE)
                 .school(getSchool())
-                .createdAt(LocalDateTime.now())
-                .modifyAt(LocalDateTime.now())
                 .build();
         grade.setPlanning(plannings2(grade));
         gradeRepository.save(grade);
@@ -111,8 +105,6 @@ class GradeRepositoryTest {
                 .semestre("1er Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .build();
 
@@ -122,8 +114,6 @@ class GradeRepositoryTest {
                 .semestre("2e Trimestre")
                 .termStartDate(LocalDate.of(2024, 1, 5))
                 .termEndDate(LocalDate.of(2024, 3, 26))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(getSchool())
                 .build();
@@ -134,8 +124,6 @@ class GradeRepositoryTest {
                 .semestre("3e Trimestre")
                 .termStartDate(LocalDate.of(2024, 4, 10))
                 .termEndDate(LocalDate.of(2024, 6, 30))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(getSchool())
                 .build();
@@ -150,8 +138,6 @@ class GradeRepositoryTest {
                 .semestre("1er Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(getSchool())
                 .build();
@@ -162,8 +148,6 @@ class GradeRepositoryTest {
                 .semestre("1er Trimestre")
                 .termStartDate(LocalDate.of(2023, 11, 15))
                 .termEndDate(LocalDate.of(2023, 11, 26))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(getSchool())
                 .build();
@@ -174,8 +158,6 @@ class GradeRepositoryTest {
                 .semestre("2e Trimestre")
                 .termStartDate(LocalDate.of(2024, 1, 5))
                 .termEndDate(LocalDate.of(2024, 3, 26))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(getSchool())
                 .build();
@@ -186,8 +168,6 @@ class GradeRepositoryTest {
                 .semestre("2e Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(getSchool())
                 .build();
@@ -198,8 +178,6 @@ class GradeRepositoryTest {
                 .semestre("3e Trimestre")
                 .termStartDate(LocalDate.of(2024, 4, 10))
                 .termEndDate(LocalDate.of(2024, 6, 30))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(getSchool())
                 .build();
@@ -210,8 +188,6 @@ class GradeRepositoryTest {
                 .semestre("3e Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(getSchool())
                 .build();

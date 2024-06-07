@@ -2,6 +2,7 @@ package com.edusyspro.api.entities;
 
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.enums.AttendanceStatus;
+import com.edusyspro.api.student.entities.StudentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class Attendance {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_id", referencedColumnName = "id")
-    private Student student;
+    private StudentEntity studentEntity;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "class_id", referencedColumnName = "id")

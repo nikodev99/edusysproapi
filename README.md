@@ -1,9 +1,9 @@
 # EduSysPro
 
-**EduSysPro** is a school management system that is a comprehensive software solution designed to streamline and automate various administrative and academic tasks within an educational institution. It serves as a centralized platform for managing and organizing the daily operations of schools, including student information, teacher schedules, curriculum management, attendance tracking, grading, parent communication, and more.
+**EduSysPro** is a school management system that is a comprehensive software solution designed to streamline and automate various administrative and academic tasks within an educational institution. It serves as a centralized platform for managing and organizing the daily operations of schools, including studentEntity information, teacher schedules, curriculum management, attendance tracking, grading, parent communication, and more.
 
 ## 1. Student Information Management:
-- Store and manage student data such as personal details, contact information, academic records, attendance history, medical information, etc.
+- Store and manage studentEntity data such as personal details, contact information, academic records, attendance history, medical information, etc.
 - Enrollment and registration processes for new students.
 - Student admission and withdrawal management.
 
@@ -19,13 +19,13 @@
 - Grading and assessment tools.
 
 ## 4. Attendance Tracking:
-- Monitor student and staff attendance.
+- Monitor studentEntity and staff attendance.
 - Generate attendance reports and statistics.
 - Automated notifications for absenteeism or tardiness.
 
 ## 5. Communication and Collaboration:
 - Facilitate communication between teachers, students, parents, and administrators through messaging systems, announcements, and notifications.
-- Parent portals for accessing student information, grades, and school updates.
+- Parent portals for accessing studentEntity information, grades, and school updates.
 - Teacher-parent communication channels.
 
 ## 6. Financial Management:
@@ -44,7 +44,7 @@
 - Registration and participation tracking for events and competitions.
 
 ## 9. Reports and Analytics:
-- Generate various reports and analytics on student performance, attendance trends, financial data, etc.
+- Generate various reports and analytics on studentEntity performance, attendance trends, financial data, etc.
 - Data visualization tools for easy interpretation of information.
 
 ## 10. Security and Data Protection:

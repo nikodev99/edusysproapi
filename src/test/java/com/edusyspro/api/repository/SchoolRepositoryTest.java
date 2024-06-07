@@ -30,8 +30,6 @@ class SchoolRepositoryTest {
                 .street("Rue Madia")
                 .number(12)
                 .zipCode(null)
-                .createdAt(LocalDateTime.now())
-                .modifyAt(LocalDateTime.now())
                 .build();
 
         School school = School.builder()
@@ -44,8 +42,6 @@ class SchoolRepositoryTest {
                 .phoneNumber("+242063216598")
                 .address(address)
                 .websiteURL(null)
-                .createdAt(LocalDateTime.now())
-                .modifyAt(LocalDateTime.now())
                 .build();
 
         schoolRepository.save(school);
@@ -90,8 +86,6 @@ class SchoolRepositoryTest {
                 .street("Rue du pool")
                 .number(1)
                 .zipCode(null)
-                .createdAt(LocalDateTime.now())
-                .modifyAt(LocalDateTime.now())
                 .build();
 
         School school = School.builder()
@@ -104,8 +98,6 @@ class SchoolRepositoryTest {
                 .phoneNumber("+242065876959")
                 .address(address)
                 .websiteURL(null)
-                .createdAt(LocalDateTime.now())
-                .modifyAt(LocalDateTime.now())
                 .build();
 
         schoolRepository.save(school);

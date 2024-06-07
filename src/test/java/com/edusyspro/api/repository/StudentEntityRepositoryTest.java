@@ -3,7 +3,8 @@ package com.edusyspro.api.repository;
 import com.edusyspro.api.classes.ClassRepository;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.School;
-import com.edusyspro.api.entities.Student;
+import com.edusyspro.api.student.entities.StudentEntity;
+import com.edusyspro.api.student.repos.StudentRepository;
 import com.edusyspro.api.utils.Fake;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.UUID;
 
 @SpringBootTest
-class StudentRepositoryTest {
+class StudentEntityRepositoryTest {
 
     @Autowired
     private StudentRepository studentRepository;
@@ -26,8 +27,8 @@ class StudentRepositoryTest {
     @Test
     public void saveStudent() {
         School school = getSchool();
-        Student student = Fake.getStudent(school);
-        studentRepository.save(student);
+        StudentEntity studentEntity = Fake.getStudent(school);
+        studentRepository.save(studentEntity);
     }
 
     public void saveStudentsOf() {

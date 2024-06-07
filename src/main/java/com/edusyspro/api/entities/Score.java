@@ -1,5 +1,6 @@
 package com.edusyspro.api.entities;
 
+import com.edusyspro.api.student.entities.StudentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class Score {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_id", referencedColumnName = "id")
-    private Student student;
+    private StudentEntity studentEntity;
 
     private byte obtainedMark;
 

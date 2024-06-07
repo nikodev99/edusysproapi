@@ -37,8 +37,6 @@ class PlanningRepositoryTest {
                 .section(Section.LYCEE)
                 .subSection("Serie D")
                 .school(school)
-                .createdAt(LocalDateTime.now())
-                .modifyAt(LocalDateTime.now())
                 .build();
         Planning planning = Planning.builder()
                 .academicYear(getAcademicYear(getSchool()))
@@ -46,8 +44,6 @@ class PlanningRepositoryTest {
                 .semestre("1er Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();
@@ -65,8 +61,6 @@ class PlanningRepositoryTest {
                 .semestre("1er Trimestre")
                 .termStartDate(LocalDate.of(2023, 11, 15))
                 .termEndDate(LocalDate.of(2023, 11, 26))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();
@@ -77,8 +71,6 @@ class PlanningRepositoryTest {
                 .semestre("2e Trimestre")
                 .termStartDate(LocalDate.of(2024, 1, 5))
                 .termEndDate(LocalDate.of(2024, 3, 26))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();
@@ -89,8 +81,6 @@ class PlanningRepositoryTest {
                 .semestre("2e Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();
@@ -101,8 +91,6 @@ class PlanningRepositoryTest {
                 .semestre("3e Trimestre")
                 .termStartDate(LocalDate.of(2024, 4, 10))
                 .termEndDate(LocalDate.of(2024, 6, 30))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();
@@ -113,8 +101,6 @@ class PlanningRepositoryTest {
                 .semestre("3e Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();
@@ -130,8 +116,6 @@ class PlanningRepositoryTest {
                 .section(Section.LYCEE)
                 .subSection("Serie C")
                 .school(school)
-                .createdAt(LocalDateTime.now())
-                .modifyAt(LocalDateTime.now())
                 .build();
 
         Planning planning = Planning.builder()
@@ -140,8 +124,6 @@ class PlanningRepositoryTest {
                 .semestre("1er Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();
@@ -152,8 +134,6 @@ class PlanningRepositoryTest {
                 .semestre("1er Trimestre")
                 .termStartDate(LocalDate.of(2023, 11, 15))
                 .termEndDate(LocalDate.of(2023, 11, 26))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();
@@ -164,8 +144,6 @@ class PlanningRepositoryTest {
                 .semestre("2e Trimestre")
                 .termStartDate(LocalDate.of(2024, 1, 5))
                 .termEndDate(LocalDate.of(2024, 3, 26))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();
@@ -176,8 +154,6 @@ class PlanningRepositoryTest {
                 .semestre("2e Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();
@@ -188,8 +164,6 @@ class PlanningRepositoryTest {
                 .semestre("3e Trimestre")
                 .termStartDate(LocalDate.of(2024, 4, 10))
                 .termEndDate(LocalDate.of(2024, 6, 30))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();
@@ -200,8 +174,6 @@ class PlanningRepositoryTest {
                 .semestre("3e Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .grade(grade)
                 .school(school)
                 .build();

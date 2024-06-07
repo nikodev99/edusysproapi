@@ -1,12 +1,15 @@
 server:
   port: 8080
 
+  servlet:
+    context-path: /api/v1
+
 spring:
   application:
     name: edusysproapi
 
   profiles:
-    active: local
+    active: mysql
 
   #REST config
   data:
@@ -27,11 +30,23 @@ spring:
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: postgres
   datasource:
     driver-class-name: org.postgresql.Driver
     url: 'jdbc:postgresql://localhost:5432/academic'
     username: 'postgres'
+    password: 'password'
+
+# Development environment configuration
+---
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: 'jdbc:mysql://localhost:3306/academic'
+    username: 'root'
     password: 'password'
 
 # Development environment configuration

@@ -1,6 +1,8 @@
 package com.edusyspro.api.classes;
 
 import com.edusyspro.api.entities.*;
+import com.edusyspro.api.student.entities.EnrollmentEntity;
+import com.edusyspro.api.student.entities.StudentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,11 +30,11 @@ public class Classe {
 
     private Teacher principalTeacher;
 
-    private Student principalStudent;
+    private StudentEntity principalStudentEntity;
 
     private Course principalCourse;
 
-    private List<Enrollment> students;
+    private List<EnrollmentEntity> students;
 
     private List<Teacher> teachers;
 

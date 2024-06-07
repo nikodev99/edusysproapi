@@ -2,6 +2,7 @@ package com.edusyspro.api.entities;
 
 import com.edusyspro.api.entities.enums.Gender;
 import com.edusyspro.api.entities.enums.Status;
+import com.edusyspro.api.student.entities.StudentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,7 +56,7 @@ public class Guardian {
     private Address address;
 
     @OneToMany(mappedBy = "guardian", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Student> student;
+    private List<StudentEntity> studentEntity;
 
     private ZonedDateTime createdAt;
 

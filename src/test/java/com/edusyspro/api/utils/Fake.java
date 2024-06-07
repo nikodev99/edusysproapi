@@ -7,10 +7,12 @@ import com.arakelian.faker.service.RandomPerson;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Status;
+import com.edusyspro.api.student.entities.EnrollmentEntity;
+import com.edusyspro.api.student.entities.StudentEntity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Year;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,13 +72,13 @@ public class Fake {
                 .build();
     }
 
-    public static List<Student> getStudents(int numberOfStudents, School school) {
+    public static List<StudentEntity> getStudents(int numberOfStudents, School school) {
         return IntStream.range(0, numberOfStudents)
                 .mapToObj(i -> getStudent(school))
                 .toList();
     }
 
-    public static Student getStudent(School school) {
+    public static StudentEntity getStudent(School school) {
         Person p = RandomPerson.get().next();
         Person g = RandomPerson.get().next();
         com.arakelian.faker.model.Address a = RandomAddress.get().next();
@@ -97,7 +99,7 @@ public class Fake {
                 .zipCode(a.getPostalCode())
                 .build();
 
-        return Student.builder()
+        return StudentEntity.builder()
                 .firstName(p.getFirstName())
                 .lastName(p.getLastName())
                 .gender(p.getGender() == Gender.MALE ? com.edusyspro.api.entities.enums.Gender.HOMME : com.edusyspro.api.entities.enums.Gender.FEMME)
@@ -125,18 +127,18 @@ public class Fake {
                 .build();
     }
 
-    public static List<Enrollment> studentToEnroll(int numberOfStudents, String academicYear, School school, ClasseEntity classeEntity) {
+    public static List<EnrollmentEntity> studentToEnroll(int numberOfStudents, String academicYear, School school, ClasseEntity classeEntity) {
         return IntStream.range(0, numberOfStudents)
                 .mapToObj(i -> setEnrollment(academicYear, school, classeEntity))
                 .toList();
     }
 
-    private static Enrollment setEnrollment(String academicYear, School school, ClasseEntity classeEntity) {
-        return Enrollment.builder()
+    private static EnrollmentEntity setEnrollment(String academicYear, School school, ClasseEntity classeEntity) {
+        return EnrollmentEntity.builder()
                 .academicYear(academicYear)
-                .student(getStudent(school))
+                .studentEntity(getStudent(school))
                 .classeEntity(classeEntity)
-                .enrollmentDate(LocalDateTime.now())
+                .enrollmentDate(ZonedDateTime.now())
                 .isArchived(false)
                 .school(school)
                 .build();

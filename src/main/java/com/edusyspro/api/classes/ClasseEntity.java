@@ -1,6 +1,8 @@
 package com.edusyspro.api.classes;
 
 import com.edusyspro.api.entities.*;
+import com.edusyspro.api.student.entities.EnrollmentEntity;
+import com.edusyspro.api.student.entities.StudentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,14 +45,14 @@ public class ClasseEntity {
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "principal_student_id", referencedColumnName = "id")
-    private Student principalStudent;
+    private StudentEntity principalStudentEntity;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "principal_course_id", referencedColumnName = "id")
     private Course principalCourse;
 
     @OneToMany(mappedBy = "classeEntity", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    private List<Enrollment> students;
+    private List<EnrollmentEntity> students;
 
     @ManyToMany(mappedBy = "aClasses", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private List<Teacher> teachers;
@@ -86,7 +88,7 @@ public class ClasseEntity {
                 ", schedule=" + schedule +
                 ", roomNumber=" + roomNumber +
                 ", principalTeacher=" + principalTeacher +
-                ", principalStudent=" + principalStudent +
+                ", principalStudent=" + principalStudentEntity +
                 ", principalCourse=" + principalCourse +
                 //", students=" + students +
                 //", teachers=" + teachers +

@@ -1,5 +1,6 @@
-package com.edusyspro.api.entities;
+package com.edusyspro.api.student.entities;
 
+import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Gender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Student {
+@Table(name = "student")
+public class StudentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,8 +35,8 @@ public class Student {
 
     private String emailId;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Enrollment> enrollments;
+    @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<EnrollmentEntity> enrollmentEntities;
 
     private LocalDate birthDate;
 
@@ -69,10 +71,10 @@ public class Student {
     @Column(length = 100)
     private String image;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL)
     private List<Score> marks;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL)
     private List<Attendance> attendances;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
