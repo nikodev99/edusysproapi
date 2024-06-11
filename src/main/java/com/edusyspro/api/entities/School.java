@@ -32,7 +32,7 @@ public class School {
     @Column(length = 50)
     private String abbr;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.ALL, CascadeType.MERGE})
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
