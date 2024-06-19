@@ -1,5 +1,6 @@
 package com.edusyspro.api.classes;
 
+import com.edusyspro.api.classes.dtos.ClassBasicValue;
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;

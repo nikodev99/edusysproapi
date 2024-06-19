@@ -1,8 +1,7 @@
 package com.edusyspro.api.student.models;
 
-import com.edusyspro.api.classes.ClasseEntity;
+import com.edusyspro.api.classes.Classe;
 import com.edusyspro.api.entities.School;
-import com.edusyspro.api.student.entities.StudentEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -17,10 +16,10 @@ public class Enrollment {
     private String academicYear;
 
     @JsonProperty("student")
-    private StudentEntity studentEntity;
+    private Student student;
 
     @JsonProperty("classe")
-    private ClasseEntity classeEntity;
+    private Classe classe;
 
     private ZonedDateTime enrollmentDate;
     private boolean isArchived;

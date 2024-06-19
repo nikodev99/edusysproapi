@@ -35,7 +35,7 @@ public class StudentEntity {
 
     private String emailId;
 
-    @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<EnrollmentEntity> enrollmentEntities;
 
     private LocalDate birthDate;
@@ -62,7 +62,7 @@ public class StudentEntity {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "guardian_id", referencedColumnName = "id")
-    private Guardian guardian;
+    private GuardianEntity guardian;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "health_condition", referencedColumnName = "id")

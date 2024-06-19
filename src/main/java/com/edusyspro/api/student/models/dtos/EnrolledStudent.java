@@ -1,4 +1,4 @@
-package com.edusyspro.api.student.models;
+package com.edusyspro.api.student.models.dtos;
 
 import com.edusyspro.api.entities.enums.Gender;
 import lombok.AllArgsConstructor;

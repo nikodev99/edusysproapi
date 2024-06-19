@@ -51,7 +51,7 @@ public class ClasseEntity {
     @JoinColumn(name = "principal_course_id", referencedColumnName = "id")
     private Course principalCourse;
 
-    @OneToMany(mappedBy = "classeEntity", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "classe", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private List<EnrollmentEntity> students;
 
     @ManyToMany(mappedBy = "aClasses", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)

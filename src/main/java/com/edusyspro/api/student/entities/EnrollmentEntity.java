@@ -27,11 +27,11 @@ public class EnrollmentEntity {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "student_id", referencedColumnName = "id")
-    private StudentEntity studentEntity;
+    private StudentEntity student;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
-    private ClasseEntity classeEntity;
+    private ClasseEntity classe;
 
     private ZonedDateTime enrollmentDate;
 
@@ -46,8 +46,8 @@ public class EnrollmentEntity {
         return "Enrollment{" +
                 "id=" + id +
                 ", academicYear='" + academicYear + '\'' +
-                ", student=" + studentEntity +
-                ", classe=" + classeEntity +
+                ", student=" + student +
+                ", classe=" + classe +
                 ", enrollmentDate=" + enrollmentDate +
                 ", isArchived=" + isArchived +
                 ", school=" + school +

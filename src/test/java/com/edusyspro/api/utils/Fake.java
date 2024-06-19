@@ -8,6 +8,7 @@ import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Status;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
+import com.edusyspro.api.student.entities.GuardianEntity;
 import com.edusyspro.api.student.entities.StudentEntity;
 
 import java.time.LocalDate;
@@ -111,7 +112,7 @@ public class Fake {
                 .momName(oneWord(randomWord()) + " " + oneWord(randomWord()))
                 .reference(school.getAbbr() + randomNumber().substring(0, 6))
                 .address(address)
-                .guardian(Guardian.builder()
+                .guardian(GuardianEntity.builder()
                         .firstName(g.getFirstName())
                         .lastName(g.getLastName())
                         .status(randomStatus())
@@ -136,8 +137,8 @@ public class Fake {
     private static EnrollmentEntity setEnrollment(String academicYear, School school, ClasseEntity classeEntity) {
         return EnrollmentEntity.builder()
                 .academicYear(academicYear)
-                .studentEntity(getStudent(school))
-                .classeEntity(classeEntity)
+                .student(getStudent(school))
+                .classe(classeEntity)
                 .enrollmentDate(ZonedDateTime.now())
                 .isArchived(false)
                 .school(school)

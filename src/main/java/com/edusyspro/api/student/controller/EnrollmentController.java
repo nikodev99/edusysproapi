@@ -1,6 +1,6 @@
 package com.edusyspro.api.student.controller;
 
-import com.edusyspro.api.student.models.EnrolledStudent;
+import com.edusyspro.api.student.models.dtos.EnrolledStudent;
 import com.edusyspro.api.student.models.Enrollment;
 import com.edusyspro.api.student.services.EnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;

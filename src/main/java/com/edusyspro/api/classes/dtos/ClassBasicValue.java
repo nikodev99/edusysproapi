@@ -1,4 +1,4 @@
-package com.edusyspro.api.classes;
+package com.edusyspro.api.classes.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

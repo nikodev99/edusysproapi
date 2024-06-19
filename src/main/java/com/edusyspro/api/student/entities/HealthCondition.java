@@ -1,4 +1,4 @@
-package com.edusyspro.api.entities;
+package com.edusyspro.api.student.entities;
 
 import com.edusyspro.api.entities.enums.Blood;
 import com.edusyspro.api.utils.JpaConverter;

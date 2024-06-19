@@ -1,8 +1,8 @@
-package com.edusyspro.api.entities;
+package com.edusyspro.api.student.entities;
 
+import com.edusyspro.api.entities.Address;
 import com.edusyspro.api.entities.enums.Gender;
 import com.edusyspro.api.entities.enums.Status;
-import com.edusyspro.api.student.entities.StudentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Guardian {
+@Table(name = "guardian")
+public class GuardianEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -56,7 +57,7 @@ public class Guardian {
     private Address address;
 
     @OneToMany(mappedBy = "guardian", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<StudentEntity> studentEntity;
+    private List<StudentEntity> student;
 
     private ZonedDateTime createdAt;
 

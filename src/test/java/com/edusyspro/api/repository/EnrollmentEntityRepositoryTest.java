@@ -6,11 +6,10 @@ import com.edusyspro.api.student.entities.EnrollmentEntity;
 import com.edusyspro.api.entities.School;
 import com.edusyspro.api.student.entities.StudentEntity;
 import com.edusyspro.api.service.AcademicYearService;
-import com.edusyspro.api.student.models.EnrolledStudent;
+import com.edusyspro.api.student.models.dtos.EnrolledStudent;
 import com.edusyspro.api.student.repos.EnrollmentRepository;
 import com.edusyspro.api.student.repos.StudentRepository;
 import com.edusyspro.api.utils.Fake;
-import jakarta.persistence.Tuple;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -95,11 +94,11 @@ class EnrollmentEntityRepositoryTest {
     public void saveEnrollAgain() {
         School school = getSchool();
         EnrollmentEntity e = enrollmentRepository.findById(88L).orElseThrow();
-        int updated = enrollmentRepository.updateEnrollmentByStudentId(true, e.getStudentEntity().getId());
+        int updated = enrollmentRepository.updateEnrollmentByStudentId(true, e.getStudent().getId());
         EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder()
                 .academicYear(academicYear(school))
-                .studentEntity(e.getStudentEntity())
-                .classeEntity(getClasse(14))
+                .student(e.getStudent())
+                .classe(getClasse(14))
                 .enrollmentDate(ZonedDateTime.now())
                 .isArchived(false)
                 .school(school)
