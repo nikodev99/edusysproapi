@@ -31,8 +31,10 @@ class StudentEntityRepositoryTest {
         studentRepository.save(studentEntity);
     }
 
-    public void saveStudentsOf() {
-
+    @Test
+    public void findStudentById() {
+        StudentEntity student = studentRepository.getStudentById(UUID.fromString("4e0a2739-6919-4ec5-a6a6-5432ace889e8"));
+        System.out.println(student);
     }
 
     private School getSchool() {

@@ -41,6 +41,11 @@ public class EnrollmentEntity {
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     private School school;
 
+    @PrePersist
+    public void onCreate() {
+        enrollmentDate = ZonedDateTime.now();
+    }
+
     @Override
     public String toString() {
         return "Enrollment{" +
