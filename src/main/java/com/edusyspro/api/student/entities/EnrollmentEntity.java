@@ -2,6 +2,7 @@ package com.edusyspro.api.student.entities;
 
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.School;
+import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,7 +44,7 @@ public class EnrollmentEntity {
 
     @PrePersist
     public void onCreate() {
-        enrollmentDate = ZonedDateTime.now();
+        enrollmentDate = Datetime.brazzavilleDatetime();
     }
 
     @Override

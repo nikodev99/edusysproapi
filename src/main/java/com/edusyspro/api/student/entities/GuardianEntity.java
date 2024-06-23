@@ -3,6 +3,8 @@ package com.edusyspro.api.student.entities;
 import com.edusyspro.api.entities.Address;
 import com.edusyspro.api.entities.enums.Gender;
 import com.edusyspro.api.entities.enums.Status;
+import com.edusyspro.api.utils.Datetime;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,6 +39,7 @@ public class GuardianEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
+    @JsonProperty("gender")
     private Gender genre;
 
     @Column(name = "email", unique = true, length = 100)
@@ -65,13 +68,13 @@ public class GuardianEntity {
 
     @PrePersist
     public void prePersist() {
-        createdAt = ZonedDateTime.now();
-        modifyAt = ZonedDateTime.now();
+        createdAt = Datetime.systemDatetime();
+        modifyAt = Datetime.systemDatetime();
     }
 
     @PreUpdate
     public void preUpdate() {
-        modifyAt = ZonedDateTime.now();
+        modifyAt = Datetime.systemDatetime();
     }
 
     @Override

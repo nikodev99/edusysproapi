@@ -2,6 +2,7 @@ package com.edusyspro.api.student.entities;
 
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Gender;
+import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,7 +61,7 @@ public class StudentEntity {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.ALL, CascadeType.REFRESH})
     @JoinColumn(name = "guardian_id", referencedColumnName = "id")
     private GuardianEntity guardian;
 
@@ -87,12 +88,12 @@ public class StudentEntity {
 
     @PrePersist
     public void prePersist() {
-        createdAt = ZonedDateTime.now();
-        modifyAt = ZonedDateTime.now();
+        createdAt = Datetime.brazzavilleDatetime();
+        modifyAt = Datetime.brazzavilleDatetime();
     }
 
     @PreUpdate
     public void preUpdate() {
-        modifyAt = ZonedDateTime.now();
+        modifyAt = Datetime.systemDatetime();
     }
 }

@@ -1,8 +1,8 @@
 package com.edusyspro.api.student.controller;
 
+import com.edusyspro.api.student.models.Guardian;
 import com.edusyspro.api.student.models.dtos.EnrolledStudent;
 import com.edusyspro.api.student.models.Enrollment;
-import com.edusyspro.api.student.models.dtos.EnrolledStudentGuardian;
 import com.edusyspro.api.student.services.EnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class EnrollmentController {
     }
 
     @GetMapping("/guardians")
-    ResponseEntity<List<EnrolledStudentGuardian>> fetchEnrolledStudentsGuardians() {
+    ResponseEntity<List<Guardian>> fetchEnrolledStudentsGuardians() {
         return ResponseEntity.ok(
                 enrollmentService.getEnrolledStudentGuardians(false, UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"))
         );
