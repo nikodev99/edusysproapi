@@ -57,11 +57,11 @@ public class StudentEntity {
     @Column(length = 50)
     private String telephone;
 
-    @ManyToOne(cascade = {CascadeType.ALL, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
-    @ManyToOne(cascade = {CascadeType.ALL, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "guardian_id", referencedColumnName = "id")
     private GuardianEntity guardian;
 

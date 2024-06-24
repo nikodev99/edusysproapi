@@ -10,6 +10,7 @@ import com.edusyspro.api.student.repos.EnrollmentRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +30,17 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
+    @Transactional
     public Enrollment enrollStudent(Enrollment enrollment) {
         EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder().build();
         BeanUtils.copyProperties(enrollment, enrollmentEntity);
+
+        GuardianEntity guardianEntity = enrollmentEntity.getStudent().getGuardian();
+        if (guardianEntity != null) {
+            GuardianEntity guardian = guardianService.saveOrUpdateGuardian(guardianEntity);
+            enrollmentEntity.getStudent().setGuardian(guardian);
+        }
+
         enrollmentRepository.save(enrollmentEntity);
         return enrollment;
     }

@@ -9,7 +9,7 @@ spring:
     name: edusysproapi
 
   profiles:
-    active: postgres
+    active: mysql
 
   #REST config
   data:
@@ -30,7 +30,7 @@ spring:
 spring:
   config:
     activate:
-      on-profile: postgres
+      on-profile: mysql
   datasource:
     driver-class-name: org.postgresql.Driver
     url: 'jdbc:postgresql://localhost:5432/academic'
