@@ -16,7 +16,7 @@ public class GuardianRepositoryTest {
 
     @Test
     public void findGuardianById() {
-        Guardian guardian = guardianService.findGuardianById(UUID.fromString("b18335d3-b493-427f-9fae-1633b620ea7f"));
+        Guardian guardian = guardianService.findGuardianById("b18335d3-b493-427f-9fae-1633b620ea7f");
         System.out.println(guardian);
     }
 

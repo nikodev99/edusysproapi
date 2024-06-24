@@ -21,8 +21,8 @@ public class GuardianServiceImp implements GuardianService {
     }
 
     @Override
-    public Guardian findGuardianById(UUID id) {
-        GuardianEssential essential = guardianRepository.findGuardianEntityById(id);
+    public Guardian findGuardianById(String id) {
+        GuardianEssential essential = guardianRepository.findGuardianEntityById(UUID.fromString(id));
         Guardian guardian = new Guardian();
         if (essential != null)
             guardian = populateGuardian(essential);
