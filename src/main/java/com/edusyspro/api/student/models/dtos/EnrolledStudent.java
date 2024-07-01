@@ -1,12 +1,14 @@
 package com.edusyspro.api.student.models.dtos;
 
 import com.edusyspro.api.entities.enums.Gender;
+import com.edusyspro.api.entities.enums.Section;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Data
@@ -24,5 +26,7 @@ public class EnrolledStudent {
     private String nationality;
     private String reference;
     private String image;
+    private ZonedDateTime lastEnrolledDate;
     private String classe;
+    private Section grade;
 }
