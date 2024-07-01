@@ -9,6 +9,8 @@ import com.edusyspro.api.student.models.dtos.EnrolledStudentGuardian;
 import com.edusyspro.api.student.repos.EnrollmentRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,13 +48,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public List<EnrolledStudent> getEnrolledStudents(UUID schoolId) {
-        return  enrollmentRepository.findEnrolledStudent(schoolId);
+    public Page<List<EnrolledStudent>> getEnrolledStudents(UUID schoolId, boolean isArchived, Pageable pageable) {
+        return  enrollmentRepository.findEnrolledStudent(schoolId, isArchived, pageable);
     }
 
     @Override
-    public List<Guardian> getEnrolledStudentGuardians(boolean isArchived, UUID schoolId) {
-        List<EnrolledStudentGuardian> enrolledStudentGuardian = enrollmentRepository.findEnrolledStudentGuardian(isArchived, schoolId);
+    public List<Guardian> getEnrolledStudentGuardians(UUID schoolId, boolean isArchived) {
+        List<EnrolledStudentGuardian> enrolledStudentGuardian = enrollmentRepository.findEnrolledStudentGuardian(schoolId, isArchived);
         List<Guardian> guardians = new ArrayList<>();
         if (!enrolledStudentGuardian.isEmpty()) {
             guardians = enrolledStudentGuardian.stream()

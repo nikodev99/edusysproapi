@@ -13,6 +13,9 @@ import com.edusyspro.api.utils.Fake;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -109,10 +112,9 @@ class EnrollmentEntityRepositoryTest {
 
     @Test
     public void getEnrolledStudents() {
-        List<EnrolledStudent> enrolledStudents = enrollmentRepository.findEnrolledStudent(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"));
-        for (EnrolledStudent enrolledStudent : enrolledStudents) {
-            System.out.println("Enrolled Student: " + enrolledStudent);
-        }
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<List<EnrolledStudent>> enrolledStudents = enrollmentRepository.findEnrolledStudent(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"), false, pageable);
+        System.out.println("Enrolled Student: " + enrolledStudents);
     }
     
     private ClasseEntity getClasse(int id) {
