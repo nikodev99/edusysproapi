@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/enroll")
@@ -32,8 +34,19 @@ public class EnrollmentController {
     }
 
     @GetMapping()
-    ResponseEntity<Page<List<EnrolledStudent>>> getEnrolledStudents(@RequestParam(defaultValue = "10") int page, @RequestParam(defaultValue = "10") int size) {
+    ResponseEntity<Page<List<EnrolledStudent>>> getEnrolledStudents(
+            @RequestParam(defaultValue = "10") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortCriteria
+    ) {
         Pageable pageable = PageRequest.of(page, size);
+        if (sortCriteria != null && !sortCriteria.isEmpty()) {
+            List<Sort.Order> orders = Stream.of(sortCriteria.split(","))
+                    .map(criteria -> criteria.split(":"))
+                    .map(c -> new Sort.Order(Sort.Direction.fromString(c[1]), c[0]))
+                    .toList();
+            pageable = PageRequest.of(page, size, Sort.by(orders));
+        }
         return ResponseEntity.ok(enrollmentService.getEnrolledStudents(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"), false, pageable));
     }
 
