@@ -13,7 +13,9 @@ public interface EnrollmentService {
 
     Enrollment enrollStudent(Enrollment enrollment);
 
-    Page<List<EnrolledStudent>> getEnrolledStudents(UUID schoolId, boolean isArchived, Pageable pageable);
+    Page<List<EnrolledStudent>> getEnrolledStudents(UUID schoolId, Pageable pageable);
+
+    List<EnrolledStudent> getEnrolledStudents(UUID schoolId, String lastname);
 
     List<Guardian> getEnrolledStudentGuardians(UUID schoolId, boolean isArchived);
 

@@ -24,8 +24,14 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
 
     @Query("select new com.edusyspro.api.student.models.dtos.EnrolledStudent(e.student.id, e.student.firstName, e.student.lastName, " +
             "e.student.gender, e.student.emailId, e.student.birthDate, e.student.birthCity, e.student.nationality, e.student.reference, " +
-            "e.student.image, e.enrollmentDate, e.classe.name, e.classe.grade.section) from EnrollmentEntity e where e.school.id = ?1 and e.isArchived = ?2")
-    Page<List<EnrolledStudent>> findEnrolledStudent(UUID schoolId, boolean isArchived, Pageable pageable);
+            "e.student.image, e.enrollmentDate, e.classe.name, e.classe.grade.section) from EnrollmentEntity e where e.school.id = ?1 and e.isArchived = false")
+    Page<List<EnrolledStudent>> findEnrolledStudent(UUID schoolId, Pageable pageable);
+
+    @Query("select new com.edusyspro.api.student.models.dtos.EnrolledStudent(e.student.id, e.student.firstName, e.student.lastName, " +
+            "e.student.gender, e.student.emailId, e.student.birthDate, e.student.birthCity, e.student.nationality, e.student.reference, " +
+            "e.student.image, e.enrollmentDate, e.classe.name, e.classe.grade.section) from EnrollmentEntity e " +
+            "where e.school.id = ?1 and e.isArchived = false and e.student.lastName like ?2")
+    List<EnrolledStudent> findEnrolledStudent(UUID schoolId, String lastname);
 
     @Query("select new com.edusyspro.api.student.models.dtos.EnrolledStudentGuardian(e.student.guardian.id, e.student.guardian.firstName, " +
             "e.student.guardian.lastName, e.student.guardian.maidenName, e.student.guardian.genre, e.student.guardian.emailId, " +

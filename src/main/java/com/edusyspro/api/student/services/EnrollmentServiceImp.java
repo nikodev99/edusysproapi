@@ -48,8 +48,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public Page<List<EnrolledStudent>> getEnrolledStudents(UUID schoolId, boolean isArchived, Pageable pageable) {
-        return  enrollmentRepository.findEnrolledStudent(schoolId, isArchived, pageable);
+    public Page<List<EnrolledStudent>> getEnrolledStudents(UUID schoolId, Pageable pageable) {
+        return  enrollmentRepository.findEnrolledStudent(schoolId, pageable);
+    }
+
+    @Override
+    public List<EnrolledStudent> getEnrolledStudents(UUID schoolId, String lastname) {
+        return enrollmentRepository.findEnrolledStudent(schoolId, "%" + lastname + "%");
     }
 
     @Override
