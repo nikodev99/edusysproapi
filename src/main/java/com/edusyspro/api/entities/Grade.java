@@ -28,12 +28,12 @@ public class Grade {
     @Column(name = "program", length = 50)
     private String subSection;
 
+    @OneToMany(mappedBy = "grade", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Planning> planning;
+
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     private School school;
-
-    @OneToMany(mappedBy = "grade", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Planning> planning;
 
     private ZonedDateTime createdAt;
 

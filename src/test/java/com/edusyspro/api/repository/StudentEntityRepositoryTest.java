@@ -4,6 +4,7 @@ import com.edusyspro.api.classes.ClassRepository;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.School;
 import com.edusyspro.api.student.entities.StudentEntity;
+import com.edusyspro.api.student.models.dtos.StudentEssential;
 import com.edusyspro.api.student.repos.StudentRepository;
 import com.edusyspro.api.utils.Fake;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ class StudentEntityRepositoryTest {
 
     @Test
     public void findStudentById() {
-        StudentEntity student = studentRepository.getStudentById(UUID.fromString("4e0a2739-6919-4ec5-a6a6-5432ace889e8"));
+        StudentEssential student = studentRepository.getStudentById(UUID.fromString("1048e4b0-08ca-4537-85bf-ed2e81caf976"));
         System.out.println(student);
     }
 

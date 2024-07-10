@@ -7,6 +7,7 @@ import com.edusyspro.api.entities.School;
 import com.edusyspro.api.student.entities.StudentEntity;
 import com.edusyspro.api.service.AcademicYearService;
 import com.edusyspro.api.student.models.dtos.EnrolledStudent;
+import com.edusyspro.api.student.models.dtos.StudentEssential;
 import com.edusyspro.api.student.repos.EnrollmentRepository;
 import com.edusyspro.api.student.repos.StudentRepository;
 import com.edusyspro.api.utils.Fake;
@@ -130,7 +131,7 @@ class EnrollmentEntityRepositoryTest {
         return academicYearService.getAcademicYearForSchool(school);
     }
 
-    private StudentEntity getStudent(String uuid) {
+    private StudentEssential getStudent(String uuid) {
         return studentRepository.getStudentById(UUID.fromString(uuid));
     }
 

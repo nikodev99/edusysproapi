@@ -1,6 +1,5 @@
 package com.edusyspro.api.student.models;
 
-import com.edusyspro.api.classes.Classe;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.School;
 import com.edusyspro.api.student.entities.StudentEntity;
