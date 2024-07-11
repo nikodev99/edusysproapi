@@ -2,6 +2,7 @@ package com.edusyspro.api.student.models.dtos;
 
 import com.edusyspro.api.entities.Address;
 import com.edusyspro.api.entities.enums.Gender;
+import com.edusyspro.api.entities.enums.Status;
 import com.edusyspro.api.student.entities.HealthCondition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +31,17 @@ public class StudentEssential {
     private String reference;
     private String telephone;
     private Address address;
-    private GuardianEssential guardian;
+    private String guardianFirstName;
+    private String guardianLastName;
+    private String guardianMaidenName;
+    private Status guardianStatus;
+    private Gender guardianGenre;
+    private String guardianEmailId;
+    private String guardianJobTitle;
+    private String guardianCompany;
+    private String guardianTelephone;
+    private String guardianMobile;
+    private Address guardianAddress;
     private HealthCondition healthCondition;
     private String image;
     private String currentSchoolName;
