@@ -64,7 +64,7 @@ class DepartmentRepositoryTest {
     }
 
     private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("27a58e8a-a588-45dd-917e-6b690acd4b22"));
+        Optional<School> school = schoolRepository.findById(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"));
         return school.orElse(School.builder().build());
     }
 

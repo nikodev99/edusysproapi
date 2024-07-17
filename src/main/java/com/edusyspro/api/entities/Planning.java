@@ -20,8 +20,9 @@ public class Planning {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(length = 20)
-    private String academicYear;
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
+    private AcademicYear academicYear;
 
     @Column(length = 500)
     private String designation;
@@ -32,10 +33,6 @@ public class Planning {
 
     @Column(length = 20)
     private String semestre;
-
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.REMOVE, CascadeType.DETACH}, fetch = FetchType.LAZY)
-    @JoinColumn(name = "school_id", referencedColumnName = "id")
-    private School school;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "grade_id", referencedColumnName = "id")
@@ -58,17 +55,14 @@ public class Planning {
 
     @Override
     public String toString() {
-        return "Planning{" +
-                "id=" + id +
-                ", academicYear='" + academicYear + '\'' +
-                ", designation='" + designation + '\'' +
+        return "{id=" + id +
+                //", academicYear=" + academicYear +
+                ", designation=" + designation +
                 ", termStartDate=" + termStartDate +
                 ", termEndDate=" + termEndDate +
-                ", semestre='" + semestre + '\'' +
-                //", school=" + school +
+                ", semestre=" + semestre +
                 //", grade=" + grade +
                 ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
+                ", updatedAt=" + updatedAt + "}";
     }
 }

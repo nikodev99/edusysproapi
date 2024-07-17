@@ -1,7 +1,6 @@
 package com.edusyspro.api.classes;
 
 import com.edusyspro.api.entities.*;
-import com.edusyspro.api.student.entities.StudentEntity;
 import com.edusyspro.api.student.models.Enrollment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,9 +27,9 @@ public class Classe {
 
     private int roomNumber;
 
-    private Teacher principalTeacher;
+    private ClasseTeacherBoss principalTeacher;
 
-    private StudentEntity principalStudentEntity;
+    private ClasseStudentBoss principalStudentEntity;
 
     private Course principalCourse;
 

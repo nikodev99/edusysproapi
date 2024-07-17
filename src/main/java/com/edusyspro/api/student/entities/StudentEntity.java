@@ -78,10 +78,6 @@ public class StudentEntity {
     @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL)
     private List<Attendance> attendances;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "school_id", referencedColumnName = "id")
-    private School school;
-
     private ZonedDateTime createdAt;
 
     private ZonedDateTime modifyAt;

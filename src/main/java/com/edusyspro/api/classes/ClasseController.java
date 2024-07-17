@@ -12,22 +12,22 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(value = {"/classes"})
-public class ClassController {
+public class ClasseController {
 
-    private final ClassService classService;
+    private final ClasseService classeService;
 
     @Autowired
-    public ClassController(ClassService classService) {
-        this.classService = classService;
+    public ClasseController(ClasseService classeService) {
+        this.classeService = classeService;
     }
 
     @GetMapping("/basic")
     ResponseEntity<List<ClassBasicValue>> getAllClassesBasicValue() {
-        return ResponseEntity.ok(classService.getClassBasicValues(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548")));
+        return ResponseEntity.ok(classeService.getClassBasicValues(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548")));
     }
 
     @GetMapping(value = {"", "/all"})
     ResponseEntity<List<Classe>> getClasses() {
-        return ResponseEntity.ok(classService.getClasses());
+        return ResponseEntity.ok(classeService.getClasses());
     }
 }

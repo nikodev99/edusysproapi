@@ -25,9 +25,9 @@ public class Department {
     @Column(length = 10)
     private String code;
 
-    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "d_boss", referencedColumnName = "id")
-    private Teacher boss;
+    private DepartmentBoss boss;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "school_id", referencedColumnName = "id")

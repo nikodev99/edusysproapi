@@ -57,7 +57,7 @@ public class Grade {
                 ", section=" + section +
                 ", subSection='" + subSection + '\'' +
                 //", school=" + school +
-                ", planning=" + planning +
+                //", planning=" + planning +
                 ", createdAt=" + createdAt +
                 ", modifyAt=" + modifyAt +
                 '}';

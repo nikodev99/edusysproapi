@@ -22,7 +22,13 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "planning_id", referencedColumnName = "id")
+    private Planning semester;
+
+    private String preparedBy;
+
+    @OneToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "class_id", referencedColumnName = "id")
     private ClasseEntity classeEntity;
 
@@ -32,13 +38,9 @@ public class Exam {
 
     private LocalTime startTime;
 
-    private LocalTime endDate;
+    private LocalTime endTime;
 
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL)
     private List<Score> marks;
-
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "school_id", referencedColumnName = "id")
-    private School school;
 
 }

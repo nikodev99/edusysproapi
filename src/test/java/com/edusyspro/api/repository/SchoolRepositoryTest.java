@@ -105,7 +105,7 @@ class SchoolRepositoryTest {
 
     @Test
     public void printASchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("27a58e8a-a588-45dd-917e-6b690acd4b22"));
+        Optional<School> school = schoolRepository.findById(UUID.fromString("95b5c2fd-eba9-4d41-970d-f1bc4fb0ed50"));
         System.out.println("School retrieved=" + school.orElseThrow());
     }
 

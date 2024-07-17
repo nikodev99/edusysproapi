@@ -1,6 +1,6 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.classes.ClassRepository;
+import com.edusyspro.api.classes.ClasseRepository;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Day;
@@ -20,7 +20,7 @@ class ScheduleRepositoryTest {
     private ScheduleRepository scheduleRepository;
 
     @Autowired
-    private ClassRepository classRepository;
+    private ClasseRepository classeRepository;
 
     @Autowired
     private TeacherRepository teacherRepository;
@@ -43,7 +43,6 @@ class ScheduleRepositoryTest {
                         .designation("Première partie des cours")
                         .startTime(time(7, 30))
                         .endTime(time(9, 15))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -51,7 +50,6 @@ class ScheduleRepositoryTest {
                         .designation("Première récréation")
                         .startTime(time(9, 15))
                         .endTime(time(9, 45))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -60,7 +58,6 @@ class ScheduleRepositoryTest {
                         .designation("Deuxième partie des cours")
                         .startTime(time(9, 45))
                         .endTime(time(11, 0))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -68,7 +65,6 @@ class ScheduleRepositoryTest {
                         .designation("Deuxième récréation")
                         .startTime(time(11, 0))
                         .endTime(time(11, 30))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -77,7 +73,6 @@ class ScheduleRepositoryTest {
                         .designation("Troisième partie des cours")
                         .startTime(time(11, 30))
                         .endTime(time(12, 30))
-                        .school(getSchool())
                         .build()
         );
         scheduleRepository.saveAll(schedules);
@@ -95,7 +90,6 @@ class ScheduleRepositoryTest {
                         .designation("Deux heures de Français")
                         .startTime(time(7, 0))
                         .endTime(time(9, 0))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -105,7 +99,6 @@ class ScheduleRepositoryTest {
                         .designation("Une heure d'ECM")
                         .startTime(time(9, 0))
                         .endTime(time(10, 0))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -113,7 +106,6 @@ class ScheduleRepositoryTest {
                         .designation("Récréation")
                         .startTime(time(10, 0))
                         .endTime(time(10, 30))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -123,7 +115,6 @@ class ScheduleRepositoryTest {
                         .designation("Deux heures de Physique Chimie")
                         .startTime(time(10, 30))
                         .endTime(time(12, 30))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -133,7 +124,6 @@ class ScheduleRepositoryTest {
                         .designation("Trois heures de Maths")
                         .startTime(time(7, 0))
                         .endTime(time(10, 0))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -141,7 +131,6 @@ class ScheduleRepositoryTest {
                         .designation("Récréation")
                         .startTime(time(10, 0))
                         .endTime(time(10, 30))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -151,7 +140,6 @@ class ScheduleRepositoryTest {
                         .designation("Deux heures des SVT")
                         .startTime(time(10, 30))
                         .endTime(time(12, 30))
-                        .school(getSchool())
                         .build()
         );
         scheduleRepository.saveAll(schedules);
@@ -169,7 +157,6 @@ class ScheduleRepositoryTest {
                         .designation("Deux heures de Histoire Géographie")
                         .startTime(time(7, 0))
                         .endTime(time(9, 0))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -179,7 +166,6 @@ class ScheduleRepositoryTest {
                         .designation("Une heure d'EPS")
                         .startTime(time(9, 0))
                         .endTime(time(10, 0))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -187,7 +173,6 @@ class ScheduleRepositoryTest {
                         .designation("Récréation")
                         .startTime(time(10, 0))
                         .endTime(time(10, 30))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -197,7 +182,6 @@ class ScheduleRepositoryTest {
                         .designation("Deux heures de Dessin")
                         .startTime(time(10, 30))
                         .endTime(time(12, 30))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -207,7 +191,6 @@ class ScheduleRepositoryTest {
                         .designation("Trois heures de biologie")
                         .startTime(time(7, 0))
                         .endTime(time(10, 0))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -215,7 +198,6 @@ class ScheduleRepositoryTest {
                         .designation("Récréation")
                         .startTime(time(10, 0))
                         .endTime(time(10, 30))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -225,7 +207,6 @@ class ScheduleRepositoryTest {
                         .designation("Deux heures des Physique Chimie")
                         .startTime(time(10, 30))
                         .endTime(time(12, 30))
-                        .school(getSchool())
                         .build()
         );
         scheduleRepository.saveAll(schedules);
@@ -243,7 +224,6 @@ class ScheduleRepositoryTest {
                         .designation("Deux heures de Histoire Français")
                         .startTime(time(7, 0))
                         .endTime(time(9, 0))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -253,7 +233,6 @@ class ScheduleRepositoryTest {
                         .designation("Une heure de Latin")
                         .startTime(time(9, 0))
                         .endTime(time(10, 0))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -261,7 +240,6 @@ class ScheduleRepositoryTest {
                         .designation("Récréation")
                         .startTime(time(10, 0))
                         .endTime(time(10, 30))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -271,7 +249,6 @@ class ScheduleRepositoryTest {
                         .designation("Une heure de Musique")
                         .startTime(time(10, 30))
                         .endTime(time(11, 30))
-                        .school(getSchool())
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -281,14 +258,13 @@ class ScheduleRepositoryTest {
                         .designation("Une heure de Math")
                         .startTime(time(11, 30))
                         .endTime(time(12, 30))
-                        .school(getSchool())
                         .build()
         );
         scheduleRepository.saveAll(schedules);
     }
 
     private ClasseEntity getClasse(int id) {
-        return classRepository.getClasseById(id);
+        return classeRepository.getClasseById(id);
     }
 
     private Course getCourse(String abbr) {

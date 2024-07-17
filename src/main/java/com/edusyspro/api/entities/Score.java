@@ -28,8 +28,4 @@ public class Score {
 
     private byte obtainedMark;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "school_id", referencedColumnName = "id")
-    private School school;
-
 }

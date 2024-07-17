@@ -32,7 +32,11 @@ public class Fake {
     ) {
         List<Teacher> teachers = new ArrayList<>();
         for (int i = 0; i < numberOfTeacher; i++) {
-            teachers.add(getTeacher(school, aClasses[i], courses[i]));
+            Course[] course = null;
+            if (courses != null && i < courses.length && courses[i] != null) {
+                course = courses[i];
+            }
+            teachers.add(getTeacher(school, aClasses[i], course));
         }
         return teachers;
     }
@@ -45,7 +49,7 @@ public class Fake {
         int number = Integer.parseInt(streetParts[0]);
         String street = streetParts[1];
 
-        List<Course> courseList = Arrays.stream(courses).filter(c -> c.getId() != 0).toList();
+        List<Course> courseList = courses != null ? Arrays.stream(courses).filter(c -> c.getId() != 0).toList() : new ArrayList<>();
 
         return Teacher.builder()
                 .birthDate(LocalDate.from(p.getBirthdate()))
@@ -124,24 +128,22 @@ public class Fake {
                         .address(address)
                         .build()
                 )
-                .school(school)
                 .build();
     }
 
-    public static List<EnrollmentEntity> studentToEnroll(int numberOfStudents, String academicYear, School school, ClasseEntity classeEntity) {
+    public static List<EnrollmentEntity> studentToEnroll(int numberOfStudents, AcademicYear academicYear, School school, ClasseEntity classeEntity) {
         return IntStream.range(0, numberOfStudents)
                 .mapToObj(i -> setEnrollment(academicYear, school, classeEntity))
                 .toList();
     }
 
-    private static EnrollmentEntity setEnrollment(String academicYear, School school, ClasseEntity classeEntity) {
+    private static EnrollmentEntity setEnrollment(AcademicYear academicYear, School school, ClasseEntity classeEntity) {
         return EnrollmentEntity.builder()
                 .academicYear(academicYear)
                 .student(getStudent(school))
                 .classe(classeEntity)
-                .enrollmentDate(ZonedDateTime.now())
+                .enrollmentDate(Datetime.brazzavilleDatetime())
                 .isArchived(false)
-                .school(school)
                 .build();
     }
 

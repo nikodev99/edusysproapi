@@ -2,7 +2,6 @@ package com.edusyspro.api.classes;
 
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
-import com.edusyspro.api.student.entities.StudentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,11 +40,11 @@ public class ClasseEntity {
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "principal_teacher_id", referencedColumnName = "id")
-    private Teacher principalTeacher;
+    private ClasseTeacherBoss principalTeacher;
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "principal_student_id", referencedColumnName = "id")
-    private StudentEntity principalStudentEntity;
+    private ClasseStudentBoss principalStudent;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "principal_course_id", referencedColumnName = "id")
@@ -58,10 +57,6 @@ public class ClasseEntity {
     private List<Teacher> teachers;
 
     private double monthCost;
-
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "school_id", referencedColumnName = "id")
-    private School school;
 
     private ZonedDateTime createdAt;
 
@@ -76,26 +71,5 @@ public class ClasseEntity {
     @PreUpdate
     public void preUpdate() {
         modifyAt = ZonedDateTime.now();
-    }
-
-    @Override
-    public String toString() {
-        return "Classe{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", category='" + category + '\'' +
-                //", grade=" + grade +
-                ", schedule=" + schedule +
-                ", roomNumber=" + roomNumber +
-                ", principalTeacher=" + principalTeacher +
-                ", principalStudent=" + principalStudentEntity +
-                ", principalCourse=" + principalCourse +
-                //", students=" + students +
-                //", teachers=" + teachers +
-                ", monthCost=" + monthCost +
-                //", school=" + school +
-                ", createdAt=" + createdAt +
-                ", modifyAt=" + modifyAt +
-                '}';
     }
 }

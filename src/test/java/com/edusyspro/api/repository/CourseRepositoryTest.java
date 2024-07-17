@@ -24,104 +24,97 @@ class CourseRepositoryTest {
     private DepartmentRepository departmentRepository;
 
     @Test
+    public void saveNewCourse() {
+        Course course = Course.builder()
+                .abbr("Philo")
+                .course("Philosophie")
+                .department(getDepartment("DDL"))
+                .build();
+        courseRepository.save(course);
+    }
+
+    @Test
     public void saveCourse() {
-        School school = getSchool();
         Course course = Course.builder()
                 .abbr("FRA")
                 .course("Français")
                 .department(getDepartment("DDL"))
-                .school(school)
                 .build();
         courseRepository.save(course);
     }
 
     @Test
     public void saveCourseS() {
-        School school = getSchool();
         List<Course> courses = List.of(
                 Course.builder()
                     .abbr("Maths")
                     .course("Mathématiques")
                     .department(getDepartment("DDS"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("SVT")
                     .course("Sciences de la vie et de la Terre")
                     .department(getDepartment("DDS"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("PC")
                     .course("Physique-Chimie")
                     .department(getDepartment("DDS"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("HG")
                     .course("Histoire-Géographie")
                     .department(getDepartment("DDL"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("Ang")
                     .course("Anglais")
                     .department(getDepartment("DDL"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("EPS")
                     .course("Éducation physique et sportive")
                     .department(getDepartment("DEP"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("Tech")
                     .course("Technologie")
                     .department(getDepartment("DDS"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("Dessin")
                     .course("Arts Plastiques")
                     .department(getDepartment("DAC"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("Musc")
                     .course("Musique")
                     .department(getDepartment("DAC"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("ECM")
                     .course("Éducation morale et civique")
                     .department(getDepartment("DAC"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("LAT")
                     .course("Latin")
                     .department(getDepartment("DDL"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("RUS")
                     .course("Russe")
                     .department(getDepartment("DDL"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("ESP")
                     .course("Espagnol")
                     .department(getDepartment("DDL"))
-                    .school(school)
                     .build(),
                 Course.builder()
                     .abbr("INF")
                     .course("Informatique")
                     .department(getDepartment("DDS"))
-                    .school(school)
                     .build()
         );
         courseRepository.saveAll(courses);
@@ -130,7 +123,7 @@ class CourseRepositoryTest {
     @Test
     public void printCourses() {
         List<Course> courses = courseRepository.findAll();
-        courses.forEach(c -> System.out.println("Course=" + c));
+        courses.forEach(c -> System.out.println("Course=" + c.getCourse()));
     }
 
     @Test

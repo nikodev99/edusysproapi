@@ -19,6 +19,8 @@ public interface AcademicYearRepository extends JpaRepository<AcademicYear, Inte
     @Query("select a.startDate, a.endDate from AcademicYear a where a.school.id = ?1")
     Optional<Tuple> findBySchool(UUID schoolId);
 
+    AcademicYear findAcademicYearBySchoolId(UUID schoolId);
+
     @Modifying
     @Transactional
     @Query("update AcademicYear a set a.startDate = ?1, a.endDate = ?2, a.school = ?3 where a.id = ?4")

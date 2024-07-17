@@ -11,12 +11,12 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ClassServiceImp implements ClassService {
-    private final ClassRepository classRepository;
+public class ClasseServiceImp implements ClasseService {
+    private final ClasseRepository classeRepository;
 
     @Override
     public List<Classe> getClasses() {
-        List<ClasseEntity> classeEntity = classRepository.findAll();
+        List<ClasseEntity> classeEntity = classeRepository.findAll();
         return classeEntity.stream()
                 .map(entity -> {
                     Classe classe = new Classe();
@@ -28,7 +28,7 @@ public class ClassServiceImp implements ClassService {
 
     @Override
     public List<ClassBasicValue> getClassBasicValues(UUID id) {
-        List<Tuple> classes = classRepository.findAllBasicValue(id);
+        List<Tuple> classes = classeRepository.findAllBasicValue(id);
         return classes.stream()
                 .map(tuple -> ClassBasicValue.builder()
                         .id(Integer.parseInt(tuple.get(0).toString()))

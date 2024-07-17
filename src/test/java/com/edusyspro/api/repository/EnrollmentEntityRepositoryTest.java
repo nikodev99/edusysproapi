@@ -1,10 +1,10 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.classes.ClassRepository;
+import com.edusyspro.api.classes.ClasseRepository;
 import com.edusyspro.api.classes.ClasseEntity;
+import com.edusyspro.api.entities.AcademicYear;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
 import com.edusyspro.api.entities.School;
-import com.edusyspro.api.student.entities.StudentEntity;
 import com.edusyspro.api.service.AcademicYearService;
 import com.edusyspro.api.student.models.dtos.EnrolledStudent;
 import com.edusyspro.api.student.models.dtos.StudentEssential;
@@ -31,7 +31,7 @@ class EnrollmentEntityRepositoryTest {
     private EnrollmentRepository enrollmentRepository;
     
     @Autowired
-    private ClassRepository classRepository;
+    private ClasseRepository classeRepository;
 
     @Autowired
     private SchoolRepository schoolRepository;
@@ -41,55 +41,59 @@ class EnrollmentEntityRepositoryTest {
 
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private AcademicYearRepository academicYearRepository;
 
     @Test
     public void saveEnrolledStudents() {
         School school = getSchool();
-        String year = academicYear(school);
-        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(5));
+        AcademicYear year = academicYear(school);
+        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(1));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
 
     @Test
     public void saveEnrolledStudents2() {
         School school = getSchool();
-        String year = academicYear(school);
-        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(6));
+        AcademicYear year = academicYear(school);
+        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(2));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
 
     @Test
     public void saveEnrolledStudents3() {
         School school = getSchool();
-        String year = academicYear(school);
-        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(7));
+        AcademicYear year = academicYear(school);
+        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(3));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
 
     @Test
     public void saveEnrolledStudents4() {
         School school = getSchool();
-        String year = academicYear(school);
-        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(9));
+        AcademicYear year = academicYear(school);
+        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(4));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
 
     @Test
     public void saveEnrolledStudents5() {
         School school = getSchool();
-        String year = academicYear(school);
+        AcademicYear year = academicYear(school);
         List<EnrollmentEntity> enrollmentEntities = new ArrayList<>(Fake.studentToEnroll(10, year, school, getClasse(10)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(5)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(6)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(7)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(8)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(9)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(10)));
         enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(11)));
         enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(12)));
         enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(13)));
         enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(14)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(18)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(19)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(20)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(21)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(22)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(23)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(24)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(15)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(16)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(17)));
         System.out.println(enrollmentEntities);
         //enrollmentRepository.saveAll(enrollments);
     }
@@ -100,12 +104,10 @@ class EnrollmentEntityRepositoryTest {
         EnrollmentEntity e = enrollmentRepository.findById(88L).orElseThrow();
         int updated = enrollmentRepository.updateEnrollmentByStudentId(true, e.getStudent().getId());
         EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder()
-                .academicYear(academicYear(school))
                 .student(e.getStudent())
                 .classe(getClasse(14))
                 .enrollmentDate(ZonedDateTime.now())
                 .isArchived(false)
-                .school(school)
                 .build();
         if (updated > 0)
             enrollmentRepository.save(enrollmentEntity);
@@ -119,20 +121,16 @@ class EnrollmentEntityRepositoryTest {
     }
     
     private ClasseEntity getClasse(int id) {
-        return classRepository.getClasseById(id);
+        return classeRepository.getClasseById(id);
     }
 
     private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"));
+        Optional<School> school = schoolRepository.findById(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"));
         return school.orElse(School.builder().build());
     }
 
-    private String academicYear(School school) {
-        return academicYearService.getAcademicYearForSchool(school);
-    }
-
-    private StudentEssential getStudent(String uuid) {
-        return studentRepository.getStudentById(UUID.fromString(uuid));
+    private AcademicYear academicYear(School school) {
+        return academicYearRepository.findAcademicYearBySchoolId(school.getId());
     }
 
 

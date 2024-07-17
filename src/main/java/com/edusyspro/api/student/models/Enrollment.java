@@ -1,7 +1,7 @@
 package com.edusyspro.api.student.models;
 
 import com.edusyspro.api.classes.ClasseEntity;
-import com.edusyspro.api.entities.School;
+import com.edusyspro.api.entities.AcademicYear;
 import com.edusyspro.api.student.entities.StudentEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 @Builder
 public class Enrollment {
     private long id;
-    private String academicYear;
+    private AcademicYear academicYear;
 
     @JsonProperty("student")
     private StudentEntity student;
@@ -24,5 +24,4 @@ public class Enrollment {
 
     private ZonedDateTime enrollmentDate;
     private boolean isArchived;
-    private School school;
 }

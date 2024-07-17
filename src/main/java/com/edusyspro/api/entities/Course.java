@@ -29,10 +29,6 @@ public class Course {
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "school_id", referencedColumnName = "id")
-    private School school;
-
     private ZonedDateTime createdAt;
 
     private ZonedDateTime modifyAt;

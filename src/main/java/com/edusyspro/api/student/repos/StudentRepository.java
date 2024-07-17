@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface StudentRepository extends JpaRepository<StudentEntity, UUID> {
 
-    @Query("""
+    /*@Query("""
             select new com.edusyspro.api.student.models.dtos.StudentEssential(s.id, s.firstName, s.lastName, s.gender, \
             s.emailId, s.birthDate, s.birthCity,s.nationality, s.dadName, s.momName, s.reference, s.telephone, s.address, \
             s.guardian.firstName, s.guardian.lastName, s.guardian.maidenName, s.guardian.status, s.guardian.genre, s.guardian.emailId, \
@@ -19,6 +19,8 @@ public interface StudentRepository extends JpaRepository<StudentEntity, UUID> {
             s.image, s.school.name, s.school.abbr, s.createdAt, s.modifyAt) \
             from StudentEntity s where s.id = ?1
     """)
-    StudentEssential getStudentById(UUID uuid);
+    StudentEssential getStudentById(UUID uuid);*/
+
+    StudentEntity findStudentEntityById(UUID id);
 
 }

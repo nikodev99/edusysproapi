@@ -30,8 +30,9 @@ class AcademicYearRepositoryTest {
     @Test
     public void saveAcademicYear() {
         AcademicYear academicYear = AcademicYear.builder()
-                .startDate(LocalDate.of(2023, 10, 1))
-                .endDate(LocalDate.of(2024, 6, 29))
+                .startDate(LocalDate.of(2024, 10, 1))
+                .endDate(LocalDate.of(2025, 6, 29))
+                .current(true)
                 .build();
         School school = getSchool();
         if (school.getId() != null) {
@@ -82,7 +83,7 @@ class AcademicYearRepositoryTest {
     }
 
     private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("27a58e8a-a588-45dd-917e-6b690acd4b22"));
+        Optional<School> school = schoolRepository.findById(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"));
         return school.orElseThrow();
     }
 

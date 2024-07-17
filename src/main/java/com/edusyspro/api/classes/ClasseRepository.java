@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface ClassRepository extends JpaRepository<ClasseEntity, Integer> {
+public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
 
-    @Query("select c.id, c.name, c.category from ClasseEntity c where c.school.id = ?1")
+    @Query("select c.id, c.name, c.category from ClasseEntity c where c.grade.school.id = ?1")
     List<Tuple> findAllBasicValue(UUID schoolID);
 
     ClasseEntity getClasseById(int id);

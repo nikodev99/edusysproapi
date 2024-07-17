@@ -5,7 +5,7 @@ import com.edusyspro.api.classes.dtos.ClassBasicValue;
 import java.util.List;
 import java.util.UUID;
 
-public interface ClassService {
+public interface ClasseService {
 
     List<Classe> getClasses();
 

@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.entities.AcademicYear;
 import com.edusyspro.api.entities.Grade;
 import com.edusyspro.api.entities.Planning;
 import com.edusyspro.api.entities.School;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +25,7 @@ class GradeRepositoryTest {
     private GradeRepository gradeRepository;
 
     @Autowired
-    private AcademicYearService academicYearService;
+    private AcademicYearRepository academicYearRepository;
 
     @Autowired
     private SchoolRepository schoolRepository;
@@ -94,13 +94,13 @@ class GradeRepositoryTest {
     }
 
     private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("27a58e8a-a588-45dd-917e-6b690acd4b22"));
+        Optional<School> school = schoolRepository.findById(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"));
         return school.orElse(School.builder().build());
     }
 
     private List<Planning> plannings(Grade grade) {
         Planning planning = Planning.builder()
-                .academicYear(getAcademicYear(getSchool()))
+                .academicYear(academicYear())
                 .designation("Durée du premier trimestre")
                 .semestre("1er Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
@@ -109,23 +109,21 @@ class GradeRepositoryTest {
                 .build();
 
         Planning planning2 = Planning.builder()
-                .academicYear(getAcademicYear(getSchool()))
+                .academicYear(academicYear())
                 .designation("Durée du deuxième trimestre")
                 .semestre("2e Trimestre")
                 .termStartDate(LocalDate.of(2024, 1, 5))
                 .termEndDate(LocalDate.of(2024, 3, 26))
                 .grade(grade)
-                .school(getSchool())
                 .build();
 
         Planning planning3 = Planning.builder()
-                .academicYear(getAcademicYear(getSchool()))
+                .academicYear(academicYear())
                 .designation("Durée du troisième trimestre")
                 .semestre("3e Trimestre")
                 .termStartDate(LocalDate.of(2024, 4, 10))
                 .termEndDate(LocalDate.of(2024, 6, 30))
                 .grade(grade)
-                .school(getSchool())
                 .build();
 
         return List.of(planning, planning2, planning3);
@@ -133,70 +131,64 @@ class GradeRepositoryTest {
 
     private List<Planning> plannings2(Grade grade) {
         Planning planning = Planning.builder()
-                .academicYear(getAcademicYear(getSchool()))
                 .designation("Durée du premier trimestre")
                 .semestre("1er Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
-                .school(getSchool())
+                .academicYear(academicYear())
                 .build();
 
         Planning planning1 = Planning.builder()
-                .academicYear(getAcademicYear(getSchool()))
                 .designation("Durée des devoirs départementaux du 1er trimestre")
                 .semestre("1er Trimestre")
                 .termStartDate(LocalDate.of(2023, 11, 15))
                 .termEndDate(LocalDate.of(2023, 11, 26))
                 .grade(grade)
-                .school(getSchool())
+                .academicYear(academicYear())
                 .build();
 
         Planning planning2 = Planning.builder()
-                .academicYear(getAcademicYear(getSchool()))
                 .designation("Durée du deuxième trimestre")
                 .semestre("2e Trimestre")
                 .termStartDate(LocalDate.of(2024, 1, 5))
                 .termEndDate(LocalDate.of(2024, 3, 26))
                 .grade(grade)
-                .school(getSchool())
+                .academicYear(academicYear())
                 .build();
 
         Planning planning01 = Planning.builder()
-                .academicYear(getAcademicYear(getSchool()))
                 .designation("Durée des devoirs départementaux du 2e trimestre")
                 .semestre("2e Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
-                .school(getSchool())
+                .academicYear(academicYear())
                 .build();
 
         Planning planning3 = Planning.builder()
-                .academicYear(getAcademicYear(getSchool()))
                 .designation("Durée du troisième trimestre")
                 .semestre("3e Trimestre")
                 .termStartDate(LocalDate.of(2024, 4, 10))
                 .termEndDate(LocalDate.of(2024, 6, 30))
                 .grade(grade)
-                .school(getSchool())
+                .academicYear(academicYear())
                 .build();
 
         Planning planning02 = Planning.builder()
-                .academicYear(getAcademicYear(getSchool()))
                 .designation("Durée des devoirs départementaux du 3e trimestre")
                 .semestre("3e Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
-                .school(getSchool())
+                .academicYear(academicYear())
                 .build();
 
         return List.of(planning, planning1, planning2, planning01, planning3, planning02);
     }
 
-    private String getAcademicYear(School school) {
-        return academicYearService.getAcademicYearForSchool(school);
+    private AcademicYear academicYear() {
+        return academicYearRepository.findAcademicYearBySchoolId(UUID.fromString("74db8563-3753-41d7-8106-153a7d71dd2e"));
     }
 
 }

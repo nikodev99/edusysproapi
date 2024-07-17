@@ -22,6 +22,10 @@ public class Attendance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
+    private AcademicYear academicYear;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private StudentEntity studentEntity;
@@ -33,9 +37,5 @@ public class Attendance {
     private LocalDate attendanceDate;
 
     private AttendanceStatus status;
-
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "school_id", referencedColumnName = "id")
-    private School school;
 
 }

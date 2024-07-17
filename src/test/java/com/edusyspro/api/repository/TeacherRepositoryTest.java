@@ -1,6 +1,7 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.classes.ClassRepository;
+import com.edusyspro.api.classes.Classe;
+import com.edusyspro.api.classes.ClasseRepository;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.utils.Fake;
@@ -25,10 +26,77 @@ class TeacherRepositoryTest {
     private DepartmentRepository departmentRepository;
 
     @Autowired
-    private ClassRepository classRepository;
+    private ClasseRepository classeRepository;
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Test
+    public void saveTeachersOfPrimaire() {
+        List<Teacher> teachers = Fake.getMultipleTeachers(
+                6,
+                getSchool(),
+                new ClasseEntity[][]{
+                        { getClasse(1)},
+                        { getClasse(2)},
+                        { getClasse(3)},
+                        { getClasse(4)},
+                        { getClasse(5)},
+                        { getClasse(6)},
+                },
+                new Course[][]{}
+        );
+        teacherRepository.saveAll(teachers);
+    }
+
+    @Test
+    public void saveTeachersOfCollege() {
+        Course french = getCourse("FRA"); Course math = getCourse("Math");Course physique = getCourse("PC");
+        Course histoire = getCourse("HG");Course anglais = getCourse("Ang");
+        ClasseEntity sixieme = getClasse(7); ClasseEntity cinquieme = getClasse(8); ClasseEntity quatrieme = getClasse(9);
+        ClasseEntity troisieme = getClasse(10); ClasseEntity seconde = getClasse(11);
+        List<Teacher> teachers = Fake.getMultipleTeachers(
+                16,
+                getSchool(),
+                new ClasseEntity[][]{
+                        { sixieme, cinquieme },
+                        { quatrieme, troisieme, seconde },
+                        { sixieme, cinquieme, troisieme },
+                        { quatrieme },
+                        { sixieme, troisieme },
+                        { cinquieme, quatrieme },
+                        { sixieme, troisieme, getClasse(16), getClasse(17) },
+                        { cinquieme, quatrieme },
+                        { sixieme, cinquieme, troisieme, seconde, getClasse(12) },
+                        { quatrieme, getClasse(13), getClasse(14), getClasse(15) },
+                        { sixieme, cinquieme, quatrieme },
+                        { troisieme, getClasse(14), getClasse(15) },
+                        { sixieme, cinquieme, quatrieme },
+                        { sixieme, cinquieme, quatrieme },
+                        { sixieme, cinquieme, quatrieme },
+                        { sixieme, cinquieme, quatrieme }
+                },
+                new Course[][]{
+                        { french },
+                        { french, getCourse("Philo") },
+                        { math },
+                        { math },
+                        { physique },
+                        { physique },
+                        { histoire },
+                        { histoire },
+                        { anglais },
+                        { anglais },
+                        { getCourse("EPS") },
+                        { getCourse("EPS") },
+                        { getCourse("Dessin") },
+                        { getCourse("Mus") },
+                        { getCourse("ECM") },
+                        { getCourse("Lat") }
+                }
+        );
+        teacherRepository.saveAll(teachers);
+    }
 
     @Test
     public void saveTeachers() {
@@ -45,7 +113,7 @@ class TeacherRepositoryTest {
                         { getClasse(11), getClasse(12), getClasse(13) },
                 },
                 new Course[][]{
-                        { getCourse("PC") },
+                        { getCourse("FRA") },
                         { getCourse("Ang") },
                         { getCourse("EPS") },
                         { getCourse("Dessin") },
@@ -83,7 +151,7 @@ class TeacherRepositoryTest {
     }
 
     private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"));
+        Optional<School> school = schoolRepository.findById(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"));
         return school.orElseThrow();
     }
 
@@ -92,7 +160,7 @@ class TeacherRepositoryTest {
     }
 
     private ClasseEntity getClasse(int id) {
-        return classRepository.getClasseById(id);
+        return classeRepository.getClasseById(id);
     }
 
     private Course getCourse(String abbr) {

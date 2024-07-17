@@ -39,7 +39,6 @@ public class Student {
     private String image;
     private List<Score> marks;
     private List<Attendance> attendances;
-    private School school;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
 }
