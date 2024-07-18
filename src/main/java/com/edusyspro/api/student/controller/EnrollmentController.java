@@ -1,5 +1,6 @@
 package com.edusyspro.api.student.controller;
 
+import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.student.models.Guardian;
 import com.edusyspro.api.student.models.dtos.EnrolledStudent;
 import com.edusyspro.api.student.models.Enrollment;
@@ -47,18 +48,18 @@ public class EnrollmentController {
                     .toList();
             pageable = PageRequest.of(page, size, Sort.by(orders));
         }
-        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"), pageable));
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(UUID.fromString(ConstantUtils.SCHOOL_ID), pageable));
     }
 
     @GetMapping("/search/")
     ResponseEntity<List<EnrolledStudent>> getEnrolledStudents(@RequestParam String q) {
-        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"), q));
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(UUID.fromString(ConstantUtils.SCHOOL_ID), q));
     }
 
     @GetMapping("/guardians")
     ResponseEntity<List<Guardian>> fetchEnrolledStudentsGuardians() {
         return ResponseEntity.ok(
-                enrollmentService.getEnrolledStudentGuardians(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"), false)
+                enrollmentService.getEnrolledStudentGuardians(UUID.fromString(ConstantUtils.SCHOOL_ID), false)
         );
     }
 }

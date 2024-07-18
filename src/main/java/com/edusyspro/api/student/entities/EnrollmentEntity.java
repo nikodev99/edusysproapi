@@ -1,8 +1,7 @@
 package com.edusyspro.api.student.entities;
 
 import com.edusyspro.api.classes.ClasseEntity;
-import com.edusyspro.api.entities.AcademicYear;
-import com.edusyspro.api.entities.School;
+import com.edusyspro.api.school.entities.AcademicYear;
 import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

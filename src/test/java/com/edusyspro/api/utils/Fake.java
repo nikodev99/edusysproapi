@@ -7,13 +7,14 @@ import com.arakelian.faker.service.RandomPerson;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Status;
+import com.edusyspro.api.school.entities.AcademicYear;
+import com.edusyspro.api.school.entities.School;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
 import com.edusyspro.api.student.entities.GuardianEntity;
 import com.edusyspro.api.student.entities.StudentEntity;
 
 import java.time.LocalDate;
 import java.time.Year;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;

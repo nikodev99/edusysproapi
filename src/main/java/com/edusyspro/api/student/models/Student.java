@@ -2,9 +2,12 @@ package com.edusyspro.api.student.models;
 
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Gender;
+import com.edusyspro.api.school.entities.Attendance;
+import com.edusyspro.api.school.entities.Score;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
 import com.edusyspro.api.student.entities.GuardianEntity;
 import com.edusyspro.api.student.entities.HealthCondition;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +28,10 @@ public class Student {
     private String lastName;
     private Gender gender;
     private String emailId;
+
+    @JsonProperty("enrollments")
     private List<EnrollmentEntity> enrollmentEntities;
+
     private LocalDate birthDate;
     private String birthCity;
     private String nationality;

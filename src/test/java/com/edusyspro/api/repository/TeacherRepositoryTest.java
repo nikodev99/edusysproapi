@@ -1,9 +1,10 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.classes.Classe;
 import com.edusyspro.api.classes.ClasseRepository;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.*;
+import com.edusyspro.api.school.entities.Department;
+import com.edusyspro.api.school.entities.School;
 import com.edusyspro.api.utils.Fake;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

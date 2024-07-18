@@ -60,7 +60,7 @@ public class GuardianEntity {
     private Address address;
 
     @OneToMany(mappedBy = "guardian", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<StudentEntity> student;
+    private List<StudentEntity> students;
 
     private ZonedDateTime createdAt;
 

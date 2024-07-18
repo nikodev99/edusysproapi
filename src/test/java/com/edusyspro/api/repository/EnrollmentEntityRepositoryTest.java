@@ -2,12 +2,11 @@ package com.edusyspro.api.repository;
 
 import com.edusyspro.api.classes.ClasseRepository;
 import com.edusyspro.api.classes.ClasseEntity;
-import com.edusyspro.api.entities.AcademicYear;
+import com.edusyspro.api.school.entities.AcademicYear;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
-import com.edusyspro.api.entities.School;
-import com.edusyspro.api.service.AcademicYearService;
+import com.edusyspro.api.school.entities.School;
+import com.edusyspro.api.school.services.AcademicYearService;
 import com.edusyspro.api.student.models.dtos.EnrolledStudent;
-import com.edusyspro.api.student.models.dtos.StudentEssential;
 import com.edusyspro.api.student.repos.EnrollmentRepository;
 import com.edusyspro.api.student.repos.StudentRepository;
 import com.edusyspro.api.utils.Datetime;

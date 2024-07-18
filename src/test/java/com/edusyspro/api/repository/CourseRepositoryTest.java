@@ -1,8 +1,8 @@
 package com.edusyspro.api.repository;
 
 import com.edusyspro.api.entities.Course;
-import com.edusyspro.api.entities.Department;
-import com.edusyspro.api.entities.School;
+import com.edusyspro.api.school.entities.Department;
+import com.edusyspro.api.school.entities.School;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

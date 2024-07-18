@@ -1,7 +1,7 @@
 package com.edusyspro.api.student.models;
 
 import com.edusyspro.api.classes.ClasseEntity;
-import com.edusyspro.api.entities.AcademicYear;
+import com.edusyspro.api.school.entities.AcademicYear;
 import com.edusyspro.api.student.entities.StudentEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

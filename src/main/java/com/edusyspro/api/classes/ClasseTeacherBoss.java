@@ -1,6 +1,6 @@
 package com.edusyspro.api.classes;
 
-import com.edusyspro.api.entities.AcademicYear;
+import com.edusyspro.api.school.entities.AcademicYear;
 import com.edusyspro.api.entities.Teacher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class ClasseTeacherBoss {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "academic_year_id", referencedColumnName = "id")

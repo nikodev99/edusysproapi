@@ -1,6 +1,8 @@
 package com.edusyspro.api.classes;
 
 import com.edusyspro.api.entities.*;
+import com.edusyspro.api.school.entities.Grade;
+import com.edusyspro.api.school.entities.Schedule;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

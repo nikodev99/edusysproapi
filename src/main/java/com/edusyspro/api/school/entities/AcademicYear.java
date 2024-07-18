@@ -1,5 +1,6 @@
-package com.edusyspro.api.entities;
+package com.edusyspro.api.school.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class AcademicYear {
 
     private boolean current;
 
+    @JsonProperty("academicYear")
     private String years;
 
     @OneToOne(cascade = {CascadeType.REFRESH})

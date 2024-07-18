@@ -1,14 +1,13 @@
 package com.edusyspro.api.repository;
 
 import com.edusyspro.api.entities.Address;
-import com.edusyspro.api.entities.School;
+import com.edusyspro.api.school.entities.School;
 import com.edusyspro.api.utils.Generator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

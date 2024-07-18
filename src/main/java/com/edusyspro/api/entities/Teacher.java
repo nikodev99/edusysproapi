@@ -3,6 +3,8 @@ package com.edusyspro.api.entities;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.enums.Gender;
 import com.edusyspro.api.entities.enums.Status;
+import com.edusyspro.api.school.entities.School;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,6 +65,7 @@ public class Teacher {
             joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "class_id", referencedColumnName = "id")
     )
+    @JsonProperty("classes")
     private List<ClasseEntity> aClasses;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER)

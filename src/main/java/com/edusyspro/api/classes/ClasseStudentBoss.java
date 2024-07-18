@@ -1,6 +1,6 @@
 package com.edusyspro.api.classes;
 
-import com.edusyspro.api.entities.AcademicYear;
+import com.edusyspro.api.school.entities.AcademicYear;
 import com.edusyspro.api.student.entities.StudentEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

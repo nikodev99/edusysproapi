@@ -2,7 +2,10 @@ package com.edusyspro.api.student.entities;
 
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Gender;
+import com.edusyspro.api.school.entities.Attendance;
+import com.edusyspro.api.school.entities.Score;
 import com.edusyspro.api.utils.Datetime;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,6 +40,7 @@ public class StudentEntity {
     private String emailId;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonProperty("enrollments")
     private List<EnrollmentEntity> enrollmentEntities;
 
     private LocalDate birthDate;

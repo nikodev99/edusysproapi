@@ -1,5 +1,6 @@
-package com.edusyspro.api.entities;
+package com.edusyspro.api.school.entities;
 
+import com.edusyspro.api.entities.enums.Section;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,29 +8,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Department {
+public class Grade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 300)
-    private String name;
+    @Column(name = "section_name", length = 50)
+    @Enumerated(EnumType.STRING)
+    private Section section;
 
-    @Column(length = 10)
-    private String code;
+    @Column(name = "program", length = 50)
+    private String subSection;
 
-    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "d_boss", referencedColumnName = "id")
-    private DepartmentBoss boss;
+    @OneToMany(mappedBy = "grade", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Planning> planning;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     private School school;
 
@@ -50,12 +52,12 @@ public class Department {
 
     @Override
     public String toString() {
-        return "Department{" +
+        return "Grade{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", code='" + code + '\'' +
-                ", boss=" + boss +
+                ", section=" + section +
+                ", subSection='" + subSection + '\'' +
                 //", school=" + school +
+                //", planning=" + planning +
                 ", createdAt=" + createdAt +
                 ", modifyAt=" + modifyAt +
                 '}';

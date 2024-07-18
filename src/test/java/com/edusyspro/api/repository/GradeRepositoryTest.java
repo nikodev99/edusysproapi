@@ -1,11 +1,10 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.entities.AcademicYear;
-import com.edusyspro.api.entities.Grade;
-import com.edusyspro.api.entities.Planning;
-import com.edusyspro.api.entities.School;
+import com.edusyspro.api.school.entities.AcademicYear;
+import com.edusyspro.api.school.entities.Grade;
+import com.edusyspro.api.school.entities.Planning;
+import com.edusyspro.api.school.entities.School;
 import com.edusyspro.api.entities.enums.Section;
-import com.edusyspro.api.service.AcademicYearService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

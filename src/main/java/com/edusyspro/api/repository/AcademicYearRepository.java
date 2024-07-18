@@ -1,7 +1,7 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.entities.AcademicYear;
-import com.edusyspro.api.entities.School;
+import com.edusyspro.api.school.entities.AcademicYear;
+import com.edusyspro.api.school.entities.School;
 import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,12 +14,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface AcademicYearRepository extends JpaRepository<AcademicYear, Integer> {
+public interface AcademicYearRepository extends JpaRepository<AcademicYear, UUID> {
 
     @Query("select a.startDate, a.endDate from AcademicYear a where a.school.id = ?1")
     Optional<Tuple> findBySchool(UUID schoolId);
 
-    AcademicYear findAcademicYearBySchoolId(UUID schoolId);
+    AcademicYear findAcademicYearBySchoolIdAndCurrentIsTrue(UUID schoolId);
 
     @Modifying
     @Transactional

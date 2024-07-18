@@ -1,4 +1,4 @@
-package com.edusyspro.api.entities;
+package com.edusyspro.api.school.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

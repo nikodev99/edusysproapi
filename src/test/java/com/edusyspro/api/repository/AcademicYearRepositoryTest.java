@@ -1,8 +1,8 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.entities.AcademicYear;
-import com.edusyspro.api.entities.School;
-import com.edusyspro.api.service.AcademicYearService;
+import com.edusyspro.api.school.entities.AcademicYear;
+import com.edusyspro.api.school.entities.School;
+import com.edusyspro.api.school.services.AcademicYearService;
 import jakarta.persistence.Tuple;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

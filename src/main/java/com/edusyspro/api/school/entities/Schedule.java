@@ -1,6 +1,8 @@
-package com.edusyspro.api.entities;
+package com.edusyspro.api.school.entities;
 
 import com.edusyspro.api.classes.ClasseEntity;
+import com.edusyspro.api.entities.Course;
+import com.edusyspro.api.entities.Teacher;
 import com.edusyspro.api.entities.enums.Day;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
