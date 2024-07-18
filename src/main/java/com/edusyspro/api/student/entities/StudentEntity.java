@@ -61,7 +61,7 @@ public class StudentEntity {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "guardian_id", referencedColumnName = "id")
     private GuardianEntity guardian;
 

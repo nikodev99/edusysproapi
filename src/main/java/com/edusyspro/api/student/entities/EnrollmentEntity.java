@@ -28,7 +28,7 @@ public class EnrollmentEntity {
     @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
     private AcademicYear academicYear;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private StudentEntity student;
 

@@ -33,7 +33,7 @@ class ScheduleRepositoryTest {
 
     @Test
     public void SavePrimarySchoolClassScheduleTest() {
-        ClasseEntity classeEntity = getClasse(7);
+        ClasseEntity classeEntity = getClasse(3);
         Teacher teacher = getTeacher(classeEntity.getName());
         List<Schedule> schedules = List.of(
                 Schedule.builder()
@@ -80,7 +80,7 @@ class ScheduleRepositoryTest {
 
     @Test
     public void SaveSecondarySchoolClassScheduleTest() {
-        ClasseEntity classeEntity = getClasse(11);
+        ClasseEntity classeEntity = getClasse(7);
         List<Schedule> schedules = List.of(
                 Schedule.builder()
                         .classeEntity(classeEntity)
@@ -147,7 +147,7 @@ class ScheduleRepositoryTest {
 
     @Test
     public void saveSchedules() {
-        ClasseEntity classeEntity = getClasse(11);
+        ClasseEntity classeEntity = getClasse(7);
         List<Schedule> schedules = List.of(
                 Schedule.builder()
                         .classeEntity(classeEntity)

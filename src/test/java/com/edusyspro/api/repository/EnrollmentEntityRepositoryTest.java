@@ -10,6 +10,7 @@ import com.edusyspro.api.student.models.dtos.EnrolledStudent;
 import com.edusyspro.api.student.models.dtos.StudentEssential;
 import com.edusyspro.api.student.repos.EnrollmentRepository;
 import com.edusyspro.api.student.repos.StudentRepository;
+import com.edusyspro.api.utils.Datetime;
 import com.edusyspro.api.utils.Fake;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,18 +95,29 @@ class EnrollmentEntityRepositoryTest {
         enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(15)));
         enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(16)));
         enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(17)));
-        System.out.println(enrollmentEntities);
-        //enrollmentRepository.saveAll(enrollments);
+        enrollmentRepository.saveAll(enrollmentEntities);
+    }
+
+    @Test
+    public void persistStudent() {
+        EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder()
+                .student(Fake.getStudent(getSchool()))
+                .classe(getClasse(10))
+                .enrollmentDate(Datetime.brazzavilleDatetime())
+                .isArchived(false)
+                .build();
+        enrollmentRepository.save(enrollmentEntity);
     }
 
     @Test
     public void saveEnrollAgain() {
         School school = getSchool();
-        EnrollmentEntity e = enrollmentRepository.findById(88L).orElseThrow();
+        EnrollmentEntity e = enrollmentRepository.findById(105L).orElseThrow();
         int updated = enrollmentRepository.updateEnrollmentByStudentId(true, e.getStudent().getId());
         EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder()
+                .academicYear(academicYear(school))
                 .student(e.getStudent())
-                .classe(getClasse(14))
+                .classe(getClasse(9))
                 .enrollmentDate(ZonedDateTime.now())
                 .isArchived(false)
                 .build();
@@ -116,7 +128,7 @@ class EnrollmentEntityRepositoryTest {
     @Test
     public void getEnrolledStudents() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<List<EnrolledStudent>> enrolledStudents = enrollmentRepository.findEnrolledStudent(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"), pageable);
+        Page<List<EnrolledStudent>> enrolledStudents = enrollmentRepository.findEnrolledStudent(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"), pageable);
         System.out.println("Enrolled Student: " + enrolledStudents);
     }
     
