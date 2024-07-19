@@ -1,5 +1,6 @@
 package com.edusyspro.api.school.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +37,7 @@ public class Planning {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "grade_id", referencedColumnName = "id")
+    @JsonIgnore
     private Grade grade;
 
     private ZonedDateTime createdAt;

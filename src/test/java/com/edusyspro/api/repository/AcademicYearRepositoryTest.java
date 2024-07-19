@@ -2,6 +2,7 @@ package com.edusyspro.api.repository;
 
 import com.edusyspro.api.school.entities.AcademicYear;
 import com.edusyspro.api.school.entities.School;
+import com.edusyspro.api.school.repos.AcademicYearRepository;
 import com.edusyspro.api.school.services.AcademicYearService;
 import jakarta.persistence.Tuple;
 import org.junit.jupiter.api.Test;
@@ -45,12 +46,6 @@ class AcademicYearRepositoryTest {
     public void printAcademicYear() {
         List<AcademicYear> year = academicYearRepository.findAll();
         System.out.println(year);
-    }
-
-    @Test
-    public void printAnAcademicYear() {
-        Optional<AcademicYear> academicYear = academicYearRepository.findById(1);
-        System.out.println(academicYear.orElse(AcademicYear.builder().build()));
     }
 
     @Test

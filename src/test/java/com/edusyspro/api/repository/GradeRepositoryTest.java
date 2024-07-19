@@ -5,6 +5,7 @@ import com.edusyspro.api.school.entities.Grade;
 import com.edusyspro.api.school.entities.Planning;
 import com.edusyspro.api.school.entities.School;
 import com.edusyspro.api.entities.enums.Section;
+import com.edusyspro.api.school.repos.AcademicYearRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -187,7 +188,7 @@ class GradeRepositoryTest {
     }
 
     private AcademicYear academicYear() {
-        return academicYearRepository.findAcademicYearBySchoolId(UUID.fromString("74db8563-3753-41d7-8106-153a7d71dd2e"));
+        return academicYearRepository.findAcademicYearBySchoolIdAndCurrentIsTrue(UUID.fromString("74db8563-3753-41d7-8106-153a7d71dd2e"));
     }
 
 }

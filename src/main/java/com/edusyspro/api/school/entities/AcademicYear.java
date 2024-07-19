@@ -1,5 +1,6 @@
 package com.edusyspro.api.school.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,12 +34,12 @@ public class AcademicYear {
 
     @OneToOne(cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
+    @JsonIgnore
     private School school;
 
     @PrePersist
     public void preUpdate() {
-        Year startYear = Year.of(startDate.getYear());
-        Year endYear = Year.of(endDate.getYear());
-        years = startYear + " - " + endYear;
+        years = startDate.getYear() + " - " + endDate.getYear();
+        current = true;
     }
 }

@@ -2,7 +2,7 @@ package com.edusyspro.api.school.services;
 
 import com.edusyspro.api.school.entities.AcademicYear;
 import com.edusyspro.api.school.entities.School;
-import com.edusyspro.api.repository.AcademicYearRepository;
+import com.edusyspro.api.school.repos.AcademicYearRepository;
 import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

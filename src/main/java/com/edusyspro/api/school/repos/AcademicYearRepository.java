@@ -1,4 +1,4 @@
-package com.edusyspro.api.repository;
+package com.edusyspro.api.school.repos;
 
 import com.edusyspro.api.school.entities.AcademicYear;
 import com.edusyspro.api.school.entities.School;

@@ -2,6 +2,8 @@ package com.edusyspro.api.repository;
 
 import com.edusyspro.api.classes.ClasseRepository;
 import com.edusyspro.api.classes.ClasseEntity;
+import com.edusyspro.api.classes.dtos.ClassBasicValue;
+import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Section;
 import com.edusyspro.api.school.entities.Grade;
@@ -183,6 +185,12 @@ class ClasseRepositoryTest {
         ClasseEntity classeEntity = classeRepository.getClasseById(7);
         List<Schedule> schedules = classeEntity.getSchedule();
         schedules.forEach(System.out::println);
+    }
+
+    @Test
+    public void printBasicClassValues() {
+        List<ClassBasicValue> classBasicValues = classeRepository.findAllBasicValue(UUID.fromString(ConstantUtils.SCHOOL_ID));
+        System.out.println("BasicClassValues= " + classBasicValues);
     }
 
     private School getSchool() {

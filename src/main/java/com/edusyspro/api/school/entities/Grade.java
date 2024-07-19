@@ -1,6 +1,7 @@
 package com.edusyspro.api.school.entities;
 
 import com.edusyspro.api.entities.enums.Section;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,7 @@ public class Grade {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
+    @JsonIgnore
     private School school;
 
     private ZonedDateTime createdAt;

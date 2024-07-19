@@ -39,7 +39,7 @@ public class StudentEntity {
 
     private String emailId;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "student", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JsonProperty("enrollments")
     private List<EnrollmentEntity> enrollmentEntities;
 

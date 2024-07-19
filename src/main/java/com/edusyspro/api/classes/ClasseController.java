@@ -1,6 +1,7 @@
 package com.edusyspro.api.classes;
 
 import com.edusyspro.api.classes.dtos.ClassBasicValue;
+import com.edusyspro.api.data.ConstantUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ public class ClasseController {
 
     @GetMapping("/basic")
     ResponseEntity<List<ClassBasicValue>> getAllClassesBasicValue() {
-        return ResponseEntity.ok(classeService.getClassBasicValues(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548")));
+        return ResponseEntity.ok(classeService.getClassBasicValues(UUID.fromString(ConstantUtils.SCHOOL_ID)));
     }
 
     @GetMapping(value = {"", "/all"})

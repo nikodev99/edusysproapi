@@ -28,13 +28,6 @@ public class ClasseServiceImp implements ClasseService {
 
     @Override
     public List<ClassBasicValue> getClassBasicValues(UUID id) {
-        List<Tuple> classes = classeRepository.findAllBasicValue(id);
-        return classes.stream()
-                .map(tuple -> ClassBasicValue.builder()
-                        .id(Integer.parseInt(tuple.get(0).toString()))
-                        .name(tuple.get(1).toString())
-                        .category(tuple.get(2).toString())
-                        .build())
-                .toList();
+        return classeRepository.findAllBasicValue(id);
     }
 }

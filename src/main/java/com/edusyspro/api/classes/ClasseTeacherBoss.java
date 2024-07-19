@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class ClasseTeacherBoss {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "academic_year_id", referencedColumnName = "id")

@@ -3,6 +3,7 @@ package com.edusyspro.api.repository;
 import com.edusyspro.api.classes.ClasseRepository;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.school.entities.AcademicYear;
+import com.edusyspro.api.school.repos.AcademicYearRepository;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
 import com.edusyspro.api.school.entities.School;
 import com.edusyspro.api.school.services.AcademicYearService;
@@ -141,7 +142,7 @@ class EnrollmentEntityRepositoryTest {
     }
 
     private AcademicYear academicYear(School school) {
-        return academicYearRepository.findAcademicYearBySchoolId(school.getId());
+        return academicYearRepository.findAcademicYearBySchoolIdAndCurrentIsTrue(school.getId());
     }
 
 
