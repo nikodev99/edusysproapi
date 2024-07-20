@@ -3,15 +3,13 @@ package com.edusyspro.api.repository;
 import com.edusyspro.api.classes.ClasseRepository;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.school.entities.AcademicYear;
-import com.edusyspro.api.school.repos.AcademicYearRepository;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
 import com.edusyspro.api.school.entities.School;
-import com.edusyspro.api.school.services.AcademicYearService;
 import com.edusyspro.api.student.models.dtos.EnrolledStudent;
 import com.edusyspro.api.student.repos.EnrollmentRepository;
-import com.edusyspro.api.student.repos.StudentRepository;
 import com.edusyspro.api.utils.Datetime;
 import com.edusyspro.api.utils.Fake;
+import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @SpringBootTest
@@ -34,74 +31,62 @@ class EnrollmentEntityRepositoryTest {
     @Autowired
     private ClasseRepository classeRepository;
 
-    @Autowired
-    private SchoolRepository schoolRepository;
-
-    @Autowired
-    private AcademicYearService academicYearService;
-
-    @Autowired
-    private StudentRepository studentRepository;
-    @Autowired
-    private AcademicYearRepository academicYearRepository;
-
     @Test
     public void saveEnrolledStudents() {
-        School school = getSchool();
-        AcademicYear year = academicYear(school);
-        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(1));
+        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, MockUtils.ACADEMIC_YEAR_MOCK, MockUtils.SCHOOL_MOCK, getClasse(1));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
 
     @Test
     public void saveEnrolledStudents2() {
-        School school = getSchool();
-        AcademicYear year = academicYear(school);
-        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(2));
+        final School SCHOOL = MockUtils.SCHOOL_MOCK;
+        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK;
+        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(2));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
 
     @Test
     public void saveEnrolledStudents3() {
-        School school = getSchool();
-        AcademicYear year = academicYear(school);
-        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(3));
+        final School SCHOOL = MockUtils.SCHOOL_MOCK;
+        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK;
+        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(3));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
 
     @Test
     public void saveEnrolledStudents4() {
-        School school = getSchool();
-        AcademicYear year = academicYear(school);
-        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, year, school, getClasse(4));
+        final School SCHOOL = MockUtils.SCHOOL_MOCK;
+        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK;
+        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(4));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
 
     @Test
     public void saveEnrolledStudents5() {
-        School school = getSchool();
-        AcademicYear year = academicYear(school);
-        List<EnrollmentEntity> enrollmentEntities = new ArrayList<>(Fake.studentToEnroll(10, year, school, getClasse(10)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(5)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(6)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(7)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(8)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(9)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(10)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(11)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(12)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(13)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(14)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(15)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(16)));
-        enrollmentEntities.addAll(Fake.studentToEnroll(10, year, school, getClasse(17)));
+        final School SCHOOL = MockUtils.SCHOOL_MOCK;
+        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK;
+        List<EnrollmentEntity> enrollmentEntities = new ArrayList<>(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(10)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(5)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(6)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(7)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(8)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(9)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(10)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(11)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(12)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(13)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(14)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(15)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(16)));
+        enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(17)));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
 
     @Test
     public void persistStudent() {
+        final School SCHOOL = MockUtils.SCHOOL_MOCK;
         EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder()
-                .student(Fake.getStudent(getSchool()))
+                .student(Fake.getStudent(SCHOOL))
                 .classe(getClasse(10))
                 .enrollmentDate(Datetime.brazzavilleDatetime())
                 .isArchived(false)
@@ -111,11 +96,11 @@ class EnrollmentEntityRepositoryTest {
 
     @Test
     public void saveEnrollAgain() {
-        School school = getSchool();
+        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK;
         EnrollmentEntity e = enrollmentRepository.findById(105L).orElseThrow();
         int updated = enrollmentRepository.updateEnrollmentByStudentId(true, e.getStudent().getId());
         EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder()
-                .academicYear(academicYear(school))
+                .academicYear(ACADEMIC_YEAR)
                 .student(e.getStudent())
                 .classe(getClasse(9))
                 .enrollmentDate(ZonedDateTime.now())
@@ -135,15 +120,5 @@ class EnrollmentEntityRepositoryTest {
     private ClasseEntity getClasse(int id) {
         return classeRepository.getClasseById(id);
     }
-
-    private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"));
-        return school.orElse(School.builder().build());
-    }
-
-    private AcademicYear academicYear(School school) {
-        return academicYearRepository.findAcademicYearBySchoolIdAndCurrentIsTrue(school.getId());
-    }
-
 
 }

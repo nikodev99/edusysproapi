@@ -2,6 +2,7 @@ package com.edusyspro.api.repository;
 
 import com.edusyspro.api.school.entities.Department;
 import com.edusyspro.api.school.entities.School;
+import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,12 +17,9 @@ class DepartmentRepositoryTest {
     @Autowired
     private DepartmentRepository departmentRepository;
 
-    @Autowired
-    private SchoolRepository schoolRepository;
-
     @Test
     public void saveDepartment() {
-        School school = getSchool();
+        School school = MockUtils.SCHOOL_MOCK;
         Department department = Department.builder()
                 .code("DDL")
                 .name("Département de Lettre")
@@ -61,11 +59,6 @@ class DepartmentRepositoryTest {
     public void printDepartmentByCode() {
         Department department = departmentRepository.getDepartmentByCode("DDL");
         System.out.println(department);
-    }
-
-    private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"));
-        return school.orElse(School.builder().build());
     }
 
 }

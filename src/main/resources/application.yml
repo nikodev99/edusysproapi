@@ -9,7 +9,7 @@ spring:
     name: edusysproapi
 
   profiles:
-    active: mysql
+    active: postgres
 
   #REST config
   data:

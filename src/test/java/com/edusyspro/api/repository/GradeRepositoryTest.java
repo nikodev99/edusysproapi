@@ -6,6 +6,7 @@ import com.edusyspro.api.school.entities.Planning;
 import com.edusyspro.api.school.entities.School;
 import com.edusyspro.api.entities.enums.Section;
 import com.edusyspro.api.school.repos.AcademicYearRepository;
+import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,7 +36,7 @@ class GradeRepositoryTest {
     public void saveGradesAndPlanning() {
         Grade grade = Grade.builder()
                 .section(Section.PRIMAIRE)
-                .school(getSchool())
+                .school(MockUtils.SCHOOL_MOCK)
                 .build();
         grade.setPlanning(plannings(grade));
         gradeRepository.save(grade);
@@ -45,7 +46,7 @@ class GradeRepositoryTest {
     public void saveAnotherGradesAndPlanning() {
         Grade grade = Grade.builder()
                 .section(Section.COLLEGE)
-                .school(getSchool())
+                .school(MockUtils.SCHOOL_MOCK)
                 .build();
         grade.setPlanning(plannings2(grade));
         gradeRepository.save(grade);
@@ -55,7 +56,7 @@ class GradeRepositoryTest {
     public void saveThirdGradesAndPlanning() {
         Grade grade = Grade.builder()
                 .section(Section.LYCEE)
-                .school(getSchool())
+                .school(MockUtils.SCHOOL_MOCK)
                 .build();
         grade.setPlanning(plannings2(grade));
         gradeRepository.save(grade);
@@ -93,14 +94,9 @@ class GradeRepositoryTest {
         System.out.println(grades);
     }
 
-    private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"));
-        return school.orElse(School.builder().build());
-    }
-
     private List<Planning> plannings(Grade grade) {
         Planning planning = Planning.builder()
-                .academicYear(academicYear())
+                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .designation("Durée du premier trimestre")
                 .semestre("1er Trimestre")
                 .termStartDate(LocalDate.of(2023, 10, 1))
@@ -109,7 +105,7 @@ class GradeRepositoryTest {
                 .build();
 
         Planning planning2 = Planning.builder()
-                .academicYear(academicYear())
+                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .designation("Durée du deuxième trimestre")
                 .semestre("2e Trimestre")
                 .termStartDate(LocalDate.of(2024, 1, 5))
@@ -118,7 +114,7 @@ class GradeRepositoryTest {
                 .build();
 
         Planning planning3 = Planning.builder()
-                .academicYear(academicYear())
+                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .designation("Durée du troisième trimestre")
                 .semestre("3e Trimestre")
                 .termStartDate(LocalDate.of(2024, 4, 10))
@@ -136,7 +132,7 @@ class GradeRepositoryTest {
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
-                .academicYear(academicYear())
+                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         Planning planning1 = Planning.builder()
@@ -145,7 +141,7 @@ class GradeRepositoryTest {
                 .termStartDate(LocalDate.of(2023, 11, 15))
                 .termEndDate(LocalDate.of(2023, 11, 26))
                 .grade(grade)
-                .academicYear(academicYear())
+                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         Planning planning2 = Planning.builder()
@@ -154,7 +150,7 @@ class GradeRepositoryTest {
                 .termStartDate(LocalDate.of(2024, 1, 5))
                 .termEndDate(LocalDate.of(2024, 3, 26))
                 .grade(grade)
-                .academicYear(academicYear())
+                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         Planning planning01 = Planning.builder()
@@ -163,7 +159,7 @@ class GradeRepositoryTest {
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
-                .academicYear(academicYear())
+                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         Planning planning3 = Planning.builder()
@@ -172,7 +168,7 @@ class GradeRepositoryTest {
                 .termStartDate(LocalDate.of(2024, 4, 10))
                 .termEndDate(LocalDate.of(2024, 6, 30))
                 .grade(grade)
-                .academicYear(academicYear())
+                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         Planning planning02 = Planning.builder()
@@ -181,14 +177,10 @@ class GradeRepositoryTest {
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
-                .academicYear(academicYear())
+                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         return List.of(planning, planning1, planning2, planning01, planning3, planning02);
-    }
-
-    private AcademicYear academicYear() {
-        return academicYearRepository.findAcademicYearBySchoolIdAndCurrentIsTrue(UUID.fromString("74db8563-3753-41d7-8106-153a7d71dd2e"));
     }
 
 }

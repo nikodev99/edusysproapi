@@ -3,6 +3,7 @@ package com.edusyspro.api.repository;
 import com.edusyspro.api.entities.Address;
 import com.edusyspro.api.school.entities.School;
 import com.edusyspro.api.utils.Generator;
+import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -104,8 +105,7 @@ class SchoolRepositoryTest {
 
     @Test
     public void printASchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("95b5c2fd-eba9-4d41-970d-f1bc4fb0ed50"));
-        System.out.println("School retrieved=" + school.orElseThrow());
+        System.out.println("School retrieved=" + MockUtils.SCHOOL_MOCK);
     }
 
     @Test

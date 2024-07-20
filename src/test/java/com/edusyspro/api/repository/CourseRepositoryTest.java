@@ -2,23 +2,17 @@ package com.edusyspro.api.repository;
 
 import com.edusyspro.api.entities.Course;
 import com.edusyspro.api.school.entities.Department;
-import com.edusyspro.api.school.entities.School;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @SpringBootTest
 class CourseRepositoryTest {
 
     @Autowired
     private CourseRepository courseRepository;
-
-    @Autowired
-    private SchoolRepository schoolRepository;
 
     @Autowired
     private DepartmentRepository departmentRepository;
@@ -136,9 +130,5 @@ class CourseRepositoryTest {
         return departmentRepository.getDepartmentByCode(code);
     }
 
-    private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("27a58e8a-a588-45dd-917e-6b690acd4b22"));
-        return school.orElse(School.builder().build());
-    }
 
 }

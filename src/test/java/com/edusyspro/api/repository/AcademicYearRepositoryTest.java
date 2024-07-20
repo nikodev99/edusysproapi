@@ -4,6 +4,7 @@ import com.edusyspro.api.school.entities.AcademicYear;
 import com.edusyspro.api.school.entities.School;
 import com.edusyspro.api.school.repos.AcademicYearRepository;
 import com.edusyspro.api.school.services.AcademicYearService;
+import com.edusyspro.api.utils.MockUtils;
 import jakarta.persistence.Tuple;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ class AcademicYearRepositoryTest {
                 .endDate(LocalDate.of(2025, 6, 29))
                 .current(true)
                 .build();
-        School school = getSchool();
+        School school = MockUtils.SCHOOL_MOCK;
         if (school.getId() != null) {
             academicYear.setSchool(school);
         }
@@ -50,7 +51,7 @@ class AcademicYearRepositoryTest {
 
     @Test
     public void testCurrentAcademicYear() {
-        Optional<Tuple> year = academicYearRepository.findBySchool(getSchool().getId());
+        Optional<Tuple> year = academicYearRepository.findBySchool(MockUtils.SCHOOL_MOCK.getId());
         Tuple t = year.orElseThrow();
         System.out.println("retrieved data=" + t);
         System.out.println("Current academic year=" + t.get(0) + "-" + t.get(1));
@@ -58,7 +59,7 @@ class AcademicYearRepositoryTest {
 
     @Test
     public void testCurrentAcademicYearByService() {
-        String currentAcademicYear = academicYearService.getAcademicYearForSchool(getSchool());
+        String currentAcademicYear = academicYearService.getAcademicYearForSchool(MockUtils.SCHOOL_MOCK);
         System.out.println("Current academic year=" + currentAcademicYear);
     }
 
@@ -69,17 +70,12 @@ class AcademicYearRepositoryTest {
         AcademicYear a = AcademicYear.builder()
                 .startDate(startDate)
                 .endDate(endDate)
-                .school(getSchool())
+                .school(MockUtils.SCHOOL_MOCK)
                 .build();
         int updatedTimes = academicYearRepository.updateAcademicYearById(
                 a.getStartDate(), a.getEndDate(),a.getSchool(), 1
         );
         System.out.println("updated times=" + updatedTimes);
-    }
-
-    private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"));
-        return school.orElseThrow();
     }
 
 }

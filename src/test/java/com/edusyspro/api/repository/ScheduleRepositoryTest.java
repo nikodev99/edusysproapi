@@ -5,15 +5,12 @@ import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Day;
 import com.edusyspro.api.school.entities.Schedule;
-import com.edusyspro.api.school.entities.School;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @SpringBootTest
 class ScheduleRepositoryTest {
@@ -26,9 +23,6 @@ class ScheduleRepositoryTest {
 
     @Autowired
     private TeacherRepository teacherRepository;
-
-    @Autowired
-    private SchoolRepository schoolRepository;
 
     @Autowired
     private CourseRepository courseRepository;
@@ -283,11 +277,6 @@ class ScheduleRepositoryTest {
 
     private LocalTime time(int hour, int minute) {
         return LocalTime.of(hour, minute);
-    }
-
-    private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"));
-        return school.orElseThrow();
     }
 
 }

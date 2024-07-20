@@ -8,7 +8,6 @@ import com.edusyspro.api.entities.*;
 import com.edusyspro.api.entities.enums.Section;
 import com.edusyspro.api.school.entities.Grade;
 import com.edusyspro.api.school.entities.Schedule;
-import com.edusyspro.api.school.entities.School;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,9 +27,6 @@ class ClasseRepositoryTest {
 
     @Autowired
     private CourseRepository courseRepository;
-
-    @Autowired
-    private SchoolRepository schoolRepository;
 
     @Test
     public void savePrimaryClasses() {
@@ -191,11 +187,6 @@ class ClasseRepositoryTest {
     public void printBasicClassValues() {
         List<ClassBasicValue> classBasicValues = classeRepository.findAllBasicValue(UUID.fromString(ConstantUtils.SCHOOL_ID));
         System.out.println("BasicClassValues= " + classBasicValues);
-    }
-
-    private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("27a58e8a-a588-45dd-917e-6b690acd4b22"));
-        return school.orElseThrow();
     }
 
     private Course getPrincipalCourse(int id) {

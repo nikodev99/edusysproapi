@@ -3,9 +3,8 @@ package com.edusyspro.api.repository;
 import com.edusyspro.api.classes.ClasseRepository;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.*;
-import com.edusyspro.api.school.entities.Department;
-import com.edusyspro.api.school.entities.School;
 import com.edusyspro.api.utils.Fake;
+import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,12 +20,6 @@ class TeacherRepositoryTest {
     private TeacherRepository teacherRepository;
 
     @Autowired
-    private SchoolRepository schoolRepository;
-
-    @Autowired
-    private DepartmentRepository departmentRepository;
-
-    @Autowired
     private ClasseRepository classeRepository;
 
     @Autowired
@@ -36,7 +29,7 @@ class TeacherRepositoryTest {
     public void saveTeachersOfPrimaire() {
         List<Teacher> teachers = Fake.getMultipleTeachers(
                 6,
-                getSchool(),
+                MockUtils.SCHOOL_MOCK,
                 new ClasseEntity[][]{
                         { getClasse(1)},
                         { getClasse(2)},
@@ -58,7 +51,7 @@ class TeacherRepositoryTest {
         ClasseEntity troisieme = getClasse(10); ClasseEntity seconde = getClasse(11);
         List<Teacher> teachers = Fake.getMultipleTeachers(
                 16,
-                getSchool(),
+                MockUtils.SCHOOL_MOCK,
                 new ClasseEntity[][]{
                         { sixieme, cinquieme },
                         { quatrieme, troisieme, seconde },
@@ -103,9 +96,9 @@ class TeacherRepositoryTest {
     public void saveTeachers() {
         List<Teacher> teachers = Fake.getMultipleTeachers(
                 7,
-                getSchool(),
+                MockUtils.SCHOOL_MOCK,
                 new ClasseEntity[][]{
-                        { getClasse(11), getClasse(13) },
+                        { getClasse(13) },
                         { getClasse(11) },
                         { getClasse(11), getClasse(12), getClasse(13) },
                         { getClasse(11), getClasse(12), getClasse(13) },
@@ -128,7 +121,7 @@ class TeacherRepositoryTest {
 
     @Test
     public void saveMathTeacher() {
-        Teacher teacher = Fake.getTeacher(getSchool(), new ClasseEntity[] { getClasse(11) }, new Course[]{ getCourse("Maths") });
+        Teacher teacher = Fake.getTeacher(MockUtils.SCHOOL_MOCK, new ClasseEntity[] { getClasse(11) }, new Course[]{ getCourse("Maths") });
         teacherRepository.save(teacher);
     }
 
@@ -149,15 +142,6 @@ class TeacherRepositoryTest {
     public void getTeacherByClasseNameAndCourseId() {
         Teacher teacher = teacherRepository.getTeacherByClassesNameAndCourseId("6e", 2);
         System.out.println(teacher);
-    }
-
-    private School getSchool() {
-        Optional<School> school = schoolRepository.findById(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"));
-        return school.orElseThrow();
-    }
-
-    private Department getDepartment(String code) {
-        return departmentRepository.getDepartmentByCode(code);
     }
 
     private ClasseEntity getClasse(int id) {
