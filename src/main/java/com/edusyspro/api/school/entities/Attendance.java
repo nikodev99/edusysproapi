@@ -3,6 +3,7 @@ package com.edusyspro.api.school.entities;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.enums.AttendanceStatus;
 import com.edusyspro.api.student.entities.StudentEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class Attendance {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     @JsonProperty("student")
+    @JsonIgnore
     private StudentEntity studentEntity;
 
     @ManyToOne(cascade = CascadeType.ALL)

@@ -3,6 +3,7 @@ package com.edusyspro.api.student.entities;
 import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.school.entities.AcademicYear;
 import com.edusyspro.api.utils.Datetime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,10 +30,12 @@ public class EnrollmentEntity {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "student_id", referencedColumnName = "id")
+    @JsonIgnore
     private StudentEntity student;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
+    @JsonIgnore
     private ClasseEntity classe;
 
     private ZonedDateTime enrollmentDate;

@@ -4,6 +4,7 @@ import com.edusyspro.api.entities.Address;
 import com.edusyspro.api.entities.enums.Gender;
 import com.edusyspro.api.entities.enums.Status;
 import com.edusyspro.api.utils.Datetime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -60,6 +61,7 @@ public class GuardianEntity {
     private Address address;
 
     @OneToMany(mappedBy = "guardian", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<StudentEntity> students;
 
     private ZonedDateTime createdAt;
