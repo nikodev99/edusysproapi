@@ -22,16 +22,16 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     @Query(value = "update EnrollmentEntity set isArchived = ?1 where student.id = ?2")
     int updateEnrollmentByStudentId(boolean isArchived, UUID uuid);
 
-    @Query("select new com.edusyspro.api.student.models.dtos.EnrolledStudent(e.student.id, e.student.firstName, e.student.lastName, " +
+    @Query("select new com.edusyspro.api.student.models.dtos.EnrolledStudent(e.student.id, e.academicYear, e.student.firstName, e.student.lastName, " +
             "e.student.gender, e.student.emailId, e.student.birthDate, e.student.birthCity, e.student.nationality, e.student.reference, " +
-            "e.student.image, e.enrollmentDate, e.classe.name, e.classe.grade.section) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.isArchived = false")
+            "e.student.image, e.enrollmentDate, e.classe.name, e.classe.grade.section) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false")
     Page<List<EnrolledStudent>> findEnrolledStudent(UUID schoolId, Pageable pageable);
 
     @Query(value = """
-            select new com.edusyspro.api.student.models.dtos.EnrolledStudent(e.student.id, e.student.firstName, e.student.lastName, \
+            select new com.edusyspro.api.student.models.dtos.EnrolledStudent(e.student.id, e.academicYear, e.student.firstName, e.student.lastName, \
             e.student.gender, e.student.emailId, e.student.birthDate, e.student.birthCity, e.student.nationality, e.student.reference, \
             e.student.image, e.enrollmentDate, e.classe.name, e.classe.grade.section) from EnrollmentEntity e \
-            where e.academicYear.school.id = ?1 and e.isArchived = false and lower(e.student.lastName) like lower(?2) order by e.student.lastName asc
+            where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false and lower(e.student.lastName) like lower(?2) order by e.student.lastName asc
     """)
     List<EnrolledStudent> findEnrolledStudent(UUID schoolId, String lastname);
 

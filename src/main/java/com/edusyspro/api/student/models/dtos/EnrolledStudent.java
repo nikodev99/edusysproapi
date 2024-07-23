@@ -2,6 +2,7 @@ package com.edusyspro.api.student.models.dtos;
 
 import com.edusyspro.api.entities.enums.Gender;
 import com.edusyspro.api.entities.enums.Section;
+import com.edusyspro.api.school.entities.AcademicYear;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Builder
 public class EnrolledStudent {
     private UUID id;
+    private AcademicYear academicYear;
     private String firstName;
     private String lastName;
     private Gender gender;
