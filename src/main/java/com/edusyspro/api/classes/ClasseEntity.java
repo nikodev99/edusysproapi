@@ -4,6 +4,7 @@ import com.edusyspro.api.entities.*;
 import com.edusyspro.api.school.entities.Grade;
 import com.edusyspro.api.school.entities.Schedule;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,20 +43,25 @@ public class ClasseEntity {
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "principal_teacher_id", referencedColumnName = "id")
+    @JsonIgnore
     private ClasseTeacherBoss principalTeacher;
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "principal_student_id", referencedColumnName = "id")
+    @JsonIgnore
     private ClasseStudentBoss principalStudent;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "principal_course_id", referencedColumnName = "id")
+    @JsonIgnore
     private Course principalCourse;
 
     @OneToMany(mappedBy = "classe", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<EnrollmentEntity> students;
 
     @ManyToMany(mappedBy = "aClasses", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Teacher> teachers;
 
     private double monthCost;

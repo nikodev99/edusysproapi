@@ -35,7 +35,6 @@ public class EnrollmentEntity {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
-    @JsonIgnore
     private ClasseEntity classe;
 
     private ZonedDateTime enrollmentDate;
