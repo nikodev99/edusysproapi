@@ -56,6 +56,11 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudents(UUID.fromString(ConstantUtils.SCHOOL_ID), q));
     }
 
+    @GetMapping("/student/{id}")
+    ResponseEntity<Enrollment> getEnrollmentById(@PathVariable String id) {
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudent(UUID.fromString(ConstantUtils.SCHOOL_ID), UUID.fromString(id)));
+    }
+
     @GetMapping("/guardians")
     ResponseEntity<List<Guardian>> fetchEnrolledStudentsGuardians() {
         return ResponseEntity.ok(

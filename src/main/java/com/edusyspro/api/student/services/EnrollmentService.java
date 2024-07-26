@@ -17,6 +17,8 @@ public interface EnrollmentService {
 
     List<EnrolledStudent> getEnrolledStudents(UUID schoolId, String lastname);
 
+    Enrollment getEnrolledStudent(UUID schoolId, UUID studentId);
+
     List<Guardian> getEnrolledStudentGuardians(UUID schoolId, boolean isArchived);
 
 }

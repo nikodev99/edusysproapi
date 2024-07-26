@@ -3,6 +3,7 @@ package com.edusyspro.api.student.services;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
 import com.edusyspro.api.student.entities.GuardianEntity;
 import com.edusyspro.api.student.models.Guardian;
+import com.edusyspro.api.student.models.Student;
 import com.edusyspro.api.student.models.dtos.EnrolledStudent;
 import com.edusyspro.api.student.models.Enrollment;
 import com.edusyspro.api.student.models.dtos.EnrolledStudentGuardian;
@@ -55,6 +56,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
     @Override
     public List<EnrolledStudent> getEnrolledStudents(UUID schoolId, String lastname) {
         return enrollmentRepository.findEnrolledStudent(schoolId, "%" + lastname + "%");
+    }
+
+    @Override
+    public Enrollment getEnrolledStudent(UUID schoolId, UUID studentId) {
+        EnrolledStudent enrolledStudent = enrollmentRepository.findEnrollmentById(schoolId, studentId);
+        EnrolledStudent student = EnrolledStudent.builder().build();
+        return student.populateStudent(enrolledStudent);
     }
 
     @Override

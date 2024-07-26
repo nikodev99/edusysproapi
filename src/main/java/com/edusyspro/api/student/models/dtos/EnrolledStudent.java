@@ -1,8 +1,13 @@
 package com.edusyspro.api.student.models.dtos;
 
+import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.enums.Gender;
 import com.edusyspro.api.entities.enums.Section;
 import com.edusyspro.api.school.entities.AcademicYear;
+import com.edusyspro.api.school.entities.Grade;
+import com.edusyspro.api.student.entities.StudentEntity;
+import com.edusyspro.api.student.models.Enrollment;
+import com.edusyspro.api.student.models.Student;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,4 +36,29 @@ public class EnrolledStudent {
     private ZonedDateTime lastEnrolledDate;
     private String classe;
     private Section grade;
+
+    public Enrollment populateStudent(EnrolledStudent e) {
+        return Enrollment.builder()
+                .academicYear(e.academicYear)
+                .student(StudentEntity.builder()
+                        .id(id)
+                        .firstName(e.firstName)
+                        .lastName(e.lastName)
+                        .gender(e.gender)
+                        .emailId(e.emailId)
+                        .birthDate(e.birthDate)
+                        .birthCity(e.birthCity)
+                        .nationality(e.nationality)
+                        .reference(e.reference)
+                        .image(e.image)
+                        .build())
+                .enrollmentDate(e.lastEnrolledDate)
+                .classe(ClasseEntity.builder()
+                        .name(e.classe)
+                        .grade(Grade.builder()
+                                .section(e.grade)
+                                .build())
+                        .build())
+                .build();
+    }
 }
