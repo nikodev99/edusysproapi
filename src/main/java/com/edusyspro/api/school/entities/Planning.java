@@ -1,5 +1,6 @@
 package com.edusyspro.api.school.entities;
 
+import com.edusyspro.api.entities.Semester;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,9 +22,9 @@ public class Planning {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
-    private AcademicYear academicYear;
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "semester_id", referencedColumnName = "semester_id")
+    private Semester semestre;
 
     @Column(length = 500)
     private String designation;
@@ -31,9 +32,6 @@ public class Planning {
     private LocalDate termStartDate;
 
     private LocalDate termEndDate;
-
-    @Column(length = 20)
-    private String semestre;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "grade_id", referencedColumnName = "id")

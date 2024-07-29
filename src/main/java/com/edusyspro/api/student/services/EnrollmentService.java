@@ -7,18 +7,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface EnrollmentService {
 
     Enrollment enrollStudent(Enrollment enrollment);
 
-    Page<List<EnrolledStudent>> getEnrolledStudents(UUID schoolId, Pageable pageable);
+    Page<List<EnrolledStudent>> getEnrolledStudents(String schoolId, Pageable pageable);
 
-    List<EnrolledStudent> getEnrolledStudents(UUID schoolId, String lastname);
+    List<EnrolledStudent> getEnrolledStudents(String schoolId, String lastname);
 
-    Enrollment getEnrolledStudent(UUID schoolId, UUID studentId);
+    Enrollment getEnrolledStudent(String schoolId, String studentId);
 
-    List<Guardian> getEnrolledStudentGuardians(UUID schoolId, boolean isArchived);
+    List<Guardian> getEnrolledStudentGuardians(String schoolId, boolean isArchived);
 
 }

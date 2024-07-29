@@ -1,6 +1,7 @@
 package com.edusyspro.api.school.entities;
 
 import com.edusyspro.api.classes.ClasseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,12 +25,18 @@ public class Exam {
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "planning_id", referencedColumnName = "id")
+    @JsonIgnore
     private Planning semester;
+
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "exam_type_id", referencedColumnName = "id")
+    private ExamType examType;
 
     private String preparedBy;
 
     @OneToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "class_id", referencedColumnName = "id")
+    @JsonIgnore
     private ClasseEntity classeEntity;
 
     private String examName;

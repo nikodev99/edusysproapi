@@ -48,23 +48,23 @@ public class EnrollmentController {
                     .toList();
             pageable = PageRequest.of(page, size, Sort.by(orders));
         }
-        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(UUID.fromString(ConstantUtils.SCHOOL_ID), pageable));
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(ConstantUtils.SCHOOL_ID, pageable));
     }
 
     @GetMapping("/search/")
     ResponseEntity<List<EnrolledStudent>> getEnrolledStudents(@RequestParam String q) {
-        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(UUID.fromString(ConstantUtils.SCHOOL_ID), q));
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(ConstantUtils.SCHOOL_ID, q));
     }
 
     @GetMapping("/student/{id}")
     ResponseEntity<Enrollment> getEnrollmentById(@PathVariable String id) {
-        return ResponseEntity.ok(enrollmentService.getEnrolledStudent(UUID.fromString(ConstantUtils.SCHOOL_ID), UUID.fromString(id)));
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudent(ConstantUtils.SCHOOL_ID, id));
     }
 
     @GetMapping("/guardians")
     ResponseEntity<List<Guardian>> fetchEnrolledStudentsGuardians() {
         return ResponseEntity.ok(
-                enrollmentService.getEnrolledStudentGuardians(UUID.fromString(ConstantUtils.SCHOOL_ID), false)
+                enrollmentService.getEnrolledStudentGuardians(ConstantUtils.SCHOOL_ID, false)
         );
     }
 }

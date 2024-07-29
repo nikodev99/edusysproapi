@@ -1,9 +1,11 @@
 package com.edusyspro.api.student.services;
 
+import com.edusyspro.api.entities.enums.Section;
+import com.edusyspro.api.school.entities.Score;
+import com.edusyspro.api.school.services.ScoreService;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
 import com.edusyspro.api.student.entities.GuardianEntity;
 import com.edusyspro.api.student.models.Guardian;
-import com.edusyspro.api.student.models.Student;
 import com.edusyspro.api.student.models.dtos.EnrolledStudent;
 import com.edusyspro.api.student.models.Enrollment;
 import com.edusyspro.api.student.models.dtos.EnrolledStudentGuardian;
@@ -24,11 +26,14 @@ public class EnrollmentServiceImp implements EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
 
+    private final ScoreService scoreService;
+
     private final GuardianService guardianService;
 
     @Autowired
-    public EnrollmentServiceImp(EnrollmentRepository enrollmentRepository, GuardianService guardianService) {
+    public EnrollmentServiceImp(EnrollmentRepository enrollmentRepository, ScoreService scoreService, GuardianService guardianService) {
         this.enrollmentRepository = enrollmentRepository;
+        this.scoreService = scoreService;
         this.guardianService = guardianService;
     }
 
@@ -49,25 +54,28 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public Page<List<EnrolledStudent>> getEnrolledStudents(UUID schoolId, Pageable pageable) {
-        return  enrollmentRepository.findEnrolledStudent(schoolId, pageable);
+    public Page<List<EnrolledStudent>> getEnrolledStudents(String schoolId, Pageable pageable) {
+        return  enrollmentRepository.findEnrolledStudent(UUID.fromString(schoolId), pageable);
     }
 
     @Override
-    public List<EnrolledStudent> getEnrolledStudents(UUID schoolId, String lastname) {
-        return enrollmentRepository.findEnrolledStudent(schoolId, "%" + lastname + "%");
+    public List<EnrolledStudent> getEnrolledStudents(String schoolId, String lastname) {
+        return enrollmentRepository.findEnrolledStudent(UUID.fromString(schoolId), "%" + lastname + "%");
     }
 
     @Override
-    public Enrollment getEnrolledStudent(UUID schoolId, UUID studentId) {
-        EnrolledStudent enrolledStudent = enrollmentRepository.findEnrollmentById(schoolId, studentId);
-        EnrolledStudent student = EnrolledStudent.builder().build();
-        return student.populateStudent(enrolledStudent);
+    public Enrollment getEnrolledStudent(String schoolId, String studentId) {
+        EnrolledStudent enrolledStudent = enrollmentRepository.findEnrollmentById(UUID.fromString(schoolId), UUID.fromString(studentId));
+        EnrolledStudent studentEnrolled = EnrolledStudent.builder().build();
+        Enrollment student = studentEnrolled.populateStudent(enrolledStudent);
+        List<Score> scores = scoreService.getLastScoresByStudent(studentId);
+        student.getStudent().setMarks(scores);
+        return student;
     }
 
     @Override
-    public List<Guardian> getEnrolledStudentGuardians(UUID schoolId, boolean isArchived) {
-        List<EnrolledStudentGuardian> enrolledStudentGuardian = enrollmentRepository.findEnrolledStudentGuardian(schoolId, isArchived);
+    public List<Guardian> getEnrolledStudentGuardians(String schoolId, boolean isArchived) {
+        List<EnrolledStudentGuardian> enrolledStudentGuardian = enrollmentRepository.findEnrolledStudentGuardian(UUID.fromString(schoolId), isArchived);
         List<Guardian> guardians = new ArrayList<>();
         if (!enrolledStudentGuardian.isEmpty()) {
             guardians = enrolledStudentGuardian.stream()
