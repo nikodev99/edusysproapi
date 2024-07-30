@@ -7,7 +7,6 @@ import com.edusyspro.api.school.entities.AcademicYear;
 import com.edusyspro.api.school.entities.Grade;
 import com.edusyspro.api.student.entities.StudentEntity;
 import com.edusyspro.api.student.models.Enrollment;
-import com.edusyspro.api.student.models.Student;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,7 +40,7 @@ public class EnrolledStudent {
         return Enrollment.builder()
                 .academicYear(e.academicYear)
                 .student(StudentEntity.builder()
-                        .id(id)
+                        .id(e.id)
                         .firstName(e.firstName)
                         .lastName(e.lastName)
                         .gender(e.gender)

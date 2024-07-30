@@ -43,6 +43,9 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     """)
     EnrolledStudent findEnrollmentById(UUID schoolId, UUID studentId);
 
+    @Query("select e from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.student.id = ?2 order by e.enrollmentDate desc")
+    Page<EnrollmentEntity> findStudentEnrollments(UUID schoolId, UUID studentId, Pageable pageable);
+
     @Query("select new com.edusyspro.api.student.models.dtos.EnrolledStudentGuardian(e.student.guardian.id, e.student.guardian.firstName, " +
             "e.student.guardian.lastName, e.student.guardian.maidenName, e.student.guardian.genre, e.student.guardian.emailId, " +
             "e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.telephone, e.student.guardian.mobile) " +

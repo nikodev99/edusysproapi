@@ -4,6 +4,7 @@ import com.edusyspro.api.classes.ClasseEntity;
 import com.edusyspro.api.entities.Course;
 import com.edusyspro.api.entities.Teacher;
 import com.edusyspro.api.entities.enums.Day;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,10 +26,12 @@ public class Schedule {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
+    @JsonIgnore
     private ClasseEntity classeEntity;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
+    @JsonIgnore
     private Teacher teacher;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})

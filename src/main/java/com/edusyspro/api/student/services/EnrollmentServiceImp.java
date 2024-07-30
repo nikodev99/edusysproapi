@@ -1,7 +1,8 @@
 package com.edusyspro.api.student.services;
 
-import com.edusyspro.api.entities.enums.Section;
+import com.edusyspro.api.school.entities.Attendance;
 import com.edusyspro.api.school.entities.Score;
+import com.edusyspro.api.school.services.AttendanceService;
 import com.edusyspro.api.school.services.ScoreService;
 import com.edusyspro.api.student.entities.EnrollmentEntity;
 import com.edusyspro.api.student.entities.GuardianEntity;
@@ -13,6 +14,7 @@ import com.edusyspro.api.student.repos.EnrollmentRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,13 +29,17 @@ public class EnrollmentServiceImp implements EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
 
     private final ScoreService scoreService;
+    private final AttendanceService attendanceService;
+    private final StudentService studentService;
 
     private final GuardianService guardianService;
 
     @Autowired
-    public EnrollmentServiceImp(EnrollmentRepository enrollmentRepository, ScoreService scoreService, GuardianService guardianService) {
+    public EnrollmentServiceImp(EnrollmentRepository enrollmentRepository, ScoreService scoreService, AttendanceService attendanceService, StudentService studentService, GuardianService guardianService) {
         this.enrollmentRepository = enrollmentRepository;
         this.scoreService = scoreService;
+        this.attendanceService = attendanceService;
+        this.studentService = studentService;
         this.guardianService = guardianService;
     }
 
@@ -68,8 +74,18 @@ public class EnrollmentServiceImp implements EnrollmentService {
         EnrolledStudent enrolledStudent = enrollmentRepository.findEnrollmentById(UUID.fromString(schoolId), UUID.fromString(studentId));
         EnrolledStudent studentEnrolled = EnrolledStudent.builder().build();
         Enrollment student = studentEnrolled.populateStudent(enrolledStudent);
-        List<Score> scores = scoreService.getLastScoresByStudent(studentId);
-        student.getStudent().setMarks(scores);
+        if (student != null) {
+            Pageable pageable = PageRequest.of(0, 5);
+            Page<Score> scores = scoreService.getLastScoresByStudent(studentId, pageable);
+            Page<EnrollmentEntity> enrollments = enrollmentRepository.findStudentEnrollments(UUID.fromString(schoolId), UUID.fromString(studentId), pageable);
+            Page<Attendance> attendances = attendanceService.getLastAttendance(studentId, pageable);
+            student.getStudent().setAddress(studentService.getStudentAddress(studentId));
+            student.getStudent().setGuardian(studentService.getStudentGuardian(studentId));
+            student.getStudent().setHealthCondition(studentService.getStudentHealthCondition(studentId));
+            student.getStudent().setMarks(scores.getContent());
+            student.getStudent().setEnrollmentEntities(enrollments.getContent());
+            student.getStudent().setAttendances(attendances.getContent());
+        }
         return student;
     }
 
