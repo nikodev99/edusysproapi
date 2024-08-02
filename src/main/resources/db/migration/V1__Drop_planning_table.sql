@@ -1,1 +1,0 @@
-alter table planning drop column semester

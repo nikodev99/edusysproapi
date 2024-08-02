@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 @RestController
@@ -56,9 +55,14 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudents(ConstantUtils.SCHOOL_ID, q));
     }
 
-    @GetMapping("/student/{id}")
-    ResponseEntity<Enrollment> getEnrollmentById(@PathVariable String id) {
-        return ResponseEntity.ok(enrollmentService.getEnrolledStudent(ConstantUtils.SCHOOL_ID, id));
+    @GetMapping("/student/{studentId}")
+    ResponseEntity<Enrollment> getEnrollmentById(@PathVariable String studentId) {
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudent(ConstantUtils.SCHOOL_ID, studentId));
+    }
+
+    @GetMapping("/student/{studentId}/classmate")
+    ResponseEntity<List<EnrolledStudent>> getStudentClassmates(@PathVariable String studentId) {
+        return ResponseEntity.ok(enrollmentService.getStudentClassmates(ConstantUtils.SCHOOL_ID, studentId, 5));
     }
 
     @GetMapping("/guardians")

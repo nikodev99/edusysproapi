@@ -2,7 +2,6 @@ package com.edusyspro.api.classes;
 
 import com.edusyspro.api.classes.dtos.ClassBasicValue;
 import com.edusyspro.api.entities.enums.Section;
-import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

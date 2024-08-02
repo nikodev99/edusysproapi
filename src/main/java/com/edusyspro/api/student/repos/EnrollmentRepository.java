@@ -46,6 +46,14 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     @Query("select e from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.student.id = ?2 order by e.enrollmentDate desc")
     Page<EnrollmentEntity> findStudentEnrollments(UUID schoolId, UUID studentId, Pageable pageable);
 
+    @Query(value = """
+            select new com.edusyspro.api.student.models.dtos.EnrolledStudent(e.student.id, e.academicYear, e.student.firstName, e.student.lastName, \
+            e.student.gender, e.student.emailId, e.student.birthDate, e.student.birthCity, e.student.nationality, e.student.reference, \
+            e.student.image, e.enrollmentDate, e.classe.name, e.classe.grade.section) from EnrollmentEntity e \
+            where e.academicYear.school.id = ?1 and e.student.id <> ?2 and e.classe.id = (select en.classe.id from EnrollmentEntity en where en.student.id = ?2) and e.academicYear.current = true and e.isArchived = false order by rand()
+   """)
+    Page<EnrolledStudent> findStudentRandomClassmateByClasseId(UUID schoolId, UUID studentId, Pageable pageable);
+
     @Query("select new com.edusyspro.api.student.models.dtos.EnrolledStudentGuardian(e.student.guardian.id, e.student.guardian.firstName, " +
             "e.student.guardian.lastName, e.student.guardian.maidenName, e.student.guardian.genre, e.student.guardian.emailId, " +
             "e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.telephone, e.student.guardian.mobile) " +

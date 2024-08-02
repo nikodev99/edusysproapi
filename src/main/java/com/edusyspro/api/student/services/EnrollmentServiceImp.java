@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,6 +88,16 @@ public class EnrollmentServiceImp implements EnrollmentService {
             student.getStudent().setAttendances(attendances.getContent());
         }
         return student;
+    }
+
+    @Override
+    public List<EnrolledStudent> getStudentClassmates(String schoolId, String studentId, int classmateNumber) {
+        Pageable pageable = PageRequest.of(0, classmateNumber);
+        return enrollmentRepository.findStudentRandomClassmateByClasseId(
+                UUID.fromString(schoolId),
+                UUID.fromString(studentId),
+                pageable
+        ).getContent();
     }
 
     @Override
