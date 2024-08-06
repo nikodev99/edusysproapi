@@ -1,7 +1,7 @@
 package com.edusyspro.api.repository;
 
 import com.edusyspro.api.dto.Guardian;
-import com.edusyspro.api.service.GuardianService;
+import com.edusyspro.api.service.interfaces.GuardianService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

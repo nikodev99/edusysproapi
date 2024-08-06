@@ -1,7 +1,7 @@
 package com.edusyspro.api.controller;
 
 import com.edusyspro.api.dto.Guardian;
-import com.edusyspro.api.service.GuardianService;
+import com.edusyspro.api.service.interfaces.GuardianService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

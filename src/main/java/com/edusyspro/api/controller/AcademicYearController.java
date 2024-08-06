@@ -2,7 +2,7 @@ package com.edusyspro.api.controller;
 
 import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.model.AcademicYear;
-import com.edusyspro.api.service.AcademicYearService;
+import com.edusyspro.api.service.impl.AcademicYearService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

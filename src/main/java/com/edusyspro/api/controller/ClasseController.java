@@ -1,7 +1,7 @@
 package com.edusyspro.api.controller;
 
 import com.edusyspro.api.dto.Classe;
-import com.edusyspro.api.service.ClasseService;
+import com.edusyspro.api.service.interfaces.ClasseService;
 import com.edusyspro.api.dto.ClassBasicValue;
 import com.edusyspro.api.data.ConstantUtils;
 import org.springframework.beans.factory.annotation.Autowired;

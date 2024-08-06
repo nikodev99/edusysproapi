@@ -1,4 +1,4 @@
-package com.edusyspro.api.service;
+package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.School;

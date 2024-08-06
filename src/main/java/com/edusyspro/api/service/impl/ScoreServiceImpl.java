@@ -1,7 +1,8 @@
-package com.edusyspro.api.service;
+package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.model.Score;
 import com.edusyspro.api.repository.ScoreRepository;
+import com.edusyspro.api.service.interfaces.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;

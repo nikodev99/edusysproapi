@@ -2,7 +2,7 @@ package com.edusyspro.api.repository;
 
 import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.School;
-import com.edusyspro.api.service.AcademicYearService;
+import com.edusyspro.api.service.impl.AcademicYearService;
 import com.edusyspro.api.utils.MockUtils;
 import jakarta.persistence.Tuple;
 import org.junit.jupiter.api.Test;

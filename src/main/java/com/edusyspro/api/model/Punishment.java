@@ -23,7 +23,7 @@ public class Punishment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private boolean require;
+    private boolean isRequire;
     private PunishmentType type;
     private String description;
     private LocalDate startDate;

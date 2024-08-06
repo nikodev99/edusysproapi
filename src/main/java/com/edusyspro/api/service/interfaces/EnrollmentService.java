@@ -1,4 +1,4 @@
-package com.edusyspro.api.service;
+package com.edusyspro.api.service.interfaces;
 
 import com.edusyspro.api.dto.Guardian;
 import com.edusyspro.api.dto.EnrolledStudent;

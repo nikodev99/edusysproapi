@@ -1,4 +1,4 @@
-package com.edusyspro.api.service;
+package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.repository.ScheduleRepository;
@@ -7,6 +7,7 @@ import com.edusyspro.api.model.HealthCondition;
 import com.edusyspro.api.model.StudentEntity;
 import com.edusyspro.api.dto.Student;
 import com.edusyspro.api.repository.StudentRepository;
+import com.edusyspro.api.service.interfaces.StudentService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

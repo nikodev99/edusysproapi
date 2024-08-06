@@ -1,9 +1,10 @@
-package com.edusyspro.api.service;
+package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.ClassBasicValue;
 import com.edusyspro.api.dto.Classe;
 import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.repository.ClasseRepository;
+import com.edusyspro.api.service.interfaces.ClasseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;

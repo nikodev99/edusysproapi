@@ -1,7 +1,8 @@
-package com.edusyspro.api.service;
+package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.model.Attendance;
 import com.edusyspro.api.repository.AttendanceRepository;
+import com.edusyspro.api.service.interfaces.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
