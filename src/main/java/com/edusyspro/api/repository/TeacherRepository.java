@@ -1,6 +1,6 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.entities.Teacher;
+import com.edusyspro.api.model.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

@@ -1,9 +1,8 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.school.entities.AcademicYear;
-import com.edusyspro.api.school.entities.School;
-import com.edusyspro.api.school.repos.AcademicYearRepository;
-import com.edusyspro.api.school.services.AcademicYearService;
+import com.edusyspro.api.model.AcademicYear;
+import com.edusyspro.api.model.School;
+import com.edusyspro.api.service.AcademicYearService;
 import com.edusyspro.api.utils.MockUtils;
 import jakarta.persistence.Tuple;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.springframework.context.annotation.Profile;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @SpringBootTest
 @Profile("dev")

@@ -1,6 +1,6 @@
 package com.edusyspro.api.service;
 
-import com.edusyspro.api.entities.Reprimand;
+import com.edusyspro.api.model.Reprimand;
 
 import java.util.List;
 

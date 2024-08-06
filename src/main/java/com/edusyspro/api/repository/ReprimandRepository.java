@@ -1,6 +1,6 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.entities.Reprimand;
+import com.edusyspro.api.model.Reprimand;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

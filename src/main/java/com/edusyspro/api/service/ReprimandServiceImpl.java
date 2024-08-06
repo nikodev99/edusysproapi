@@ -1,6 +1,6 @@
 package com.edusyspro.api.service;
 
-import com.edusyspro.api.entities.Reprimand;
+import com.edusyspro.api.model.Reprimand;
 import com.edusyspro.api.repository.ReprimandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

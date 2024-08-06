@@ -1,15 +1,13 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.school.entities.Department;
-import com.edusyspro.api.school.entities.School;
+import com.edusyspro.api.model.Department;
+import com.edusyspro.api.model.School;
 import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @SpringBootTest
 class DepartmentRepositoryTest {

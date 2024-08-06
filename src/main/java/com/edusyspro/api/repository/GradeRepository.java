@@ -1,7 +1,7 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.school.entities.Grade;
-import com.edusyspro.api.entities.enums.Section;
+import com.edusyspro.api.model.Grade;
+import com.edusyspro.api.model.enums.Section;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

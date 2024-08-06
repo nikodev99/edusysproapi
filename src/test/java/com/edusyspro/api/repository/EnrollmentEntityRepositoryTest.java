@@ -1,12 +1,10 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.classes.ClasseRepository;
-import com.edusyspro.api.classes.ClasseEntity;
-import com.edusyspro.api.school.entities.AcademicYear;
-import com.edusyspro.api.student.entities.EnrollmentEntity;
-import com.edusyspro.api.school.entities.School;
-import com.edusyspro.api.student.models.dtos.EnrolledStudent;
-import com.edusyspro.api.student.repos.EnrollmentRepository;
+import com.edusyspro.api.model.ClasseEntity;
+import com.edusyspro.api.model.AcademicYear;
+import com.edusyspro.api.model.EnrollmentEntity;
+import com.edusyspro.api.model.School;
+import com.edusyspro.api.dto.EnrolledStudent;
 import com.edusyspro.api.utils.Datetime;
 import com.edusyspro.api.utils.Fake;
 import com.edusyspro.api.utils.MockUtils;

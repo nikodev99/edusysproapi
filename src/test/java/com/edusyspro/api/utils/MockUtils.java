@@ -2,9 +2,9 @@ package com.edusyspro.api.utils;
 
 import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.repository.SchoolRepository;
-import com.edusyspro.api.school.entities.AcademicYear;
-import com.edusyspro.api.school.entities.School;
-import com.edusyspro.api.school.repos.AcademicYearRepository;
+import com.edusyspro.api.model.AcademicYear;
+import com.edusyspro.api.model.School;
+import com.edusyspro.api.repository.AcademicYearRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

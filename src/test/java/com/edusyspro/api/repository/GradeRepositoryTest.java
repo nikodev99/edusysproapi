@@ -1,11 +1,8 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.school.entities.AcademicYear;
-import com.edusyspro.api.school.entities.Grade;
-import com.edusyspro.api.school.entities.Planning;
-import com.edusyspro.api.school.entities.School;
-import com.edusyspro.api.entities.enums.Section;
-import com.edusyspro.api.school.repos.AcademicYearRepository;
+import com.edusyspro.api.model.Grade;
+import com.edusyspro.api.model.Planning;
+import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

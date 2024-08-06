@@ -1,7 +1,7 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.entities.Address;
-import com.edusyspro.api.school.entities.School;
+import com.edusyspro.api.model.Address;
+import com.edusyspro.api.model.School;
 import com.edusyspro.api.utils.Generator;
 import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @SpringBootTest

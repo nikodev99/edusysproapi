@@ -4,14 +4,16 @@ import com.arakelian.faker.model.Gender;
 import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
-import com.edusyspro.api.classes.ClasseEntity;
-import com.edusyspro.api.entities.*;
-import com.edusyspro.api.entities.enums.Status;
-import com.edusyspro.api.school.entities.AcademicYear;
-import com.edusyspro.api.school.entities.School;
-import com.edusyspro.api.student.entities.EnrollmentEntity;
-import com.edusyspro.api.student.entities.GuardianEntity;
-import com.edusyspro.api.student.entities.StudentEntity;
+import com.edusyspro.api.model.ClasseEntity;
+import com.edusyspro.api.model.enums.Status;
+import com.edusyspro.api.model.Address;
+import com.edusyspro.api.model.Course;
+import com.edusyspro.api.model.Teacher;
+import com.edusyspro.api.model.AcademicYear;
+import com.edusyspro.api.model.School;
+import com.edusyspro.api.model.EnrollmentEntity;
+import com.edusyspro.api.model.GuardianEntity;
+import com.edusyspro.api.model.StudentEntity;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -57,7 +59,7 @@ public class Fake {
                 .emailId((oneWord(randomWord()) + "@" + oneWord(randomWord(3)) + "." + oneWord(randomWord(3))).toLowerCase())
                 .firstName(p.getFirstName())
                 .lastName(p.getLastName())
-                .gender(p.getGender() == Gender.MALE ? com.edusyspro.api.entities.enums.Gender.HOMME : com.edusyspro.api.entities.enums.Gender.FEMME)
+                .gender(p.getGender() == Gender.MALE ? com.edusyspro.api.model.enums.Gender.HOMME : com.edusyspro.api.model.enums.Gender.FEMME)
                 .status(randomStatus())
                 .telephone(randomNumber())
                 .hireDate(randomDate())
@@ -108,7 +110,7 @@ public class Fake {
         return StudentEntity.builder()
                 .firstName(p.getFirstName())
                 .lastName(p.getLastName())
-                .gender(p.getGender() == Gender.MALE ? com.edusyspro.api.entities.enums.Gender.HOMME : com.edusyspro.api.entities.enums.Gender.FEMME)
+                .gender(p.getGender() == Gender.MALE ? com.edusyspro.api.model.enums.Gender.HOMME : com.edusyspro.api.model.enums.Gender.FEMME)
                 .birthDate(randomDate(1990))
                 .birthCity("Brazzaville")
                 .nationality("Congolaise")
@@ -121,7 +123,7 @@ public class Fake {
                         .firstName(g.getFirstName())
                         .lastName(g.getLastName())
                         .status(randomStatus())
-                        .genre(g.getGender() == Gender.MALE ? com.edusyspro.api.entities.enums.Gender.HOMME : com.edusyspro.api.entities.enums.Gender.FEMME)
+                        .genre(g.getGender() == Gender.MALE ? com.edusyspro.api.model.enums.Gender.HOMME : com.edusyspro.api.model.enums.Gender.FEMME)
                         .emailId(emailId)
                         .jobTitle(g.getTitle())
                         .company(oneWord(randomWord()))

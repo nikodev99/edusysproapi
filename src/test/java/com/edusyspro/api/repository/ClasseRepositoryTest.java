@@ -1,13 +1,13 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.classes.ClasseRepository;
-import com.edusyspro.api.classes.ClasseEntity;
-import com.edusyspro.api.classes.dtos.ClassBasicValue;
+import com.edusyspro.api.model.ClasseEntity;
+import com.edusyspro.api.dto.ClassBasicValue;
 import com.edusyspro.api.data.ConstantUtils;
-import com.edusyspro.api.entities.*;
-import com.edusyspro.api.entities.enums.Section;
-import com.edusyspro.api.school.entities.Grade;
-import com.edusyspro.api.school.entities.Schedule;
+import com.edusyspro.api.model.enums.Section;
+import com.edusyspro.api.model.Course;
+import com.edusyspro.api.model.Teacher;
+import com.edusyspro.api.model.Grade;
+import com.edusyspro.api.model.Schedule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

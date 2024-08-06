@@ -1,10 +1,8 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.classes.ClasseRepository;
-import com.edusyspro.api.classes.ClasseEntity;
-import com.edusyspro.api.school.entities.School;
-import com.edusyspro.api.student.entities.StudentEntity;
-import com.edusyspro.api.student.repos.StudentRepository;
+import com.edusyspro.api.model.ClasseEntity;
+import com.edusyspro.api.model.School;
+import com.edusyspro.api.model.StudentEntity;
 import com.edusyspro.api.utils.Fake;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

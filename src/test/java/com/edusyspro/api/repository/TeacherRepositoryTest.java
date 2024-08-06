@@ -1,8 +1,8 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.classes.ClasseRepository;
-import com.edusyspro.api.classes.ClasseEntity;
-import com.edusyspro.api.entities.*;
+import com.edusyspro.api.model.ClasseEntity;
+import com.edusyspro.api.model.Course;
+import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.utils.Fake;
 import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;

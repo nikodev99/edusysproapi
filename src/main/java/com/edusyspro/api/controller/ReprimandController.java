@@ -1,6 +1,6 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.entities.Reprimand;
+import com.edusyspro.api.model.Reprimand;
 import com.edusyspro.api.service.ReprimandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
