@@ -2,6 +2,7 @@ package com.edusyspro.api.repository;
 
 import com.edusyspro.api.model.Grade;
 import com.edusyspro.api.model.Planning;
+import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
@@ -18,15 +19,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 class GradeRepositoryTest {
 
-    @Autowired
-    private GradeRepository gradeRepository;
+    private final GradeRepository gradeRepository;
+
+    private final SemesterRepository semesterRepository;
+
+    private final Semester firstTrimestre;
+    private final Semester secondTrimestre;
+    private final Semester thirdTrimestre;
+
 
     @Autowired
-    private AcademicYearRepository academicYearRepository;
-
-    @Autowired
-    private SchoolRepository schoolRepository;
-
+    public GradeRepositoryTest(GradeRepository gradeRepository, SemesterRepository semesterRepository) {
+        this.gradeRepository = gradeRepository;
+        this.semesterRepository = semesterRepository;
+        firstTrimestre = getSemester(1);
+        secondTrimestre = getSemester(2);
+        thirdTrimestre = getSemester(3);
+    }
 
     @Test
     public void saveGradesAndPlanning() {
@@ -92,27 +101,24 @@ class GradeRepositoryTest {
 
     private List<Planning> plannings(Grade grade) {
         Planning planning = Planning.builder()
-                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .designation("Durée du premier trimestre")
-                .semestre("1er Trimestre")
+                .semestre(firstTrimestre)
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
                 .build();
 
         Planning planning2 = Planning.builder()
-                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .designation("Durée du deuxième trimestre")
-                .semestre("2e Trimestre")
+                .semestre(secondTrimestre)
                 .termStartDate(LocalDate.of(2024, 1, 5))
                 .termEndDate(LocalDate.of(2024, 3, 26))
                 .grade(grade)
                 .build();
 
         Planning planning3 = Planning.builder()
-                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .designation("Durée du troisième trimestre")
-                .semestre("3e Trimestre")
+                .semestre(thirdTrimestre)
                 .termStartDate(LocalDate.of(2024, 4, 10))
                 .termEndDate(LocalDate.of(2024, 6, 30))
                 .grade(grade)
@@ -124,59 +130,57 @@ class GradeRepositoryTest {
     private List<Planning> plannings2(Grade grade) {
         Planning planning = Planning.builder()
                 .designation("Durée du premier trimestre")
-                .semestre("1er Trimestre")
+                .semestre(firstTrimestre)
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
-                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         Planning planning1 = Planning.builder()
                 .designation("Durée des devoirs départementaux du 1er trimestre")
-                .semestre("1er Trimestre")
+                .semestre(firstTrimestre)
                 .termStartDate(LocalDate.of(2023, 11, 15))
                 .termEndDate(LocalDate.of(2023, 11, 26))
                 .grade(grade)
-                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         Planning planning2 = Planning.builder()
                 .designation("Durée du deuxième trimestre")
-                .semestre("2e Trimestre")
+                .semestre(secondTrimestre)
                 .termStartDate(LocalDate.of(2024, 1, 5))
                 .termEndDate(LocalDate.of(2024, 3, 26))
                 .grade(grade)
-                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         Planning planning01 = Planning.builder()
                 .designation("Durée des devoirs départementaux du 2e trimestre")
-                .semestre("2e Trimestre")
+                .semestre(secondTrimestre)
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
-                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         Planning planning3 = Planning.builder()
                 .designation("Durée du troisième trimestre")
-                .semestre("3e Trimestre")
+                .semestre(thirdTrimestre)
                 .termStartDate(LocalDate.of(2024, 4, 10))
                 .termEndDate(LocalDate.of(2024, 6, 30))
                 .grade(grade)
-                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         Planning planning02 = Planning.builder()
                 .designation("Durée des devoirs départementaux du 3e trimestre")
-                .semestre("3e Trimestre")
+                .semestre(thirdTrimestre)
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
-                .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
                 .build();
 
         return List.of(planning, planning1, planning2, planning01, planning3, planning02);
+    }
+
+    private Semester getSemester(int semesterId) {
+        return semesterRepository.findById(semesterId).orElseThrow();
     }
 
 }
