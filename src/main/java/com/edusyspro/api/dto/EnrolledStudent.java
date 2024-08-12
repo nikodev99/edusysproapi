@@ -6,34 +6,18 @@ import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.Grade;
 import com.edusyspro.api.model.StudentEntity;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class EnrolledStudent {
-    private UUID id;
-    private AcademicYear academicYear;
-    private String firstName;
-    private String lastName;
-    private Gender gender;
-    private String emailId;
-    private LocalDate birthDate;
-    private String birthCity;
-    private String nationality;
-    private String reference;
-    private String image;
-    private ZonedDateTime lastEnrolledDate;
-    private String classe;
-    private Section grade;
+public record EnrolledStudent(
+        UUID id, AcademicYear academicYear, String firstName, String lastName, Gender gender, String emailId,
+        LocalDate birthDate, String birthCity, String nationality, String reference, String image, ZonedDateTime lastEnrolledDate,
+        String classe, Section grade, String dadName, String momName
+) {
 
     public Enrollment populateStudent(EnrolledStudent e) {
         return Enrollment.builder()
@@ -44,6 +28,8 @@ public class EnrolledStudent {
                         .lastName(e.lastName)
                         .gender(e.gender)
                         .emailId(e.emailId)
+                        .dadName(e.dadName)
+                        .momName(e.momName)
                         .birthDate(e.birthDate)
                         .birthCity(e.birthCity)
                         .nationality(e.nationality)
