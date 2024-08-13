@@ -33,10 +33,14 @@ public class Exam {
 
     private String preparedBy;
 
-    @OneToOne(cascade = CascadeType.REFRESH)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
     @JsonIgnore
     private ClasseEntity classeEntity;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    private Course subject;
 
     private String examName;
 
