@@ -43,7 +43,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     """)
     EnrolledStudent findEnrollmentById(UUID schoolId, UUID studentId);
 
-    @Query("select e from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.student.id = ?2 order by e.enrollmentDate desc")
+    @Query("select e from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.student.id = ?2 and e.isArchived = true order by e.enrollmentDate desc")
     Page<EnrollmentEntity> findStudentEnrollments(UUID schoolId, UUID studentId, Pageable pageable);
 
     @Query(value = """
