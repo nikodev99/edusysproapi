@@ -60,9 +60,9 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudent(ConstantUtils.SCHOOL_ID, studentId));
     }
 
-    @GetMapping("/student/{studentId}/classmate")
-    ResponseEntity<List<EnrolledStudent>> getStudentClassmates(@PathVariable String studentId) {
-        return ResponseEntity.ok(enrollmentService.getStudentClassmates(ConstantUtils.SCHOOL_ID, studentId, 5));
+    @GetMapping("/student/{studentId}/classmate/{classeId}")
+    ResponseEntity<List<Enrollment>> getStudentClassmates(@PathVariable String studentId, @PathVariable int classeId) {
+        return ResponseEntity.ok(enrollmentService.getStudentClassmates(ConstantUtils.SCHOOL_ID, studentId, classeId, 5));
     }
 
     @GetMapping("/guardians")

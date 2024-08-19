@@ -14,9 +14,25 @@ import java.util.UUID;
 
 @Builder
 public record EnrolledStudent(
-        UUID id, AcademicYear academicYear, String firstName, String lastName, Gender gender, String emailId,
-        LocalDate birthDate, String birthCity, String nationality, String reference, String image, ZonedDateTime lastEnrolledDate,
-        String classe, Section grade, String dadName, String momName
+        UUID id,
+        AcademicYear academicYear,
+        String firstName,
+        String lastName,
+        Gender gender,
+        String emailId,
+        LocalDate birthDate,
+        String birthCity,
+        String nationality,
+        String reference,
+        String image,
+        ZonedDateTime lastEnrolledDate,
+        int classeId,
+        String classe,
+        String classeCategory,
+        Section grade,
+        double monthCost,
+        String dadName,
+        String momName
 ) {
 
     public Enrollment populateStudent(EnrolledStudent e) {
@@ -38,10 +54,13 @@ public record EnrolledStudent(
                         .build())
                 .enrollmentDate(e.lastEnrolledDate)
                 .classe(ClasseEntity.builder()
+                        .id(e.classeId)
                         .name(e.classe)
+                        .category(e.classeCategory)
                         .grade(Grade.builder()
                                 .section(e.grade)
                                 .build())
+                        .monthCost(e.monthCost)
                         .build())
                 .build();
     }

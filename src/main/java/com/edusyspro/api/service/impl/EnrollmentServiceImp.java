@@ -58,11 +58,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
         return enrollment;
     }
 
+    //TODO Change enrolledStudent to Enrollment
     @Override
     public Page<List<EnrolledStudent>> getEnrolledStudents(String schoolId, Pageable pageable) {
         return  enrollmentRepository.findEnrolledStudent(UUID.fromString(schoolId), pageable);
     }
 
+    //TODO Change enrolledStudent to Enrollment
     @Override
     public List<EnrolledStudent> getEnrolledStudents(String schoolId, String lastname) {
         return enrollmentRepository.findEnrolledStudent(UUID.fromString(schoolId), "%" + lastname + "%");
@@ -89,13 +91,17 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public List<EnrolledStudent> getStudentClassmates(String schoolId, String studentId, int classmateNumber) {
+    public List<Enrollment> getStudentClassmates(String schoolId, String studentId, int classeId, int classmateNumber) {
         Pageable pageable = PageRequest.of(0, classmateNumber);
-        return enrollmentRepository.findStudentRandomClassmateByClasseId(
+        List<EnrolledStudent> enrolledStudents = enrollmentRepository.findStudentRandomClassmateByClasseId(
                 UUID.fromString(schoolId),
                 UUID.fromString(studentId),
+                classeId,
                 pageable
         ).getContent();
+        return enrolledStudents.stream()
+                .map((e) -> e.populateStudent(e))
+                .toList();
     }
 
     @Override
