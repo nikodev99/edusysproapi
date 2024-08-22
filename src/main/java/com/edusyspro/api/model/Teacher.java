@@ -2,6 +2,7 @@ package com.edusyspro.api.model;
 
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.model.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -78,6 +79,7 @@ public class Teacher {
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
+    @JsonIgnore
     private School school;
 
     private ZonedDateTime createdAt;

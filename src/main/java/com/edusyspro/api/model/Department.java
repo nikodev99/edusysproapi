@@ -28,6 +28,7 @@ public class Department {
 
     @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "d_boss", referencedColumnName = "id")
+    @JsonIgnore
     private DepartmentBoss boss;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})

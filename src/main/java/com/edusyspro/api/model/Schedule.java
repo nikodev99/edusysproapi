@@ -2,6 +2,7 @@ package com.edusyspro.api.model;
 
 import com.edusyspro.api.model.enums.Day;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class Schedule {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
+    @JsonProperty("classe")
     @JsonIgnore
     private ClasseEntity classeEntity;
 

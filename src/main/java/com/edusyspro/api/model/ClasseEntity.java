@@ -33,7 +33,6 @@ public class ClasseEntity {
     private Grade grade;
 
     @OneToMany(mappedBy = "classeEntity", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    @JsonIgnore
     private List<Schedule> schedule;
 
     private int roomNumber;
