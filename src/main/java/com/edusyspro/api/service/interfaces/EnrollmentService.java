@@ -12,7 +12,7 @@ public interface EnrollmentService {
 
     Enrollment enrollStudent(Enrollment enrollment);
 
-    Page<List<EnrolledStudent>> getEnrolledStudents(String schoolId, Pageable pageable);
+    Page<EnrolledStudent> getEnrolledStudents(String schoolId, Pageable pageable);
 
     List<EnrolledStudent> getEnrolledStudents(String schoolId, String lastname);
 

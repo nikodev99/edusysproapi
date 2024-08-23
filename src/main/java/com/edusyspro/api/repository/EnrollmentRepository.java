@@ -26,7 +26,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
             "e.student.gender, e.student.emailId, e.student.birthDate, e.student.birthCity, e.student.nationality, e.student.reference, " +
             "e.student.image, e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost, e.student.dadName, e.student.momName) " +
             "from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false")
-    Page<List<EnrolledStudent>> findEnrolledStudent(UUID schoolId, Pageable pageable);
+    Page<EnrolledStudent> findEnrolledStudent(UUID schoolId, Pageable pageable);
 
     @Query(value = """
             select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.firstName, e.student.lastName, \

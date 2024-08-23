@@ -8,4 +8,6 @@ public interface ScoreService {
 
     Page<Score> getLastScoresByStudent(String studentId, Pageable pageable);
 
+    Page<Score> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, Pageable pageable);
+
 }

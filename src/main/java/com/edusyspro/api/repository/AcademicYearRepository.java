@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +21,8 @@ public interface AcademicYearRepository extends JpaRepository<AcademicYear, UUID
     Optional<Tuple> findBySchool(UUID schoolId);
 
     AcademicYear findAcademicYearBySchoolIdAndCurrentIsTrue(UUID schoolId);
+
+    List<AcademicYear> findAllBySchoolId(UUID schoolId);
 
     @Modifying
     @Transactional

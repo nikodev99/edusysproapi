@@ -12,7 +12,10 @@ import java.util.UUID;
 @Repository
 public interface ScoreRepository extends JpaRepository<Score, Long> {
 
-    @Query("select s from Score s where s.studentEntity.id = ?1 order by s.id desc")
+    @Query("select s from Score s where s.exam.semester.semestre.academicYear.current = true and s.studentEntity.id = ?1 order by s.exam.examDate desc")
     Page<Score> findLastFiveScoresByStudent(UUID studentId, Pageable pageable);
+
+    @Query("select s from Score s where s.exam.semester.semestre.academicYear.id = ?1 and s.studentEntity.id = ?1 order by s.exam.examDate desc")
+    Page<Score> findAllByStudentIdAndAcademicYear(UUID academicYearId, UUID studentId, Pageable pageable);
 
 }

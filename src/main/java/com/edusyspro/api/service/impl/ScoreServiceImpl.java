@@ -25,4 +25,13 @@ public class ScoreServiceImpl implements ScoreService {
     public Page<Score> getLastScoresByStudent(String studentId, Pageable pageable) {
         return scoreRepository.findLastFiveScoresByStudent(UUID.fromString(studentId), pageable);
     }
+
+    @Override
+    public Page<Score> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, Pageable pageable) {
+        return scoreRepository.findAllByStudentIdAndAcademicYear(
+                UUID.fromString(studentId),
+                UUID.fromString(academicYearId),
+                pageable
+        );
+    }
 }

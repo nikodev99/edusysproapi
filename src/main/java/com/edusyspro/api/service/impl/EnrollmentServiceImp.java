@@ -70,7 +70,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
 
     //TODO Change enrolledStudent to Enrollment
     @Override
-    public Page<List<EnrolledStudent>> getEnrolledStudents(String schoolId, Pageable pageable) {
+    public Page<EnrolledStudent> getEnrolledStudents(String schoolId, Pageable pageable) {
         return  enrollmentRepository.findEnrolledStudent(UUID.fromString(schoolId), pageable);
     }
 
