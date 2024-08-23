@@ -47,13 +47,13 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     @Query("select e from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.student.id = ?2 and e.isArchived = true order by e.enrollmentDate desc")
     Page<EnrollmentEntity> findStudentEnrollments(UUID schoolId, UUID studentId, Pageable pageable);
 
-    @Query(value = """
+    /*@Query(value = """
             select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.firstName, e.student.lastName, \
             e.student.gender, e.student.emailId, e.student.birthDate, e.student.birthCity, e.student.nationality, e.student.reference, \
             e.student.image, e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost, e.student.dadName, e.student.momName) from EnrollmentEntity e \
             where e.academicYear.school.id = ?1 and e.student.id <> ?2 and e.classe.id = ?3 and e.academicYear.current = true and e.isArchived = false order by function('rand')
    """)
-    Page<EnrolledStudent> findStudentRandomClassmateByClasseId(UUID schoolId, UUID studentId, int classeId, Pageable pageable);
+    Page<EnrolledStudent> findStudentRandomClassmateByClasseId(UUID schoolId, UUID studentId, int classeId, Pageable pageable);*/
 
     @Query("select new com.edusyspro.api.dto.EnrolledStudentGuardian(e.student.guardian.id, e.student.guardian.firstName, " +
             "e.student.guardian.lastName, e.student.guardian.maidenName, e.student.guardian.genre, e.student.guardian.emailId, " +

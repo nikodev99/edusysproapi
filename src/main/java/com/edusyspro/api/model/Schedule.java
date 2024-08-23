@@ -23,6 +23,11 @@ public class Schedule {
     private Long id;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
+    @JsonIgnore
+    private AcademicYear academicYear;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
     @JsonProperty("classe")
     @JsonIgnore

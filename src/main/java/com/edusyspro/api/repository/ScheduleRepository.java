@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-    @Query("select s from Schedule s where s.classeEntity.id = ?1 and s.dayOfWeek = ?2")
+    @Query("select s from Schedule s where s.academicYear.current = true and s.classeEntity.id = ?1 and s.dayOfWeek = ?2")
     List<Schedule> findAllByClasseEntityId(int classeId, Day currentDay);
 
 }

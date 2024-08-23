@@ -5,9 +5,8 @@ import com.edusyspro.api.dto.Guardian;
 import com.edusyspro.api.dto.EnrolledStudent;
 import com.edusyspro.api.dto.Enrollment;
 import com.edusyspro.api.dto.EnrolledStudentGuardian;
-import com.edusyspro.api.model.enums.Day;
-import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.EnrollmentRepository;
+import com.edusyspro.api.repository.context.EnrollmentRepositoryContext;
 import com.edusyspro.api.service.interfaces.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ import java.util.UUID;
 public class EnrollmentServiceImp implements EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
+    private final EnrollmentRepositoryContext enrollmentRepositoryContext;
 
     private final ScoreService scoreService;
     private final AttendanceService attendanceService;
@@ -36,6 +36,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
     @Autowired
     public EnrollmentServiceImp(
             EnrollmentRepository enrollmentRepository,
+            EnrollmentRepositoryContext enrollmentRepositoryContext,
             ScoreService scoreService,
             AttendanceService attendanceService,
             StudentService studentService,
@@ -43,6 +44,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
             GuardianService guardianService)
     {
         this.enrollmentRepository = enrollmentRepository;
+        this.enrollmentRepositoryContext = enrollmentRepositoryContext;
         this.scoreService = scoreService;
         this.attendanceService = attendanceService;
         this.studentService = studentService;
@@ -106,7 +108,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
     @Override
     public List<Enrollment> getStudentClassmates(String schoolId, String studentId, int classeId, int classmateNumber) {
         Pageable pageable = PageRequest.of(0, classmateNumber);
-        List<EnrolledStudent> enrolledStudents = enrollmentRepository.findStudentRandomClassmateByClasseId(
+        List<EnrolledStudent> enrolledStudents = enrollmentRepositoryContext.findStudentRandomClassmateByClasseId(
                 UUID.fromString(schoolId),
                 UUID.fromString(studentId),
                 classeId,
