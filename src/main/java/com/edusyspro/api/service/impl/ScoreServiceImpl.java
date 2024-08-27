@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,9 +30,18 @@ public class ScoreServiceImpl implements ScoreService {
     @Override
     public Page<Score> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, Pageable pageable) {
         return scoreRepository.findAllByStudentIdAndAcademicYear(
-                UUID.fromString(studentId),
                 UUID.fromString(academicYearId),
+                UUID.fromString(studentId),
                 pageable
+        );
+    }
+
+    @Override
+    public List<Score> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, int subjectId) {
+        return scoreRepository.findAllByStudentIdAcademicYearAndSubjectId(
+                UUID.fromString(academicYearId),
+                UUID.fromString(studentId),
+                subjectId
         );
     }
 }

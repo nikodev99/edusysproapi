@@ -35,7 +35,6 @@ public class Exam {
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
-    @JsonIgnore
     private ClasseEntity classeEntity;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})

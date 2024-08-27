@@ -35,7 +35,7 @@ public class EnrollmentController {
 
     @GetMapping()
     ResponseEntity<Page<EnrolledStudent>> getEnrolledStudents(
-            @RequestParam(defaultValue = "10") int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
     ) {
