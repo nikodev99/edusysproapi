@@ -35,7 +35,6 @@ public class Attendance {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "class_id", referencedColumnName = "id")
     @JsonProperty("classe")
-    @JsonIgnore
     private ClasseEntity classeEntity;
 
     private LocalDate attendanceDate;

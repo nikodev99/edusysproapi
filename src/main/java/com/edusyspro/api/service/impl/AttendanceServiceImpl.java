@@ -21,8 +21,17 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Page<Attendance> getLastAttendance(String schoolID, Pageable pageable) {
+    public Page<Attendance> getLastStudentAttendances(String schoolID, Pageable pageable) {
         return attendanceRepository.findAttendanceByStudentId(UUID.fromString(schoolID), pageable);
+    }
+
+    @Override
+    public Page<Attendance> getStudentAttendancesByAcademicYear(String studentId, String academicYearId, Pageable pageable) {
+        return attendanceRepository.findAttendanceByStudentEntityIdAndAcademicYearIdOrderByAttendanceDateDesc(
+                UUID.fromString(studentId),
+                UUID.fromString(academicYearId),
+                pageable
+        );
     }
 
 }

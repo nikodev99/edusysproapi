@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface AttendanceService {
 
-    Page<Attendance> getLastAttendance(String schoolID, Pageable pageable);
+    Page<Attendance> getLastStudentAttendances(String schoolID, Pageable pageable);
+
+    Page<Attendance> getStudentAttendancesByAcademicYear(String schoolID, String academicYearId, Pageable pageable);
 
 }

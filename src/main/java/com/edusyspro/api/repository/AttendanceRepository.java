@@ -13,4 +13,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     @Query("select a from Attendance a where a.studentEntity.id = ?1 and a.academicYear.current = true order by a.attendanceDate desc")
     Page<Attendance> findAttendanceByStudentId(UUID studentId, Pageable pageable);
 
+    Page<Attendance> findAttendanceByStudentEntityIdAndAcademicYearIdOrderByAttendanceDateDesc(UUID studentId, UUID academicYearId, Pageable pageable);
+
 }

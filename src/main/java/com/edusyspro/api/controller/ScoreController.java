@@ -23,26 +23,27 @@ public class ScoreController {
         this.scoreService = scoreService;
     }
 
-    @GetMapping("/all")
+    @GetMapping({"/all/{studentId}", "/{studentId}"})
     ResponseEntity<Page<Score>> getAllScores(
+            @PathVariable String studentId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam String academicYearId
-    ) {
+            @RequestParam String academicYearId) {
         return ResponseEntity.ok(scoreService.getScoresByStudentPerAcademicYear(
-                ConstantUtils.SCHOOL_ID,
+                studentId,
                 academicYearId,
                 PageRequest.of(page, size)
         ));
     }
 
-    @GetMapping("/all/{subjectId}")
+    @GetMapping({"/all/{studentId}-{subjectId}", "/{studentId}-{subjectId}"})
     ResponseEntity<List<Score>> getAllScores(
+            @PathVariable String studentId,
             @RequestParam String academicYearId,
             @PathVariable int subjectId
     ) {
         return ResponseEntity.ok(scoreService.getScoresByStudentPerAcademicYear(
-                ConstantUtils.SCHOOL_ID,
+                studentId,
                 academicYearId,
                 subjectId
         ));

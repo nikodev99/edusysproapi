@@ -89,7 +89,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
             Pageable pageable = PageRequest.of(0, 5);
             Page<Score> scores = scoreService.getLastScoresByStudent(studentId, pageable);
             Page<EnrollmentEntity> enrollments = enrollmentRepository.findStudentEnrollments(UUID.fromString(schoolId), UUID.fromString(studentId), pageable);
-            Page<Attendance> attendances = attendanceService.getLastAttendance(studentId, pageable);
+            Page<Attendance> attendances = attendanceService.getLastStudentAttendances(studentId, pageable);
 
             ClasseEntity classe = student.getClasse();
             List<Schedule> schedules = scheduleService.getAllClasseSchedule(classe.getId(), classe.getGrade().getSection());
