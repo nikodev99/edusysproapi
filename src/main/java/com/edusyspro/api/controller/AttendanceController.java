@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/attendance")
 public class AttendanceController {
@@ -29,6 +31,11 @@ public class AttendanceController {
         return ResponseEntity.ok(attendanceService.getStudentAttendancesByAcademicYear(
            studentId, academicYear, PageRequest.of(page, size)
         ));
+    }
+
+    @GetMapping("/all/{studentId}")
+    ResponseEntity<List<Attendance>> getAllStudentAttendances(@PathVariable String studentId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(attendanceService.getStudentAttendances(studentId, academicYear));
     }
 
 }

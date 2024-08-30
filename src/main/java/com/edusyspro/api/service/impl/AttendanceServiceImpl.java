@@ -1,5 +1,6 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.AttendanceEssential;
 import com.edusyspro.api.model.Attendance;
 import com.edusyspro.api.repository.AttendanceRepository;
 import com.edusyspro.api.service.interfaces.AttendanceService;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -21,8 +23,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Page<Attendance> getLastStudentAttendances(String schoolID, Pageable pageable) {
-        return attendanceRepository.findAttendanceByStudentId(UUID.fromString(schoolID), pageable);
+    public Page<Attendance> getLastStudentAttendances(String studentId, Pageable pageable) {
+        return attendanceRepository.findAttendanceByStudentId(UUID.fromString(studentId), pageable);
     }
 
     @Override
@@ -32,6 +34,16 @@ public class AttendanceServiceImpl implements AttendanceService {
                 UUID.fromString(academicYearId),
                 pageable
         );
+    }
+
+    @Override
+    public List<Attendance> getStudentAttendances(String studentId, String academicYearId) {
+        List<AttendanceEssential> attendanceList = attendanceRepository.findAllByStudentEntityIdAndAcademicYearId(
+                UUID.fromString(studentId), UUID.fromString(academicYearId)
+        );
+        return attendanceList.stream()
+                .map(AttendanceEssential::populate)
+                .toList();
     }
 
 }

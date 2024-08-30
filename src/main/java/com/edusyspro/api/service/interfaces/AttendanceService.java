@@ -4,10 +4,14 @@ import com.edusyspro.api.model.Attendance;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface AttendanceService {
 
-    Page<Attendance> getLastStudentAttendances(String schoolID, Pageable pageable);
+    Page<Attendance> getLastStudentAttendances(String studentId, Pageable pageable);
 
-    Page<Attendance> getStudentAttendancesByAcademicYear(String schoolID, String academicYearId, Pageable pageable);
+    Page<Attendance> getStudentAttendancesByAcademicYear(String studentId, String academicYearId, Pageable pageable);
+
+    List<Attendance> getStudentAttendances(String studentId, String academicYearId);
 
 }
