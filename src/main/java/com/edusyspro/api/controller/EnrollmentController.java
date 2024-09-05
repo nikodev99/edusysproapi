@@ -65,6 +65,20 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getStudentClassmates(ConstantUtils.SCHOOL_ID, studentId, classeId, 5));
     }
 
+    @GetMapping("/{studentId}-{classeId}")
+    ResponseEntity<Page<Enrollment>> getAllStudentClassmates(
+            @PathVariable int classeId,
+            @PathVariable String studentId,
+            @RequestParam String academicYearId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(enrollmentService.getAllStudentClassmates(
+                ConstantUtils.SCHOOL_ID, studentId, classeId, academicYearId, pageable
+        ));
+    }
+
     @GetMapping("/guardians")
     ResponseEntity<List<Guardian>> fetchEnrolledStudentsGuardians() {
         return ResponseEntity.ok(

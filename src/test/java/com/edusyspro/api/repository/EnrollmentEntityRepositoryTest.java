@@ -111,7 +111,7 @@ class EnrollmentEntityRepositoryTest {
     @Test
     public void getEnrolledStudents() {
         Pageable pageable = PageRequest.of(0, 10);
-        Page<List<EnrolledStudent>> enrolledStudents = enrollmentRepository.findEnrolledStudent(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"), pageable);
+        Page<EnrolledStudent> enrolledStudents = enrollmentRepository.findEnrolledStudent(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"), pageable);
         System.out.println("Enrolled Student: " + enrolledStudents);
     }
     

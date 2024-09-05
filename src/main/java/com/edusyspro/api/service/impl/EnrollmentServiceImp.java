@@ -68,13 +68,11 @@ public class EnrollmentServiceImp implements EnrollmentService {
         return enrollment;
     }
 
-    //TODO Change enrolledStudent to Enrollment
     @Override
     public Page<EnrolledStudent> getEnrolledStudents(String schoolId, Pageable pageable) {
         return  enrollmentRepository.findEnrolledStudent(UUID.fromString(schoolId), pageable);
     }
 
-    //TODO Change enrolledStudent to Enrollment
     @Override
     public List<EnrolledStudent> getEnrolledStudents(String schoolId, String lastname) {
         return enrollmentRepository.findEnrolledStudent(UUID.fromString(schoolId), "%" + lastname + "%");
@@ -83,8 +81,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
     @Override
     public Enrollment getEnrolledStudent(String schoolId, String studentId) {
         EnrolledStudent enrolledStudent = enrollmentRepository.findEnrollmentById(UUID.fromString(schoolId), UUID.fromString(studentId));
-        EnrolledStudent studentEnrolled = EnrolledStudent.builder().build();
-        Enrollment student = studentEnrolled.populateStudent(enrolledStudent);
+        Enrollment student = EnrolledStudent.populateStudent(enrolledStudent);
         if (student != null) {
             Pageable pageable = PageRequest.of(0, 5);
             Page<Score> scores = scoreService.getLastScoresByStudent(studentId, pageable);
@@ -115,8 +112,20 @@ public class EnrollmentServiceImp implements EnrollmentService {
                 pageable
         ).getContent();
         return enrolledStudents.stream()
-                .map((e) -> e.populateStudent(e))
+                .map(EnrolledStudent::populateStudent)
                 .toList();
+    }
+
+    @Override
+    public Page<Enrollment> getAllStudentClassmates(String schoolId, String studentId, int classeId, String academicYear, Pageable pageable) {
+        Page<EnrolledStudent> enrolledStudents = enrollmentRepository.findStudentClassmateByAcademicYear(
+                UUID.fromString(schoolId),
+                UUID.fromString(studentId),
+                classeId,
+                UUID.fromString(academicYear),
+                pageable
+        );
+        return enrolledStudents.map(EnrolledStudent::populateStudent);
     }
 
     @Override

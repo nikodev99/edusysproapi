@@ -1,8 +1,11 @@
 package com.edusyspro.api.repository;
 
 import com.edusyspro.api.dto.ClassBasicValue;
+import com.edusyspro.api.dto.Student;
 import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.model.enums.Section;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

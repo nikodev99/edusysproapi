@@ -35,7 +35,7 @@ public record EnrolledStudent(
         String momName
 ) {
 
-    public Enrollment populateStudent(EnrolledStudent e) {
+    public static Enrollment populateStudent(EnrolledStudent e) {
         return Enrollment.builder()
                 .academicYear(e.academicYear)
                 .student(StudentEntity.builder()
