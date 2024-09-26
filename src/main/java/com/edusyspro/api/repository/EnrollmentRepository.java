@@ -57,9 +57,11 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
    """)
     Page<EnrolledStudent> findStudentClassmateByAcademicYear(UUID schoolId, UUID studentId, int classeId, UUID academicYear, Pageable pageable);
 
-    @Query("select new com.edusyspro.api.dto.EnrolledStudentGuardian(e.student.guardian.id, e.student.guardian.firstName, " +
-            "e.student.guardian.lastName, e.student.guardian.maidenName, e.student.guardian.genre, e.student.guardian.emailId, " +
-            "e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.telephone, e.student.guardian.mobile) " +
-            "from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.isArchived = ?2")
+    @Query("""
+            select new com.edusyspro.api.dto.EnrolledStudentGuardian(e.student.guardian.id, e.student.guardian.firstName, \
+            e.student.guardian.lastName, e.student.guardian.maidenName, e.student.guardian.genre, e.student.guardian.emailId, \
+            e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.telephone, e.student.guardian.mobile) \
+            from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.isArchived = ?2
+    """)
     List<EnrolledStudentGuardian> findEnrolledStudentGuardian(UUID schoolId, boolean isArchived);
 }

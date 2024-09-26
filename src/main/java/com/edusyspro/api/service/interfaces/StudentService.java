@@ -13,4 +13,8 @@ public interface StudentService {
     GuardianEntity getStudentGuardian(String studentId);
 
     HealthCondition getStudentHealthCondition(String studentId);
+
+    int updateStudent(String field, Object value, String studentId);
+    int updateStudentAddress(String field, Object value, long addressId);
+    int updateStudentHealth(String field, Object value, String studentId);
 }
