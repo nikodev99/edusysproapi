@@ -8,6 +8,7 @@ import com.edusyspro.api.model.StudentEntity;
 import com.edusyspro.api.dto.Student;
 import com.edusyspro.api.repository.StudentRepository;
 import com.edusyspro.api.repository.context.StudentUpdateContext;
+import com.edusyspro.api.service.interfaces.HealthConditionService;
 import com.edusyspro.api.service.interfaces.StudentService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,19 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final ScheduleRepository scheduleRepository;
     private final StudentUpdateContext studentUpdateContext;
+    private final HealthConditionService healthConditionService;
 
     @Autowired
     public StudentServiceImpl(
             StudentRepository studentRepository,
             ScheduleRepository scheduleRepository,
-            StudentUpdateContext studentUpdateContext) {
+            StudentUpdateContext studentUpdateContext,
+            HealthConditionService healthConditionService
+    ) {
         this.studentRepository = studentRepository;
         this.scheduleRepository = scheduleRepository;
         this.studentUpdateContext = studentUpdateContext;
+        this.healthConditionService = healthConditionService;
     }
 
     @Override
@@ -70,6 +75,18 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public int updateStudentHealth(String field, Object value, String studentId) {
+        HealthCondition healthCondition = getStudentHealthCondition(studentId);
+        if (healthCondition != null) {
+            return studentUpdateContext.updateHealthByField(field, value, UUID.fromString(studentId));
+        }else {
+            return pullAndSaveHealthCondition(field, value, studentId);
+        }
+    }
+
+    private int pullAndSaveHealthCondition(String field, Object value, String studentId) {
+        HealthCondition condition = healthConditionService.saveStudentHealthCondition(null);
+        int updated = studentUpdateContext.updateStudentHealthCondition(condition, UUID.fromString(studentId));
+        System.out.println("Updated: " + updated);
         return studentUpdateContext.updateHealthByField(field, value, UUID.fromString(studentId));
     }
 }

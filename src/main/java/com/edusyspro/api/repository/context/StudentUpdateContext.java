@@ -3,6 +3,7 @@ package com.edusyspro.api.repository.context;
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.HealthCondition;
 import com.edusyspro.api.model.StudentEntity;
+import com.edusyspro.api.service.interfaces.HealthConditionService;
 import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -12,17 +13,18 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Repository
 public class StudentUpdateContext {
 
     private final EntityManager entityManager;
+    private final HealthConditionService healthConditionService;
 
-    public StudentUpdateContext(EntityManager entityManager) {
+    public StudentUpdateContext(EntityManager entityManager, HealthConditionService healthConditionService) {
         this.entityManager = entityManager;
+        this.healthConditionService = healthConditionService;
     }
 
     @Modifying
@@ -33,21 +35,23 @@ public class StudentUpdateContext {
         Root<StudentEntity> student = update.from(StudentEntity.class);
 
         if ("birthDate".equals(field) && value instanceof String) {
-            value = LocalDate.parse((String) value);
+            ZonedDateTime zonedDateTime = Datetime.zonedDateTime((String) value);
+            value = zonedDateTime.toLocalDate();
         }
-        if ("birthDate".equals(field) && value instanceof List<?> dateArray) {
-            if (dateArray.size() == 3 && dateArray.get(0) instanceof Integer) {
-                int year = (Integer) dateArray.get(0);
-                int month = (Integer) dateArray.get(1);
-                int day = (Integer) dateArray.get(2);
-
-                value = LocalDate.of(year, month, day);
-            }
-        }
-
         update.set(student.get(field), value).set(student.get("modifyAt"), Datetime.systemDatetime())
                 .where(cb.equal(student.get("id"), studentId));
 
+        return entityManager.createQuery(update).executeUpdate();
+    }
+
+    @Modifying
+    @Transactional
+    public int updateStudentHealthCondition(HealthCondition healthCondition, UUID studentId) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaUpdate<StudentEntity> update = cb.createCriteriaUpdate(StudentEntity.class);
+        Root<StudentEntity> student = update.from(StudentEntity.class);
+        update.set(student.get("healthCondition"), healthCondition)
+                .where(cb.equal(student.get("id"), studentId));
         return entityManager.createQuery(update).executeUpdate();
     }
 
