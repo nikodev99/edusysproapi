@@ -1,8 +1,8 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.GuardianEssential;
 import com.edusyspro.api.model.EnrollmentEntity;
 import com.edusyspro.api.dto.EnrolledStudent;
-import com.edusyspro.api.dto.EnrolledStudentGuardian;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,7 +34,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
             select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.firstName, e.student.lastName, \
             e.student.gender, e.student.emailId, e.student.birthDate, e.student.birthCity, e.student.nationality, e.student.reference, \
             e.student.image, e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost, e.student.dadName, e.student.momName) from EnrollmentEntity e \
-            where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false and lower(e.student.lastName) like lower(?2) order by e.student.lastName asc
+            where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false and (lower(e.student.lastName) like lower(?2) or lower(e.student.firstName) like lower(?2) ) order by e.student.lastName asc
     """)
     List<EnrolledStudent> findEnrolledStudent(UUID schoolId, String lastname);
 
@@ -58,10 +58,21 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     Page<EnrolledStudent> findStudentClassmateByAcademicYear(UUID schoolId, UUID studentId, int classeId, UUID academicYear, Pageable pageable);
 
     @Query("""
-            select new com.edusyspro.api.dto.EnrolledStudentGuardian(e.student.guardian.id, e.student.guardian.firstName, \
-            e.student.guardian.lastName, e.student.guardian.maidenName, e.student.guardian.genre, e.student.guardian.emailId, \
-            e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.telephone, e.student.guardian.mobile) \
-            from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.isArchived = ?2
+            select distinct new com.edusyspro.api.dto.GuardianEssential(e.student.guardian.id, e.student.guardian.firstName, \
+            e.student.guardian.lastName, e.student.guardian.maidenName, e.student.guardian.status, e.student.guardian.genre, \
+            e.student.guardian.emailId, e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.telephone, \
+            e.student.guardian.mobile, e.student.guardian.address, e.student.guardian.createdAt, e.student.guardian.modifyAt) \
+            from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false
     """)
-    List<EnrolledStudentGuardian> findEnrolledStudentGuardian(UUID schoolId, boolean isArchived);
+    Page<GuardianEssential> findEnrolledStudentGuardian(UUID schoolId, Pageable pageable);
+
+    @Query("""
+            select distinct new com.edusyspro.api.dto.GuardianEssential(e.student.guardian.id, e.student.guardian.firstName, \
+            e.student.guardian.lastName, e.student.guardian.maidenName, e.student.guardian.status, e.student.guardian.genre, \
+            e.student.guardian.emailId, e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.telephone, \
+            e.student.guardian.mobile, e.student.guardian.address, e.student.guardian.createdAt, e.student.guardian.modifyAt) \
+            from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false \
+            and (lower(e.student.guardian.lastName) like lower(?2) or lower(e.student.guardian.firstName) like lower(?2) ) order by e.student.guardian.lastName asc
+    """)
+    List<GuardianEssential> findEnrolledStudentGuardian(UUID schoolId, String lastName);
 }

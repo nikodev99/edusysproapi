@@ -69,9 +69,17 @@ public interface EnrollmentService {
     /***
      * Get the all guardians of the enrolled students
      * @param schoolId school id
-     * @param isArchived checking is the guardians have current enrolled students
+     * @param pageable The pageable for the pagination
      * @return List<Guardian>
      */
-    List<Guardian> getEnrolledStudentGuardians(String schoolId, boolean isArchived);
+    Page<Guardian> getEnrolledStudentGuardians(String schoolId, Pageable pageable);
+
+    /**
+     * Get the searched Guardian in a school
+     * @param schoolId The school id.
+     * @param lastname The last name letter of the searched Guardian
+     * @return List<Guardian>
+     */
+    List<Guardian> getEnrolledStudentGuardians(String schoolId, String lastname);
 
 }

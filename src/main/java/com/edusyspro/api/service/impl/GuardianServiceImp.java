@@ -41,7 +41,7 @@ public class GuardianServiceImp implements GuardianService {
         GuardianEssential essential = guardianRepository.findGuardianEntityById(UUID.fromString(id));
         Guardian guardian = new Guardian();
         if (essential != null)
-            guardian = populateGuardian(essential);
+            guardian = GuardianEssential.populateGuardian(essential);
 
         return guardian;
     }
@@ -52,28 +52,9 @@ public class GuardianServiceImp implements GuardianService {
         List<Guardian> guardians = new ArrayList<>();
         if (!allGuardians.isEmpty())
             guardians = allGuardians.stream()
-                    .map(this::populateGuardian)
+                    .map(GuardianEssential::populateGuardian)
                     .toList();
 
         return guardians;
-    }
-
-    private Guardian populateGuardian(GuardianEssential essential) {
-        return Guardian.builder()
-                .id(essential.getId())
-                .firstName(essential.getFirstName())
-                .lastName(essential.getLastName())
-                .maidenName(essential.getMaidenName())
-                .status(essential.getStatus())
-                .genre(essential.getGenre())
-                .emailId(essential.getEmailId())
-                .jobTitle(essential.getJobTitle())
-                .company(essential.getCompany())
-                .telephone(essential.getTelephone())
-                .mobile(essential.getMobile())
-                .address(essential.getAddress())
-                .createdAt(essential.getCreatedAt())
-                .modifyAt(essential.getModifyAt())
-                .build();
     }
 }

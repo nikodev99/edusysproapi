@@ -29,7 +29,6 @@ public class EnrollmentController {
 
     @PostMapping
     ResponseEntity<Enrollment> save(@RequestBody Enrollment enrollment) {
-        System.out.println("Data to insert: " + enrollment);
         return ResponseEntity.ok(enrollmentService.enrollStudent(enrollment));
     }
 
@@ -39,14 +38,7 @@ public class EnrollmentController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
     ) {
-        Pageable pageable = PageRequest.of(page, size);
-        if (sortCriteria != null && !sortCriteria.isEmpty()) {
-            List<Sort.Order> orders = Stream.of(sortCriteria.split(","))
-                    .map(criteria -> criteria.split(":"))
-                    .map(c -> new Sort.Order(Sort.Direction.fromString(c[1]), c[0]))
-                    .toList();
-            pageable = PageRequest.of(page, size, Sort.by(orders));
-        }
+        Pageable pageable = setSort(page, size, sortCriteria);
         return ResponseEntity.ok(enrollmentService.getEnrolledStudents(ConstantUtils.SCHOOL_ID, pageable));
     }
 
@@ -80,9 +72,31 @@ public class EnrollmentController {
     }
 
     @GetMapping("/guardians")
-    ResponseEntity<List<Guardian>> fetchEnrolledStudentsGuardians() {
+    ResponseEntity<Page<Guardian>> fetchEnrolledStudentsGuardians(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortCriteria
+    ) {
+        Pageable pageable = setSort(page, size, sortCriteria);
         return ResponseEntity.ok(
-                enrollmentService.getEnrolledStudentGuardians(ConstantUtils.SCHOOL_ID, false)
+                enrollmentService.getEnrolledStudentGuardians(ConstantUtils.SCHOOL_ID, pageable)
         );
+    }
+
+    @GetMapping("/guardians/search/")
+    ResponseEntity<List<Guardian>> fetchEnrolledStudentsGuardians(@RequestParam String q) {
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudentGuardians(ConstantUtils.SCHOOL_ID, q));
+    }
+
+    private Pageable setSort(int page, int size, String sortCriteria) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (sortCriteria != null && !sortCriteria.isEmpty()) {
+            List<Sort.Order> orders = Stream.of(sortCriteria.split(","))
+                    .map(criteria -> criteria.split(":"))
+                    .map(c -> new Sort.Order(Sort.Direction.fromString(c[1]), c[0]))
+                    .toList();
+            pageable = PageRequest.of(page, size, Sort.by(orders));
+        }
+        return pageable;
     }
 }

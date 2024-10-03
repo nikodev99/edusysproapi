@@ -1,10 +1,10 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.GuardianEssential;
 import com.edusyspro.api.model.*;
 import com.edusyspro.api.dto.Guardian;
 import com.edusyspro.api.dto.EnrolledStudent;
 import com.edusyspro.api.dto.Enrollment;
-import com.edusyspro.api.dto.EnrolledStudentGuardian;
 import com.edusyspro.api.repository.EnrollmentRepository;
 import com.edusyspro.api.repository.context.EnrollmentRepositoryContext;
 import com.edusyspro.api.service.interfaces.*;
@@ -129,25 +129,16 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public List<Guardian> getEnrolledStudentGuardians(String schoolId, boolean isArchived) {
-        List<EnrolledStudentGuardian> enrolledStudentGuardian = enrollmentRepository.findEnrolledStudentGuardian(UUID.fromString(schoolId), isArchived);
-        List<Guardian> guardians = new ArrayList<>();
-        if (!enrolledStudentGuardian.isEmpty()) {
-            guardians = enrolledStudentGuardian.stream()
-                    .map(e -> Guardian.builder()
-                            .id(e.getId())
-                            .firstName(e.getFirstName())
-                            .lastName(e.getLastName())
-                            .maidenName(e.getMaidenName())
-                            .genre(e.getGenre())
-                            .emailId(e.getEmailId())
-                            .jobTitle(e.getJobTitle())
-                            .company(e.getCompany())
-                            .telephone(e.getTelephone())
-                            .mobile(e.getMobile())
-                            .build())
-                    .toList();
-        }
-        return guardians;
+    public Page<Guardian> getEnrolledStudentGuardians(String schoolId, Pageable pageable) {
+        Page<GuardianEssential> enrolledStudentGuardian = enrollmentRepository.findEnrolledStudentGuardian(UUID.fromString(schoolId), pageable);
+        return enrolledStudentGuardian.map(GuardianEssential::populateGuardian);
+    }
+
+    @Override
+    public List<Guardian> getEnrolledStudentGuardians(String schoolId, String lastname) {
+        List<GuardianEssential> guardianEssentials = enrollmentRepository.findEnrolledStudentGuardian(UUID.fromString(schoolId), "%" + lastname + "%");
+        return guardianEssentials.stream()
+                .map(GuardianEssential::populateGuardian)
+                .toList();
     }
 }
