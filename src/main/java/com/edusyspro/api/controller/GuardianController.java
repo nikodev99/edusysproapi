@@ -31,4 +31,9 @@ public class GuardianController {
     ResponseEntity<Guardian> findGuardianById(@PathVariable String guardianId) {
         return ResponseEntity.ok(guardianService.findGuardianById(guardianId));
     }
+
+    @GetMapping("/withStudent/{guardianId}")
+    ResponseEntity<Guardian> findGuardianByIdWithStudents(@PathVariable String guardianId) {
+        return ResponseEntity.ok(guardianService.findGuardianByIdWithStudents(guardianId));
+    }
 }

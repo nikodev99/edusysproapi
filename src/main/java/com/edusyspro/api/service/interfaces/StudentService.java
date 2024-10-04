@@ -5,6 +5,8 @@ import com.edusyspro.api.model.GuardianEntity;
 import com.edusyspro.api.model.HealthCondition;
 import com.edusyspro.api.dto.Student;
 
+import java.util.List;
+
 public interface StudentService {
     Student findStudentById(String id);
 
@@ -18,4 +20,5 @@ public interface StudentService {
     int updateStudentAddress(String field, Object value, long addressId);
     int updateStudentHealth(String field, Object value, String studentId);
 
+    List<Student> findStudentByGuardian(String guardianId);
 }

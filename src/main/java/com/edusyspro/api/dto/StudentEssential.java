@@ -2,50 +2,42 @@ package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.enums.Gender;
-import com.edusyspro.api.model.enums.Status;
-import com.edusyspro.api.model.HealthCondition;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class StudentEssential {
-    private UUID id;
-    private String firstName;
-    private String lastName;
-    private Gender gender;
-    private String emailId;
-    private LocalDate birthDate;
-    private String birthCity;
-    private String nationality;
-    private String dadName;
-    private String momName;
-    private String reference;
-    private String telephone;
-    private Address address;
-    private String guardianFirstName;
-    private String guardianLastName;
-    private String guardianMaidenName;
-    private Status guardianStatus;
-    private Gender guardianGenre;
-    private String guardianEmailId;
-    private String guardianJobTitle;
-    private String guardianCompany;
-    private String guardianTelephone;
-    private String guardianMobile;
-    private Address guardianAddress;
-    private HealthCondition healthCondition;
-    private String image;
-    private String currentSchoolName;
-    private String currentSchoolAbbr;
-    private ZonedDateTime createdAt;
-    private ZonedDateTime modifyAt;
+public record StudentEssential (
+    UUID id,
+    String firstName,
+    String lastName,
+    Gender gender,
+    String emailId,
+    LocalDate birthDate,
+    String birthCity,
+    String nationality,
+    String dadName,
+    String momName,
+    String reference,
+    String telephone,
+    Address address,
+    String image
+) {
+    public static Student toStudent(StudentEssential s) {
+        return Student.builder()
+                .id(s.id)
+                .firstName(s.firstName)
+                .lastName(s.lastName)
+                .gender(s.gender)
+                .emailId(s.emailId)
+                .birthDate(s.birthDate)
+                .birthCity(s.birthCity)
+                .nationality(s.nationality)
+                .dadName(s.dadName)
+                .momName(s.momName)
+                .reference(s.reference)
+                .telephone(s.telephone)
+                .address(s.address)
+                .image(s.image)
+                .build();
+    }
 }

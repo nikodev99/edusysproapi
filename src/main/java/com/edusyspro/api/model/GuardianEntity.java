@@ -63,6 +63,9 @@ public class GuardianEntity {
     @JsonIgnore
     private List<StudentEntity> students;
 
+    @Column(length = 100)
+    private String linkToStudent;
+
     private ZonedDateTime createdAt;
 
     private ZonedDateTime modifyAt;

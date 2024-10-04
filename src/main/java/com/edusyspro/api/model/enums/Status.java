@@ -4,5 +4,9 @@ public enum Status {
     MARRIED,
     SINGLE,
     WIDOW,
-    WIDOWER
+    WIDOWER,
+    DIVORCED,
+    SEPARATED,
+    PARTNERSHIP,
+    CONCUBIN
 }

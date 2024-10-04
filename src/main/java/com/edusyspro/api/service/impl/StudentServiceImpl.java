@@ -1,5 +1,6 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.StudentEssential;
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.repository.ScheduleRepository;
 import com.edusyspro.api.model.GuardianEntity;
@@ -14,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -81,6 +83,14 @@ public class StudentServiceImpl implements StudentService {
         }else {
             return pullAndSaveHealthCondition(field, value, studentId);
         }
+    }
+
+    @Override
+    public List<Student> findStudentByGuardian(String guardianId) {
+        List<StudentEssential> studentEssentials = studentRepository.findStudentByGuardianId(UUID.fromString(guardianId)).orElseThrow();
+        return studentEssentials.stream()
+                .map(StudentEssential::toStudent)
+                .toList();
     }
 
     private int pullAndSaveHealthCondition(String field, Object value, String studentId) {

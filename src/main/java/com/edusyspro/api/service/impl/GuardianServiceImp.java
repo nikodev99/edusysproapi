@@ -1,10 +1,13 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.Student;
 import com.edusyspro.api.model.GuardianEntity;
 import com.edusyspro.api.dto.Guardian;
 import com.edusyspro.api.dto.GuardianEssential;
 import com.edusyspro.api.repository.GuardianRepository;
+import com.edusyspro.api.repository.StudentRepository;
 import com.edusyspro.api.service.interfaces.GuardianService;
+import com.edusyspro.api.service.interfaces.StudentService;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,11 +23,17 @@ public class GuardianServiceImp implements GuardianService {
     private final EntityManager entityManager;
 
     private final GuardianRepository guardianRepository;
+    private final StudentService studentService;
 
     @Autowired
-    public GuardianServiceImp(EntityManager entityManager, GuardianRepository guardianRepository) {
+    public GuardianServiceImp(
+            EntityManager entityManager,
+            GuardianRepository guardianRepository,
+            StudentService studentService
+    ) {
         this.entityManager = entityManager;
         this.guardianRepository = guardianRepository;
+        this.studentService = studentService;
     }
 
     @Transactional
@@ -43,6 +52,14 @@ public class GuardianServiceImp implements GuardianService {
         if (essential != null)
             guardian = GuardianEssential.populateGuardian(essential);
 
+        return guardian;
+    }
+
+    @Override
+    public Guardian findGuardianByIdWithStudents(String guardianId) {
+        Guardian guardian = findGuardianById(guardianId);
+        List<Student> student = studentService.findStudentByGuardian(guardianId);
+        guardian.setStudentEntity(student);
         return guardian;
     }
 

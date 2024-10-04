@@ -13,6 +13,8 @@ public interface GuardianService {
 
     Guardian findGuardianById(String id);
 
+    Guardian findGuardianByIdWithStudents(String guardianId);
+
     List<Guardian> findAll();
 
 }

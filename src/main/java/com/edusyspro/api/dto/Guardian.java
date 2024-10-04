@@ -34,7 +34,10 @@ public class Guardian {
     private String telephone;
     private String mobile;
     private Address address;
-    private List<StudentEntity> studentEntity;
+
+    @JsonProperty("students")
+    private List<Student> studentEntity;
+
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
 }
