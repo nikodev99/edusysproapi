@@ -19,6 +19,7 @@ public interface StudentService {
     int updateStudent(String field, Object value, String studentId);
     int updateStudentAddress(String field, Object value, long addressId);
     int updateStudentHealth(String field, Object value, String studentId);
+    int updateStudentGuardian(String field, Object value, String guardianId);
 
     List<Student> findStudentByGuardian(String guardianId);
 }

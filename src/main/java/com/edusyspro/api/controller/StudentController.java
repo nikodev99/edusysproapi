@@ -46,7 +46,7 @@ public class StudentController {
             if (updated > 0) {
                 return ResponseEntity.ok("Modification effective");
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found or update failed");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Address not found or update failed");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }catch (Exception e) {
@@ -61,7 +61,22 @@ public class StudentController {
             if (updated > 0) {
                 return ResponseEntity.ok("Modification effective");
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found or update failed");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Health Condition not found or update failed");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/guardian/{guardianId}")
+    public ResponseEntity<String> updateStudentGuardianByField(@PathVariable String guardianId, @RequestBody StudentUpdateField student) {
+        try {
+            int updated = studentService.updateStudentGuardian(student.field(), student.value(), guardianId);
+            if (updated > 0) {
+                return ResponseEntity.ok("Modification effective");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Guardian not found or update failed");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.edusyspro.api.repository.context;
 
 import com.edusyspro.api.model.Address;
+import com.edusyspro.api.model.GuardianEntity;
 import com.edusyspro.api.model.HealthCondition;
 import com.edusyspro.api.model.StudentEntity;
 import com.edusyspro.api.service.interfaces.HealthConditionService;
@@ -20,11 +21,9 @@ import java.util.UUID;
 public class StudentUpdateContext {
 
     private final EntityManager entityManager;
-    private final HealthConditionService healthConditionService;
 
     public StudentUpdateContext(EntityManager entityManager, HealthConditionService healthConditionService) {
         this.entityManager = entityManager;
-        this.healthConditionService = healthConditionService;
     }
 
     @Modifying
@@ -78,6 +77,20 @@ public class StudentUpdateContext {
 
         update.set(student.get("healthCondition").get(field), value)
                 .where(cb.equal(student.get("id"), studentId));
+
+        return entityManager.createQuery(update).executeUpdate();
+    }
+
+    @Modifying
+    @Transactional
+    public int updateStudentGuardianByField(String field, Object value, UUID guardianId) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaUpdate<GuardianEntity> update = cb.createCriteriaUpdate(GuardianEntity.class);
+        Root<GuardianEntity> guardian = update.from(GuardianEntity.class);
+
+        update.set(guardian.get(field), value)
+                .set(guardian.get("modifyAt"), Datetime.systemDatetime())
+                .where(cb.equal(guardian.get("id"), guardianId));
 
         return entityManager.createQuery(update).executeUpdate();
     }

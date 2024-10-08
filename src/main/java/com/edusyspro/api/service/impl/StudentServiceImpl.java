@@ -86,10 +86,19 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public int updateStudentGuardian(String field, Object value, String guardianId) {
+        return studentUpdateContext.updateStudentGuardianByField(field, value, UUID.fromString(guardianId));
+    }
+
+    @Override
     public List<Student> findStudentByGuardian(String guardianId) {
         List<StudentEssential> studentEssentials = studentRepository.findStudentByGuardianId(UUID.fromString(guardianId)).orElseThrow();
         return studentEssentials.stream()
                 .map(StudentEssential::toStudent)
+                .peek(student -> {
+                    HealthCondition healthCondition = getStudentHealthCondition(student.getId().toString());
+                    student.setHealthCondition(healthCondition);
+                })
                 .toList();
     }
 
