@@ -1,5 +1,6 @@
 package com.edusyspro.api.controller;
 
+import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.Guardian;
 import com.edusyspro.api.dto.EnrolledStudent;
@@ -9,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/enroll")
@@ -38,7 +37,7 @@ public class EnrollmentController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
     ) {
-        Pageable pageable = setSort(page, size, sortCriteria);
+        Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
         return ResponseEntity.ok(enrollmentService.getEnrolledStudents(ConstantUtils.SCHOOL_ID, pageable));
     }
 
@@ -77,7 +76,7 @@ public class EnrollmentController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
     ) {
-        Pageable pageable = setSort(page, size, sortCriteria);
+        Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
         return ResponseEntity.ok(
                 enrollmentService.getEnrolledStudentGuardians(ConstantUtils.SCHOOL_ID, pageable)
         );
@@ -86,17 +85,5 @@ public class EnrollmentController {
     @GetMapping("/guardians/search/")
     ResponseEntity<List<Guardian>> fetchEnrolledStudentsGuardians(@RequestParam String q) {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudentGuardians(ConstantUtils.SCHOOL_ID, q));
-    }
-
-    private Pageable setSort(int page, int size, String sortCriteria) {
-        Pageable pageable = PageRequest.of(page, size);
-        if (sortCriteria != null && !sortCriteria.isEmpty()) {
-            List<Sort.Order> orders = Stream.of(sortCriteria.split(","))
-                    .map(criteria -> criteria.split(":"))
-                    .map(c -> new Sort.Order(Sort.Direction.fromString(c[1]), c[0]))
-                    .toList();
-            pageable = PageRequest.of(page, size, Sort.by(orders));
-        }
-        return pageable;
     }
 }

@@ -133,6 +133,12 @@ class TeacherRepositoryTest {
     }
 
     @Test
+    public void getAllTeachers() {
+        List<Teacher> teachers = teacherRepository.findAll();
+        System.out.println(teachers);
+    }
+
+    @Test
     public void getTeacherByClasseName() {
         Teacher teacher = teacherRepository.getTeacherByClassesName("CE1");
         System.out.println(teacher);
