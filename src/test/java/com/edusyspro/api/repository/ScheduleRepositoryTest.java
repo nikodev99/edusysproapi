@@ -30,11 +30,11 @@ class ScheduleRepositoryTest {
     @Test
     public void SavePrimarySchoolClassScheduleTest() {
         ClasseEntity classeEntity = getClasse(3);
-        Teacher teacher = getTeacher(classeEntity.getName());
+        //Teacher teacher = getTeacher(classeEntity.getName());
         List<Schedule> schedules = List.of(
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(teacher)
+                        //.teacher(teacher)
                         .dayOfWeek(Day.ALL_DAYS)
                         .designation("Première partie des cours")
                         .startTime(time(7, 30))
@@ -49,7 +49,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(teacher)
+                        //.teacher(teacher)
                         .dayOfWeek(Day.ALL_DAYS)
                         .designation("Deuxième partie des cours")
                         .startTime(time(9, 45))
@@ -64,7 +64,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(teacher)
+                        //.teacher(teacher)
                         .dayOfWeek(Day.ALL_DAYS)
                         .designation("Troisième partie des cours")
                         .startTime(time(11, 30))
@@ -80,7 +80,7 @@ class ScheduleRepositoryTest {
         List<Schedule> schedules = List.of(
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("FRA").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("FRA").getId()))
                         .course(getCourse("FRA"))
                         .dayOfWeek(Day.MONDAY)
                         .designation("Deux heures de Français")
@@ -89,7 +89,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("ECM").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("ECM").getId()))
                         .course(getCourse("ECM"))
                         .dayOfWeek(Day.MONDAY)
                         .designation("Une heure d'ECM")
@@ -105,7 +105,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("PC").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("PC").getId()))
                         .course(getCourse("PC"))
                         .dayOfWeek(Day.MONDAY)
                         .designation("Deux heures de Physique Chimie")
@@ -114,7 +114,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("Maths").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("Maths").getId()))
                         .course(getCourse("Maths"))
                         .dayOfWeek(Day.TUESDAY)
                         .designation("Trois heures de Maths")
@@ -130,7 +130,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("SVT").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("SVT").getId()))
                         .course(getCourse("SVT"))
                         .dayOfWeek(Day.TUESDAY)
                         .designation("Deux heures des SVT")
@@ -147,7 +147,7 @@ class ScheduleRepositoryTest {
         List<Schedule> schedules = List.of(
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("HG").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("HG").getId()))
                         .course(getCourse("HG"))
                         .dayOfWeek(Day.WEDNESDAY)
                         .designation("Deux heures de Histoire Géographie")
@@ -156,7 +156,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("EPS").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("EPS").getId()))
                         .course(getCourse("EPS"))
                         .dayOfWeek(Day.WEDNESDAY)
                         .designation("Une heure d'EPS")
@@ -172,7 +172,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("Dessin").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("Dessin").getId()))
                         .course(getCourse("Dessin"))
                         .dayOfWeek(Day.WEDNESDAY)
                         .designation("Deux heures de Dessin")
@@ -181,7 +181,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("SVT").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("SVT").getId()))
                         .course(getCourse("SVT"))
                         .dayOfWeek(Day.THURSDAY)
                         .designation("Trois heures de biologie")
@@ -197,7 +197,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("PC").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("PC").getId()))
                         .course(getCourse("PC"))
                         .dayOfWeek(Day.THURSDAY)
                         .designation("Deux heures des Physique Chimie")
@@ -214,7 +214,7 @@ class ScheduleRepositoryTest {
         List<Schedule> schedules = List.of(
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("FRA").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("FRA").getId()))
                         .course(getCourse("FRA"))
                         .dayOfWeek(Day.FRIDAY)
                         .designation("Deux heures de Histoire Français")
@@ -223,7 +223,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("Lat").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("Lat").getId()))
                         .course(getCourse("Lat"))
                         .dayOfWeek(Day.FRIDAY)
                         .designation("Une heure de Latin")
@@ -239,7 +239,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("Musc").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("Musc").getId()))
                         .course(getCourse("Musc"))
                         .dayOfWeek(Day.FRIDAY)
                         .designation("Une heure de Musique")
@@ -248,7 +248,7 @@ class ScheduleRepositoryTest {
                         .build(),
                 Schedule.builder()
                         .classeEntity(classeEntity)
-                        .teacher(getTeacher(classeEntity.getName(), getCourse("Math").getId()))
+                        //.teacher(getTeacher(classeEntity.getName(), getCourse("Math").getId()))
                         .course(getCourse("Math"))
                         .dayOfWeek(Day.FRIDAY)
                         .designation("Une heure de Math")
@@ -265,14 +265,6 @@ class ScheduleRepositoryTest {
 
     private Course getCourse(String abbr) {
         return courseRepository.getCourseByAbbrContainingIgnoreCase(abbr);
-    }
-
-    private Teacher getTeacher(String className) {
-        return teacherRepository.getTeacherByClassesName(className);
-    }
-
-    private Teacher getTeacher(String className, int courseId) {
-        return teacherRepository.getTeacherByClassesNameAndCourseId(className, courseId);
     }
 
     private LocalTime time(int hour, int minute) {

@@ -2,6 +2,7 @@ package com.edusyspro.api.model;
 
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.utils.Datetime;
+import com.edusyspro.api.utils.JpaConverter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -78,6 +79,9 @@ public class StudentEntity {
 
     @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL)
     private List<Attendance> attendances;
+
+    @Convert(converter = JpaConverter.class)
+    private List<String> attachments;
 
     private ZonedDateTime createdAt;
 

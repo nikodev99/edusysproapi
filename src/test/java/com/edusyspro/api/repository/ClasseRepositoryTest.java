@@ -149,34 +149,6 @@ class ClasseRepositoryTest {
     }
 
     @Test
-    public void printAllTeachersOfAClasse() {
-        ClasseEntity classeEntity = classeRepository.getClasseById(11);
-        classeEntity.getTeachers().forEach(t -> System.out.println("Name=" + t.getFirstName() + "\nClasse=" + t.getAClasses() + "\nCours=" + t.getCourses() +"\n------------------"));
-    }
-
-    @Test
-    public void printAllTeachersOfClasse() {
-        ClasseEntity classeEntity = classeRepository.getClasseById(12);
-        List<Teacher> teachers = classeEntity.getTeachers();
-        List<List<Course>> courseLits = teachers.stream().map(Teacher::getCourses).toList();
-        courseLits.forEach(c -> System.out.println("Courses=" + c + "\n-------------------------"));
-    }
-
-    @Test
-    public void printTeacherOfPrimary() {
-        List<ClasseEntity> classeEntityList = classeRepository.getClassesByGradeSection(Section.PRIMAIRE);
-        List<List<Teacher>> teachers = classeEntityList.stream().map(ClasseEntity::getTeachers).toList();
-        teachers.forEach(System.out::println);
-    }
-
-    @Test
-    public void printTeacherOfSecondaryClass() {
-        ClasseEntity classeEntity = classeRepository.getClasseById(11);
-        List<Teacher> teachers = classeEntity.getTeachers();
-        teachers.forEach(t -> System.out.println("Proj de 6e=" + t));
-    }
-
-    @Test
     public void printClassSchedule() {
         ClasseEntity classeEntity = classeRepository.getClasseById(7);
         List<Schedule> schedules = classeEntity.getSchedule();

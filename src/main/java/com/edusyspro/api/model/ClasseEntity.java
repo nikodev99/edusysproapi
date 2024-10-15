@@ -56,9 +56,9 @@ public class ClasseEntity {
     @JsonIgnore
     private List<EnrollmentEntity> students;
 
-    @ManyToMany(mappedBy = "aClasses", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "classe", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JsonIgnore
-    private List<Teacher> teachers;
+    private List<TeacherClassCourse> classTeacherCourses;
 
     private double monthCost;
 

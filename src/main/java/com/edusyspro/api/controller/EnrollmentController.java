@@ -31,7 +31,7 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.enrollStudent(enrollment));
     }
 
-    @GetMapping()
+    @GetMapping
     ResponseEntity<Page<EnrolledStudent>> getEnrolledStudents(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,

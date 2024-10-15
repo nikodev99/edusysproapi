@@ -4,16 +4,8 @@ import com.arakelian.faker.model.Gender;
 import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
-import com.edusyspro.api.model.ClasseEntity;
+import com.edusyspro.api.model.*;
 import com.edusyspro.api.model.enums.Status;
-import com.edusyspro.api.model.Address;
-import com.edusyspro.api.model.Course;
-import com.edusyspro.api.model.Teacher;
-import com.edusyspro.api.model.AcademicYear;
-import com.edusyspro.api.model.School;
-import com.edusyspro.api.model.EnrollmentEntity;
-import com.edusyspro.api.model.GuardianEntity;
-import com.edusyspro.api.model.StudentEntity;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -30,21 +22,20 @@ public class Fake {
     public static List<Teacher> getMultipleTeachers(
             int numberOfTeacher,
             School school,
-            ClasseEntity[][] aClasses,
-            Course[][] courses
+            TeacherClassCourse[][] teacherClassCoursesList
     ) {
         List<Teacher> teachers = new ArrayList<>();
         for (int i = 0; i < numberOfTeacher; i++) {
-            Course[] course = null;
-            if (courses != null && i < courses.length && courses[i] != null) {
-                course = courses[i];
+            TeacherClassCourse[] teacherClassCourse = null;
+            if (teacherClassCoursesList != null && i < teacherClassCoursesList.length && teacherClassCoursesList[i] != null) {
+                teacherClassCourse = teacherClassCoursesList[i];
             }
-            teachers.add(getTeacher(school, aClasses[i], course));
+            teachers.add(getTeacher(school, teacherClassCourse));
         }
         return teachers;
     }
 
-    public static Teacher getTeacher(School school, ClasseEntity[] aClasses, Course[] courses) {
+    public static Teacher getTeacher(School school, TeacherClassCourse[] teacherClassCoursesList) {
         Person p = RandomPerson.get().next();
         com.arakelian.faker.model.Address a = RandomAddress.get().next();
 
@@ -52,9 +43,7 @@ public class Fake {
         int number = Integer.parseInt(streetParts[0]);
         String street = streetParts[1];
 
-        List<Course> courseList = courses != null ? Arrays.stream(courses).filter(c -> c.getId() != 0).toList() : new ArrayList<>();
-
-        return Teacher.builder()
+        Teacher teacher =  Teacher.builder()
                 .birthDate(LocalDate.from(p.getBirthdate()))
                 .emailId((oneWord(randomWord()) + "@" + oneWord(randomWord(3)) + "." + oneWord(randomWord(3))).toLowerCase())
                 .firstName(p.getFirstName())
@@ -73,11 +62,15 @@ public class Fake {
                         .zipCode(a.getPostalCode())
                         .build()
                 )
-                .aClasses(List.of(aClasses))
-                .courses(courseList.isEmpty() ? null : courseList)
                 .school(school)
                 .salaryByHour(1500.00)
                 .build();
+
+        Arrays.stream(teacherClassCoursesList).toList().forEach(t -> t.setTeacher(teacher));
+
+        teacher.setTeacherClassCourses(List.of(teacherClassCoursesList));
+
+        return teacher;
     }
 
     public static List<StudentEntity> getStudents(int numberOfStudents, School school) {
@@ -138,6 +131,30 @@ public class Fake {
         return IntStream.range(0, numberOfStudents)
                 .mapToObj(i -> setEnrollment(academicYear, school, classeEntity))
                 .toList();
+    }
+
+    public static List<TeacherClassCourse> createTeacherClassCourses(Teacher teacher, List<Course> courses, List<ClasseEntity> classes) {
+        List<TeacherClassCourse> teacherClassCourseList = new ArrayList<>();
+        for (ClasseEntity classe : classes) {
+            if (courses != null && !courses.isEmpty()) {
+                for (Course course : courses) {
+                    TeacherClassCourse teacherClassCourse = TeacherClassCourse.builder()
+                            .teacher(teacher)
+                            .course(course)
+                            .classe(classe)
+                            .build();
+                    teacherClassCourseList.add(teacherClassCourse);
+                }
+            }else {
+                TeacherClassCourse teacherClassCourse = TeacherClassCourse.builder()
+                        .teacher(teacher)
+                        .course(null)
+                        .classe(classe)
+                        .build();
+                teacherClassCourseList.add(teacherClassCourse);
+            }
+        }
+        return teacherClassCourseList;
     }
 
     private static EnrollmentEntity setEnrollment(AcademicYear academicYear, School school, ClasseEntity classeEntity) {

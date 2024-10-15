@@ -1,15 +1,15 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Address;
-import com.edusyspro.api.model.ClasseEntity;
-import com.edusyspro.api.model.Course;
 import com.edusyspro.api.model.School;
+import com.edusyspro.api.model.TeacherClassCourse;
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.model.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -27,15 +27,22 @@ public class Teacher{
     private String maidenName;
     private Status status;
     private LocalDate birthDate;
+    private String cityOfBirth;
+    private String nationality;
     private Gender gender;
     private Address address;
     private String emailId;
     private String telephone;
     private LocalDate hireDate;
-    private List<ClasseEntity> aClasses;
-    private List<Course> courses;
+    private List<TeacherClassCourse> teacherClassCourses;
     private double salaryByHour;
     private School school;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
+
+    public static Teacher fromEntity(com.edusyspro.api.model.Teacher teacher){
+        Teacher copiedTeacher = new Teacher();
+        BeanUtils.copyProperties(teacher, copiedTeacher);
+        return copiedTeacher;
+    }
 }
