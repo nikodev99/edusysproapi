@@ -3,9 +3,6 @@ package com.edusyspro.api.repository;
 import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.model.Course;
 import com.edusyspro.api.model.Teacher;
-import com.edusyspro.api.model.TeacherClassCourse;
-import com.edusyspro.api.utils.Fake;
-import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,44 +22,6 @@ class TeacherRepositoryTest {
 
     @Autowired
     private CourseRepository courseRepository;
-
-    @Test
-    public void testSaveTwoTeachers() {
-        Course french = getCourse("FRA"); Course math = getCourse("Math");Course physique = getCourse("PC");
-        Course histoire = getCourse("HG");Course anglais = getCourse("Ang");
-        ClasseEntity sixieme = getClasse(7); ClasseEntity cinquieme = getClasse(8); ClasseEntity quatrieme = getClasse(9);
-        ClasseEntity troisieme = getClasse(10); ClasseEntity seconde = getClasse(11);
-        List<Teacher> teachers = Fake.getMultipleTeachers(
-                2,
-                MockUtils.SCHOOL_MOCK,
-                new TeacherClassCourse[][]{
-                        new TeacherClassCourse[]{
-                                TeacherClassCourse.builder()
-                                        .course(math)
-                                        .classe(quatrieme)
-                                        .build(),
-                                TeacherClassCourse.builder()
-                                        .course(physique)
-                                        .classe(troisieme)
-                                        .build()
-                        },
-                        new TeacherClassCourse[]{
-                                TeacherClassCourse.builder()
-                                        .course(physique)
-                                        .classe(quatrieme)
-                                        .build()
-                        }
-                }
-        );
-        teacherRepository.saveAll(teachers);
-    }
-
-    @Test
-    public void testGetTeacherById() {
-        List<TeacherClassCourse> teacher =  teacherRepository.findTeacherByClassesAndCourses(UUID.fromString("143ecd9f-e67d-47bc-8b90-4583b4d505cc"));
-        System.out.println("Teacher: " + teacher);
-    }
-
 
     @Test
     public void getTeacher() {

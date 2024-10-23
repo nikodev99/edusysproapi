@@ -1,10 +1,9 @@
 package com.edusyspro.api.dto;
 
-import com.edusyspro.api.model.Address;
-import com.edusyspro.api.model.School;
-import com.edusyspro.api.model.TeacherClassCourse;
+import com.edusyspro.api.model.*;
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.model.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +33,9 @@ public class Teacher{
     private String emailId;
     private String telephone;
     private LocalDate hireDate;
-    private List<TeacherClassCourse> teacherClassCourses;
+    private List<Course> courses;
+    @JsonProperty("classes")
+    private List<ClasseEntity> aClasses;
     private double salaryByHour;
     private School school;
     private ZonedDateTime createdAt;
@@ -42,6 +43,12 @@ public class Teacher{
 
     public static Teacher fromEntity(com.edusyspro.api.model.Teacher teacher){
         Teacher copiedTeacher = new Teacher();
+        BeanUtils.copyProperties(teacher, copiedTeacher);
+        return copiedTeacher;
+    }
+
+    public static com.edusyspro.api.model.Teacher toEntity(Teacher teacher){
+        com.edusyspro.api.model.Teacher copiedTeacher = com.edusyspro.api.model.Teacher.builder().build();
         BeanUtils.copyProperties(teacher, copiedTeacher);
         return copiedTeacher;
     }

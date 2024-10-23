@@ -4,6 +4,7 @@ import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.model.enums.Status;
 import com.edusyspro.api.utils.JpaConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -63,10 +65,22 @@ public class Teacher {
 
     private LocalDate hireDate;
 
-    @OneToMany(mappedBy = "teacher", cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH
-    }, fetch = FetchType.EAGER)
-    private List<TeacherClassCourse> teacherClassCourses;
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "class_teacher",
+            joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "class_id", referencedColumnName = "id")
+    )
+    @JsonProperty("classes")
+    private List<ClasseEntity> aClasses;
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "teacher_courses",
+            joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id")
+    )
+    private List<Course> courses;
 
     private double salaryByHour;
 
@@ -93,6 +107,13 @@ public class Teacher {
         modifyAt = ZonedDateTime.now();
     }
 
+    public void addCourse(Course course) {
+        if (courses == null) {
+            courses = new ArrayList<>();
+        }
+        courses.add(course);
+    }
+
     @Override
     public String toString() {
         return "Teacher{" +
@@ -110,7 +131,6 @@ public class Teacher {
                 ", image='" + image + '\'' +
                 ", telephone='" + telephone + '\'' +
                 ", hireDate=" + hireDate +
-                ", teacherClassCourses=" + teacherClassCourses +
                 ", salaryByHour=" + salaryByHour +
                 ", attachments=" + attachments +
                 //", school=" + school +

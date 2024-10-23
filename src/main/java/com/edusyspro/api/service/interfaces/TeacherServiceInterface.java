@@ -5,5 +5,5 @@ import com.edusyspro.api.service.CustomService;
 
 import java.util.UUID;
 
-public interface TeacherService extends CustomService<Teacher, UUID> {
+public interface TeacherServiceInterface extends CustomService<Teacher, UUID> {
 }

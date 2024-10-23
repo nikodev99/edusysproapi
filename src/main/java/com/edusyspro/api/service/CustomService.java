@@ -28,6 +28,8 @@ public interface CustomService<T, U> {
 
     T fetchOneById(U id);
 
+    T fetchOneById(U id, String schoolId);
+
     T fetchOneById(U id, Object ...args);
 
     int update(T entity);

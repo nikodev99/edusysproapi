@@ -70,6 +70,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Course fetchOneById(Integer id, String schoolId) {
+        return null;
+    }
+
+    @Override
     public Course fetchOneById(Integer id, Object... args) {
         return null;
     }

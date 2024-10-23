@@ -20,16 +20,16 @@ public class TeacherClassCourse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     @JsonIgnore
     private Teacher teacher;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "classe_id", referencedColumnName = "id")
     private ClasseEntity classe;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 

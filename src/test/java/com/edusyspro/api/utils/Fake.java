@@ -22,20 +22,21 @@ public class Fake {
     public static List<Teacher> getMultipleTeachers(
             int numberOfTeacher,
             School school,
-            TeacherClassCourse[][] teacherClassCoursesList
+            ClasseEntity[][] classes,
+            Course[][] courses
     ) {
         List<Teacher> teachers = new ArrayList<>();
         for (int i = 0; i < numberOfTeacher; i++) {
-            TeacherClassCourse[] teacherClassCourse = null;
-            if (teacherClassCoursesList != null && i < teacherClassCoursesList.length && teacherClassCoursesList[i] != null) {
-                teacherClassCourse = teacherClassCoursesList[i];
+            Course[] course = null;
+            if (courses != null && i < courses.length && courses[i] != null) {
+                course = courses[i];
             }
-            teachers.add(getTeacher(school, teacherClassCourse));
+            teachers.add(getTeacher(school, course, classes[i]));
         }
         return teachers;
     }
 
-    public static Teacher getTeacher(School school, TeacherClassCourse[] teacherClassCoursesList) {
+    public static Teacher getTeacher(School school, Course[] courses, ClasseEntity[] classes) {
         Person p = RandomPerson.get().next();
         com.arakelian.faker.model.Address a = RandomAddress.get().next();
 
@@ -43,7 +44,9 @@ public class Fake {
         int number = Integer.parseInt(streetParts[0]);
         String street = streetParts[1];
 
-        Teacher teacher =  Teacher.builder()
+        List<Course> courseList = courses != null ? Arrays.stream(courses).filter(c -> c.getId() != 0).toList() : new ArrayList<>();
+
+        return Teacher.builder()
                 .birthDate(LocalDate.from(p.getBirthdate()))
                 .emailId((oneWord(randomWord()) + "@" + oneWord(randomWord(3)) + "." + oneWord(randomWord(3))).toLowerCase())
                 .firstName(p.getFirstName())
@@ -52,6 +55,7 @@ public class Fake {
                 .status(randomStatus())
                 .telephone(randomNumber())
                 .hireDate(randomDate())
+                .cityOfBirth(a.getCity())
                 .address(Address.builder()
                         .borough(randomWord())
                         .city(a.getCity())
@@ -62,15 +66,11 @@ public class Fake {
                         .zipCode(a.getPostalCode())
                         .build()
                 )
+                .courses(courseList.isEmpty() ? null : courseList)
+                .classes(List.of(classes))
                 .school(school)
                 .salaryByHour(1500.00)
                 .build();
-
-        Arrays.stream(teacherClassCoursesList).toList().forEach(t -> t.setTeacher(teacher));
-
-        teacher.setTeacherClassCourses(List.of(teacherClassCoursesList));
-
-        return teacher;
     }
 
     public static List<StudentEntity> getStudents(int numberOfStudents, School school) {
@@ -131,30 +131,6 @@ public class Fake {
         return IntStream.range(0, numberOfStudents)
                 .mapToObj(i -> setEnrollment(academicYear, school, classeEntity))
                 .toList();
-    }
-
-    public static List<TeacherClassCourse> createTeacherClassCourses(Teacher teacher, List<Course> courses, List<ClasseEntity> classes) {
-        List<TeacherClassCourse> teacherClassCourseList = new ArrayList<>();
-        for (ClasseEntity classe : classes) {
-            if (courses != null && !courses.isEmpty()) {
-                for (Course course : courses) {
-                    TeacherClassCourse teacherClassCourse = TeacherClassCourse.builder()
-                            .teacher(teacher)
-                            .course(course)
-                            .classe(classe)
-                            .build();
-                    teacherClassCourseList.add(teacherClassCourse);
-                }
-            }else {
-                TeacherClassCourse teacherClassCourse = TeacherClassCourse.builder()
-                        .teacher(teacher)
-                        .course(null)
-                        .classe(classe)
-                        .build();
-                teacherClassCourseList.add(teacherClassCourse);
-            }
-        }
-        return teacherClassCourseList;
     }
 
     private static EnrollmentEntity setEnrollment(AcademicYear academicYear, School school, ClasseEntity classeEntity) {

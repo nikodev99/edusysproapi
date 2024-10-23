@@ -2,13 +2,11 @@ package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.School;
-import com.edusyspro.api.model.TeacherClassCourse;
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.model.enums.Status;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.UUID;
 
 public record TeacherEssential(
@@ -25,7 +23,6 @@ public record TeacherEssential(
         String emailId,
         String telephone,
         LocalDate hireDate,
-        List<TeacherClassCourse> teacherClassCourses,
         double salaryByHour,
         UUID schoolId,
         String schoolName,
@@ -47,7 +44,6 @@ public record TeacherEssential(
                 .emailId(emailId)
                 .telephone(telephone)
                 .hireDate(hireDate)
-                .teacherClassCourses(teacherClassCourses)
                 .salaryByHour(salaryByHour)
                 .school(School.builder()
                         .id(schoolId)
