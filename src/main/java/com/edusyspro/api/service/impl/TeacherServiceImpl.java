@@ -1,13 +1,16 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.ClassBasicValue;
+import com.edusyspro.api.dto.CourseBasicValue;
 import com.edusyspro.api.dto.Teacher;
+import com.edusyspro.api.dto.TeacherEssential;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
+import com.edusyspro.api.model.Course;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.service.interfaces.ScheduleService;
 import com.edusyspro.api.service.interfaces.TeacherServiceInterface;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,8 +60,15 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public Page<Teacher> fetchAll(String schoolId, Pageable pageable) {
-        Page<com.edusyspro.api.model.Teacher> teacherEssentials = teacherRepository.findAllBySchoolId(UUID.fromString(schoolId), pageable);
-        return teacherEssentials.map(Teacher::fromEntity);
+        Page<TeacherEssential> teacherEssentials = teacherRepository.findAllBySchoolId(UUID.fromString(schoolId), pageable);
+        return teacherEssentials.map((t) -> {
+            Teacher teacher = t.toTeacher();
+            List<CourseBasicValue> courses = teacherRepository.findTeacherCourses(t.id(), UUID.fromString(schoolId));
+            List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(t.id(), UUID.fromString(schoolId));
+            teacher.setCourses(courses.stream().map(CourseBasicValue::toCourse).toList());
+            teacher.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
+            return teacher;
+        });
     }
 
     @Override

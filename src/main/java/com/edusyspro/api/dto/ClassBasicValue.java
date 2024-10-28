@@ -1,4 +1,5 @@
 package com.edusyspro.api.dto;
+import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.model.Grade;
 import com.edusyspro.api.model.enums.Section;
 
@@ -8,8 +9,8 @@ public record ClassBasicValue (
         String category,
         Section section
 ){
-    public Classe toClasse(){
-        return Classe.builder()
+    public ClasseEntity toClasse(){
+        return ClasseEntity.builder()
                 .id(id)
                 .name(name)
                 .category(category)

@@ -7,6 +7,7 @@ import com.edusyspro.api.model.enums.Status;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public record TeacherEssential(
