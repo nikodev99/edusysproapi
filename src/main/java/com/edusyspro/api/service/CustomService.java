@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CustomService<T, U> {
 
@@ -38,4 +39,9 @@ public interface CustomService<T, U> {
 
     int delete(T entity);
 
+    Map<String, Long> count(U id);
+
+    Map<String, Long> count(String schoolId);
+
+    Map<String, Long> count(Object ...args);
 }

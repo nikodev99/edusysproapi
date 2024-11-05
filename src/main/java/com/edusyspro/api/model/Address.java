@@ -37,20 +37,4 @@ public class Address {
 
     @Column(length = 100)
     private String country;
-
-    private ZonedDateTime createdAt;
-
-    private ZonedDateTime modifyAt;
-
-    @PrePersist
-    public void prePersist() {
-        createdAt = ZonedDateTime.now();
-        modifyAt = ZonedDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        modifyAt = ZonedDateTime.now();
-    }
-
 }

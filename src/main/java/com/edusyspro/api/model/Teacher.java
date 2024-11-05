@@ -87,6 +87,8 @@ public class Teacher {
     @Convert(converter = JpaConverter.class)
     private List<String> attachments;
 
+    private CourseProgram courseProgram;
+
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     @JsonIgnore

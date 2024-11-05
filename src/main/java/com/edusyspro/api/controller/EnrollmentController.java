@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/enroll")
@@ -85,5 +86,10 @@ public class EnrollmentController {
     @GetMapping("/guardians/search/")
     ResponseEntity<List<Guardian>> fetchEnrolledStudentsGuardians(@RequestParam String q) {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudentGuardians(ConstantUtils.SCHOOL_ID, q));
+    }
+
+    @GetMapping("/count")
+    ResponseEntity<Map<String, Long>> countStudents() {
+        return ResponseEntity.ok(enrollmentService.countStudents(ConstantUtils.SCHOOL_ID));
     }
 }

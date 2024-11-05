@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -92,5 +93,20 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public int delete(Course entity) {
         return 0;
+    }
+
+    @Override
+    public Map<String, Long> count(Integer id) {
+        return Map.of();
+    }
+
+    @Override
+    public Map<String, Long> count(String schoolId) {
+        return Map.of();
+    }
+
+    @Override
+    public Map<String, Long> count(Object... args) {
+        return Map.of();
     }
 }

@@ -75,4 +75,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
             and (lower(e.student.guardian.lastName) like lower(?2) or lower(e.student.guardian.firstName) like lower(?2) ) order by e.student.guardian.lastName asc
     """)
     List<GuardianEssential> findEnrolledStudentGuardian(UUID schoolId, String lastName);
+
+    @Query("select count(e.id) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true")
+    Long countAllStudents(UUID schoolId);
 }

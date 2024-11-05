@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -113,6 +114,21 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public int delete(Schedule entity) {
         return 0;
+    }
+
+    @Override
+    public Map<String, Long> count(Long id) {
+        return Map.of();
+    }
+
+    @Override
+    public Map<String, Long> count(String schoolId) {
+        return Map.of();
+    }
+
+    @Override
+    public Map<String, Long> count(Object... args) {
+        return Map.of();
     }
 
     private Day currentDay(Section section) {

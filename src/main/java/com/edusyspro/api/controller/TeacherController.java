@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/teachers")
@@ -58,5 +60,10 @@ public class TeacherController {
     @GetMapping("/search/")
     ResponseEntity<List<Teacher>> getSearchedTeachers(@RequestParam String q) {
         return ResponseEntity.ok(teacherService.findAllTeachers(ConstantUtils.SCHOOL_ID, q));
+    }
+
+    @GetMapping("/{id}/count_student")
+    ResponseEntity<Map<String, Long>> getTeacherStudentCounts(@PathVariable String id) {
+        return ResponseEntity.ok(teacherService.count(UUID.fromString(id)));
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class TeacherServiceImpl implements TeacherServiceInterface {
@@ -127,6 +128,21 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     @Override
     public int delete(Teacher entity) {
         return 0;
+    }
+
+    @Override
+    public Map<String, Long> count(UUID id) {
+        return Map.of("count", teacherRepository.countTeacherStudents(id));
+    }
+
+    @Override
+    public Map<String, Long> count(String schoolId) {
+        return Map.of();
+    }
+
+    @Override
+    public Map<String, Long> count(Object... args) {
+        return Map.of();
     }
 
     private boolean teacherEmailExists(Teacher teacher) {

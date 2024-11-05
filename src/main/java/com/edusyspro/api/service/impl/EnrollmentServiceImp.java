@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -140,5 +141,10 @@ public class EnrollmentServiceImp implements EnrollmentService {
         return guardianEssentials.stream()
                 .map(GuardianEssential::populateGuardian)
                 .toList();
+    }
+
+    @Override
+    public Map<String, Long> countStudents(String schoolId) {
+        return Map.of("count", enrollmentRepository.countAllStudents(UUID.fromString(schoolId)));
     }
 }

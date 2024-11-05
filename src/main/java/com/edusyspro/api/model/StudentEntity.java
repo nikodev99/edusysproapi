@@ -59,7 +59,7 @@ public class StudentEntity {
     @Column(length = 50)
     private String telephone;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
