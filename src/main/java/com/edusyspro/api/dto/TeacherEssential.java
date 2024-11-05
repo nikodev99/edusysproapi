@@ -1,13 +1,13 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Address;
+import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.model.enums.Status;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.UUID;
 
 public record TeacherEssential(
@@ -34,16 +34,19 @@ public record TeacherEssential(
     public Teacher toTeacher() {
         return Teacher.builder()
                 .id(id)
-                .firstName(firstName)
-                .lastName(lastName)
-                .maidenName(maidenName)
-                .status(status)
-                .birthDate(birthDate)
-                .cityOfBirth(cityOfBirth)
-                .gender(gender)
-                .address(address)
-                .emailId(emailId)
-                .telephone(telephone)
+                .personalInfo(Individual.builder()
+                        .firstName(firstName)
+                        .lastName(lastName)
+                        .maidenName(maidenName)
+                        .status(status)
+                        .birthDate(birthDate)
+                        .birthCity(cityOfBirth)
+                        .gender(gender)
+                        .address(address)
+                        .emailId(emailId)
+                        .telephone(telephone)
+                        .build()
+                )
                 .hireDate(hireDate)
                 .salaryByHour(salaryByHour)
                 .school(School.builder()

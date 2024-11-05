@@ -5,7 +5,6 @@ import com.edusyspro.api.model.GuardianEntity;
 import com.edusyspro.api.dto.Guardian;
 import com.edusyspro.api.dto.GuardianEssential;
 import com.edusyspro.api.repository.GuardianRepository;
-import com.edusyspro.api.repository.StudentRepository;
 import com.edusyspro.api.service.interfaces.GuardianService;
 import com.edusyspro.api.service.interfaces.StudentService;
 import jakarta.persistence.EntityManager;

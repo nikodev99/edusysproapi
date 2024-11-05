@@ -1,8 +1,5 @@
 package com.edusyspro.api.model;
 
-import com.edusyspro.api.model.enums.Gender;
-import com.edusyspro.api.model.enums.Status;
-import com.edusyspro.api.utils.JpaConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -32,36 +29,9 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String firstName;
-
-    private String lastName;
-
-    private String maidenName;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private Status status;
-
-    private LocalDate birthDate;
-
-    private String cityOfBirth;
-
-    private String nationality;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private Gender gender;
-
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private Address address;
-
-    @Column(name = "email")
-    private String emailId;
-
-    private String image;
-
-    private String telephone;
+    @JoinColumn(name = "personal_info", referencedColumnName = "id")
+    private Individual personalInfo;
 
     private LocalDate hireDate;
 
@@ -84,10 +54,9 @@ public class Teacher {
 
     private double salaryByHour;
 
-    @Convert(converter = JpaConverter.class)
-    private List<String> attachments;
-
-    private CourseProgram courseProgram;
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "program_id", referencedColumnName = "id")
+    private List<CourseProgram> courseProgram;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
@@ -114,30 +83,5 @@ public class Teacher {
             courses = new ArrayList<>();
         }
         courses.add(course);
-    }
-
-    @Override
-    public String toString() {
-        return "Teacher{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", maidenName='" + maidenName + '\'' +
-                ", status=" + status +
-                ", birthDate=" + birthDate +
-                ", cityOfBirth='" + cityOfBirth + '\'' +
-                ", nationality='" + nationality + '\'' +
-                ", gender=" + gender +
-                //", address=" + address +
-                ", emailId='" + emailId + '\'' +
-                ", image='" + image + '\'' +
-                ", telephone='" + telephone + '\'' +
-                ", hireDate=" + hireDate +
-                ", salaryByHour=" + salaryByHour +
-                ", attachments=" + attachments +
-                //", school=" + school +
-                ", createdAt=" + createdAt +
-                ", modifyAt=" + modifyAt +
-                '}';
     }
 }

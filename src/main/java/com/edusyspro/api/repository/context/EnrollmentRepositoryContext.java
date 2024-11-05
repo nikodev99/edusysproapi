@@ -41,9 +41,12 @@ public class EnrollmentRepositoryContext {
 
     private String getStatement() {
         String randomFunction = activeProfile.contains("mysql") ? "rand()" : "random()";
-        return " select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.firstName, e.student.lastName, " +
-            "e.student.gender, e.student.emailId, e.student.birthDate, e.student.birthCity, e.student.nationality, e.student.reference, " +
-            "e.student.image, e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost, e.student.dadName, e.student.momName) from EnrollmentEntity e " +
-            "where e.academicYear.school.id = ?1 and e.student.id <> ?2 and e.classe.id = ?3 and e.academicYear.current = true and e.isArchived = false order by " + randomFunction;
+
+        return "select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.firstName, "+
+                "e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate, "+
+                "e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image, "+
+                "e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost, "+
+                "e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.student.id <> ?2 and e.classe.id = ?3 " +
+                "and e.academicYear.current = true and e.isArchived = false order by " + randomFunction;
     }
 }

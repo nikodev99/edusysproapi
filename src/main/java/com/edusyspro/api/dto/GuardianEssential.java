@@ -1,6 +1,7 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Address;
+import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.model.enums.Status;
 
@@ -26,17 +27,20 @@ public record GuardianEssential (
     public static Guardian populateGuardian(GuardianEssential g) {
         return Guardian.builder()
                 .id(g.id)
-                .firstName(g.firstName)
-                .lastName(g.lastName)
-                .maidenName(g.maidenName)
-                .status(g.status)
-                .genre(g.genre)
-                .emailId(g.emailId)
+                .personalInfo(Individual.builder()
+                        .firstName(g.firstName)
+                        .lastName(g.lastName)
+                        .maidenName(g.maidenName)
+                        .status(g.status)
+                        .gender(g.genre)
+                        .emailId(g.emailId)
+                        .telephone(g.telephone)
+                        .mobile(g.mobile)
+                        .address(g.address)
+                        .build()
+                )
                 .jobTitle(g.jobTitle)
                 .company(g.company)
-                .telephone(g.telephone)
-                .mobile(g.mobile)
-                .address(g.address)
                 .createdAt(g.createdAt)
                 .modifyAt(g.modifyAt)
                 .build();

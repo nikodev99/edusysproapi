@@ -27,37 +27,13 @@ public class GuardianEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String firstName;
-
-    private String lastName;
-
-    private String maidenName;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private Status status;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    @JsonProperty("gender")
-    private Gender genre;
-
-    @Column(name = "email", unique = true, length = 100)
-    private String emailId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "personal_info", referencedColumnName = "id")
+    private Individual personalInfo;
 
     private String jobTitle;
 
     private String company;
-
-    @Column(length = 50)
-    private String telephone;
-
-    @Column(length = 50)
-    private String mobile;
-
-    @OneToOne(cascade = {CascadeType.ALL, CascadeType.MERGE})
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private Address address;
 
     @OneToMany(mappedBy = "guardian", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
@@ -79,26 +55,5 @@ public class GuardianEntity {
     @PreUpdate
     public void preUpdate() {
         modifyAt = Datetime.systemDatetime();
-    }
-
-    @Override
-    public String toString() {
-        return "Guardian{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", maidenName='" + maidenName + '\'' +
-                ", status=" + status +
-                ", genre=" + genre +
-                ", emailId='" + emailId + '\'' +
-                ", jobTitle='" + jobTitle + '\'' +
-                ", company='" + company + '\'' +
-                ", telephone='" + telephone + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", address=" + address +
-                //", student=" + student +
-                ", createdAt=" + createdAt +
-                ", modifyAt=" + modifyAt +
-                '}';
     }
 }

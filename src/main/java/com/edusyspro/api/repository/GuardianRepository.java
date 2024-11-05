@@ -12,12 +12,16 @@ import java.util.UUID;
 @Repository
 public interface GuardianRepository extends JpaRepository<GuardianEntity, UUID> {
 
-    @Query("select new com.edusyspro.api.dto.GuardianEssential(g.id, g.firstName, g.lastName, g.maidenName, g.status, g.genre, g.emailId, " +
-            "g.jobTitle, g.company, g.telephone, g.mobile, g.address, g.createdAt, g.modifyAt) from GuardianEntity g where g.id = ?1")
+    @Query("select new com.edusyspro.api.dto.GuardianEssential(g.id, g.personalInfo.firstName, g.personalInfo.lastName, " +
+            "g.personalInfo.maidenName, g.personalInfo.status, g.personalInfo.gender, g.personalInfo.emailId, " +
+            "g.jobTitle, g.company, g.personalInfo.telephone, g.personalInfo.mobile, g.personalInfo.address, g.createdAt, g.modifyAt) " +
+            "from GuardianEntity g where g.id = ?1")
     GuardianEssential findGuardianEntityById(UUID id);
 
-    @Query("select new com.edusyspro.api.dto.GuardianEssential(g.id, g.firstName, g.lastName, g.maidenName, g.status, g.genre, g.emailId, " +
-            "g.jobTitle, g.company, g.telephone, g.mobile, g.address, g.createdAt, g.modifyAt) from GuardianEntity g")
+    @Query("select new com.edusyspro.api.dto.GuardianEssential(g.id, g.personalInfo.firstName, g.personalInfo.lastName, " +
+            "g.personalInfo.maidenName, g.personalInfo.status, g.personalInfo.gender, g.personalInfo.emailId, " +
+            "g.jobTitle, g.company, g.personalInfo.telephone, g.personalInfo.mobile, g.personalInfo.address, g.createdAt, g.modifyAt) " +
+            "from GuardianEntity g")
     List<GuardianEssential> findAllGuardians();
 
 }

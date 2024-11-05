@@ -18,7 +18,7 @@ public interface StudentRepository extends JpaRepository<StudentEntity, UUID> {
 
     StudentEntity findStudentEntityById(UUID id);
 
-    @Query("select s.address from StudentEntity s where s.id = ?1")
+    @Query("select s.personalInfo.address from StudentEntity s where s.id = ?1")
     Optional<Address> findStudentEntityAddressByStudentId(UUID id);
 
     @Query("select s.guardian from StudentEntity s where s.id = ?1")
@@ -28,9 +28,10 @@ public interface StudentRepository extends JpaRepository<StudentEntity, UUID> {
     Optional<HealthCondition> findStudentEntityHealthConditionByStudentId(UUID id);
 
     @Query("""
-            select new com.edusyspro.api.dto.StudentEssential(s.id, s.firstName, s.lastName, s.gender, s.emailId, s.birthDate, \
-            s.birthCity, s.nationality, s.dadName, s.momName, s.reference, s.telephone, s.address, s.image) \
-            from StudentEntity s where s.guardian.id = ?1
+            select new com.edusyspro.api.dto.StudentEssential(s.id, s.personalInfo.firstName, s.personalInfo.lastName,
+            s.personalInfo.gender, s.personalInfo.emailId, s.personalInfo.birthDate, s.personalInfo.birthCity,
+            s.personalInfo.nationality, s.dadName, s.momName, s.reference, s.personalInfo.telephone, s.personalInfo.address,
+            s.personalInfo.image) from StudentEntity s where s.guardian.id = ?1
     """)
     Optional<List<StudentEssential>> findStudentByGuardianId(UUID guardianId);
 }

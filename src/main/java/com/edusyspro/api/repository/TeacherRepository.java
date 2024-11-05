@@ -20,9 +20,10 @@ import java.util.UUID;
 public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.TeacherEssential(t.id, t.firstName, t.lastName, t.maidenName, t.status, t.birthDate,
-        t.cityOfBirth, t.nationality,t.gender, t.address, t.emailId, t.telephone, t.hireDate, t.salaryByHour, t.school.id,
-        t.school.name, t.createdAt, t.modifyAt) FROM Teacher t WHERE t.school.id = ?1
+        SELECT new com.edusyspro.api.dto.TeacherEssential(t.id, t.personalInfo.firstName, t.personalInfo.lastName,
+        t.personalInfo.maidenName, t.personalInfo.status, t.personalInfo.birthDate, t.personalInfo.birthCity,
+        t.personalInfo.nationality,t.personalInfo.gender, t.personalInfo.address, t.personalInfo.emailId, t.personalInfo.telephone,
+        t.hireDate, t.salaryByHour, t.school.id, t.school.name, t.createdAt, t.modifyAt) FROM Teacher t WHERE t.school.id = ?1
     """)
     Page<TeacherEssential> findAllBySchoolId(UUID schoolId, Pageable pageable);
 
@@ -33,12 +34,12 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     @Query("select new com.edusyspro.api.dto.CourseBasicValue(c.id, c.course, c.abbr) from Teacher t join t.courses c where t.id = ?1 and t.school.id = ?2")
     List<CourseBasicValue> findTeacherCourses(UUID teacherId, UUID schoolId);
 
-    @Query("select t from Teacher t where t.school.id = ?1 and (lower(t.lastName) like lower(?2) or lower(t.firstName) like lower(?2)) order by t.lastName asc")
+    @Query("select t from Teacher t where t.school.id = ?1 and (lower(t.personalInfo.lastName) like lower(?2) or lower(t.personalInfo.firstName) like lower(?2)) order by t.personalInfo.lastName asc")
     List<Teacher> findAllBySchoolId(UUID schoolId, String lastname);
 
     Optional<Teacher> findTeacherByIdAndSchoolId(UUID id, UUID schoolId);
 
-    boolean existsByEmailIdAndSchoolId(String emailId, UUID schoolId);
+    boolean existsByPersonalInfoEmailIdAndSchoolId(String emailId, UUID schoolId);
 
     @Query("select count(s.id) from Teacher t join t.aClasses c join c.students s where t.id = :teacherId and s.academicYear.current = true")
     Long countTeacherStudents(@Param("teacherId") UUID teacherId);

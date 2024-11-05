@@ -1,17 +1,13 @@
 package com.edusyspro.api.dto;
 
-import com.edusyspro.api.model.ClasseStudentBoss;
-import com.edusyspro.api.model.ClasseTeacherBoss;
-import com.edusyspro.api.model.Course;
-import com.edusyspro.api.model.Grade;
-import com.edusyspro.api.model.Schedule;
-import com.edusyspro.api.model.School;
+import com.edusyspro.api.model.*;
+import com.edusyspro.api.model.Teacher;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
@@ -26,12 +22,11 @@ public class Classe {
     private List<Schedule> schedule;
     private int roomNumber;
     private ClasseTeacherBoss principalTeacher;
-    private ClasseStudentBoss principalStudentEntity;
+    private ClasseStudentBoss principalStudent;
     private Course principalCourse;
-    private List<Enrollment> students;
-    private List<Teacher> teachers;
+    private List<EnrollmentEntity> students;
+    private List<Teacher> classTeacherCourses;
     private double monthCost;
-    private School school;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifyAt;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime modifyAt;
 }

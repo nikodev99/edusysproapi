@@ -1,11 +1,8 @@
 package com.edusyspro.api.dto;
 
-import com.edusyspro.api.model.ClasseEntity;
+import com.edusyspro.api.model.*;
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.model.enums.Section;
-import com.edusyspro.api.model.AcademicYear;
-import com.edusyspro.api.model.Grade;
-import com.edusyspro.api.model.StudentEntity;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -40,17 +37,20 @@ public record EnrolledStudent(
                 .academicYear(e.academicYear)
                 .student(StudentEntity.builder()
                         .id(e.id)
-                        .firstName(e.firstName)
-                        .lastName(e.lastName)
-                        .gender(e.gender)
-                        .emailId(e.emailId)
+                        .personalInfo(Individual.builder()
+                                .firstName(e.firstName)
+                                .lastName(e.lastName)
+                                .gender(e.gender)
+                                .emailId(e.emailId)
+                                .birthDate(e.birthDate)
+                                .birthCity(e.birthCity)
+                                .nationality(e.nationality)
+                                .image(e.image)
+                                .build()
+                        )
                         .dadName(e.dadName)
                         .momName(e.momName)
-                        .birthDate(e.birthDate)
-                        .birthCity(e.birthCity)
-                        .nationality(e.nationality)
                         .reference(e.reference)
-                        .image(e.image)
                         .build())
                 .enrollmentDate(e.lastEnrolledDate)
                 .classe(ClasseEntity.builder()

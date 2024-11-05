@@ -1,6 +1,7 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Address;
+import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.Gender;
 
 import java.time.LocalDate;
@@ -25,19 +26,22 @@ public record StudentEssential (
     public static Student toStudent(StudentEssential s) {
         return Student.builder()
                 .id(s.id)
-                .firstName(s.firstName)
-                .lastName(s.lastName)
-                .gender(s.gender)
-                .emailId(s.emailId)
-                .birthDate(s.birthDate)
-                .birthCity(s.birthCity)
-                .nationality(s.nationality)
+                .personalInfo(Individual.builder()
+                        .firstName(s.firstName)
+                        .lastName(s.lastName)
+                        .gender(s.gender)
+                        .emailId(s.emailId)
+                        .birthDate(s.birthDate)
+                        .birthCity(s.birthCity)
+                        .nationality(s.nationality)
+                        .telephone(s.telephone)
+                        .address(s.address)
+                        .image(s.image)
+                        .build()
+                )
                 .dadName(s.dadName)
                 .momName(s.momName)
                 .reference(s.reference)
-                .telephone(s.telephone)
-                .address(s.address)
-                .image(s.image)
                 .build();
     }
 }

@@ -1,8 +1,6 @@
 package com.edusyspro.api.dto;
 
-import com.edusyspro.api.model.Address;
-import com.edusyspro.api.model.enums.Gender;
-import com.edusyspro.api.model.enums.Status;
+import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.StudentEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -20,24 +18,15 @@ import java.util.UUID;
 @Builder
 public class Guardian {
     private UUID id;
-    private String firstName;
-    private String lastName;
-    private String maidenName;
-    private Status status;
-
-    @JsonProperty("gender")
-    private Gender genre;
-
-    private String emailId;
+    private Individual personalInfo;
     private String jobTitle;
     private String company;
-    private String telephone;
-    private String mobile;
-    private Address address;
 
     @JsonProperty("students")
-    private List<Student> studentEntity;
+    private List<StudentEntity> students;
 
+    private String linkToStudent;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
+
 }

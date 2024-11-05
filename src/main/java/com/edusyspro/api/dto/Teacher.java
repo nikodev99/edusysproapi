@@ -1,8 +1,6 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.*;
-import com.edusyspro.api.model.enums.Gender;
-import com.edusyspro.api.model.enums.Status;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,22 +19,15 @@ import java.util.UUID;
 @Builder
 public class Teacher{
     private UUID id;
-    private String firstName;
-    private String lastName;
-    private String maidenName;
-    private Status status;
-    private LocalDate birthDate;
-    private String cityOfBirth;
-    private String nationality;
-    private Gender gender;
-    private Address address;
-    private String emailId;
-    private String telephone;
+    private Individual personalInfo;
     private LocalDate hireDate;
-    private List<Course> courses;
+
     @JsonProperty("classes")
     private List<ClasseEntity> aClasses;
+
+    private List<Course> courses;
     private double salaryByHour;
+    private List<CourseProgram> courseProgram;
     private School school;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;

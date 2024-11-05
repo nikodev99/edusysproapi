@@ -7,7 +7,6 @@ import com.edusyspro.api.dto.TeacherEssential;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
-import com.edusyspro.api.model.Course;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.service.interfaces.ScheduleService;
 import com.edusyspro.api.service.interfaces.TeacherServiceInterface;
@@ -146,6 +145,6 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     }
 
     private boolean teacherEmailExists(Teacher teacher) {
-        return teacherRepository.existsByEmailIdAndSchoolId(teacher.getEmailId(), teacher.getSchool().getId());
+        return teacherRepository.existsByPersonalInfoEmailIdAndSchoolId(teacher.getEmailId(), teacher.getSchool().getId());
     }
 }

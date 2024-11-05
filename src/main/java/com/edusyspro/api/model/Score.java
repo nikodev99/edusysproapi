@@ -19,8 +19,8 @@ public class Score {
     private long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "exam_id", referencedColumnName = "id")
-    private Exam exam;
+    @JoinColumn(name = "assignment_id", referencedColumnName = "id")
+    private Assignment assignment;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_id", referencedColumnName = "id")

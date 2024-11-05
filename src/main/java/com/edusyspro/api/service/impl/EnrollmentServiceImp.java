@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -92,7 +91,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
             ClasseEntity classe = student.getClasse();
             List<Schedule> schedules = scheduleService.getAllClasseSchedule(classe.getId(), classe.getGrade().getSection());
 
-            student.getStudent().setAddress(studentService.getStudentAddress(studentId));
+            student.getStudent().getPersonalInfo().setAddress(studentService.getStudentAddress(studentId));
             student.getStudent().setGuardian(studentService.getStudentGuardian(studentId));
             student.getStudent().setHealthCondition(studentService.getStudentHealthCondition(studentId));
             student.getStudent().setMarks(scores.getContent());
