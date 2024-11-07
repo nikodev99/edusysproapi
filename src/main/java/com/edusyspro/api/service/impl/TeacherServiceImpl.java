@@ -145,6 +145,6 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     }
 
     private boolean teacherEmailExists(Teacher teacher) {
-        return teacherRepository.existsByPersonalInfoEmailIdAndSchoolId(teacher.getEmailId(), teacher.getSchool().getId());
+        return teacherRepository.existsByPersonalInfoEmailIdAndSchoolId(teacher.getPersonalInfo().getEmailId(), teacher.getSchool().getId());
     }
 }

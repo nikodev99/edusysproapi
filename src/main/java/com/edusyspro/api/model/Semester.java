@@ -23,12 +23,11 @@ public class Semester {
 
     private String semesterName;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
     @JsonIgnore
     private AcademicYear academicYear;
 
-    private ZonedDateTime startDate;
-    private ZonedDateTime endDate;
+    @Lob
     private String description;
 }

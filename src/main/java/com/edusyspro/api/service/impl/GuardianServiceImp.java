@@ -58,7 +58,7 @@ public class GuardianServiceImp implements GuardianService {
     public Guardian findGuardianByIdWithStudents(String guardianId) {
         Guardian guardian = findGuardianById(guardianId);
         List<Student> student = studentService.findStudentByGuardian(guardianId);
-        guardian.setStudentEntity(student);
+        guardian.setStudents(student);
         return guardian;
     }
 

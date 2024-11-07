@@ -19,23 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 class GradeRepositoryTest {
 
-    private final GradeRepository gradeRepository;
-
-    private final SemesterRepository semesterRepository;
-
-    private final Semester firstTrimestre;
-    private final Semester secondTrimestre;
-    private final Semester thirdTrimestre;
-
-
     @Autowired
-    public GradeRepositoryTest(GradeRepository gradeRepository, SemesterRepository semesterRepository) {
-        this.gradeRepository = gradeRepository;
-        this.semesterRepository = semesterRepository;
-        firstTrimestre = getSemester(1);
-        secondTrimestre = getSemester(2);
-        thirdTrimestre = getSemester(3);
-    }
+    private GradeRepository gradeRepository;
 
     @Test
     public void saveGradesAndPlanning() {
@@ -102,7 +87,7 @@ class GradeRepositoryTest {
     private List<Planning> plannings(Grade grade) {
         Planning planning = Planning.builder()
                 .designation("Durée du premier trimestre")
-                .semestre(firstTrimestre)
+                .semestre(MockUtils.FIRST_SEMESTER)
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
@@ -110,7 +95,7 @@ class GradeRepositoryTest {
 
         Planning planning2 = Planning.builder()
                 .designation("Durée du deuxième trimestre")
-                .semestre(secondTrimestre)
+                .semestre(MockUtils.SECOND_SEMESTER)
                 .termStartDate(LocalDate.of(2024, 1, 5))
                 .termEndDate(LocalDate.of(2024, 3, 26))
                 .grade(grade)
@@ -118,7 +103,7 @@ class GradeRepositoryTest {
 
         Planning planning3 = Planning.builder()
                 .designation("Durée du troisième trimestre")
-                .semestre(thirdTrimestre)
+                .semestre(MockUtils.THIRD_SEMESTER)
                 .termStartDate(LocalDate.of(2024, 4, 10))
                 .termEndDate(LocalDate.of(2024, 6, 30))
                 .grade(grade)
@@ -130,7 +115,7 @@ class GradeRepositoryTest {
     private List<Planning> plannings2(Grade grade) {
         Planning planning = Planning.builder()
                 .designation("Durée du premier trimestre")
-                .semestre(firstTrimestre)
+                .semestre(MockUtils.FIRST_SEMESTER)
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
@@ -138,7 +123,7 @@ class GradeRepositoryTest {
 
         Planning planning1 = Planning.builder()
                 .designation("Durée des devoirs départementaux du 1er trimestre")
-                .semestre(firstTrimestre)
+                .semestre(MockUtils.FIRST_SEMESTER)
                 .termStartDate(LocalDate.of(2023, 11, 15))
                 .termEndDate(LocalDate.of(2023, 11, 26))
                 .grade(grade)
@@ -146,7 +131,7 @@ class GradeRepositoryTest {
 
         Planning planning2 = Planning.builder()
                 .designation("Durée du deuxième trimestre")
-                .semestre(secondTrimestre)
+                .semestre(MockUtils.SECOND_SEMESTER)
                 .termStartDate(LocalDate.of(2024, 1, 5))
                 .termEndDate(LocalDate.of(2024, 3, 26))
                 .grade(grade)
@@ -154,7 +139,7 @@ class GradeRepositoryTest {
 
         Planning planning01 = Planning.builder()
                 .designation("Durée des devoirs départementaux du 2e trimestre")
-                .semestre(secondTrimestre)
+                .semestre(MockUtils.SECOND_SEMESTER)
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
@@ -162,7 +147,7 @@ class GradeRepositoryTest {
 
         Planning planning3 = Planning.builder()
                 .designation("Durée du troisième trimestre")
-                .semestre(thirdTrimestre)
+                .semestre(MockUtils.THIRD_SEMESTER)
                 .termStartDate(LocalDate.of(2024, 4, 10))
                 .termEndDate(LocalDate.of(2024, 6, 30))
                 .grade(grade)
@@ -170,17 +155,13 @@ class GradeRepositoryTest {
 
         Planning planning02 = Planning.builder()
                 .designation("Durée des devoirs départementaux du 3e trimestre")
-                .semestre(thirdTrimestre)
+                .semestre(MockUtils.THIRD_SEMESTER)
                 .termStartDate(LocalDate.of(2023, 10, 1))
                 .termEndDate(LocalDate.of(2023, 12, 16))
                 .grade(grade)
                 .build();
 
         return List.of(planning, planning1, planning2, planning01, planning3, planning02);
-    }
-
-    private Semester getSemester(int semesterId) {
-        return semesterRepository.findById(semesterId).orElseThrow();
     }
 
 }

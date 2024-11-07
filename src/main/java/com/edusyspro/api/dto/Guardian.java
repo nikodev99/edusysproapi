@@ -1,7 +1,6 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Individual;
-import com.edusyspro.api.model.StudentEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +22,7 @@ public class Guardian {
     private String company;
 
     @JsonProperty("students")
-    private List<StudentEntity> students;
+    private List<Student> students;
 
     private String linkToStudent;
     private ZonedDateTime createdAt;

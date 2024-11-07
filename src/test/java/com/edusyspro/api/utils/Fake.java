@@ -5,6 +5,7 @@ import com.arakelian.faker.model.Person;
 import com.arakelian.faker.service.RandomAddress;
 import com.arakelian.faker.service.RandomPerson;
 import com.edusyspro.api.model.*;
+import com.edusyspro.api.model.enums.Blood;
 import com.edusyspro.api.model.enums.Status;
 
 import java.time.LocalDate;
@@ -18,6 +19,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 public class Fake {
+
+    private static final Random random = new Random();
 
     public static List<Teacher> getMultipleTeachers(
             int numberOfTeacher,
@@ -103,6 +106,12 @@ public class Fake {
                 .zipCode(a.getPostalCode())
                 .build();
 
+        HealthCondition healthCondition = HealthCondition.builder()
+                .bloodType(randomBlood())
+                .height(20 + random.nextInt(81))
+                .weight(100 + random.nextInt(101))
+                .build();
+
         return StudentEntity.builder()
                 .personalInfo(Individual.builder()
                         .firstName(p.getFirstName())
@@ -110,7 +119,7 @@ public class Fake {
                         .gender(p.getGender() == Gender.MALE ? com.edusyspro.api.model.enums.Gender.HOMME : com.edusyspro.api.model.enums.Gender.FEMME)
                         .birthDate(randomDate(1990))
                         .birthCity("Brazzaville")
-                        .nationality("Congolaise")
+                        .nationality("COG")
                         .telephone(randomNumber())
                         .address(address)
                         .build()
@@ -118,6 +127,7 @@ public class Fake {
                 .dadName(oneWord(randomWord()) + " " + oneWord(randomWord()))
                 .momName(oneWord(randomWord()) + " " + oneWord(randomWord()))
                 .reference(school.getAbbr() + randomNumber().substring(0, 6))
+                .healthCondition(healthCondition)
                 .guardian(GuardianEntity.builder()
                         .personalInfo(Individual.builder()
                                 .firstName(g.getFirstName())
@@ -181,26 +191,23 @@ public class Fake {
     }
 
     private static int randomDigit() {
-        Random random = new Random();
         return random.nextInt(11) + 5;
     }
 
     private static String randomNumber() {
-        Random random = new Random();
         int lowerBound = 100_000_000;
         int upperBound = 999_999_999;
         return Long.toString(lowerBound + random.nextInt(upperBound - lowerBound + 1));
     }
 
     private static Status randomStatus() {
-        Random random = new Random();
-        int randomNumber = random.nextInt(30);
-        switch (randomNumber) {
-            case 0 -> { return Status.WIDOW; }
-            case 1 -> { return Status.WIDOWER; }
-            case 2, 3, 4, 5, 6, 7, 8 -> { return Status.MARRIED; }
-            default -> { return Status.SINGLE; }
-        }
+        Status[] statuses = Status.values();
+        return statuses[random.nextInt(statuses.length)];
+    }
+
+    private static Blood randomBlood() {
+        Blood[] bloods = Blood.values();
+        return bloods[random.nextInt(bloods.length)];
     }
 
 }

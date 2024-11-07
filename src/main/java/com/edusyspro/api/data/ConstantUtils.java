@@ -2,7 +2,7 @@ package com.edusyspro.api.data;
 
 public class ConstantUtils {
 
-    public final static String SCHOOL_ID = "e4525e5a-2c64-44c4-b40b-82aeeebef2ce";
-    public final static String ACADEMIC_YEAR = "6402f677-3c8c-46ee-a2fd-452fa1369ff0";
+    public final static String SCHOOL_ID = "81148a1b-bdb9-4be1-9efd-fdf4106341d6";
+    public final static String ACADEMIC_YEAR = "4f1b86f4-8d33-4a4d-abf2-bc9178761d41";
 
 }

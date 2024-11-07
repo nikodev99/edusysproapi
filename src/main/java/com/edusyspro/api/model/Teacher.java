@@ -19,10 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table (
-        name = "teacher",
-        uniqueConstraints = {@UniqueConstraint(name = "email_unique", columnNames = "email")}
-)
+@Table (name = "teacher")
 public class Teacher {
 
     @Id
@@ -83,5 +80,21 @@ public class Teacher {
             courses = new ArrayList<>();
         }
         courses.add(course);
+    }
+
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "id=" + id +
+                ", personalInfo=" + personalInfo +
+                ", hireDate=" + hireDate +
+                //", aClasses=" + aClasses +
+                //", courses=" + courses +
+                ", salaryByHour=" + salaryByHour +
+                //", courseProgram=" + courseProgram +
+                //", school=" + school +
+                ", createdAt=" + createdAt +
+                ", modifyAt=" + modifyAt +
+                '}';
     }
 }

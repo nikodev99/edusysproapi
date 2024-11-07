@@ -21,7 +21,7 @@ public class CourseProgram {
     private LocalDate updateDate;
 
     @ManyToOne
-    @JoinColumn(name = "semester_id", referencedColumnName = "id")
+    @JoinColumn(name = "semester_id", referencedColumnName = "semester_id")
     private Semester semester;
 
     @ManyToOne(cascade = CascadeType.MERGE)
