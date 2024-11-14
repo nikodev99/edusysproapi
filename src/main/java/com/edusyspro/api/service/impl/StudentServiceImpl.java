@@ -9,6 +9,7 @@ import com.edusyspro.api.model.StudentEntity;
 import com.edusyspro.api.dto.Student;
 import com.edusyspro.api.repository.StudentRepository;
 import com.edusyspro.api.repository.context.StudentUpdateContext;
+import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.HealthConditionService;
 import com.edusyspro.api.service.interfaces.StudentService;
 import org.springframework.beans.BeanUtils;
@@ -25,18 +26,21 @@ public class StudentServiceImpl implements StudentService {
     private final ScheduleRepository scheduleRepository;
     private final StudentUpdateContext studentUpdateContext;
     private final HealthConditionService healthConditionService;
+    private final UpdateContext updateContext;
 
     @Autowired
     public StudentServiceImpl(
             StudentRepository studentRepository,
             ScheduleRepository scheduleRepository,
             StudentUpdateContext studentUpdateContext,
-            HealthConditionService healthConditionService
+            HealthConditionService healthConditionService,
+            UpdateContext updateContext
     ) {
         this.studentRepository = studentRepository;
         this.scheduleRepository = scheduleRepository;
         this.studentUpdateContext = studentUpdateContext;
         this.healthConditionService = healthConditionService;
+        this.updateContext = updateContext;
     }
 
     @Override
@@ -71,8 +75,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public int updateStudentPersonalInfo(String field, Object value, long infoId) {
+        return updateContext.updatePersonalInfoByField(field, value, infoId);
+    }
+
+    @Override
     public int updateStudentAddress(String field, Object value, long addressId) {
-        return studentUpdateContext.updateAddressByField(field, value, addressId);
+        return updateContext.updateAddressByField(field, value, addressId);
     }
 
     @Override
@@ -105,7 +114,6 @@ public class StudentServiceImpl implements StudentService {
     private int pullAndSaveHealthCondition(String field, Object value, String studentId) {
         HealthCondition condition = healthConditionService.saveStudentHealthCondition(null);
         int updated = studentUpdateContext.updateStudentHealthCondition(condition, UUID.fromString(studentId));
-        System.out.println("Updated: " + updated);
-        return studentUpdateContext.updateHealthByField(field, value, UUID.fromString(studentId));
+        return updated > 0 ? studentUpdateContext.updateHealthByField(field, value, UUID.fromString(studentId)) : 0;
     }
 }

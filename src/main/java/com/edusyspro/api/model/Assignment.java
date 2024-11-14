@@ -1,6 +1,7 @@
 package com.edusyspro.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,13 +29,14 @@ public class Assignment {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "exam_id", referencedColumnName = "id")
-    @JsonIgnore
     private Exam exam;
 
     private String preparedBy;
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
+    @JsonProperty("classe")
+    @JsonIgnore
     private ClasseEntity classeEntity;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})

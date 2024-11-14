@@ -23,7 +23,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     int updateEnrollmentByStudentId(boolean isArchived, UUID uuid);
 
     @Query("""
-            select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.firstName,
+            select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
             e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate,
             e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,
@@ -32,7 +32,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     Page<EnrolledStudent> findEnrolledStudent(UUID schoolId, Pageable pageable);
 
     @Query(value = """
-            select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.firstName,
+            select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
             e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate,
             e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,
@@ -43,7 +43,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     List<EnrolledStudent> findEnrolledStudent(UUID schoolId, String lastname);
 
     @Query(value = """
-            select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.firstName,
+            select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
             e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate,
             e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,
@@ -56,7 +56,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     Page<EnrollmentEntity> findStudentEnrollments(UUID schoolId, UUID studentId, Pageable pageable);
 
     @Query(value = """
-            select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.firstName,
+            select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
             e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate,
             e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,
@@ -66,21 +66,15 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     Page<EnrolledStudent> findStudentClassmateByAcademicYear(UUID schoolId, UUID studentId, int classeId, UUID academicYear, Pageable pageable);
 
     @Query("""
-            select distinct new com.edusyspro.api.dto.GuardianEssential(e.student.guardian.id, e.student.guardian.personalInfo.firstName,
-            e.student.guardian.personalInfo.lastName, e.student.guardian.personalInfo.maidenName, e.student.guardian.personalInfo.status,
-            e.student.guardian.personalInfo.gender, e.student.guardian.personalInfo.emailId, e.student.guardian.jobTitle,
-            e.student.guardian.company, e.student.guardian.personalInfo.telephone, e.student.guardian.personalInfo.mobile,
-            e.student.guardian.personalInfo.address, e.student.guardian.createdAt, e.student.guardian.modifyAt)
+            select distinct new com.edusyspro.api.dto.GuardianEssential(e.student.guardian.id, e.student.guardian.personalInfo,
+            e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.createdAt, e.student.guardian.modifyAt)
             from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false
     """)
     Page<GuardianEssential> findEnrolledStudentGuardian(UUID schoolId, Pageable pageable);
 
     @Query("""
-            select distinct new com.edusyspro.api.dto.GuardianEssential(e.student.guardian.id, e.student.guardian.personalInfo.firstName,
-            e.student.guardian.personalInfo.lastName, e.student.guardian.personalInfo.maidenName, e.student.guardian.personalInfo.status,
-            e.student.guardian.personalInfo.gender, e.student.guardian.personalInfo.emailId, e.student.guardian.jobTitle,
-            e.student.guardian.company, e.student.guardian.personalInfo.telephone, e.student.guardian.personalInfo.mobile,
-            e.student.guardian.personalInfo.address, e.student.guardian.createdAt, e.student.guardian.modifyAt)
+            select distinct new com.edusyspro.api.dto.GuardianEssential(e.student.guardian.id, e.student.guardian.personalInfo,
+            e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.createdAt, e.student.guardian.modifyAt)
             from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false
             and (lower(e.student.guardian.personalInfo.lastName) like lower(?2) or lower(e.student.guardian.personalInfo.firstName) like lower(?2))
             order by e.student.guardian.personalInfo.lastName asc

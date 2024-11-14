@@ -13,6 +13,7 @@ import java.util.UUID;
 public record EnrolledStudent(
         UUID id,
         AcademicYear academicYear,
+        long infoId,
         String firstName,
         String lastName,
         Gender gender,
@@ -38,6 +39,7 @@ public record EnrolledStudent(
                 .student(StudentEntity.builder()
                         .id(e.id)
                         .personalInfo(Individual.builder()
+                                .id(e.infoId)
                                 .firstName(e.firstName)
                                 .lastName(e.lastName)
                                 .gender(e.gender)

@@ -17,6 +17,7 @@ public interface StudentService {
     HealthCondition getStudentHealthCondition(String studentId);
 
     int updateStudent(String field, Object value, String studentId);
+    int updateStudentPersonalInfo(String field, Object value, long infoId);
     int updateStudentAddress(String field, Object value, long addressId);
     int updateStudentHealth(String field, Object value, String studentId);
     int updateStudentGuardian(String field, Object value, String guardianId);

@@ -1,6 +1,5 @@
 package com.edusyspro.api.repository.context;
 
-import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.GuardianEntity;
 import com.edusyspro.api.model.HealthCondition;
 import com.edusyspro.api.model.StudentEntity;
@@ -51,20 +50,6 @@ public class StudentUpdateContext {
         Root<StudentEntity> student = update.from(StudentEntity.class);
         update.set(student.get("healthCondition"), healthCondition)
                 .where(cb.equal(student.get("id"), studentId));
-        return entityManager.createQuery(update).executeUpdate();
-    }
-
-    @Modifying
-    @Transactional
-    public int updateAddressByField(String field, Object value, long addressId) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaUpdate<Address> update = cb.createCriteriaUpdate(Address.class);
-        Root<Address> address = update.from(Address.class);
-
-        update.set(address.get(field), value)
-                .set(address.get("modifyAt"), Datetime.systemDatetime())
-                .where(cb.equal(address.get("id"), addressId));
-
         return entityManager.createQuery(update).executeUpdate();
     }
 
