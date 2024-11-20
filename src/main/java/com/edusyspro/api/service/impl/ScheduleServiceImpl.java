@@ -1,6 +1,6 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.dto.UpdateField;
 import com.edusyspro.api.model.Schedule;
 import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.model.enums.Day;

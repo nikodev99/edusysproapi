@@ -13,7 +13,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Repository
@@ -32,10 +31,6 @@ public class StudentUpdateContext {
         CriteriaUpdate<StudentEntity> update = cb.createCriteriaUpdate(StudentEntity.class);
         Root<StudentEntity> student = update.from(StudentEntity.class);
 
-        if ("birthDate".equals(field) && value instanceof String) {
-            ZonedDateTime zonedDateTime = Datetime.zonedDateTime((String) value);
-            value = zonedDateTime.toLocalDate();
-        }
         update.set(student.get(field), value).set(student.get("modifyAt"), Datetime.systemDatetime())
                 .where(cb.equal(student.get("id"), studentId));
 

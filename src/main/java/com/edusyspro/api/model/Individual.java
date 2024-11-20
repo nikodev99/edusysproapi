@@ -10,6 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
@@ -59,4 +62,19 @@ public class Individual {
 
     @Convert(converter = JpaConverter.class)
     private List<String> attachments;
+
+    @PrePersist
+    @PreUpdate
+    public void adjustDateTimeZone() {
+        birthDate = convertToTimeZone(birthDate, ZoneId.systemDefault());
+    }
+
+    private LocalDate convertToTimeZone(LocalDate localDate, ZoneId zoneId) {
+        if (localDate == null) return null;
+        LocalDateTime localDateTime = localDate.atStartOfDay();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("UTC"));
+        return zonedDateTime
+                .withZoneSameInstant(zoneId)
+                .toLocalDate();
+    }
 }

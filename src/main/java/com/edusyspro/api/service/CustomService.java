@@ -1,6 +1,6 @@
 package com.edusyspro.api.service;
 
-import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.dto.UpdateField;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

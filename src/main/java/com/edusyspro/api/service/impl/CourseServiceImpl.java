@@ -1,6 +1,6 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.dto.UpdateField;
 import com.edusyspro.api.model.Course;
 import com.edusyspro.api.repository.CourseRepository;
 import com.edusyspro.api.service.interfaces.CourseService;

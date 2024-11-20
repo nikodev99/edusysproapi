@@ -1,13 +1,10 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.ClassBasicValue;
-import com.edusyspro.api.dto.CourseBasicValue;
-import com.edusyspro.api.dto.Teacher;
-import com.edusyspro.api.dto.TeacherEssential;
-import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.dto.*;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.repository.TeacherRepository;
+import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.ScheduleService;
 import com.edusyspro.api.service.interfaces.TeacherServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +19,13 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     private final TeacherRepository teacherRepository;
     private final ScheduleService scheduleService;
+    private final UpdateContext updateContext;
 
     @Autowired
-    public TeacherServiceImpl(TeacherRepository teacherRepository, ScheduleService scheduleService) {
+    public TeacherServiceImpl(TeacherRepository teacherRepository, ScheduleService scheduleService, UpdateContext updateContext) {
         this.teacherRepository = teacherRepository;
         this.scheduleService = scheduleService;
+        this.updateContext = updateContext;
     }
 
     @Override
@@ -121,7 +120,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public int patch(UUID id, UpdateField field) {
-        return 0;
+        return updateContext.updateTeacherField(field.field(), field.value(), id);
     }
 
     @Override

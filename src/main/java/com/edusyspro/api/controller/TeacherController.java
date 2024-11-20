@@ -3,12 +3,14 @@ package com.edusyspro.api.controller;
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.Teacher;
+import com.edusyspro.api.dto.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.service.mod.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +28,6 @@ public class TeacherController {
     public TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
     }
-
 
     @PostMapping
     ResponseEntity<?> saveTeacher(@RequestBody Teacher teacher) {
@@ -65,5 +66,20 @@ public class TeacherController {
     @GetMapping("/{id}/count_student")
     ResponseEntity<Map<String, Long>> getTeacherStudentCounts(@PathVariable String id) {
         return ResponseEntity.ok(teacherService.count(UUID.fromString(id)));
+    }
+
+    @PatchMapping("/{id}")
+    ResponseEntity<String> updateTeacherField(@PathVariable String id, @RequestBody UpdateField teacher) {
+        try {
+            int updated = teacherService.updateTeacherField(id, teacher);
+            if (updated > 0) {
+                return ResponseEntity.ok("Modification " + teacher.field() + " effective");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Teacher not found or update failed");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 }
