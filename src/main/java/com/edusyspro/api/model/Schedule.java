@@ -45,6 +45,7 @@ public class Schedule {
     @Column(length = 50)
     private String designation;
 
+    @Enumerated(EnumType.ORDINAL)
     private Day dayOfWeek;
 
     private LocalTime startTime;

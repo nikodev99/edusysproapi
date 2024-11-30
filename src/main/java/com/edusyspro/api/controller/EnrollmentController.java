@@ -52,7 +52,7 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudent(ConstantUtils.SCHOOL_ID, studentId));
     }
 
-    @GetMapping("/classmates/{studentId}-{classeId}")
+    @GetMapping("/classmates/{studentId}_{classeId}")
     ResponseEntity<List<Enrollment>> getStudentClassmates(@PathVariable String studentId, @PathVariable int classeId) {
         return ResponseEntity.ok(enrollmentService.getStudentClassmates(ConstantUtils.SCHOOL_ID, studentId, classeId, 5));
     }

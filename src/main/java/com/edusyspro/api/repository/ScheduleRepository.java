@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -26,5 +25,11 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
         select distinct s.teacher from Schedule s where s.academicYear.current = true and s.classeEntity.id = ?1 and s.academicYear.school.id = ?2
     """)
     Teacher findTeacherByClasseEntityId(int classeEntity_id, UUID school_id);
+
+    @Query("select s from Schedule s where s.academicYear.current = true and s.teacher.id = ?1")
+    List<Schedule> findAllByTeacherId(UUID teacher_id);
+
+    @Query("select s from Schedule s where s.academicYear.current = true and s.teacher.id = ?1 and s.dayOfWeek = ?2")
+    List<Schedule> findAllByTeacherIdByDay(UUID teacher_id, Day dayOfWeek);
 
 }

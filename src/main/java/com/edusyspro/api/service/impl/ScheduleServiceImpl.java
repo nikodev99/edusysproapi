@@ -32,6 +32,18 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public List<Schedule> getTeacherSchedule(String teacherId) {
+        return scheduleRepository.findAllByTeacherId(UUID.fromString(teacherId));
+    }
+
+    @Override
+    public List<Schedule> getTeacherScheduleByDay(String teacherId, boolean allDay) {
+        System.out.println("Current day: " + Day.MONDAY);
+        System.out.println("allDay: " + allDay);
+        return scheduleRepository.findAllByTeacherIdByDay(UUID.fromString(teacherId), allDay ? Day.ALL_DAYS : Day.getCurrentDay());
+    }
+
+    @Override
     public Teacher getOnlyTeacherOfCourseInClasse(int classeId, int courseId, UUID schoolId) {
         return scheduleRepository.findTeacherByClasseEntityIdAndCourseId(classeId, courseId, schoolId);
     }
