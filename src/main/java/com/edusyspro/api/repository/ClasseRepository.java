@@ -1,7 +1,7 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.dto.ClassBasicValue;
-import com.edusyspro.api.dto.EnrolledStudent;
+import com.edusyspro.api.dto.custom.ClassBasicValue;
+import com.edusyspro.api.dto.custom.EnrolledStudent;
 import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.model.enums.Section;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,7 @@ import java.util.UUID;
 public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
 
     @Query("""
-        select new com.edusyspro.api.dto.ClassBasicValue(c.id, c.name, c.category, c.grade.section) from ClasseEntity c where c.grade.school.id = ?1
+        select new com.edusyspro.api.dto.custom.ClassBasicValue(c.id, c.name, c.category, c.grade.section) from ClasseEntity c where c.grade.school.id = ?1
     """)
     List<ClassBasicValue> findAllBasicValue(UUID schoolID);
 
@@ -29,7 +29,7 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
     ClasseEntity getClasseStudentByIdAndTeacherSchedule(int classeId, UUID teacherId);
 
     @Query(value = """
-            select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
+            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
             e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate,
             e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,

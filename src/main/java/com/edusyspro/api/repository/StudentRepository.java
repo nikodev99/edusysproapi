@@ -1,6 +1,6 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.dto.StudentEssential;
+import com.edusyspro.api.dto.custom.StudentEssential;
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.GuardianEntity;
 import com.edusyspro.api.model.HealthCondition;
@@ -28,7 +28,7 @@ public interface StudentRepository extends JpaRepository<StudentEntity, UUID> {
     Optional<HealthCondition> findStudentEntityHealthConditionByStudentId(UUID id);
 
     @Query("""
-            select new com.edusyspro.api.dto.StudentEssential(s.id, s.personalInfo.firstName, s.personalInfo.lastName,
+            select new com.edusyspro.api.dto.custom.StudentEssential(s.id, s.personalInfo.firstName, s.personalInfo.lastName,
             s.personalInfo.gender, s.personalInfo.emailId, s.personalInfo.birthDate, s.personalInfo.birthCity,
             s.personalInfo.nationality, s.dadName, s.momName, s.reference, s.personalInfo.telephone, s.personalInfo.address,
             s.personalInfo.image) from StudentEntity s where s.guardian.id = ?1

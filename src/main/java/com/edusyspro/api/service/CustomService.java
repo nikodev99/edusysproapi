@@ -1,6 +1,6 @@
 package com.edusyspro.api.service;
 
-import com.edusyspro.api.dto.UpdateField;
+import com.edusyspro.api.dto.custom.UpdateField;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -32,6 +32,12 @@ public interface CustomService<T, U> {
     T fetchOneById(U id, String schoolId);
 
     T fetchOneById(U id, Object ...args);
+
+    T fetchOneByCustomColumn(String columnValue);
+
+    T fetchOneByCustomColumn(String columnValue, Object ...args);
+
+    T fetchOneById(Object ...arg);
 
     int update(T entity);
 

@@ -4,7 +4,7 @@ import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.EnrollmentEntity;
 import com.edusyspro.api.model.School;
-import com.edusyspro.api.dto.EnrolledStudent;
+import com.edusyspro.api.dto.custom.EnrolledStudent;
 import com.edusyspro.api.utils.Datetime;
 import com.edusyspro.api.utils.Fake;
 import com.edusyspro.api.utils.MockUtils;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
-class EnrollmentEntityRepositoryTest {
+class EnrollmentDTOEntityRepositoryTest {
 
     @Autowired
     private EnrollmentRepository enrollmentRepository;
@@ -112,7 +112,7 @@ class EnrollmentEntityRepositoryTest {
     public void getEnrolledStudents() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<EnrolledStudent> enrolledStudents = enrollmentRepository.findEnrolledStudent(UUID.fromString("e4525e5a-2c64-44c4-b40b-82aeeebef2ce"), pageable);
-        System.out.println("Enrolled Student: " + enrolledStudents);
+        System.out.println("Enrolled StudentDTO: " + enrolledStudents);
     }
     
     private ClasseEntity getClasse(int id) {

@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.UUID;
 
 @SpringBootTest
-class StudentEntityRepositoryTest {
+class StudentDTOEntityRepositoryTest {
 
     @Autowired
     private StudentRepository studentRepository;

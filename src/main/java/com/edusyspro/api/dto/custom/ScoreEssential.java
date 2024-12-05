@@ -1,4 +1,4 @@
-package com.edusyspro.api.dto;
+package com.edusyspro.api.dto.custom;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

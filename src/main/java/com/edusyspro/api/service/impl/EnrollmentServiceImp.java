@@ -1,10 +1,12 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.GuardianEssential;
+import com.edusyspro.api.dto.ClasseDTO;
+import com.edusyspro.api.dto.EnrollmentDTO;
+import com.edusyspro.api.dto.ScheduleDTO;
+import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.model.*;
-import com.edusyspro.api.dto.Guardian;
-import com.edusyspro.api.dto.EnrolledStudent;
-import com.edusyspro.api.dto.Enrollment;
+import com.edusyspro.api.dto.GuardianDTO;
+import com.edusyspro.api.dto.custom.EnrolledStudent;
 import com.edusyspro.api.repository.EnrollmentRepository;
 import com.edusyspro.api.repository.context.EnrollmentRepositoryContext;
 import com.edusyspro.api.service.interfaces.*;
@@ -54,9 +56,9 @@ public class EnrollmentServiceImp implements EnrollmentService {
 
     @Override
     @Transactional
-    public Enrollment enrollStudent(Enrollment enrollment) {
+    public EnrollmentDTO enrollStudent(EnrollmentDTO enrollmentDTO) {
         EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder().build();
-        BeanUtils.copyProperties(enrollment, enrollmentEntity);
+        BeanUtils.copyProperties(enrollmentDTO, enrollmentEntity);
 
         GuardianEntity guardianEntity = enrollmentEntity.getStudent().getGuardian();
         if (guardianEntity != null) {
@@ -65,7 +67,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
         }
 
         enrollmentRepository.save(enrollmentEntity);
-        return enrollment;
+        return enrollmentDTO;
     }
 
     @Override
@@ -79,17 +81,17 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public Enrollment getEnrolledStudent(String schoolId, String studentId) {
+    public EnrollmentDTO getEnrolledStudent(String schoolId, String studentId) {
         EnrolledStudent enrolledStudent = enrollmentRepository.findEnrollmentById(UUID.fromString(schoolId), UUID.fromString(studentId));
-        Enrollment student = EnrolledStudent.populateStudent(enrolledStudent);
+        EnrollmentDTO student = EnrolledStudent.populateStudent(enrolledStudent);
         if (student != null) {
             Pageable pageable = PageRequest.of(0, 5);
             Page<Score> scores = scoreService.getLastScoresByStudent(studentId, pageable);
             Page<EnrollmentEntity> enrollments = enrollmentRepository.findStudentEnrollments(UUID.fromString(schoolId), UUID.fromString(studentId), pageable);
             Page<Attendance> attendances = attendanceService.getLastStudentAttendances(studentId, pageable);
 
-            ClasseEntity classe = student.getClasse();
-            List<Schedule> schedules = scheduleService.getAllClasseSchedule(classe.getId(), classe.getGrade().getSection());
+            ClasseDTO classe = student.getClasse();
+            List<ScheduleDTO> schedules = scheduleService.getAllClasseSchedule(classe.getId(), classe.getGrade().getSection());
 
             student.getStudent().getPersonalInfo().setAddress(studentService.getStudentAddress(studentId));
             student.getStudent().setGuardian(studentService.getStudentGuardian(studentId));
@@ -103,7 +105,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public List<Enrollment> getStudentClassmates(String schoolId, String studentId, int classeId, int classmateNumber) {
+    public List<EnrollmentDTO> getStudentClassmates(String schoolId, String studentId, int classeId, int classmateNumber) {
         Pageable pageable = PageRequest.of(0, classmateNumber);
         List<EnrolledStudent> enrolledStudents = enrollmentRepositoryContext.findStudentRandomClassmateByClasseId(
                 UUID.fromString(schoolId),
@@ -117,7 +119,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public Page<Enrollment> getAllStudentClassmates(String schoolId, String studentId, int classeId, String academicYear, Pageable pageable) {
+    public Page<EnrollmentDTO> getAllStudentClassmates(String schoolId, String studentId, int classeId, String academicYear, Pageable pageable) {
         Page<EnrolledStudent> enrolledStudents = enrollmentRepository.findStudentClassmateByAcademicYear(
                 UUID.fromString(schoolId),
                 UUID.fromString(studentId),
@@ -129,13 +131,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public Page<Guardian> getEnrolledStudentGuardians(String schoolId, Pageable pageable) {
+    public Page<GuardianDTO> getEnrolledStudentGuardians(String schoolId, Pageable pageable) {
         Page<GuardianEssential> enrolledStudentGuardian = enrollmentRepository.findEnrolledStudentGuardian(UUID.fromString(schoolId), pageable);
         return enrolledStudentGuardian.map(GuardianEssential::populateGuardian);
     }
 
     @Override
-    public List<Guardian> getEnrolledStudentGuardians(String schoolId, String lastname) {
+    public List<GuardianDTO> getEnrolledStudentGuardians(String schoolId, String lastname) {
         List<GuardianEssential> guardianEssentials = enrollmentRepository.findEnrolledStudentGuardian(UUID.fromString(schoolId), "%" + lastname + "%");
         return guardianEssentials.stream()
                 .map(GuardianEssential::populateGuardian)

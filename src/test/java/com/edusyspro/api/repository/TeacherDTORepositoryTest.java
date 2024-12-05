@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @SpringBootTest
-class TeacherRepositoryTest {
+class TeacherDTORepositoryTest {
 
     @Autowired
     private TeacherRepository teacherRepository;

@@ -17,30 +17,30 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Teacher{
+public class TeacherDTO {
     private UUID id;
     private Individual personalInfo;
     private LocalDate hireDate;
 
     @JsonProperty("classes")
-    private List<ClasseEntity> aClasses;
+    private List<ClasseDTO> aClasses;
 
-    private List<Course> courses;
+    private List<CourseDTO> courses;
     private double salaryByHour;
-    private List<CourseProgram> courseProgram;
+    private List<CourseProgramDTO> courseProgram;
     private School school;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
 
-    public static Teacher fromEntity(com.edusyspro.api.model.Teacher teacher){
-        Teacher copiedTeacher = new Teacher();
-        BeanUtils.copyProperties(teacher, copiedTeacher);
-        return copiedTeacher;
+    public static TeacherDTO fromEntity(com.edusyspro.api.model.Teacher teacher){
+        TeacherDTO copiedTeacherDTO = new TeacherDTO();
+        BeanUtils.copyProperties(teacher, copiedTeacherDTO);
+        return copiedTeacherDTO;
     }
 
-    public static com.edusyspro.api.model.Teacher toEntity(Teacher teacher){
+    public static com.edusyspro.api.model.Teacher toEntity(TeacherDTO teacherDTO){
         com.edusyspro.api.model.Teacher copiedTeacher = com.edusyspro.api.model.Teacher.builder().build();
-        BeanUtils.copyProperties(teacher, copiedTeacher);
+        BeanUtils.copyProperties(teacherDTO, copiedTeacher);
         return copiedTeacher;
     }
 }

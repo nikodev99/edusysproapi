@@ -1,14 +1,14 @@
-package com.edusyspro.api.dto;
+package com.edusyspro.api.dto.custom;
 
-import com.edusyspro.api.model.Course;
+import com.edusyspro.api.dto.CourseDTO;
 
 public record CourseBasicValue(
         int id,
         String course,
         String abbr
 ) {
-    public Course toCourse(){
-        return Course.builder()
+    public CourseDTO toCourse(){
+        return CourseDTO.builder()
                 .id(id)
                 .course(course)
                 .abbr(abbr)

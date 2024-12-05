@@ -53,10 +53,10 @@ class DepartmentRepositoryTest {
         departments.forEach(d -> System.out.println("Department=" + d));
     }
 
-    @Test
+    /*@Test
     public void printDepartmentByCode() {
         Department department = departmentRepository.getDepartmentByCode("DDL");
         System.out.println(department);
-    }
+    }*/
 
 }

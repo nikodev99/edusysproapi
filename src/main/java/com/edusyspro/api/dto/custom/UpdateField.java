@@ -1,4 +1,4 @@
-package com.edusyspro.api.dto;
+package com.edusyspro.api.dto.custom;
 
 import java.io.Serializable;
 

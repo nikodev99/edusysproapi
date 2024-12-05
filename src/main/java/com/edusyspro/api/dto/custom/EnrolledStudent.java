@@ -1,5 +1,8 @@
-package com.edusyspro.api.dto;
+package com.edusyspro.api.dto.custom;
 
+import com.edusyspro.api.dto.ClasseDTO;
+import com.edusyspro.api.dto.EnrollmentDTO;
+import com.edusyspro.api.dto.StudentDTO;
 import com.edusyspro.api.model.*;
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.model.enums.Section;
@@ -33,10 +36,10 @@ public record EnrolledStudent(
         String momName
 ) {
 
-    public static Enrollment populateStudent(EnrolledStudent e) {
-        return Enrollment.builder()
+    public static EnrollmentDTO populateStudent(EnrolledStudent e) {
+        return EnrollmentDTO.builder()
                 .academicYear(e.academicYear)
-                .student(StudentEntity.builder()
+                .student(StudentDTO.builder()
                         .id(e.id)
                         .personalInfo(Individual.builder()
                                 .id(e.infoId)
@@ -55,7 +58,7 @@ public record EnrolledStudent(
                         .reference(e.reference)
                         .build())
                 .enrollmentDate(e.lastEnrolledDate)
-                .classe(ClasseEntity.builder()
+                .classe(ClasseDTO.builder()
                         .id(e.classeId)
                         .name(e.classe)
                         .category(e.classeCategory)

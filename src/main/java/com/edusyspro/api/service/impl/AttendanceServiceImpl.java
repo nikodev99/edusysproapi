@@ -1,6 +1,6 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.AttendanceEssential;
+import com.edusyspro.api.dto.custom.AttendanceEssential;
 import com.edusyspro.api.model.Attendance;
 import com.edusyspro.api.repository.AttendanceRepository;
 import com.edusyspro.api.service.interfaces.AttendanceService;

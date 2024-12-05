@@ -1,6 +1,6 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.model.Course;
+import com.edusyspro.api.dto.CourseDTO;
 import com.edusyspro.api.service.interfaces.CourseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +20,7 @@ public class CourseController {
     }
 
     @GetMapping({"", "/all"})
-    ResponseEntity<List<Course>> getAllCourses() {
+    ResponseEntity<List<CourseDTO>> getAllCourses() {
         return ResponseEntity.ok(courseService.fetchAll());
     }
 }

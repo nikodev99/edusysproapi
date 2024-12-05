@@ -1,14 +1,14 @@
 package com.edusyspro.api.service.interfaces;
 
+import com.edusyspro.api.dto.StudentDTO;
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.GuardianEntity;
 import com.edusyspro.api.model.HealthCondition;
-import com.edusyspro.api.dto.Student;
 
 import java.util.List;
 
 public interface StudentService {
-    Student findStudentById(String id);
+    StudentDTO findStudentById(String id);
 
     Address getStudentAddress(String studentId);
 
@@ -22,5 +22,5 @@ public interface StudentService {
     int updateStudentHealth(String field, Object value, String studentId);
     int updateStudentGuardian(String field, Object value, String guardianId);
 
-    List<Student> findStudentByGuardian(String guardianId);
+    List<StudentDTO> findStudentByGuardian(String guardianId);
 }

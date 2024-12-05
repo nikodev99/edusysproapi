@@ -2,8 +2,8 @@ package com.edusyspro.api.controller;
 
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.data.ConstantUtils;
-import com.edusyspro.api.dto.Teacher;
-import com.edusyspro.api.dto.UpdateField;
+import com.edusyspro.api.dto.TeacherDTO;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.service.mod.TeacherService;
@@ -30,17 +30,16 @@ public class TeacherController {
     }
 
     @PostMapping
-    ResponseEntity<?> saveTeacher(@RequestBody Teacher teacher) {
-        System.out.println("Data to save: " + teacher);
+    ResponseEntity<?> saveTeacher(@RequestBody TeacherDTO teacherDTO) {
         try {
-            return ResponseEntity.ok(teacherService.saveTeacher(teacher));
+            return ResponseEntity.ok(teacherService.saveTeacher(teacherDTO));
         }catch (AlreadyExistException a) {
             return ResponseEntity.badRequest().body(a.getMessage());
         }
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<?> getTeacher(@PathVariable String id) {
+    ResponseEntity<?> getTeacher(@PathVariable(name = "id") String id) {
         try {
             return ResponseEntity.ok(teacherService.findTeacherById(id, ConstantUtils.SCHOOL_ID));
         }catch (NotFountException n) {
@@ -49,7 +48,7 @@ public class TeacherController {
     }
 
     @GetMapping(value = {"", "/all"})
-    ResponseEntity<Page<Teacher>> getTeachers(
+    ResponseEntity<Page<TeacherDTO>> getTeachers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
@@ -59,7 +58,7 @@ public class TeacherController {
     }
 
     @GetMapping("/search/")
-    ResponseEntity<List<Teacher>> getSearchedTeachers(@RequestParam String q) {
+    ResponseEntity<List<TeacherDTO>> getSearchedTeachers(@RequestParam String q) {
         return ResponseEntity.ok(teacherService.findAllTeachers(ConstantUtils.SCHOOL_ID, q));
     }
 

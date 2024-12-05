@@ -1,5 +1,6 @@
-package com.edusyspro.api.dto;
+package com.edusyspro.api.dto.custom;
 
+import com.edusyspro.api.dto.StudentDTO;
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.Gender;
@@ -23,8 +24,8 @@ public record StudentEssential (
     Address address,
     String image
 ) {
-    public static Student toStudent(StudentEssential s) {
-        return Student.builder()
+    public static StudentDTO toStudent(StudentEssential s) {
+        return StudentDTO.builder()
                 .id(s.id)
                 .personalInfo(Individual.builder()
                         .firstName(s.firstName)

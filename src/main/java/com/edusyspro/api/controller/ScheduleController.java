@@ -1,6 +1,7 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.model.Schedule;
+import com.edusyspro.api.dto.ScheduleDTO;
+import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.service.interfaces.ScheduleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +18,18 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
+    @GetMapping
+    ResponseEntity<List<ScheduleDTO>> getAllClasseSchedules(@RequestParam int classId) {
+        return ResponseEntity.ok(scheduleService.getAllClasseSchedule(classId, Section.COLLEGE));
+    }
+
     @GetMapping("/teacher/{teacherId}")
-    ResponseEntity<List<Schedule>> allTeacherSchedules(@PathVariable String teacherId) {
+    ResponseEntity<List<ScheduleDTO>> allTeacherSchedules(@PathVariable String teacherId) {
         return ResponseEntity.ok(scheduleService.getTeacherSchedule(teacherId));
     }
 
     @GetMapping("/teacher_day/{teacherId}")
-    ResponseEntity<List<Schedule>> teacherSchedulesByDay(@PathVariable String teacherId, @RequestParam boolean allDay) {
+    ResponseEntity<List<ScheduleDTO>> teacherSchedulesByDay(@PathVariable String teacherId, @RequestParam boolean allDay) {
         return ResponseEntity.ok(scheduleService.getTeacherScheduleByDay(teacherId, allDay));
     }
 }

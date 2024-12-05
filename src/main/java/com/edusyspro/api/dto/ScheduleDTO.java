@@ -1,5 +1,6 @@
 package com.edusyspro.api.dto;
 
+import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.enums.Day;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,15 +10,15 @@ import lombok.NoArgsConstructor;
 import java.time.LocalTime;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class ScheduleEssential {
+public class ScheduleDTO {
     private Long id;
-    private String teacherFirstName;
-    private String teacherLastName;
-    private String courseName;
-    private String courseAbbr;
+    private AcademicYear academicYear;
+    private ClasseDTO classe;
+    private TeacherDTO teacher;
+    private CourseDTO course;
     private String designation;
     private Day dayOfWeek;
     private LocalTime startTime;

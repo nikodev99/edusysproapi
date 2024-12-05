@@ -15,14 +15,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Guardian {
+public class GuardianDTO {
     private UUID id;
     private Individual personalInfo;
     private String jobTitle;
     private String company;
 
-    @JsonProperty("students")
-    private List<Student> students;
+    @JsonProperty("studentDTOS")
+    private List<StudentDTO> studentDTOS;
 
     private String linkToStudent;
     private ZonedDateTime createdAt;

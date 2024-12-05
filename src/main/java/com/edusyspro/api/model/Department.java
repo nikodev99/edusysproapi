@@ -26,6 +26,9 @@ public class Department {
     @Column(length = 10)
     private String code;
 
+    @Column(length = 500)
+    private String purpose;
+
     @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "d_boss", referencedColumnName = "id")
     @JsonIgnore

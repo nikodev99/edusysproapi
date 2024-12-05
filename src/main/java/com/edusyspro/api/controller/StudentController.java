@@ -1,7 +1,7 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.dto.Student;
-import com.edusyspro.api.dto.UpdateField;
+import com.edusyspro.api.dto.StudentDTO;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.service.interfaces.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Student> fetchStudentById(@PathVariable String id) {
+    ResponseEntity<StudentDTO> fetchStudentById(@PathVariable String id) {
         return ResponseEntity.ok(studentService.findStudentById(id));
     }
 
@@ -31,7 +31,7 @@ public class StudentController {
             if (updated > 0) {
                 return ResponseEntity.ok("Modification effective");
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found or update failed");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("StudentDTO not found or update failed");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }catch (Exception e) {
@@ -91,7 +91,7 @@ public class StudentController {
             if (updated > 0) {
                 return ResponseEntity.ok("Modification effective");
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Guardian not found or update failed");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("GuardianDTO not found or update failed");
         }catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }catch (Exception e) {

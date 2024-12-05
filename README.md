@@ -1,6 +1,6 @@
 # EduSysPro
 
-**EduSysPro** is a school management system that is a comprehensive software solution designed to streamline and automate various administrative and academic tasks within an educational institution. It serves as a centralized platform for managing and organizing the daily operations of schools, including studentEntity information, teacher schedules, curriculum management, attendance tracking, grading, parent communication, and more.
+**EduSysPro** is a school management system that is a comprehensive software solution designed to streamline and automate various administrative and academic tasks within an educational institution. It serves as a centralized platform for managing and organizing the daily operations of schools, including studentEntity information, teacherDTO schedules, curriculum management, attendance tracking, grading, parent communication, and more.
 
 ## 1. Student Information Management:
 - Store and manage studentEntity data such as personal details, contact information, academic records, attendance history, medical information, etc.
@@ -8,8 +8,8 @@
 - Student admission and withdrawal management.
 
 ## 2. Teacher and Staff Management:
-- Maintain teacher profiles, qualifications, and contact information.
-- Manage teacher schedules, assignments, and workload.
+- Maintain teacherDTO profiles, qualifications, and contact information.
+- Manage teacherDTO schedules, assignments, and workload.
 - Staff attendance tracking and payroll management.
 
 ## 3. Academic Management:

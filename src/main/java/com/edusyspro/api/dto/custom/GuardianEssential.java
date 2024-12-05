@@ -1,5 +1,6 @@
-package com.edusyspro.api.dto;
+package com.edusyspro.api.dto.custom;
 
+import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.model.Individual;
 
 import java.time.ZonedDateTime;
@@ -13,8 +14,8 @@ public record GuardianEssential (
     ZonedDateTime createdAt,
     ZonedDateTime modifyAt
 ){
-    public static Guardian populateGuardian(GuardianEssential g) {
-        return Guardian.builder()
+    public static GuardianDTO populateGuardian(GuardianEssential g) {
+        return GuardianDTO.builder()
                 .id(g.id)
                 .personalInfo(g.personalInfo)
                 .jobTitle(g.jobTitle)

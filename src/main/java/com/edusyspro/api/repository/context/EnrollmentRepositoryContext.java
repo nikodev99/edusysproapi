@@ -1,6 +1,6 @@
 package com.edusyspro.api.repository.context;
 
-import com.edusyspro.api.dto.EnrolledStudent;
+import com.edusyspro.api.dto.custom.EnrolledStudent;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +42,7 @@ public class EnrollmentRepositoryContext {
     private String getStatement() {
         String randomFunction = activeProfile.contains("mysql") ? "rand()" : "random()";
 
-        return "select new com.edusyspro.api.dto.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName, "+
+        return "select new com.edusyspro.api.dto.custom.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName, "+
                 "e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate, "+
                 "e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image, "+
                 "e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost, "+

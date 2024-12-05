@@ -1,7 +1,8 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.UpdateField;
-import com.edusyspro.api.model.Schedule;
+import com.edusyspro.api.dto.ScheduleDTO;
+import com.edusyspro.api.dto.custom.ScheduleEssential;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.model.enums.Day;
 import com.edusyspro.api.model.enums.Section;
@@ -27,20 +28,33 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<Schedule> getAllClasseSchedule(int classeId, Section section) {
-        return scheduleRepository.findAllByClasseEntityId(classeId, currentDay(section));
+    public List<ScheduleDTO> getAllClasseSchedule(int classeId, Section section) {
+        Day scheduleDay = currentDay(section);
+        System.out.println("DAY: " + scheduleDay);
+        System.out.println("SAME DAY " + (scheduleDay == Day.ALL_DAYS));
+        List<ScheduleEssential> scheduleEssentials;
+        if (scheduleDay == Day.ALL_DAYS) {
+            scheduleEssentials = scheduleRepository.findAllDayClasseSchedules(classeId);
+        }else {
+            scheduleEssentials =  scheduleRepository.findAllByClasseEntityId(classeId, currentDay(section));
+        }
+        return scheduleEssentials.stream()
+                .map(ScheduleEssential::toScheduleDto)
+                .toList();
     }
 
     @Override
-    public List<Schedule> getTeacherSchedule(String teacherId) {
-        return scheduleRepository.findAllByTeacherId(UUID.fromString(teacherId));
+    public List<ScheduleDTO> getTeacherSchedule(String teacherId) {
+        return scheduleRepository.findAllByTeacherId(UUID.fromString(teacherId)).stream()
+                .map(ScheduleEssential::toScheduleDto)
+                .toList();
     }
 
     @Override
-    public List<Schedule> getTeacherScheduleByDay(String teacherId, boolean allDay) {
-        System.out.println("Current day: " + Day.MONDAY);
-        System.out.println("allDay: " + allDay);
-        return scheduleRepository.findAllByTeacherIdByDay(UUID.fromString(teacherId), allDay ? Day.ALL_DAYS : Day.getCurrentDay());
+    public List<ScheduleDTO> getTeacherScheduleByDay(String teacherId, boolean allDay) {
+        return scheduleRepository.findAllByTeacherIdByDay(UUID.fromString(teacherId), allDay ? Day.ALL_DAYS : Day.getCurrentDay()).stream()
+                .map(ScheduleEssential::toScheduleDto)
+                .toList();
     }
 
     @Override
@@ -54,67 +68,82 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Schedule save(Schedule entity) {
+    public ScheduleDTO save(ScheduleDTO entity) {
         return null;
     }
 
     @Override
-    public List<Schedule> saveAll(List<Schedule> entities) {
+    public List<ScheduleDTO> saveAll(List<ScheduleDTO> entities) {
         return List.of();
     }
 
     @Override
-    public List<Schedule> fetchAll() {
+    public List<ScheduleDTO> fetchAll() {
         return List.of();
     }
 
     @Override
-    public List<Schedule> fetchAll(String schoolId) {
+    public List<ScheduleDTO> fetchAll(String schoolId) {
         return List.of();
     }
 
     @Override
-    public Page<Schedule> fetchAll(String schoolId, Pageable pageable) {
+    public Page<ScheduleDTO> fetchAll(String schoolId, Pageable pageable) {
         return null;
     }
 
     @Override
-    public List<Schedule> fetchAll(Object... args) {
+    public List<ScheduleDTO> fetchAll(Object... args) {
         return List.of();
     }
 
     @Override
-    public Page<Schedule> fetchAll(Pageable pageable, Object... args) {
+    public Page<ScheduleDTO> fetchAll(Pageable pageable, Object... args) {
         return null;
     }
 
     @Override
-    public List<Schedule> fetchAllById(Long id) {
+    public List<ScheduleDTO> fetchAllById(Long id) {
         return List.of();
     }
 
     @Override
-    public List<Schedule> fetchAllById(Object... arg) {
+    public List<ScheduleDTO> fetchAllById(Object... arg) {
         return List.of();
     }
 
     @Override
-    public Schedule fetchOneById(Long id) {
+    public ScheduleDTO fetchOneById(Long id) {
         return null;
     }
 
     @Override
-    public Schedule fetchOneById(Long id, String schoolId) {
+    public ScheduleDTO fetchOneById(Long id, String schoolId) {
         return null;
     }
 
     @Override
-    public Schedule fetchOneById(Long id, Object... args) {
+    public ScheduleDTO fetchOneById(Long id, Object... args) {
         return null;
     }
 
     @Override
-    public int update(Schedule entity) {
+    public ScheduleDTO fetchOneByCustomColumn(String columnValue) {
+        return null;
+    }
+
+    @Override
+    public ScheduleDTO fetchOneByCustomColumn(String columnValue, Object... args) {
+        return null;
+    }
+
+    @Override
+    public ScheduleDTO fetchOneById(Object... arg) {
+        return null;
+    }
+
+    @Override
+    public int update(ScheduleDTO entity) {
         return 0;
     }
 
@@ -124,7 +153,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public int delete(Schedule entity) {
+    public int delete(ScheduleDTO entity) {
         return 0;
     }
 

@@ -1,8 +1,6 @@
 package com.edusyspro.api.dto;
 
-import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.model.AcademicYear;
-import com.edusyspro.api.model.StudentEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -12,15 +10,15 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Enrollment {
+public class EnrollmentDTO {
     private long id;
     private AcademicYear academicYear;
 
     @JsonProperty("student")
-    private StudentEntity student;
+    private StudentDTO student;
 
     @JsonProperty("classe")
-    private ClasseEntity classe;
+    private ClasseDTO classe;
 
     private ZonedDateTime enrollmentDate;
     private boolean isArchived;

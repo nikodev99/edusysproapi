@@ -1,8 +1,6 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.dto.ClassBasicValue;
-import com.edusyspro.api.dto.CourseBasicValue;
-import com.edusyspro.api.dto.TeacherEssential;
+import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.model.Teacher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,24 +18,43 @@ import java.util.UUID;
 public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.TeacherEssential(t.id, t.personalInfo.firstName, t.personalInfo.lastName,
-        t.personalInfo.maidenName, t.personalInfo.status, t.personalInfo.birthDate, t.personalInfo.birthCity,
-        t.personalInfo.nationality,t.personalInfo.gender, t.personalInfo.address, t.personalInfo.emailId, t.personalInfo.telephone,
-        t.hireDate, t.salaryByHour, t.school.id, t.school.name, t.createdAt, t.modifyAt) FROM Teacher t WHERE t.school.id = ?1
+        SELECT new com.edusyspro.api.dto.custom.TeacherEssential(
+            t.id, t.personalInfo, t.hireDate, t.salaryByHour, t.school.id, t.school.name, t.createdAt, t.modifyAt
+        ) FROM Teacher t WHERE t.school.id = ?1
     """)
     Page<TeacherEssential> findAllBySchoolId(UUID schoolId, Pageable pageable);
 
-    @Query("select new com.edusyspro.api.dto.ClassBasicValue(c.id, c.name, c.category, c.grade.section) from Teacher t " +
+    @Query("select new com.edusyspro.api.dto.custom.ClassBasicValue(c.id, c.name, c.category, c.grade.section) from Teacher t " +
             "join t.aClasses c where t.id = ?1 and t.school.id = ?2")
     List<ClassBasicValue> findTeacherClasses(UUID teacherId, UUID schoolId);
 
-    @Query("select new com.edusyspro.api.dto.CourseBasicValue(c.id, c.course, c.abbr) from Teacher t join t.courses c where t.id = ?1 and t.school.id = ?2")
+    @Query("select new com.edusyspro.api.dto.custom.CourseBasicValue(c.id, c.course, c.abbr) from Teacher t join t.courses c where t.id = ?1 and t.school.id = ?2")
     List<CourseBasicValue> findTeacherCourses(UUID teacherId, UUID schoolId);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.CourseEssential(
+            c.id, c.course, c.abbr, c.department.id, c.department.name, c.department.code, c.department.purpose,
+            c.department.boss.d_boss.id, c.department.boss.current, c.department.boss.d_boss.personalInfo.firstName,
+            c.department.boss.d_boss.personalInfo.lastName, c.department.boss.startPeriod, c.department.boss.endPeriod
+        ) from Teacher t join t.courses c where t.id = ?1
+    """)
+    List<CourseEssential> findTeacherEssentialCourses(UUID teacherId);
 
     @Query("select t from Teacher t where t.school.id = ?1 and (lower(t.personalInfo.lastName) like lower(?2) or lower(t.personalInfo.firstName) like lower(?2)) order by t.personalInfo.lastName asc")
     List<Teacher> findAllBySchoolId(UUID schoolId, String lastname);
 
-    Optional<Teacher> findTeacherByIdAndSchoolId(UUID id, UUID schoolId);
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.TeacherEssential(
+            t.id, t.personalInfo, t.hireDate, t.salaryByHour, t.school.id, t.school.name, t.createdAt, t.modifyAt
+        ) FROM Teacher t WHERE t.id = ?1 AND t.school.id = ?2
+    """)
+    Optional<TeacherEssential> findTeacherById(UUID id, UUID schoolId);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.CourseProgramBasic(cp.id, cp.topic, cp.updateDate, cp.active)
+            from Teacher t left join t.courseProgram cp where t.id = ?1 order by cp.id desc
+    """)
+    List<CourseProgramBasic> findTeacherCoursePrograms(UUID teacherId);
 
     @Query("select t from Teacher t join t.aClasses c join t.courses co where c.id = :classId and co.id = :courseId")
     Optional<Teacher> findTeacherByClasseIdAndCourseId(@Param("classId") int classId, @Param("courseId") int courseId);

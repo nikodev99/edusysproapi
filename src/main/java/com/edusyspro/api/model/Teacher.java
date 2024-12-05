@@ -51,8 +51,8 @@ public class Teacher {
 
     private double salaryByHour;
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "program_id", referencedColumnName = "id")
+    @OneToMany(mappedBy = "teacher")
+    @JsonIgnore
     private List<CourseProgram> courseProgram;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})

@@ -1,12 +1,12 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.StudentEssential;
+import com.edusyspro.api.dto.StudentDTO;
+import com.edusyspro.api.dto.custom.StudentEssential;
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.repository.ScheduleRepository;
 import com.edusyspro.api.model.GuardianEntity;
 import com.edusyspro.api.model.HealthCondition;
 import com.edusyspro.api.model.StudentEntity;
-import com.edusyspro.api.dto.Student;
 import com.edusyspro.api.repository.StudentRepository;
 import com.edusyspro.api.repository.context.StudentUpdateContext;
 import com.edusyspro.api.repository.context.UpdateContext;
@@ -44,11 +44,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student findStudentById(String id) {
-        Student student = Student.builder().build();
+    public StudentDTO findStudentById(String id) {
+        StudentDTO studentDTO = StudentDTO.builder().build();
         StudentEntity studentEntity = studentRepository.findStudentEntityById(UUID.fromString(id));
-        BeanUtils.copyProperties(studentEntity, student);
-        return student;
+        BeanUtils.copyProperties(studentEntity, studentDTO);
+        return studentDTO;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<Student> findStudentByGuardian(String guardianId) {
+    public List<StudentDTO> findStudentByGuardian(String guardianId) {
         List<StudentEssential> studentEssentials = studentRepository.findStudentByGuardianId(UUID.fromString(guardianId)).orElseThrow();
         return studentEssentials.stream()
                 .map(StudentEssential::toStudent)

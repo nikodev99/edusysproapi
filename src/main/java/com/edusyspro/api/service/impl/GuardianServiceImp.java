@@ -1,9 +1,9 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.Student;
+import com.edusyspro.api.dto.GuardianDTO;
+import com.edusyspro.api.dto.StudentDTO;
 import com.edusyspro.api.model.GuardianEntity;
-import com.edusyspro.api.dto.Guardian;
-import com.edusyspro.api.dto.GuardianEssential;
+import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.repository.GuardianRepository;
 import com.edusyspro.api.service.interfaces.GuardianService;
 import com.edusyspro.api.service.interfaces.StudentService;
@@ -45,32 +45,32 @@ public class GuardianServiceImp implements GuardianService {
     }
 
     @Override
-    public Guardian findGuardianById(String id) {
+    public GuardianDTO findGuardianById(String id) {
         GuardianEssential essential = guardianRepository.findGuardianEntityById(UUID.fromString(id));
-        Guardian guardian = new Guardian();
+        GuardianDTO guardianDTO = new GuardianDTO();
         if (essential != null)
-            guardian = GuardianEssential.populateGuardian(essential);
+            guardianDTO = GuardianEssential.populateGuardian(essential);
 
-        return guardian;
+        return guardianDTO;
     }
 
     @Override
-    public Guardian findGuardianByIdWithStudents(String guardianId) {
-        Guardian guardian = findGuardianById(guardianId);
-        List<Student> student = studentService.findStudentByGuardian(guardianId);
-        guardian.setStudents(student);
-        return guardian;
+    public GuardianDTO findGuardianByIdWithStudents(String guardianId) {
+        GuardianDTO guardianDTO = findGuardianById(guardianId);
+        List<StudentDTO> studentDTO = studentService.findStudentByGuardian(guardianId);
+        guardianDTO.setStudentDTOS(studentDTO);
+        return guardianDTO;
     }
 
     @Override
-    public List<Guardian> findAll() {
+    public List<GuardianDTO> findAll() {
         List<GuardianEssential> allGuardians = guardianRepository.findAllGuardians();
-        List<Guardian> guardians = new ArrayList<>();
+        List<GuardianDTO> guardianDTOS = new ArrayList<>();
         if (!allGuardians.isEmpty())
-            guardians = allGuardians.stream()
+            guardianDTOS = allGuardians.stream()
                     .map(GuardianEssential::populateGuardian)
                     .toList();
 
-        return guardians;
+        return guardianDTOS;
     }
 }

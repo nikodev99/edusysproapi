@@ -1,11 +1,10 @@
 package com.edusyspro.api.repository;
 
 import com.edusyspro.api.model.ClasseEntity;
-import com.edusyspro.api.dto.ClassBasicValue;
+import com.edusyspro.api.dto.custom.ClassBasicValue;
 import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.model.Course;
-import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.model.Grade;
 import com.edusyspro.api.model.Schedule;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @SpringBootTest
-class ClasseRepositoryTest {
+class ClasseDTORepositoryTest {
 
     @Autowired
     private ClasseRepository classeRepository;
@@ -145,7 +144,7 @@ class ClasseRepositoryTest {
     @Test
     public void printAllClasses() {
         List<ClasseEntity> classeEntityList = classeRepository.findAll();
-        classeEntityList.forEach(c -> System.out.println("Classe=" + c.getName()));
+        classeEntityList.forEach(c -> System.out.println("ClasseDTO=" + c.getName()));
     }
 
     @Test

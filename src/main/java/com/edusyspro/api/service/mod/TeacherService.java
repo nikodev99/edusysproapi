@@ -1,7 +1,7 @@
 package com.edusyspro.api.service.mod;
 
-import com.edusyspro.api.dto.Teacher;
-import com.edusyspro.api.dto.UpdateField;
+import com.edusyspro.api.dto.TeacherDTO;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.impl.TeacherServiceImpl;
@@ -23,19 +23,19 @@ public class TeacherService extends TeacherServiceImpl {
         super(teacherRepository, scheduleService ,updateContext);
     }
 
-    public Teacher saveTeacher(Teacher teacher) {
-        return save(teacher);
+    public TeacherDTO saveTeacher(TeacherDTO teacherDTO) {
+        return save(teacherDTO);
     }
 
-    public Page<Teacher> findAllTeachers(String schoolId, Pageable pageable) {
+    public Page<TeacherDTO> findAllTeachers(String schoolId, Pageable pageable) {
         return fetchAll(schoolId, pageable);
     }
 
-    public List<Teacher> findAllTeachers(String schoolId, String lastName) {
+    public List<TeacherDTO> findAllTeachers(String schoolId, String lastName) {
         return fetchAll(schoolId, lastName);
     }
 
-    public Teacher findTeacherById(String id, String schoolId) {
+    public TeacherDTO findTeacherById(String id, String schoolId) {
         return fetchOneById(UUID.fromString(id), schoolId);
     }
 

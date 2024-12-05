@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Student {
+public class StudentDTO {
     private UUID id;
     private Individual personalInfo;
 

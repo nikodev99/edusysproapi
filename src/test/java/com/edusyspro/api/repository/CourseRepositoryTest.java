@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.DepartmentDTO;
 import com.edusyspro.api.model.Course;
 import com.edusyspro.api.model.Department;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ class CourseRepositoryTest {
         Course course = Course.builder()
                 .abbr("Philo")
                 .course("Philosophie")
-                .department(getDepartment("DDL"))
+                //.department(getDepartment("DDL"))
                 .build();
         courseRepository.save(course);
     }
@@ -32,7 +33,7 @@ class CourseRepositoryTest {
         Course course = Course.builder()
                 .abbr("FRA")
                 .course("Français")
-                .department(getDepartment("DDL"))
+                //.department(getDepartment("DDL"))
                 .build();
         courseRepository.save(course);
     }
@@ -43,72 +44,72 @@ class CourseRepositoryTest {
                 Course.builder()
                     .abbr("Maths")
                     .course("Mathématiques")
-                    .department(getDepartment("DDS"))
+                    //.department(getDepartment("DDS"))
                     .build(),
                 Course.builder()
                     .abbr("SVT")
                     .course("Sciences de la vie et de la Terre")
-                    .department(getDepartment("DDS"))
+                    //.department(getDepartment("DDS"))
                     .build(),
                 Course.builder()
                     .abbr("PC")
                     .course("Physique-Chimie")
-                    .department(getDepartment("DDS"))
+                    //.department(getDepartment("DDS"))
                     .build(),
                 Course.builder()
                     .abbr("HG")
                     .course("Histoire-Géographie")
-                    .department(getDepartment("DDL"))
+                    //.department(getDepartment("DDL"))
                     .build(),
                 Course.builder()
                     .abbr("Ang")
                     .course("Anglais")
-                    .department(getDepartment("DDL"))
+                    //.department(getDepartment("DDL"))
                     .build(),
                 Course.builder()
                     .abbr("EPS")
                     .course("Éducation physique et sportive")
-                    .department(getDepartment("DEP"))
+                    //.department(getDepartment("DEP"))
                     .build(),
                 Course.builder()
                     .abbr("Tech")
                     .course("Technologie")
-                    .department(getDepartment("DDS"))
+                    //.department(getDepartment("DDS"))
                     .build(),
                 Course.builder()
                     .abbr("Dessin")
                     .course("Arts Plastiques")
-                    .department(getDepartment("DAC"))
+                    //.department(getDepartment("DAC"))
                     .build(),
                 Course.builder()
                     .abbr("Musc")
                     .course("Musique")
-                    .department(getDepartment("DAC"))
+                    //.department(getDepartment("DAC"))
                     .build(),
                 Course.builder()
                     .abbr("ECM")
                     .course("Éducation morale et civique")
-                    .department(getDepartment("DAC"))
+                    //.department(getDepartment("DAC"))
                     .build(),
                 Course.builder()
                     .abbr("LAT")
                     .course("Latin")
-                    .department(getDepartment("DDL"))
+                    //.department(getDepartment("DDL"))
                     .build(),
                 Course.builder()
                     .abbr("RUS")
                     .course("Russe")
-                    .department(getDepartment("DDL"))
+                    //.department(getDepartment("DDL"))
                     .build(),
                 Course.builder()
                     .abbr("ESP")
                     .course("Espagnol")
-                    .department(getDepartment("DDL"))
+                    //.department(getDepartment("DDL"))
                     .build(),
                 Course.builder()
                     .abbr("INF")
                     .course("Informatique")
-                    .department(getDepartment("DDS"))
+                    //.department(getDepartment("DDS"))
                     .build()
         );
         courseRepository.saveAll(courses);
@@ -126,9 +127,10 @@ class CourseRepositoryTest {
         System.out.println(course);
     }
 
-    private Department getDepartment(String code) {
-        return departmentRepository.getDepartmentByCode(code);
-    }
+    /*
+    private DepartmentDTO getDepartment(String code) {
+        return departmentRepository.findDepartmentByCode(code).orElse(null);
+    }*/
 
 
 }
