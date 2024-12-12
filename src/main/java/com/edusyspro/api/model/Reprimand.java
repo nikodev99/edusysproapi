@@ -21,12 +21,15 @@ public class Reprimand {
 
     @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.REFRESH})
     @JoinColumn(name = "student_id", referencedColumnName = "id")
-    private StudentEntity student;
+    private EnrollmentEntity student;
 
     private LocalDate reprimandDate;
     private ReprimandType type;
     private String description;
-    private String issuedBy;
+
+    @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.REFRESH})
+    @JoinColumn(name = "issuer_id", referencedColumnName = "id")
+    private Individual issuedBy;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "punishment_id", referencedColumnName = "id")

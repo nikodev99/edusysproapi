@@ -113,6 +113,21 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public Page<ScheduleDTO> fetchAllByOtherEntityId(String otherEntityId, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<ScheduleDTO> fetchAllByOtherEntityId(String otherEntityId) {
+        return List.of();
+    }
+
+    @Override
+    public List<ScheduleDTO> fetchAllByOtherEntityId(Object... arg) {
+        return List.of();
+    }
+
+    @Override
     public ScheduleDTO fetchOneById(Long id) {
         return null;
     }

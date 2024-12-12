@@ -23,8 +23,13 @@ public class ReprimandController {
     }
 
     @GetMapping("/{studentId}")
-    ResponseEntity<List<Reprimand>> getReprimands(@PathVariable String studentId) {
+    ResponseEntity<List<Reprimand>> getReprimands(@PathVariable long studentId) {
         return ResponseEntity.ok(reprimandService.findStudentReprimand(studentId));
+    }
+
+    @GetMapping("/teacher_some/{teacherId}")
+    ResponseEntity<?> getSomeStudentReprimandsByTeacher(@PathVariable String teacherId) {
+        return ResponseEntity.ok(reprimandService.fetchSomeStudentReprimandedByTeacher(Long.parseLong(teacherId)));
     }
 
 }
