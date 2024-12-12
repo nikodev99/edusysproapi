@@ -1,6 +1,5 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.model.Score;
 import com.edusyspro.api.service.interfaces.AcademicYearService;
 import com.edusyspro.api.service.interfaces.ScoreService;
@@ -47,5 +46,10 @@ public class ScoreController {
                 academicYearId,
                 subjectId
         ));
+    }
+
+    @GetMapping("/all_teacher_marks/{teacherId}")
+    ResponseEntity<?> getAllTeacherMarks(@PathVariable String teacherId) {
+        return ResponseEntity.ok(scoreService.getAllTeacherMarks(Long.parseLong(teacherId)));
     }
 }

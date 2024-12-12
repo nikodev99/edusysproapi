@@ -31,9 +31,12 @@ public class Assignment {
     @JoinColumn(name = "exam_id", referencedColumnName = "id")
     private Exam exam;
 
-    private String preparedBy;
+    //Ceci sera toujours l'ID de l'enseignant
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "prepardeBy_id", referencedColumnName = "id")
+    private Individual preparedBy;
 
-    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
     @JsonProperty("classe")
     @JsonIgnore
@@ -50,6 +53,10 @@ public class Assignment {
     private LocalTime startTime;
 
     private LocalTime endTime;
+
+    private boolean passed;
+
+    private int markMean;
 
     @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
     private List<Score> marks;

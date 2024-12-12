@@ -50,12 +50,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     """)
     Optional<TeacherEssential> findTeacherById(UUID id, UUID schoolId);
 
-    @Query("""
-        select new com.edusyspro.api.dto.custom.CourseProgramBasic(cp.id, cp.topic, cp.updateDate, cp.active)
-            from Teacher t left join t.courseProgram cp where t.id = ?1 order by cp.id desc
-    """)
-    List<CourseProgramBasic> findTeacherCoursePrograms(UUID teacherId);
-
     @Query("select t from Teacher t join t.aClasses c join t.courses co where c.id = :classId and co.id = :courseId")
     Optional<Teacher> findTeacherByClasseIdAndCourseId(@Param("classId") int classId, @Param("courseId") int courseId);
 
@@ -66,4 +60,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
 
     @Query("select count(s.id) from Teacher t join t.aClasses c join c.students s where t.id = :teacherId and s.academicYear.current = true")
     Long countTeacherStudents(@Param("teacherId") UUID teacherId);
+
+    @Query("select c.name, count(s.id) from Teacher t join t.aClasses c join c.students s where t.id = ?1 group by c.id")
+    List<Object[]> countAllTeacherStudentsByClasses(UUID teacherId);
 }

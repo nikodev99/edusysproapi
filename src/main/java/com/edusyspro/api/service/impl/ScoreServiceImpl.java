@@ -1,5 +1,7 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.ScoreDTO;
+import com.edusyspro.api.dto.custom.ScoreBasicValue;
 import com.edusyspro.api.model.Score;
 import com.edusyspro.api.repository.ScoreRepository;
 import com.edusyspro.api.service.interfaces.ScoreService;
@@ -43,5 +45,12 @@ public class ScoreServiceImpl implements ScoreService {
                 UUID.fromString(studentId),
                 subjectId
         );
+    }
+
+    @Override
+    public List<ScoreDTO> getAllTeacherMarks(long teacherId) {
+        return scoreRepository.finsAllTeacherMarks(teacherId).stream()
+                .map(ScoreBasicValue::toDTO)
+                .toList();
     }
 }

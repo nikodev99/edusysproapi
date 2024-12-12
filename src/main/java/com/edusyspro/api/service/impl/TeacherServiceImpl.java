@@ -4,8 +4,10 @@ import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
+import com.edusyspro.api.repository.CourseProgramRepository;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
+import com.edusyspro.api.service.interfaces.CourseProgramService;
 import com.edusyspro.api.service.interfaces.ScheduleService;
 import com.edusyspro.api.service.interfaces.TeacherServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,18 +15,26 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TeacherServiceImpl implements TeacherServiceInterface {
 
     private final TeacherRepository teacherRepository;
     private final ScheduleService scheduleService;
     private final UpdateContext updateContext;
+    private final CourseProgramService courseProgramService;
 
     @Autowired
-    public TeacherServiceImpl(TeacherRepository teacherRepository, ScheduleService scheduleService, UpdateContext updateContext) {
+    public TeacherServiceImpl(
+            TeacherRepository teacherRepository,
+            ScheduleService scheduleService,
+            UpdateContext updateContext,
+            CourseProgramService courseProgramService
+    ) {
         this.teacherRepository = teacherRepository;
         this.scheduleService = scheduleService;
         this.updateContext = updateContext;
+        this.courseProgramService = courseProgramService;
     }
 
     @Override
@@ -95,6 +105,21 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     }
 
     @Override
+    public Page<TeacherDTO> fetchAllByOtherEntityId(String otherEntityId, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<TeacherDTO> fetchAllByOtherEntityId(String otherEntityId) {
+        return List.of();
+    }
+
+    @Override
+    public List<TeacherDTO> fetchAllByOtherEntityId(Object... arg) {
+        return List.of();
+    }
+
+    @Override
     public TeacherDTO fetchOneById(UUID id) {
         return null;
     }
@@ -106,8 +131,10 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
                         .toTeacher();
         List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(dto.getId(), UUID.fromString(schoolId));
         List<CourseEssential> courses = teacherRepository.findTeacherEssentialCourses(dto.getId());
+        List<CourseProgramDTO> programs = courseProgramService.fetchAllByOtherEntityId(String.valueOf(dto.getId()));
         dto.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
         dto.setCourses(courses.stream().map(CourseEssential::toCourse).toList());
+        dto.setCourseProgram(programs);
         return dto;
     }
 
@@ -153,7 +180,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public Map<String, Long> count(String schoolId) {
-        return Map.of();
+       return Map.of();
     }
 
     @Override
@@ -163,5 +190,16 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     private boolean teacherEmailExists(TeacherDTO teacherDTO) {
         return teacherRepository.existsByPersonalInfoEmailIdAndSchoolId(teacherDTO.getPersonalInfo().getEmailId(), teacherDTO.getSchool().getId());
+    }
+
+    @Override
+    public List<Map<String, Object>> countStudentsByClasse(UUID teacherId) {
+        List<Object[]> counts = teacherRepository.countAllTeacherStudentsByClasses(teacherId);
+        return counts.stream()
+                .map(row -> Map.of(
+                        "classe", row[0],
+                        "count", row[1]
+                ))
+                .toList();
     }
 }

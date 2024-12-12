@@ -67,6 +67,11 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.count(UUID.fromString(id)));
     }
 
+    @GetMapping("/count_by_classe/{teacherId}")
+    ResponseEntity<?> countStudentsByClasse(@PathVariable String teacherId) {
+        return ResponseEntity.ok(teacherService.countStudentsByClasse(UUID.fromString(teacherId)));
+    }
+
     @PatchMapping("/{id}")
     ResponseEntity<String> updateTeacherField(@PathVariable String id, @RequestBody UpdateField teacher) {
         try {

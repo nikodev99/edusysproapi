@@ -5,6 +5,7 @@ import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.impl.TeacherServiceImpl;
+import com.edusyspro.api.service.interfaces.CourseProgramService;
 import com.edusyspro.api.service.interfaces.ScheduleService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +19,10 @@ public class TeacherService extends TeacherServiceImpl {
     public TeacherService(
             TeacherRepository teacherRepository,
             ScheduleService scheduleService,
-            UpdateContext updateContext
+            UpdateContext updateContext,
+            CourseProgramService courseProgramService
     ) {
-        super(teacherRepository, scheduleService ,updateContext);
+        super(teacherRepository, scheduleService ,updateContext, courseProgramService);
     }
 
     public TeacherDTO saveTeacher(TeacherDTO teacherDTO) {

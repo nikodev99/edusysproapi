@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.custom.ScoreBasicValue;
 import com.edusyspro.api.model.Score;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,5 +25,9 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     @Query("select s from Score s where s.studentEntity.id = ?2 and s.assignment.semester.semestre.academicYear.id = ?1 " +
             "and s.assignment.subject.id = ?3 order by s.assignment.examDate desc")
     List<Score> findAllByStudentIdAcademicYearAndSubjectId(UUID academicYearId, UUID studentId, int subjectId);
+
+    @Query("select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.obtainedMark) from Score s " +
+            "where s.assignment.preparedBy.id = ?1 and s.assignment.semester.semestre.academicYear.current = true")
+    List<ScoreBasicValue> finsAllTeacherMarks(long studentId);
 
 }
