@@ -1,5 +1,6 @@
 package com.edusyspro.api.model;
 
+import com.edusyspro.api.utils.Datetime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -46,4 +48,11 @@ public class CourseProgram {
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     @JsonIgnore
     private Teacher teacher;
+
+    private ZonedDateTime createAt;
+
+    @PrePersist
+    public void preInsert() {
+        createAt = Datetime.brazzavilleDatetime();
+    }
 }

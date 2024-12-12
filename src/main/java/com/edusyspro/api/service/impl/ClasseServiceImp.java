@@ -74,6 +74,21 @@ public class ClasseServiceImp implements ClasseServiceInterface {
     }
 
     @Override
+    public Page<ClasseDTO> fetchAllByOtherEntityId(String otherEntityId, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<ClasseDTO> fetchAllByOtherEntityId(String otherEntityId) {
+        return List.of();
+    }
+
+    @Override
+    public List<ClasseDTO> fetchAllByOtherEntityId(Object... arg) {
+        return List.of();
+    }
+
+    @Override
     public ClasseDTO fetchOneById(Integer id) {
         return null;
     }

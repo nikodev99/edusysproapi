@@ -1,6 +1,5 @@
 package com.edusyspro.api.dto;
 
-import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.model.Teacher;
 import lombok.AllArgsConstructor;
@@ -24,6 +23,6 @@ public class CourseProgramDTO {
     private LocalDate updateDate;
     private Semester semester;
     private CourseDTO course;
-    private ClasseEntity classe;
+    private ClasseDTO classe;
     private Teacher teacher;
 }

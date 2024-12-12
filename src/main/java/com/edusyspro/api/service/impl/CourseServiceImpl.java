@@ -73,6 +73,21 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Page<CourseDTO> fetchAllByOtherEntityId(String otherEntityId, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<CourseDTO> fetchAllByOtherEntityId(String otherEntityId) {
+        return List.of();
+    }
+
+    @Override
+    public List<CourseDTO> fetchAllByOtherEntityId(Object... arg) {
+        return List.of();
+    }
+
+    @Override
     public CourseDTO fetchOneById(Integer id) {
         return null;
     }
