@@ -17,6 +17,7 @@ public record DepartmentEssential(
         boolean bossCurrent,
         String firstName,
         String lastName,
+        String image,
         LocalDate startPeriod,
         LocalDate endPeriod
 ) {
@@ -33,6 +34,7 @@ public record DepartmentEssential(
                                 .personalInfo(Individual.builder()
                                         .firstName(firstName)
                                         .lastName(lastName)
+                                        .image(image)
                                         .build())
                                 .build())
                         .startPeriod(startPeriod)

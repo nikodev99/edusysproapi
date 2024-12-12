@@ -27,6 +27,12 @@ public interface CustomService<T, U> {
 
     List<T> fetchAllById(Object ...arg);
 
+    Page<T> fetchAllByOtherEntityId(String otherEntityId, Pageable pageable);
+
+    List<T> fetchAllByOtherEntityId(String otherEntityId);
+
+    List<T> fetchAllByOtherEntityId(Object ...arg);
+
     T fetchOneById(U id);
 
     T fetchOneById(U id, String schoolId);

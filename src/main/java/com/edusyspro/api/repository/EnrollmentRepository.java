@@ -23,7 +23,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     int updateEnrollmentByStudentId(boolean isArchived, UUID uuid);
 
     @Query("""
-            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
+            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
             e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate,
             e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,
@@ -32,7 +32,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     Page<EnrolledStudent> findEnrolledStudent(UUID schoolId, Pageable pageable);
 
     @Query(value = """
-            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
+            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
             e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate,
             e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,
@@ -43,7 +43,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     List<EnrolledStudent> findEnrolledStudent(UUID schoolId, String lastname);
 
     @Query(value = """
-            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
+            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
             e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate,
             e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,
@@ -56,7 +56,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     Page<EnrollmentEntity> findStudentEnrollments(UUID schoolId, UUID studentId, Pageable pageable);
 
     @Query(value = """
-            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
+            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
             e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate,
             e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,
@@ -83,8 +83,4 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
 
     @Query("select count(e.id) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true")
     Long countAllStudents(UUID schoolId);
-
-    @Repository
-    interface CourseProgramRepository {
-    }
 }

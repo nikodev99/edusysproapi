@@ -66,6 +66,21 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public Page<DepartmentDTO> fetchAllByOtherEntityId(String otherEntityId, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<DepartmentDTO> fetchAllByOtherEntityId(String otherEntityId) {
+        return List.of();
+    }
+
+    @Override
+    public List<DepartmentDTO> fetchAllByOtherEntityId(Object... arg) {
+        return List.of();
+    }
+
+    @Override
     public DepartmentDTO fetchOneById(Integer id) {
         return null;
     }

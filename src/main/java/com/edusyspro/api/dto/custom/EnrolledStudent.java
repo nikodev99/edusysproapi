@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @Builder
 public record EnrolledStudent(
+        long enrollmentId,
         UUID id,
         AcademicYear academicYear,
         long infoId,
@@ -38,6 +39,7 @@ public record EnrolledStudent(
 
     public static EnrollmentDTO populateStudent(EnrolledStudent e) {
         return EnrollmentDTO.builder()
+                .id(e.enrollmentId())
                 .academicYear(e.academicYear)
                 .student(StudentDTO.builder()
                         .id(e.id)
