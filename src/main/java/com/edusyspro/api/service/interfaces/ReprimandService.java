@@ -14,4 +14,6 @@ public interface ReprimandService {
 
     List<ReprimandDTO> fetchSomeStudentReprimandedByTeacher(long teacherId);
 
+    Page<ReprimandDTO> fetchAllStudentReprimandedByTeacher(long teacherId, int classeId, Pageable pageable);
+
 }

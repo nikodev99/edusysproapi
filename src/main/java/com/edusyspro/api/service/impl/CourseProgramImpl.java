@@ -1,7 +1,9 @@
 package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.CourseProgramDTO;
+import com.edusyspro.api.dto.custom.CourseAndClasseIds;
 import com.edusyspro.api.dto.custom.CourseProgramBasic;
+import com.edusyspro.api.dto.custom.CourseProgramEssential;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.repository.CourseProgramRepository;
 import com.edusyspro.api.service.interfaces.CourseProgramService;
@@ -143,5 +145,19 @@ public class CourseProgramImpl implements CourseProgramService {
     @Override
     public Map<String, Long> count(Object... args) {
         return Map.of();
+    }
+
+    @Override
+    public List<CourseProgramDTO> findAllProgramsByTeacherCourseAndClasse(String teacherId, CourseAndClasseIds ids) {
+        return courseProgramRepository.findAllByTeacherId(UUID.fromString(teacherId), ids.classId(), ids.courseId()).stream()
+                .map(CourseProgramEssential::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<CourseProgramDTO> findAllProgramsByTeacherAndClasse(String teacherId, CourseAndClasseIds ids) {
+        return courseProgramRepository.findAllByTeacherId(UUID.fromString(teacherId), ids.classId()).stream()
+                .map(CourseProgramEssential::toDTO)
+                .toList();
     }
 }

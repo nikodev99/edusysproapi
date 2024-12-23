@@ -39,4 +39,10 @@ public class ReprimandServiceImpl implements ReprimandService {
                 .toList();
     }
 
+    @Override
+    public Page<ReprimandDTO> fetchAllStudentReprimandedByTeacher(long teacherId, int classeId, Pageable pageable) {
+        return reprimandRepository.findStudentReprimandByTeacher(teacherId, classeId, pageable)
+                .map(ReprimandEssential::toDTO);
+    }
+
 }

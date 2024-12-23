@@ -1,7 +1,6 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Semester;
-import com.edusyspro.api.model.Teacher;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,5 +23,5 @@ public class CourseProgramDTO {
     private Semester semester;
     private CourseDTO course;
     private ClasseDTO classe;
-    private Teacher teacher;
+    private TeacherDTO teacher;
 }

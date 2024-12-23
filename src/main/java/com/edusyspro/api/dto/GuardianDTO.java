@@ -21,7 +21,7 @@ public class GuardianDTO {
     private String jobTitle;
     private String company;
 
-    @JsonProperty("studentDTOS")
+    @JsonProperty("students")
     private List<StudentDTO> studentDTOS;
 
     private String linkToStudent;

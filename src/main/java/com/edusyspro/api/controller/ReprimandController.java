@@ -1,13 +1,11 @@
 package com.edusyspro.api.controller;
 
+import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.model.Reprimand;
 import com.edusyspro.api.service.interfaces.ReprimandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +28,18 @@ public class ReprimandController {
     @GetMapping("/teacher_some/{teacherId}")
     ResponseEntity<?> getSomeStudentReprimandsByTeacher(@PathVariable String teacherId) {
         return ResponseEntity.ok(reprimandService.fetchSomeStudentReprimandedByTeacher(Long.parseLong(teacherId)));
+    }
+
+    @GetMapping("/teacher_all/{teacherId}")
+    ResponseEntity<?> getAllStudentReprimandsByTeacher(
+            @PathVariable String teacherId,
+            @RequestParam() int classe,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(reprimandService.fetchAllStudentReprimandedByTeacher(
+                Long.parseLong(teacherId), classe, ControllerUtils.setPage(page, size)
+        ));
     }
 
 }

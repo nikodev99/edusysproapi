@@ -2,9 +2,12 @@ package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.AssignmentDTO;
 import com.edusyspro.api.dto.custom.AssignmentEssential;
+import com.edusyspro.api.dto.custom.CourseAndClasseIds;
 import com.edusyspro.api.repository.AssignmentRepository;
 import com.edusyspro.api.service.interfaces.AssignmentService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,5 +26,11 @@ public class AssignmentServiceImpl implements AssignmentService {
         return assignmentRepository.findAssignmentsByTeacher(teacherId, PageRequest.of(0, 5))
                 .map(AssignmentEssential::toDTO)
                 .toList();
+    }
+
+    @Override
+    public Page<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, CourseAndClasseIds ids, Pageable pageable) {
+        return assignmentRepository.findAllAssignmentsByTeacher(teacherId, ids.classId(), ids.courseId(), pageable)
+                .map(AssignmentEssential::toDTO);
     }
 }

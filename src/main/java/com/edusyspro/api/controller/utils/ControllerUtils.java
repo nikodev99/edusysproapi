@@ -21,4 +21,8 @@ public class ControllerUtils {
         return pageable;
     }
 
+    public static Pageable setPage(int page, int size) {
+        return PageRequest.of(page, size);
+    }
+
 }
