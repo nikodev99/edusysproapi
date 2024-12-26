@@ -42,11 +42,9 @@ public class EnrollmentRepositoryContext {
     private String getStatement() {
         String randomFunction = activeProfile.contains("mysql") ? "rand()" : "random()";
 
-        return "select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName, "+
-                "e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate, "+
-                "e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image, "+
-                "e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost, "+
-                "e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.student.id <> ?2 and e.classe.id = ?3 " +
+        return "select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear," +
+                "e.student.reference, e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section," +
+                "e.classe.monthCost, e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.student.id <> ?2 and e.classe.id = ?3 " +
                 "and e.academicYear.current = true and e.isArchived = false order by " + randomFunction;
     }
 }

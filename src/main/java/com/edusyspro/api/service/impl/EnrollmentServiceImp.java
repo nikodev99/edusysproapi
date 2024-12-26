@@ -71,19 +71,23 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public Page<EnrolledStudent> getEnrolledStudents(String schoolId, Pageable pageable) {
-        return  enrollmentRepository.findEnrolledStudent(UUID.fromString(schoolId), pageable);
+    public Page<EnrollmentDTO> getEnrolledStudents(String schoolId, Pageable pageable) {
+        return  enrollmentRepository.findEnrolledStudent(UUID.fromString(schoolId), pageable)
+                .map(EnrolledStudent::populateStudent);
     }
 
     @Override
-    public List<EnrolledStudent> getEnrolledStudents(String schoolId, String lastname) {
-        return enrollmentRepository.findEnrolledStudent(UUID.fromString(schoolId), "%" + lastname + "%");
+    public List<EnrollmentDTO> getEnrolledStudents(String schoolId, String lastname) {
+        return enrollmentRepository.findEnrolledStudent(UUID.fromString(schoolId), "%" + lastname + "%").stream()
+                .map(EnrolledStudent::populateStudent)
+                .toList();
     }
 
     @Override
     public EnrollmentDTO getEnrolledStudent(String schoolId, String studentId) {
-        EnrolledStudent enrolledStudent = enrollmentRepository.findEnrollmentById(UUID.fromString(schoolId), UUID.fromString(studentId));
-        EnrollmentDTO student = EnrolledStudent.populateStudent(enrolledStudent);
+        EnrollmentDTO student = enrollmentRepository.findEnrollmentById(UUID.fromString(schoolId), UUID.fromString(studentId))
+                .populateStudent();
+
         if (student != null) {
             Pageable pageable = PageRequest.of(0, 5);
             Page<Score> scores = scoreService.getLastScoresByStudent(studentId, pageable);
@@ -93,7 +97,6 @@ public class EnrollmentServiceImp implements EnrollmentService {
             ClasseDTO classe = student.getClasse();
             List<ScheduleDTO> schedules = scheduleService.getAllClasseSchedule(classe.getId(), classe.getGrade().getSection());
 
-            student.getStudent().getPersonalInfo().setAddress(studentService.getStudentAddress(studentId));
             student.getStudent().setGuardian(studentService.getStudentGuardian(studentId));
             student.getStudent().setHealthCondition(studentService.getStudentHealthCondition(studentId));
             student.getStudent().setMarks(scores.getContent());

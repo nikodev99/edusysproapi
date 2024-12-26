@@ -16,17 +16,9 @@ import java.util.UUID;
 public record EnrolledStudent(
         long enrollmentId,
         UUID id,
+        Individual personalInfo,
         AcademicYear academicYear,
-        long infoId,
-        String firstName,
-        String lastName,
-        Gender gender,
-        String emailId,
-        LocalDate birthDate,
-        String birthCity,
-        String nationality,
         String reference,
-        String image,
         ZonedDateTime lastEnrolledDate,
         int classeId,
         String classe,
@@ -37,37 +29,26 @@ public record EnrolledStudent(
         String momName
 ) {
 
-    public static EnrollmentDTO populateStudent(EnrolledStudent e) {
+    public EnrollmentDTO populateStudent() {
         return EnrollmentDTO.builder()
-                .id(e.enrollmentId())
-                .academicYear(e.academicYear)
+                .id(enrollmentId())
+                .academicYear(academicYear)
                 .student(StudentDTO.builder()
-                        .id(e.id)
-                        .personalInfo(Individual.builder()
-                                .id(e.infoId)
-                                .firstName(e.firstName)
-                                .lastName(e.lastName)
-                                .gender(e.gender)
-                                .emailId(e.emailId)
-                                .birthDate(e.birthDate)
-                                .birthCity(e.birthCity)
-                                .nationality(e.nationality)
-                                .image(e.image)
-                                .build()
-                        )
-                        .dadName(e.dadName)
-                        .momName(e.momName)
-                        .reference(e.reference)
+                        .id(id)
+                        .personalInfo(personalInfo)
+                        .dadName(dadName)
+                        .momName(momName)
+                        .reference(reference)
                         .build())
-                .enrollmentDate(e.lastEnrolledDate)
+                .enrollmentDate(lastEnrolledDate)
                 .classe(ClasseDTO.builder()
-                        .id(e.classeId)
-                        .name(e.classe)
-                        .category(e.classeCategory)
+                        .id(classeId)
+                        .name(classe)
+                        .category(classeCategory)
                         .grade(Grade.builder()
-                                .section(e.grade)
+                                .section(grade)
                                 .build())
-                        .monthCost(e.monthCost)
+                        .monthCost(monthCost)
                         .build())
                 .build();
     }

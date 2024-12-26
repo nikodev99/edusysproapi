@@ -25,7 +25,7 @@ public interface EnrollmentService {
      * @param pageable The pageable for the pagination
      * @return Page<EnrolledStudent>
      */
-    Page<EnrolledStudent> getEnrolledStudents(String schoolId, Pageable pageable);
+    Page<EnrollmentDTO> getEnrolledStudents(String schoolId, Pageable pageable);
 
     /**
      * //TODO Change enrolledStudent to EnrollmentDTO
@@ -34,7 +34,7 @@ public interface EnrollmentService {
      * @param lastname The last name letter of the searched student
      * @return List<EnrolledStudent>
      */
-    List<EnrolledStudent> getEnrolledStudents(String schoolId, String lastname);
+    List<EnrollmentDTO> getEnrolledStudents(String schoolId, String lastname);
 
     /**
      * Get an enrolled student with its address, guardian, its health status,

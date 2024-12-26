@@ -33,7 +33,7 @@ public class EnrollmentController {
     }
 
     @GetMapping
-    ResponseEntity<Page<EnrolledStudent>> getEnrolledStudents(
+    ResponseEntity<Page<EnrollmentDTO>> getEnrolledStudents(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
@@ -43,7 +43,7 @@ public class EnrollmentController {
     }
 
     @GetMapping("/search/")
-    ResponseEntity<List<EnrolledStudent>> getEnrolledStudents(@RequestParam String q) {
+    ResponseEntity<List<EnrollmentDTO>> getEnrolledStudents(@RequestParam String q) {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudents(ConstantUtils.SCHOOL_ID, q));
     }
 
