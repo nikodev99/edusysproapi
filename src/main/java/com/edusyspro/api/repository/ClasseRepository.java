@@ -29,11 +29,9 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
     ClasseEntity getClasseStudentByIdAndTeacherSchedule(int classeId, UUID teacherId);
 
     @Query(value = """
-            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.academicYear, e.student.personalInfo.id, e.student.personalInfo.firstName,
-            e.student.personalInfo.lastName, e.student.personalInfo.gender, e.student.personalInfo.emailId, e.student.personalInfo.birthDate,
-            e.student.personalInfo.birthCity, e.student.personalInfo.nationality, e.student.reference, e.student.personalInfo.image,
-            e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,
-            e.student.dadName, e.student.momName) from ClasseEntity c join c.students e where e.academicYear.school.id = ?1
+            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
+            e.student.reference, e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section,
+            e.classe.monthCost, e.student.dadName, e.student.momName) from ClasseEntity c join c.students e where e.academicYear.school.id = ?1
             and e.student.id <> ?2 and e.classe.id = ?3 and e.academicYear.id = ?4 order by e.student.personalInfo.lastName asc
    """)
     Page<EnrolledStudent> getEnrolledStudentsByClassId(int classeId, Pageable pageable);

@@ -26,8 +26,21 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
             "and s.assignment.subject.id = ?3 order by s.assignment.examDate desc")
     List<Score> findAllByStudentIdAcademicYearAndSubjectId(UUID academicYearId, UUID studentId, int subjectId);
 
-    @Query("select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.obtainedMark) from Score s " +
+    @Query("select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.studentEntity.id, s.studentEntity.personalInfo, s.obtainedMark) from Score s " +
             "where s.assignment.preparedBy.id = ?1 and s.assignment.semester.semestre.academicYear.current = true")
-    List<ScoreBasicValue> finsAllTeacherMarks(long studentId);
+    List<ScoreBasicValue> finsAllTeacherMarks(long teacherId);
 
+    @Query("select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.studentEntity.id, s.studentEntity.personalInfo, s.obtainedMark) from Score s " +
+            "where s.assignment.id = ?1 and s.assignment.semester.semestre.academicYear.current = true order by s.obtainedMark desc")
+    Page<ScoreBasicValue> findScoresByAssignment(long assignmentId, Pageable pageable);
+
+    @Query("select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.studentEntity.id, s.studentEntity.personalInfo, sum(s.obtainedMark)) from Score s " +
+            "where s.assignment.preparedBy.id = ?1 and s.assignment.subject.id = ?2 and s.assignment.semester.semestre.academicYear.current = true " +
+            "group by s.studentEntity order by s.obtainedMark desc")
+    Page<ScoreBasicValue> findBestStudentByScores(long teacherId, int subjectId, Pageable pageable);
+
+    @Query("select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.studentEntity.id, s.studentEntity.personalInfo, sum(s.obtainedMark)) from Score s " +
+            "where s.assignment.preparedBy.id = ?1 and s.assignment.semester.semestre.academicYear.current = true " +
+            "group by s.studentEntity order by s.obtainedMark desc")
+    Page<ScoreBasicValue> findBestStudentByScores(long teacherId, Pageable pageable);
 }

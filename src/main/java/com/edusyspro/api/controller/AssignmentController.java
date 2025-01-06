@@ -23,17 +23,34 @@ public class AssignmentController {
         );
     }
 
-    @GetMapping("/teacher_all_{teacherId}")
+    @GetMapping("/teacher_all/{teacherId}")
+    ResponseEntity<?> fetchAllTeacherAssignments(@PathVariable String teacherId) {
+        return ResponseEntity.ok(
+                assignmentService.findAllAssignmentsPreparedByTeacher(Long.parseLong(teacherId))
+        );
+    }
+
+    @GetMapping("/teacher_all_course_{teacherId}")
     ResponseEntity<?> fetchAllTeacherAssignments(
             @PathVariable String teacherId,
             @RequestParam() int classe,
-            @RequestParam() int course,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam() int course
+    ) {
+        return ResponseEntity.ok(
+                assignmentService.findAllAssignmentsPreparedByTeacherByCourse(
+                        Long.parseLong(teacherId), new CourseAndClasseIds(course, classe)
+                )
+        );
+    }
+
+    @GetMapping("/teacher_all_{teacherId}")
+    ResponseEntity<?> fetchAllTeacherAssignments(
+            @PathVariable String teacherId,
+            @RequestParam() int classe
     ) {
         return ResponseEntity.ok(
                 assignmentService.findAllAssignmentsPreparedByTeacher(
-                        Long.parseLong(teacherId), new CourseAndClasseIds(course, classe), ControllerUtils.setPage(page, size)
+                        Long.parseLong(teacherId), new CourseAndClasseIds(0, classe)
                 )
         );
     }

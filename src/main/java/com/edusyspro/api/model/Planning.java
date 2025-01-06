@@ -1,6 +1,7 @@
 package com.edusyspro.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class Planning {
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "semester_id", referencedColumnName = "semester_id")
+    @JsonProperty("semester")
     private Semester semestre;
 
     @Column(length = 500)

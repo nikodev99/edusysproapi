@@ -17,4 +17,10 @@ public interface ScoreService {
 
     List<ScoreDTO> getAllTeacherMarks(long teacherId);
 
+    Page<ScoreDTO> getAllAssignmentScores(long assignmentId, Pageable pageable);
+
+    List<ScoreDTO> getBestStudentBySubjectScore(long teacherId, int subjectId);
+
+    List<ScoreDTO> getBestStudentByScore(long teacherId);
+
 }

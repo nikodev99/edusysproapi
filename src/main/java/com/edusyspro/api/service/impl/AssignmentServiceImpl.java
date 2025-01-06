@@ -29,8 +29,23 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public Page<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, CourseAndClasseIds ids, Pageable pageable) {
-        return assignmentRepository.findAllAssignmentsByTeacher(teacherId, ids.classId(), ids.courseId(), pageable)
-                .map(AssignmentEssential::toDTO);
+    public List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId) {
+        return assignmentRepository.findAssignmentsByTeacher(teacherId).stream()
+                .map(AssignmentEssential::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<AssignmentDTO> findAllAssignmentsPreparedByTeacherByCourse(long teacherId, CourseAndClasseIds ids) {
+        return assignmentRepository.findAllAssignmentsByTeacher(teacherId, ids.classId(), ids.courseId()).stream()
+                .map(AssignmentEssential::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, CourseAndClasseIds ids) {
+        return assignmentRepository.findAllAssignmentsByTeacher(teacherId, ids.classId()).stream()
+                .map(AssignmentEssential::toDTO)
+                .toList();
     }
 }

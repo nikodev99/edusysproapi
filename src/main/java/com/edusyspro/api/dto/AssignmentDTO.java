@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
@@ -27,4 +28,6 @@ public class AssignmentDTO {
     private LocalTime endTime;
     private boolean passed;
     private List<ScoreDTO> marks;
+    private ZonedDateTime addedDate;
+    private ZonedDateTime updatedDate;
 }

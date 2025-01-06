@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 public class ScoreDTO {
     private long id;
     private Assignment assignment;
-    private StudentEntity studentEntity;
-    private byte obtainedMark;
+    private StudentDTO student;
+    private long obtainedMark;
 }

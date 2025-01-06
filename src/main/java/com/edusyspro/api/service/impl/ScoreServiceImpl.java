@@ -6,6 +6,7 @@ import com.edusyspro.api.model.Score;
 import com.edusyspro.api.repository.ScoreRepository;
 import com.edusyspro.api.service.interfaces.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,26 @@ public class ScoreServiceImpl implements ScoreService {
     @Override
     public List<ScoreDTO> getAllTeacherMarks(long teacherId) {
         return scoreRepository.finsAllTeacherMarks(teacherId).stream()
+                .map(ScoreBasicValue::toDTO)
+                .toList();
+    }
+
+    @Override
+    public Page<ScoreDTO> getAllAssignmentScores(long assignmentId, Pageable pageable) {
+        return scoreRepository.findScoresByAssignment(assignmentId, pageable)
+                .map(ScoreBasicValue::toDTO);
+    }
+
+    @Override
+    public List<ScoreDTO> getBestStudentBySubjectScore(long teacherId, int subjectId) {
+        return scoreRepository.findBestStudentByScores(teacherId, subjectId, PageRequest.of(0, 5))
+                .map(ScoreBasicValue::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<ScoreDTO> getBestStudentByScore(long teacherId) {
+        return scoreRepository.findBestStudentByScores(teacherId, PageRequest.of(0, 5))
                 .map(ScoreBasicValue::toDTO)
                 .toList();
     }

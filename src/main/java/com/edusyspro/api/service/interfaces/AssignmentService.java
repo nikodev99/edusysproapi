@@ -11,5 +11,9 @@ public interface AssignmentService {
 
     List<AssignmentDTO> findSomeAssignmentsPreparedByTeacher(long teacherId);
 
-    Page<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, CourseAndClasseIds ids, Pageable pageable);
+    List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId);
+
+    List<AssignmentDTO> findAllAssignmentsPreparedByTeacherByCourse(long teacherId, CourseAndClasseIds ids);
+
+    List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, CourseAndClasseIds ids);
 }

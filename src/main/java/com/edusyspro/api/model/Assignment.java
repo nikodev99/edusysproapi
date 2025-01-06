@@ -1,5 +1,6 @@
 package com.edusyspro.api.model;
 
+import com.edusyspro.api.utils.Datetime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
@@ -56,8 +58,21 @@ public class Assignment {
 
     private boolean passed;
 
-    private int markMean;
-
     @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
     private List<Score> marks;
+
+    private ZonedDateTime addedDate;
+
+    private ZonedDateTime updatedDate;
+
+    @PrePersist
+    public void prePersistAddedDate() {
+        addedDate = Datetime.brazzavilleDatetime();
+        updatedDate = Datetime.brazzavilleDatetime();
+    }
+
+    @PreUpdate
+    public void preUpdateUpdatedDate() {
+        updatedDate = Datetime.brazzavilleDatetime();
+    }
 }

@@ -52,4 +52,24 @@ public class ScoreController {
     ResponseEntity<?> getAllTeacherMarks(@PathVariable String teacherId) {
         return ResponseEntity.ok(scoreService.getAllTeacherMarks(Long.parseLong(teacherId)));
     }
+
+    @GetMapping("/all_assignment_marks/{assignmentId}")
+    ResponseEntity<?> getAllAssignmentMarks(@PathVariable String assignmentId, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(scoreService.getAllAssignmentScores(
+                Long.parseLong(assignmentId),
+                PageRequest.of(0, size)
+        ));
+    }
+
+    @GetMapping("/students/{teacherId}/{subjectId}")
+    ResponseEntity<?> getBestStudentByMarks(@PathVariable long teacherId, @PathVariable int subjectId) {
+        return ResponseEntity.ok(scoreService.getBestStudentBySubjectScore(teacherId, subjectId));
+    }
+
+    @GetMapping("/students/{teacherId}")
+    ResponseEntity<?> getBestStudentByMarks(@PathVariable String teacherId) {
+        return ResponseEntity.ok(scoreService.getBestStudentByScore(
+                Long.parseLong(teacherId)
+        ));
+    }
 }

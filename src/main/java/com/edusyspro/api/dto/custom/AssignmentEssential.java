@@ -8,6 +8,7 @@ import com.edusyspro.api.model.enums.Section;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 
 public record AssignmentEssential(
         Long id,
@@ -22,7 +23,9 @@ public record AssignmentEssential(
         LocalDate examDate,
         LocalTime startTime,
         LocalTime endTime,
-        boolean passed
+        boolean passed,
+        ZonedDateTime addedDate,
+        ZonedDateTime updatedDate
 ) {
     public AssignmentDTO toDTO() {
         return AssignmentDTO.builder()
@@ -51,6 +54,8 @@ public record AssignmentEssential(
                 .startTime(startTime)
                 .endTime(endTime)
                 .passed(passed)
+                .addedDate(addedDate)
+                .updatedDate(updatedDate)
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.edusyspro.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,6 @@ public class Score {
     @JsonIgnore
     private StudentEntity studentEntity;
 
-    private byte obtainedMark;
+    private long obtainedMark;
 
 }
