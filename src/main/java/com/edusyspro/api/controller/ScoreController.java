@@ -1,6 +1,6 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.model.Score;
+import com.edusyspro.api.dto.ScoreDTO;
 import com.edusyspro.api.service.interfaces.AcademicYearService;
 import com.edusyspro.api.service.interfaces.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class ScoreController {
     }
 
     @GetMapping({"/all/{studentId}", "/{studentId}"})
-    ResponseEntity<Page<Score>> getAllScores(
+    ResponseEntity<Page<ScoreDTO>> getAllScores(
             @PathVariable String studentId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -36,7 +36,7 @@ public class ScoreController {
     }
 
     @GetMapping({"/all/{studentId}-{subjectId}", "/{studentId}-{subjectId}"})
-    ResponseEntity<List<Score>> getAllScores(
+    ResponseEntity<List<ScoreDTO>> getAllScores(
             @PathVariable String studentId,
             @RequestParam String academicYearId,
             @PathVariable int subjectId

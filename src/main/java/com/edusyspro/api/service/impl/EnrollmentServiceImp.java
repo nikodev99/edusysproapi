@@ -1,11 +1,8 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.ClasseDTO;
-import com.edusyspro.api.dto.EnrollmentDTO;
-import com.edusyspro.api.dto.ScheduleDTO;
+import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.model.*;
-import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.custom.EnrolledStudent;
 import com.edusyspro.api.repository.EnrollmentRepository;
 import com.edusyspro.api.repository.context.EnrollmentRepositoryContext;
@@ -90,7 +87,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
 
         if (student != null) {
             Pageable pageable = PageRequest.of(0, 5);
-            Page<Score> scores = scoreService.getLastScoresByStudent(studentId, pageable);
+            Page<ScoreDTO> scores = scoreService.getLastScoresByStudent(studentId, pageable);
             Page<EnrollmentEntity> enrollments = enrollmentRepository.findStudentEnrollments(UUID.fromString(schoolId), UUID.fromString(studentId), pageable);
             Page<Attendance> attendances = attendanceService.getLastStudentAttendances(studentId, pageable);
 

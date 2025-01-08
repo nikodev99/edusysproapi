@@ -1,5 +1,11 @@
 package com.edusyspro.api.dto.custom;
 
+import com.edusyspro.api.dto.AssignmentDTO;
+import com.edusyspro.api.dto.ClasseDTO;
+import com.edusyspro.api.dto.CourseDTO;
+import com.edusyspro.api.dto.ScoreDTO;
+import com.edusyspro.api.model.Grade;
+import com.edusyspro.api.model.enums.Section;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +20,38 @@ import java.time.LocalTime;
 @Builder
 public class ScoreEssential {
     private long id;
+    private long assignmentId;
     private String examName;
     private LocalDate examDate;
     private LocalTime examStartTime;
     private LocalTime examEndDate;
-    private byte obtainedMark;
+    private String examClasse;
+    private Section section;
+    private int subjectId;
+    private String subjectName;
+    private long obtainedMark;
+
+    public static ScoreDTO toDTO(ScoreEssential e) {
+        return ScoreDTO.builder()
+                .id(e.id)
+                .assignment(AssignmentDTO.builder()
+                        .id(e.assignmentId)
+                        .examName(e.examName)
+                        .examDate(e.examDate)
+                        .startTime(e.examStartTime)
+                        .endTime(e.examEndDate)
+                        .classe(ClasseDTO.builder()
+                                .name(e.examClasse)
+                                .grade(Grade.builder()
+                                        .section(e.section)
+                                        .build())
+                                .build())
+                        .subject(CourseDTO.builder()
+                                .id(e.subjectId)
+                                .course(e.subjectName)
+                                .build())
+                        .build())
+                .obtainedMark(e.obtainedMark)
+                .build();
+    }
 }

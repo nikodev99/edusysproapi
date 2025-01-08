@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface ScoreService {
 
-    Page<Score> getLastScoresByStudent(String studentId, Pageable pageable);
+    Page<ScoreDTO> getLastScoresByStudent(String studentId, Pageable pageable);
 
-    Page<Score> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, Pageable pageable);
+    Page<ScoreDTO> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, Pageable pageable);
 
-    List<Score> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, int subjectId);
+    List<ScoreDTO> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, int subjectId);
 
     List<ScoreDTO> getAllTeacherMarks(long teacherId);
 

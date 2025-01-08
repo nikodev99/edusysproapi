@@ -1,7 +1,5 @@
 package com.edusyspro.api.dto;
 
-import com.edusyspro.api.model.Assignment;
-import com.edusyspro.api.model.StudentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ScoreDTO {
     private long id;
-    private Assignment assignment;
+    private AssignmentDTO assignment;
     private StudentDTO student;
     private long obtainedMark;
 }

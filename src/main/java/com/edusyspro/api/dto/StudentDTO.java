@@ -27,7 +27,7 @@ public class StudentDTO {
     private String reference;
     private GuardianEntity guardian;
     private HealthCondition healthCondition;
-    private List<Score> marks;
+    private List<ScoreDTO> marks;
     private List<Attendance> attendances;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
