@@ -1,6 +1,8 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.custom.GradeBasicValue;
 import com.edusyspro.api.model.Grade;
+import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Section;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,8 +10,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface GradeRepository extends JpaRepository<Grade, Integer> {
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection)
+        from Grade g where g.school.id = ?1
+    """)
+    List<GradeBasicValue> findAllGradeBySchool(UUID schoolId);
+
+    //TEST
 
     @Modifying
     @Transactional

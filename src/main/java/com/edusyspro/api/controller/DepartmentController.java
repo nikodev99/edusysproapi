@@ -1,5 +1,6 @@
 package com.edusyspro.api.controller;
 
+import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.DepartmentDTO;
 import com.edusyspro.api.service.interfaces.DepartmentService;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,11 @@ public class DepartmentController {
     @GetMapping
     ResponseEntity<DepartmentDTO> getDepartmentByCode(@RequestParam String departmentCode) {
         return ResponseEntity.ok(departmentService.fetchOneByCustomColumn(departmentCode));
+    }
+
+    @GetMapping("/basics")
+    ResponseEntity<?> getDepartmentBasicValues() {
+        return ResponseEntity.ok(departmentService.fetchAll(ConstantUtils.SCHOOL_ID));
     }
 
 }

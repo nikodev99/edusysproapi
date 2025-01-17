@@ -4,7 +4,6 @@ import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.EnrollmentDTO;
 import com.edusyspro.api.dto.GuardianDTO;
-import com.edusyspro.api.dto.custom.EnrolledStudent;
 import com.edusyspro.api.service.interfaces.EnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

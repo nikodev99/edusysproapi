@@ -4,7 +4,6 @@ import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
-import com.edusyspro.api.repository.CourseProgramRepository;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.CourseProgramService;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TeacherServiceImpl implements TeacherServiceInterface {
 
@@ -188,10 +186,6 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
         return Map.of();
     }
 
-    private boolean teacherEmailExists(TeacherDTO teacherDTO) {
-        return teacherRepository.existsByPersonalInfoEmailIdAndSchoolId(teacherDTO.getPersonalInfo().getEmailId(), teacherDTO.getSchool().getId());
-    }
-
     @Override
     public List<Map<String, Object>> countStudentsByClasse(UUID teacherId) {
         List<Object[]> counts = teacherRepository.countAllTeacherStudentsByClasses(teacherId);
@@ -201,5 +195,9 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
                         "count", row[1]
                 ))
                 .toList();
+    }
+
+    private boolean teacherEmailExists(TeacherDTO teacherDTO) {
+        return teacherRepository.existsByPersonalInfoEmailIdAndSchoolId(teacherDTO.getPersonalInfo().getEmailId(), teacherDTO.getSchool().getId());
     }
 }

@@ -23,7 +23,7 @@ public class Department {
     @Column(length = 300)
     private String name;
 
-    @Column(length = 10)
+    @Column(length = 50)
     private String code;
 
     @Column(length = 500)

@@ -1,5 +1,6 @@
 package com.edusyspro.api.dto;
 
+import com.edusyspro.api.model.Department;
 import com.edusyspro.api.model.DepartmentBoss;
 import com.edusyspro.api.model.School;
 import lombok.AllArgsConstructor;
@@ -22,4 +23,16 @@ public class DepartmentDTO {
     private School school;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
+
+    public static Department toEntity(DepartmentDTO dto) {
+        return Department.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .code(dto.getCode())
+                .purpose(dto.getPurpose())
+                .school(dto.getSchool())
+                .createdAt(dto.getCreatedAt())
+                .modifyAt(dto.getModifyAt())
+                .build();
+    }
 }

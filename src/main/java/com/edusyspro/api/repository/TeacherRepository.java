@@ -35,7 +35,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
         select new com.edusyspro.api.dto.custom.CourseEssential(
             c.id, c.course, c.abbr, c.department.id, c.department.name, c.department.code, c.department.purpose,
             c.department.boss.d_boss.id, c.department.boss.current, c.department.boss.d_boss.personalInfo.firstName,
-            c.department.boss.d_boss.personalInfo.lastName, c.department.boss.startPeriod, c.department.boss.endPeriod
+            c.department.boss.d_boss.personalInfo.lastName, c.department.boss.startPeriod, c.department.boss.endPeriod, c.createdAt
         ) from Teacher t join t.courses c where t.id = ?1
     """)
     List<CourseEssential> findTeacherEssentialCourses(UUID teacherId);

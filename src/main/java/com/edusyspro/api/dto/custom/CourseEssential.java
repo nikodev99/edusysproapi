@@ -7,6 +7,7 @@ import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.Teacher;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public record CourseEssential(
@@ -22,7 +23,8 @@ public record CourseEssential(
         String firstName,
         String lastName,
         LocalDate startPeriod,
-        LocalDate endPeriod
+        LocalDate endPeriod,
+        ZonedDateTime addedDate
 ) {
     public CourseDTO toCourse(){
         return CourseDTO.builder()
@@ -47,6 +49,7 @@ public record CourseEssential(
                                 .endPeriod(endPeriod)
                                 .build())
                         .build())
+                .createdAt(addedDate)
                 .build();
     }
 }

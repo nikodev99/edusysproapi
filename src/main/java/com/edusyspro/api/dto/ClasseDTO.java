@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -28,4 +29,16 @@ public class ClasseDTO {
     private double monthCost;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
+
+    public static ClasseDTO fromEntity(ClasseEntity classe){
+        ClasseDTO copiedClasse = ClasseDTO.builder().build();
+        BeanUtils.copyProperties(classe, copiedClasse);
+        return copiedClasse;
+    }
+
+    public static ClasseEntity toEntity(ClasseDTO classe){
+        ClasseEntity copiedClasse = ClasseEntity.builder().build();
+        BeanUtils.copyProperties(classe, copiedClasse);
+        return copiedClasse;
+    }
 }

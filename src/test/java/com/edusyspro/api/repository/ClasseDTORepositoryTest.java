@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @SpringBootTest
 class ClasseDTORepositoryTest {
 
@@ -158,6 +161,18 @@ class ClasseDTORepositoryTest {
     public void printBasicClassValues() {
         List<ClassBasicValue> classBasicValues = classeRepository.findAllBasicValue(UUID.fromString(ConstantUtils.SCHOOL_ID));
         System.out.println("BasicClassValues= " + classBasicValues);
+    }
+
+    @Test
+    public void classeExistsTest() {
+        ClasseEntity classe = ClasseEntity.builder()
+                .name("Terminale A")
+                .category("Terminale Littéraire")
+                .grade(getGrade(Section.LYCEE))
+                .monthCost(3300)
+                .build();
+        boolean exists = classeRepository.existsByName(classe.getName());
+        assertTrue(exists);
     }
 
     private Course getPrincipalCourse(int id) {

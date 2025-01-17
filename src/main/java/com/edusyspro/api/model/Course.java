@@ -25,7 +25,7 @@ public class Course {
     @Column(length = 50, unique = true)
     private String abbr;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
 

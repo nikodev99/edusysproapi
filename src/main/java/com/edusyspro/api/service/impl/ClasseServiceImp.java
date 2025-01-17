@@ -2,12 +2,12 @@ package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.ClasseDTO;
 import com.edusyspro.api.dto.custom.ClassBasicValue;
+import com.edusyspro.api.dto.custom.ClasseEssential;
 import com.edusyspro.api.dto.custom.UpdateField;
-import com.edusyspro.api.model.ClasseEntity;
+import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.repository.ClasseRepository;
 import com.edusyspro.api.service.interfaces.ClasseServiceInterface;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,7 +21,12 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     @Override
     public ClasseDTO save(ClasseDTO entity) {
-        return null;
+        boolean alreadyExists = classeAlreadyExists(entity);
+        if(alreadyExists) {
+            throw new AlreadyExistException("La classe " + entity.getName() + " existe déjà");
+        }
+        classeRepository.save(ClasseDTO.toEntity(entity));
+        return entity;
     }
 
     @Override
@@ -31,14 +36,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     @Override
     public List<ClasseDTO> fetchAll() {
-        List<ClasseEntity> classeEntity = classeRepository.findAll();
-        return classeEntity.stream()
-                .map(entity -> {
-                    ClasseDTO classeDTO = new ClasseDTO();
-                    BeanUtils.copyProperties(entity, classeDTO);
-                    return classeDTO;
-                })
-                .toList();
+        return List.of();
     }
 
     @Override
@@ -50,12 +48,17 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     @Override
     public Page<ClasseDTO> fetchAll(String schoolId, Pageable pageable) {
-        return null;
+        return classeRepository.findAllCLassesBySchool(UUID.fromString(schoolId), pageable)
+                .map(ClasseEssential::convertToDTO);
     }
 
     @Override
     public List<ClasseDTO> fetchAll(Object... args) {
-        return List.of();
+        var schoolId = UUID.fromString(String.valueOf(args[0]));
+        var classeName = "%" + args[1].toString() + "%";
+        return classeRepository.findAllCLassesBySchool(schoolId, classeName).stream()
+                .map(ClasseEssential::convertToDTO)
+                .toList();
     }
 
     @Override
@@ -90,7 +93,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     @Override
     public ClasseDTO fetchOneById(Integer id) {
-        return null;
+        return classeRepository.findClasseById(id).convertToDTO();
     }
 
     @Override
@@ -146,5 +149,11 @@ public class ClasseServiceImp implements ClasseServiceInterface {
     @Override
     public Map<String, Long> count(Object... args) {
         return Map.of();
+    }
+
+    private boolean classeAlreadyExists(ClasseDTO entity) {
+        return classeRepository.existsByName(
+                entity.getName()
+        );
     }
 }

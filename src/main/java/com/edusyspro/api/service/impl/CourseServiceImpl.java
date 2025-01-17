@@ -1,18 +1,19 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.custom.CourseBasicValue;
+import com.edusyspro.api.dto.custom.CourseEssential;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.dto.CourseDTO;
+import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.repository.CourseRepository;
 import com.edusyspro.api.service.interfaces.CourseService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-@Service
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
@@ -23,7 +24,12 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDTO save(CourseDTO entity) {
-        return null;
+        boolean alreadyExists = courseAlreadyExists(entity);
+        if(alreadyExists) {
+            throw new AlreadyExistException("La matière " + entity.getCourse() + " existe déjà");
+        }
+        courseRepository.save(CourseDTO.toEntity(entity));
+        return entity;
     }
 
     @Override
@@ -33,28 +39,29 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseDTO> fetchAll() {
-        return courseRepository.findAll().stream()
-                .map(c -> {
-                    CourseDTO dto = new CourseDTO();
-                    BeanUtils.copyProperties(c, dto);
-                    return dto;
-                })
-                .toList();
+        return List.of();
     }
 
     @Override
     public List<CourseDTO> fetchAll(String schoolId) {
-        return List.of();
+        return courseRepository.findAllCourses(UUID.fromString(schoolId)).stream()
+                .map(CourseBasicValue::toCourse)
+                .toList();
     }
 
     @Override
     public Page<CourseDTO> fetchAll(String schoolId, Pageable pageable) {
-        return null;
+        return courseRepository.findAllCoursesBySchoolId(UUID.fromString(schoolId), pageable)
+                .map(CourseEssential::toCourse);
     }
 
     @Override
     public List<CourseDTO> fetchAll(Object... args) {
-        return List.of();
+        var schoolId = UUID.fromString(String.valueOf(args[0]));
+        var courseName = "%" + args[1].toString() + "%";
+        return courseRepository.findAllCoursesBySchoolId(schoolId, courseName).stream()
+                .map(CourseEssential::toCourse)
+                .toList();
     }
 
     @Override
@@ -89,7 +96,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDTO fetchOneById(Integer id) {
-        return null;
+        return courseRepository.findCourseById(id).toCourse();
     }
 
     @Override
@@ -145,5 +152,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Map<String, Long> count(Object... args) {
         return Map.of();
+    }
+
+    private boolean courseAlreadyExists(CourseDTO entity) {
+        return courseRepository.existsCourseByCourseAndAbbr(
+          entity.getCourse(),
+          entity.getAbbr()
+        );
     }
 }

@@ -1,8 +1,10 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.custom.DepartmentBasicValue;
 import com.edusyspro.api.dto.custom.DepartmentEssential;
 import com.edusyspro.api.dto.DepartmentDTO;
 import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.repository.DepartmentRepository;
 import com.edusyspro.api.service.interfaces.DepartmentService;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
@@ -37,7 +40,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public List<DepartmentDTO> fetchAll(String schoolId) {
-        return List.of();
+        return departmentRepository.findBasicDepartmentBySchool(UUID.fromString(schoolId)).orElseThrow()
+                .stream().map(DepartmentBasicValue::toDTO)
+                .toList();
     }
 
     @Override
