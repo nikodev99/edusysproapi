@@ -1,6 +1,7 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,14 +19,15 @@ public class ClasseDTO {
     private int id;
     private String name;
     private String category;
-    private Grade grade;
+    private GradeDTO grade;
     private List<ScheduleDTO> schedule;
     private int roomNumber;
-    private ClasseTeacherBoss principalTeacher;
-    private ClasseStudentBoss principalStudent;
+    private TeacherBossDTO principalTeacher;
+    private StudentBossDTO principalStudent;
     private CourseDTO principalCourse;
     private List<EnrollmentDTO> students;
-    private List<TeacherDTO> classTeacherCourses;
+    @JsonProperty("classeTeachers")
+    private List<TeacherDTO> classeTeachers;
     private double monthCost;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;

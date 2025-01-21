@@ -59,26 +59,26 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     Page<EnrolledStudent> findStudentClassmateByAcademicYear(UUID schoolId, UUID studentId, int classeId, UUID academicYear, Pageable pageable);
 
     @Query("""
-            select distinct new com.edusyspro.api.dto.custom.GuardianEssential(e.student.guardian.id, e.student.guardian.personalInfo,
-            e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.createdAt, e.student.guardian.modifyAt)
-            from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false
+        select distinct new com.edusyspro.api.dto.custom.GuardianEssential(e.student.guardian.id, e.student.guardian.personalInfo,
+        e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.createdAt, e.student.guardian.modifyAt)
+        from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false
     """)
     Page<GuardianEssential> findEnrolledStudentGuardian(UUID schoolId, Pageable pageable);
 
     @Query(value = """
         select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
         e.student.reference, e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section,
-        e.classe.monthCost, e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id = ?1
-        and e.classe.id = ?2 and e.academicYear.id = ?3 order by e.student.personalInfo.lastName asc
+        e.classe.monthCost, e.student.dadName, e.student.momName) from EnrollmentEntity e where e.classe.id = ?1
+        and e.academicYear.id = ?2 order by e.student.personalInfo.lastName asc
    """)
-    Page<EnrolledStudent> getEnrolledStudentsByClassId(UUID schoolId, int classeId, UUID academicYear, Pageable pageable);
+    Page<EnrolledStudent> getEnrolledStudentsByClassId(int classeId, UUID academicYear, Pageable pageable);
 
     @Query("""
-            select distinct new com.edusyspro.api.dto.custom.GuardianEssential(e.student.guardian.id, e.student.guardian.personalInfo,
-            e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.createdAt, e.student.guardian.modifyAt)
-            from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false
-            and (lower(e.student.guardian.personalInfo.lastName) like lower(?2) or lower(e.student.guardian.personalInfo.firstName) like lower(?2))
-            order by e.student.guardian.personalInfo.lastName asc
+        select distinct new com.edusyspro.api.dto.custom.GuardianEssential(e.student.guardian.id, e.student.guardian.personalInfo,
+        e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.createdAt, e.student.guardian.modifyAt)
+        from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false
+        and (lower(e.student.guardian.personalInfo.lastName) like lower(?2) or lower(e.student.guardian.personalInfo.firstName) like lower(?2))
+        order by e.student.guardian.personalInfo.lastName asc
     """)
     List<GuardianEssential> findEnrolledStudentGuardian(UUID schoolId, String lastName);
 

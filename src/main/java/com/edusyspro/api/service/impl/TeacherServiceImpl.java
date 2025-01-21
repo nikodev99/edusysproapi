@@ -109,7 +109,9 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public List<TeacherDTO> fetchAllByOtherEntityId(String otherEntityId) {
-        return List.of();
+        return teacherRepository.findAllClasseTeachers(Integer.parseInt(otherEntityId)).stream()
+                .map(TeacherEssential::toTeacher)
+                .toList();
     }
 
     @Override

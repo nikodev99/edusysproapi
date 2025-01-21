@@ -1,20 +1,31 @@
 package com.edusyspro.api.dto.custom;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.edusyspro.api.dto.PlanningDTO;
+import com.edusyspro.api.model.AcademicYear;
+import com.edusyspro.api.model.Semester;
 
 import java.time.LocalDate;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class PlanningEssential {
-    private long id;
-    private String designation;
-    private LocalDate termStartDate;
-    private LocalDate termEndDate;
-    private String semestre;
+public record PlanningEssential(
+        long id,
+        String designation,
+        LocalDate termStartDate,
+        LocalDate termEndDate,
+        String semestre,
+        String academicYear
+) {
+    public PlanningDTO toDto() {
+        return PlanningDTO.builder()
+                .id(id)
+                .designation(designation)
+                .termStartDate(termStartDate)
+                .termEndDate(termEndDate)
+                .semestre(Semester.builder()
+                        .semesterName(semestre)
+                        .academicYear(AcademicYear.builder()
+                                .years(academicYear)
+                                .build())
+                        .build())
+                .build();
+    }
 }

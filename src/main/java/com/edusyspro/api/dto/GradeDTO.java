@@ -19,7 +19,7 @@ public class GradeDTO {
     private int id;
     private Section section;
     private String subSection;
-    private List<Planning> planning;
+    private List<PlanningDTO> planning;
     private School school;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;

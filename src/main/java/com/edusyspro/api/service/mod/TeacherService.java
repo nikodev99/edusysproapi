@@ -41,6 +41,10 @@ public class TeacherService extends TeacherServiceImpl {
         return fetchOneById(UUID.fromString(id), schoolId);
     }
 
+    public List<TeacherDTO> findAllClasseTeachers(int classeId) {
+        return fetchAllByOtherEntityId(String.valueOf(classeId));
+    }
+
     public int updateTeacherField(String id, UpdateField updateField) {
         return patch(UUID.fromString(id), updateField);
     }

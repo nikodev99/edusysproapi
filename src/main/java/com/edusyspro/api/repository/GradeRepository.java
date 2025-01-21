@@ -1,6 +1,7 @@
 package com.edusyspro.api.repository;
 
 import com.edusyspro.api.dto.custom.GradeBasicValue;
+import com.edusyspro.api.dto.custom.PlanningEssential;
 import com.edusyspro.api.model.Grade;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Section;
@@ -19,6 +20,12 @@ public interface GradeRepository extends JpaRepository<Grade, Integer> {
         from Grade g where g.school.id = ?1
     """)
     List<GradeBasicValue> findAllGradeBySchool(UUID schoolId);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate,
+        p.semestre.semesterName, p.semestre.academicYear.years) from Grade g join g.planning p where g.id = ?1 and p.semestre.academicYear.id = ?2
+    """)
+    List<PlanningEssential> findPlanningsByGrade(int gradeId, UUID academicYearId);
 
     //TEST
 

@@ -1,6 +1,6 @@
 package com.edusyspro.api.dto.custom;
 import com.edusyspro.api.dto.ClasseDTO;
-import com.edusyspro.api.model.Grade;
+import com.edusyspro.api.dto.GradeDTO;
 import com.edusyspro.api.model.enums.Section;
 
 public record ClassBasicValue (
@@ -14,7 +14,7 @@ public record ClassBasicValue (
                 .id(id)
                 .name(name)
                 .category(category)
-                .grade(Grade.builder()
+                .grade(GradeDTO.builder()
                         .section(section)
                         .build())
                 .build();

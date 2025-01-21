@@ -30,8 +30,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public List<ScheduleDTO> getAllClasseSchedule(int classeId, Section section) {
         Day scheduleDay = currentDay(section);
-        System.out.println("DAY: " + scheduleDay);
-        System.out.println("SAME DAY " + (scheduleDay == Day.ALL_DAYS));
         List<ScheduleEssential> scheduleEssentials;
         if (scheduleDay == Day.ALL_DAYS) {
             scheduleEssentials = scheduleRepository.findAllDayClasseSchedules(classeId);

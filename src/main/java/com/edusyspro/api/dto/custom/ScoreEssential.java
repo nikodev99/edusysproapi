@@ -1,9 +1,6 @@
 package com.edusyspro.api.dto.custom;
 
-import com.edusyspro.api.dto.AssignmentDTO;
-import com.edusyspro.api.dto.ClasseDTO;
-import com.edusyspro.api.dto.CourseDTO;
-import com.edusyspro.api.dto.ScoreDTO;
+import com.edusyspro.api.dto.*;
 import com.edusyspro.api.model.Grade;
 import com.edusyspro.api.model.enums.Section;
 import lombok.AllArgsConstructor;
@@ -42,7 +39,7 @@ public class ScoreEssential {
                         .endTime(e.examEndDate)
                         .classe(ClasseDTO.builder()
                                 .name(e.examClasse)
-                                .grade(Grade.builder()
+                                .grade(GradeDTO.builder()
                                         .section(e.section)
                                         .build())
                                 .build())

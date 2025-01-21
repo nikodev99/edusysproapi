@@ -3,6 +3,7 @@ package com.edusyspro.api.dto.custom;
 import com.edusyspro.api.dto.AssignmentDTO;
 import com.edusyspro.api.dto.ClasseDTO;
 import com.edusyspro.api.dto.CourseDTO;
+import com.edusyspro.api.dto.GradeDTO;
 import com.edusyspro.api.model.*;
 import com.edusyspro.api.model.enums.Section;
 
@@ -41,7 +42,7 @@ public record AssignmentEssential(
                 .preparedBy(preparedBy)
                 .classe(ClasseDTO.builder()
                         .name(classeName)
-                        .grade(Grade.builder()
+                        .grade(GradeDTO.builder()
                                 .section(classeSection)
                                 .build())
                         .build())

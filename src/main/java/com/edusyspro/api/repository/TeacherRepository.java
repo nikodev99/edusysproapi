@@ -50,11 +50,12 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     """)
     Optional<TeacherEssential> findTeacherById(UUID id, UUID schoolId);
 
-    @Query("select t from Teacher t join t.aClasses c join t.courses co where c.id = :classId and co.id = :courseId")
-    Optional<Teacher> findTeacherByClasseIdAndCourseId(@Param("classId") int classId, @Param("courseId") int courseId);
-
-    @Query("select t from Teacher t join t.aClasses c where c.id = :classId")
-    Optional<Teacher> findTeacherByClasseId(@Param("classId") int classId);
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.TeacherEssential(
+            t.id, t.personalInfo, t.hireDate, t.salaryByHour, t.school.id, t.school.name, t.createdAt, t.modifyAt
+        ) FROM Teacher t join t.aClasses c WHERE c.id = ?1
+    """)
+    List<TeacherEssential> findAllClasseTeachers(int classId);
 
     boolean existsByPersonalInfoEmailIdAndSchoolId(String emailId, UUID schoolId);
 
@@ -63,4 +64,11 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
 
     @Query("select c.name, count(s.id) from Teacher t join t.aClasses c join c.students s where t.id = ?1 group by c.id")
     List<Object[]> countAllTeacherStudentsByClasses(UUID teacherId);
+
+    //TESTING
+    @Query("select t from Teacher t join t.aClasses c join t.courses co where c.id = :classId and co.id = :courseId")
+    Optional<Teacher> findTeacherByClasseIdAndCourseId(@Param("classId") int classId, @Param("courseId") int courseId);
+
+    @Query("select t from Teacher t join t.aClasses c where c.id = :classId")
+    Optional<Teacher> findTeacherByClasseId(@Param("classId") int classId);
 }

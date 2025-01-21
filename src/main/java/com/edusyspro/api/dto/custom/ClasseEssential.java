@@ -1,7 +1,7 @@
 package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.ClasseDTO;
-import com.edusyspro.api.model.*;
+import com.edusyspro.api.dto.GradeDTO;
 import com.edusyspro.api.model.enums.Section;
 
 import java.time.ZonedDateTime;
@@ -20,7 +20,7 @@ public record ClasseEssential(
                 .id(id)
                 .name(name)
                 .category(category)
-                .grade(Grade.builder()
+                .grade(GradeDTO.builder()
                         .section(section)
                         .subSection(subSection)
                         .build())

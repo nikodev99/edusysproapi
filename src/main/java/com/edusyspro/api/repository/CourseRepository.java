@@ -44,7 +44,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
             c.id, c.course, c.abbr, c.department.id, c.department.name, c.department.code, c.department.purpose,
             c.department.boss.d_boss.id, c.department.boss.current, c.department.boss.d_boss.personalInfo.firstName,
             c.department.boss.d_boss.personalInfo.lastName, c.department.boss.startPeriod, c.department.boss.endPeriod, c.createdAt
-        )from Course c where c.id = ?1 and c.department.boss.current = true
+        ) from Course c where c.id = ?1 and c.department.boss.current = true
     """)
     CourseEssential findCourseById(Integer id);
 

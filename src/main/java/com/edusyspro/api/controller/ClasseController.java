@@ -53,6 +53,11 @@ public class ClasseController {
         ));
     }
 
+    @GetMapping("/{classeId}")
+    ResponseEntity<ClasseDTO> getOneClasse(@PathVariable int classeId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(classeService.getClasseById(classeId, academicYear));
+    }
+
     @GetMapping("/basic")
     ResponseEntity<List<?>> getAllClassesBasicValue() {
         return ResponseEntity.ok(classeService.getClassBasicValues(ConstantUtils.SCHOOL_ID));

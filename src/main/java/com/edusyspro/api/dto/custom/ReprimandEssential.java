@@ -1,10 +1,6 @@
 package com.edusyspro.api.dto.custom;
 
-import com.edusyspro.api.dto.ClasseDTO;
-import com.edusyspro.api.dto.EnrollmentDTO;
-import com.edusyspro.api.dto.ReprimandDTO;
-import com.edusyspro.api.dto.StudentDTO;
-import com.edusyspro.api.model.Grade;
+import com.edusyspro.api.dto.*;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.Punishment;
 import com.edusyspro.api.model.enums.ReprimandType;
@@ -31,7 +27,7 @@ public record ReprimandEssential(
                 .student(EnrollmentDTO.builder()
                         .classe(ClasseDTO.builder()
                                 .name(studentClasse)
-                                .grade(Grade.builder()
+                                .grade(GradeDTO.builder()
                                         .section(studentSection)
                                         .build())
                                 .build()

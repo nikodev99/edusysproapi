@@ -1,12 +1,15 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.ClasseDTO;
-import com.edusyspro.api.dto.custom.ClassBasicValue;
-import com.edusyspro.api.dto.custom.ClasseEssential;
-import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.dto.*;
+import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.repository.ClasseRepository;
+import com.edusyspro.api.repository.GradeRepository;
 import com.edusyspro.api.service.interfaces.ClasseServiceInterface;
+import com.edusyspro.api.service.interfaces.ClasseStudentBossService;
+import com.edusyspro.api.service.interfaces.ClasseTeacherBossService;
+import com.edusyspro.api.service.interfaces.ScheduleService;
+import com.edusyspro.api.service.mod.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +21,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ClasseServiceImp implements ClasseServiceInterface {
     private final ClasseRepository classeRepository;
+    private final GradeRepository gradeRepository;
+    private final ScheduleService scheduleService;
+    private final ClasseTeacherBossService classeTeacherBossService;
+    private final ClasseStudentBossService classeStudentBossService;
+    private final TeacherService teacherService;
 
     @Override
     public ClasseDTO save(ClasseDTO entity) {
@@ -93,12 +101,34 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     @Override
     public ClasseDTO fetchOneById(Integer id) {
-        return classeRepository.findClasseById(id).convertToDTO();
+        return null;
     }
 
     @Override
     public ClasseDTO fetchOneById(Integer id, String schoolId) {
-        return null;
+        ClasseDTO classe = classeRepository.findClasseById(id).convertToDTO();
+        if (classe != null && classe.getId() > 0) {
+            GradeDTO grade = classeRepository.findGradeClasseId(classe.getId()).convertToDTO();
+            List<PlanningEssential> plannings = gradeRepository.findPlanningsByGrade(grade.getId(), UUID.fromString(schoolId));
+            List<ScheduleDTO> schedules = scheduleService.getAllClasseSchedule(classe.getId(), grade.getSection());
+            TeacherBossDTO teacherBoss = classeTeacherBossService.fetchTeacherBoss(classe.getId());
+            StudentBossDTO studentBoss = classeStudentBossService.fetchStudentBoss(classe.getId());
+            CourseDTO principalCourse = getClassePrincipalCourse(classe.getId());
+            List<TeacherDTO> classeTeachers = teacherService.findAllClasseTeachers(classe.getId());
+
+            grade.setPlanning(
+                    plannings.stream()
+                            .map(PlanningEssential::toDto)
+                            .toList()
+            );
+            classe.setGrade(grade);
+            classe.setSchedule(schedules);
+            classe.setPrincipalTeacher(teacherBoss);
+            classe.setPrincipalStudent(studentBoss);
+            classe.setPrincipalCourse(principalCourse);
+            classe.setClasseTeachers(classeTeachers);
+        }
+        return classe;
     }
 
     @Override
@@ -149,6 +179,12 @@ public class ClasseServiceImp implements ClasseServiceInterface {
     @Override
     public Map<String, Long> count(Object... args) {
         return Map.of();
+    }
+
+    private CourseDTO getClassePrincipalCourse(int classeId) {
+        return classeRepository.findClassePrincipalCourse(classeId)
+                .map(CourseEssential::toCourse)
+                .orElse(null);
     }
 
     private boolean classeAlreadyExists(ClasseDTO entity) {

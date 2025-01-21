@@ -31,4 +31,14 @@ public class ClasseStudentBoss {
     private LocalDate startPeriod;
 
     private LocalDate endPeriod;
+
+    @PrePersist
+    public void onInserting() {
+        current = true;
+    }
+
+    @PreUpdate
+    public void onUpdating() {
+        current = false;
+    }
 }
