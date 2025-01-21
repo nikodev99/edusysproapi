@@ -1,6 +1,7 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.AcademicYear;
+import com.edusyspro.api.model.Schedule;
 import com.edusyspro.api.model.enums.Day;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,4 +24,18 @@ public class ScheduleDTO {
     private Day dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;
+
+    public static Schedule toEntity(ScheduleDTO schedule) {
+        return Schedule.builder()
+                .id(schedule.getId())
+                .academicYear(schedule.getAcademicYear())
+                .classeEntity(ClasseDTO.toEntity(schedule.getClasse()))
+                .teacher(TeacherDTO.toEntity(schedule.getTeacher()))
+                .course(CourseDTO.toEntity(schedule.getCourse()))
+                .designation(schedule.getDesignation())
+                .dayOfWeek(schedule.getDayOfWeek())
+                .startTime(schedule.getStartTime())
+                .endTime(schedule.getEndTime())
+                .build();
+    }
 }

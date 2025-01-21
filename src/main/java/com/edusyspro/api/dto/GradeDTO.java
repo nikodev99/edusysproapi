@@ -1,5 +1,6 @@
 package com.edusyspro.api.dto;
 
+import com.edusyspro.api.model.Grade;
 import com.edusyspro.api.model.Planning;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Section;
@@ -23,4 +24,16 @@ public class GradeDTO {
     private School school;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
+
+    public static Grade toEntity(GradeDTO entity) {
+        return Grade.builder()
+                .id(entity.getId())
+                .section(entity.getSection())
+                .subSection(entity.getSubSection())
+                .planning(entity.getPlanning().stream().map(PlanningDTO::toEntity).toList())
+                .school(entity.getSchool())
+                .createdAt(entity.getCreatedAt())
+                .modifyAt(entity.getModifyAt())
+                .build();
+    }
 }

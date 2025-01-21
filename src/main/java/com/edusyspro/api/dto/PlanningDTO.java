@@ -1,5 +1,6 @@
 package com.edusyspro.api.dto;
 
+import com.edusyspro.api.model.Planning;
 import com.edusyspro.api.model.Semester;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,4 +23,17 @@ public class PlanningDTO {
     private GradeDTO grade;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
+
+    public static Planning toEntity(PlanningDTO dto) {
+        return Planning.builder()
+                .id(dto.getId())
+                .semestre(dto.getSemestre())
+                .designation(dto.getDesignation())
+                .termStartDate(dto.getTermStartDate())
+                .termEndDate(dto.getTermEndDate())
+                .grade(GradeDTO.toEntity(dto.getGrade()))
+                .createdAt(dto.getCreatedAt())
+                .updatedAt(dto.getUpdatedAt())
+                .build();
+    }
 }

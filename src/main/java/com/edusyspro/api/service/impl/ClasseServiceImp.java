@@ -126,7 +126,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
             classe.setPrincipalTeacher(teacherBoss);
             classe.setPrincipalStudent(studentBoss);
             classe.setPrincipalCourse(principalCourse);
-            classe.setClasseTeachers(classeTeachers);
+            classe.setClassTeacherCourses(classeTeachers);
         }
         return classe;
     }

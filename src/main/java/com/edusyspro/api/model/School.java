@@ -1,5 +1,6 @@
 package com.edusyspro.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,6 +55,7 @@ public class School {
     private String websiteURL;
 
     @OneToMany(mappedBy = "school", cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Grade> grades;
 
     private ZonedDateTime createdAt;

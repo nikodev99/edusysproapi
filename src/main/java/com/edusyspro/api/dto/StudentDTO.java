@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -18,10 +19,8 @@ import java.util.UUID;
 public class StudentDTO {
     private UUID id;
     private Individual personalInfo;
-
     @JsonProperty("enrollments")
-    private List<EnrollmentEntity> enrollmentEntities;
-
+    private List<EnrollmentDTO> enrollmentEntities;
     private String dadName;
     private String momName;
     private String reference;
@@ -31,4 +30,14 @@ public class StudentDTO {
     private List<Attendance> attendances;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
+
+    public static StudentEntity toEntity(StudentDTO student) {
+        return StudentEntity.builder()
+                .id(student.getId())
+                .personalInfo(student.getPersonalInfo())
+                .enrollmentEntities(student.getEnrollmentEntities().stream().map(EnrollmentDTO::toEntity).toList())
+                .dadName(student.getDadName())
+                .momName(student.getMomName())
+                .build();
+    }
 }

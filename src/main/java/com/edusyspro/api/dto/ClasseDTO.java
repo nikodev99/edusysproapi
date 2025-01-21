@@ -27,7 +27,7 @@ public class ClasseDTO {
     private CourseDTO principalCourse;
     private List<EnrollmentDTO> students;
     @JsonProperty("classeTeachers")
-    private List<TeacherDTO> classeTeachers;
+    private List<TeacherDTO> classTeacherCourses;
     private double monthCost;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
@@ -39,8 +39,21 @@ public class ClasseDTO {
     }
 
     public static ClasseEntity toEntity(ClasseDTO classe){
-        ClasseEntity copiedClasse = ClasseEntity.builder().build();
-        BeanUtils.copyProperties(classe, copiedClasse);
-        return copiedClasse;
+       return ClasseEntity.builder()
+               .id(classe.getId())
+               .name(classe.getName())
+               .category(classe.getCategory())
+               .grade(GradeDTO.toEntity(classe.getGrade()))
+               .schedule(classe.getSchedule().stream().map(ScheduleDTO::toEntity).toList())
+               .roomNumber(classe.getRoomNumber())
+               .principalTeacher(TeacherBossDTO.toEntity(classe.getPrincipalTeacher()))
+               .principalStudent(StudentBossDTO.toEntity(classe.getPrincipalStudent()))
+               .principalCourse(CourseDTO.toEntity(classe.getPrincipalCourse()))
+               .students(classe.getStudents().stream().map(EnrollmentDTO::toEntity).toList())
+               .classTeacherCourses(classe.getClassTeacherCourses().stream().map(TeacherDTO::toEntity).toList())
+               .monthCost(classe.getMonthCost())
+               .createdAt(classe.getCreatedAt())
+               .modifyAt(classe.getModifyAt())
+               .build();
     }
 }

@@ -88,7 +88,9 @@ public class EnrollmentServiceImp implements EnrollmentService {
         if (student != null) {
             Pageable pageable = PageRequest.of(0, 5);
             Page<ScoreDTO> scores = scoreService.getLastScoresByStudent(studentId, pageable);
-            Page<EnrollmentEntity> enrollments = enrollmentRepository.findStudentEnrollments(UUID.fromString(schoolId), UUID.fromString(studentId), pageable);
+            Page<EnrolledStudent> enrollments = enrollmentRepository.findStudentEnrollments(
+                    UUID.fromString(schoolId), UUID.fromString(studentId), pageable
+            );
             Page<Attendance> attendances = attendanceService.getLastStudentAttendances(studentId, pageable);
 
             ClasseDTO classe = student.getClasse();
@@ -97,7 +99,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
             student.getStudent().setGuardian(studentService.getStudentGuardian(studentId));
             student.getStudent().setHealthCondition(studentService.getStudentHealthCondition(studentId));
             student.getStudent().setMarks(scores.getContent());
-            student.getStudent().setEnrollmentEntities(enrollments.getContent());
+            student.getStudent().setEnrollmentEntities(enrollments.getContent().stream().map(EnrolledStudent::populateStudent).toList());
             student.getStudent().setAttendances(attendances.getContent());
             student.getClasse().setSchedule(schedules);
         }
