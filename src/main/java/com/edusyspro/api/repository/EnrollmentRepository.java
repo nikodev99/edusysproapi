@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.custom.GenderCount;
 import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.model.EnrollmentEntity;
 import com.edusyspro.api.dto.custom.EnrolledStudent;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Repository
@@ -86,6 +88,16 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
         order by e.student.guardian.personalInfo.lastName asc
     """)
     List<GuardianEssential> findEnrolledStudentGuardian(UUID schoolId, String lastName);
+
+    @Query("""
+        select e.student.personalInfo.gender, e.student.personalInfo.birthDate from EnrollmentEntity e
+        where e.classe.id = ?1 and e.academicYear.id = ?2
+    """)
+    List<Object[]> countAllStudentsByClasseAndAcademicYear(int classeId, UUID academicYearId);
+
+    //TODO getting all the classe student count by academic year
+    @Query("select e.academicYear.years, count(e.id) from EnrollmentEntity e where e.classe.id = ?1 group by e.academicYear.id")
+    List<Object> countAllStudentsByClassByAcademicYear(int classeId);
 
     @Query("select count(e.id) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true")
     Long countAllStudents(UUID schoolId);

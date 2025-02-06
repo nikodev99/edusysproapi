@@ -1,7 +1,6 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Grade;
-import com.edusyspro.api.model.Planning;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Section;
 import lombok.AllArgsConstructor;
@@ -17,13 +16,25 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class GradeDTO {
-    private int id;
+    private Integer id;
     private Section section;
     private String subSection;
     private List<PlanningDTO> planning;
     private School school;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
+
+    public static GradeDTO fromEntity(Grade entity) {
+        return GradeDTO.builder()
+                .id(entity.getId())
+                .section(entity.getSection())
+                .subSection(entity.getSubSection())
+                .planning(entity.getPlanning().stream().map(PlanningDTO::fromEntity).toList())
+                .school(entity.getSchool())
+                .createdAt(entity.getCreatedAt())
+                .modifyAt(entity.getModifyAt())
+                .build();
+    }
 
     public static Grade toEntity(GradeDTO entity) {
         return Grade.builder()

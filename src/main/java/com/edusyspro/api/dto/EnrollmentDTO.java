@@ -12,14 +12,25 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @Builder
 public class EnrollmentDTO {
-    private long id;
+    private Long id;
     private AcademicYear academicYear;
     @JsonProperty("student")
     private StudentDTO student;
     @JsonProperty("classe")
     private ClasseDTO classe;
     private ZonedDateTime enrollmentDate;
-    private boolean isArchived;
+    private Boolean isArchived;
+
+    public static EnrollmentDTO fromEntity(EnrollmentEntity dto) {
+        return EnrollmentDTO.builder()
+                .id(dto.getId())
+                .academicYear(dto.getAcademicYear())
+                .student(StudentDTO.fromEntity(dto.getStudent()))
+                .classe(ClasseDTO.fromEntity(dto.getClasse()))
+                .enrollmentDate(dto.getEnrollmentDate())
+                .isArchived(dto.isArchived())
+                .build();
+    }
 
     public static EnrollmentEntity toEntity(EnrollmentDTO dto) {
         return EnrollmentEntity.builder()
@@ -28,7 +39,7 @@ public class EnrollmentDTO {
                 .student(StudentDTO.toEntity(dto.getStudent()))
                 .classe(ClasseDTO.toEntity(dto.getClasse()))
                 .enrollmentDate(dto.getEnrollmentDate())
-                .isArchived(dto.isArchived())
+                .isArchived(dto.getIsArchived())
                 .build();
     }
 }

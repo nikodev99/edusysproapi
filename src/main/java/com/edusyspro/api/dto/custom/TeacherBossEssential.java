@@ -5,9 +5,11 @@ import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.model.Individual;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record TeacherBossEssential(
         int id,
+        UUID teacherId,
         String lastName,
         String firstName,
         boolean current,
@@ -18,6 +20,7 @@ public record TeacherBossEssential(
         return TeacherBossDTO.builder()
                 .id(id)
                 .principalTeacher(TeacherDTO.builder()
+                        .id(teacherId)
                         .personalInfo(Individual.builder()
                                 .firstName(firstName)
                                 .lastName(lastName)

@@ -1,11 +1,13 @@
 package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.*;
+import com.edusyspro.api.dto.custom.GenderCount;
 import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.model.*;
 import com.edusyspro.api.dto.custom.EnrolledStudent;
+import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.repository.EnrollmentRepository;
-import com.edusyspro.api.repository.context.EnrollmentRepositoryContext;
+import com.edusyspro.api.repository.context.RepositoryContext;
 import com.edusyspro.api.service.interfaces.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +17,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class EnrollmentServiceImp implements EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
-    private final EnrollmentRepositoryContext enrollmentRepositoryContext;
+    private final RepositoryContext enrollmentRepositoryContext;
 
     private final ScoreService scoreService;
     private final AttendanceService attendanceService;
@@ -35,7 +40,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
     @Autowired
     public EnrollmentServiceImp(
             EnrollmentRepository enrollmentRepository,
-            EnrollmentRepositoryContext enrollmentRepositoryContext,
+            RepositoryContext enrollmentRepositoryContext,
             ScoreService scoreService,
             AttendanceService attendanceService,
             StudentService studentService,
@@ -143,6 +148,30 @@ public class EnrollmentServiceImp implements EnrollmentService {
         List<GuardianEssential> guardianEssentials = enrollmentRepository.findEnrolledStudentGuardian(UUID.fromString(schoolId), "%" + lastname + "%");
         return guardianEssentials.stream()
                 .map(GuardianEssential::populateGuardian)
+                .toList();
+    }
+
+    @Override
+    public List<GenderCount> countClasseStudents(int classeId, String academicYear) {
+        List<Object[]> results = enrollmentRepository.countAllStudentsByClasseAndAcademicYear(classeId, UUID.fromString(academicYear));
+
+        Map<Gender, List<LocalDate>> groupedByGender = results.stream()
+                .collect(Collectors.groupingBy(
+                        row -> (Gender) row[0],
+                        Collectors.mapping(row -> ((LocalDate) row[1]), Collectors.toList())
+                ));
+
+        return groupedByGender.entrySet().stream()
+                .map(entry -> {
+                    Gender gender = entry.getKey();
+                    List<LocalDate> birthdays = entry.getValue();
+                    long count = birthdays.size();
+                    int averageAge = (int) birthdays.stream()
+                            .mapToInt(birthday -> Period.between(birthday, LocalDate.now()).getYears())
+                            .average()
+                            .orElse(0);
+                    return new GenderCount(gender, count, averageAge);
+                })
                 .toList();
     }
 

@@ -87,6 +87,11 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudentGuardians(ConstantUtils.SCHOOL_ID, q));
     }
 
+    @GetMapping("/count/{classeId}")
+    ResponseEntity<?> countStudents(@PathVariable int classeId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(enrollmentService.countClasseStudents(classeId, academicYear));
+    }
+
     @GetMapping("/count")
     ResponseEntity<Map<String, Long>> countStudents() {
         return ResponseEntity.ok(enrollmentService.countStudents(ConstantUtils.SCHOOL_ID));

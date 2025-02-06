@@ -6,6 +6,7 @@ import com.edusyspro.api.service.impl.AcademicYearServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -18,6 +19,11 @@ public class AcademicYearController {
 
     public AcademicYearController(AcademicYearServiceImpl academicYearService) {
         this.academicYearService = academicYearService;
+    }
+
+    @GetMapping("/from")
+    ResponseEntity<List<AcademicYear>> fetchAllFromYear(@RequestParam int fromYear) {
+        return ResponseEntity.ok(academicYearService.getAcademicYearsFromYear(ConstantUtils.SCHOOL_ID, fromYear));
     }
 
     @GetMapping

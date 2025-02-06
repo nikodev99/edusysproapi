@@ -51,9 +51,9 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     Optional<TeacherEssential> findTeacherById(UUID id, UUID schoolId);
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.custom.TeacherEssential(
-            t.id, t.personalInfo, t.hireDate, t.salaryByHour, t.school.id, t.school.name, t.createdAt, t.modifyAt
-        ) FROM Teacher t join t.aClasses c WHERE c.id = ?1
+        SELECT DISTINCT new com.edusyspro.api.dto.custom.TeacherClasseCourse(
+            t.id, t.personalInfo, t.hireDate, c.id, c.name, s.course.id, s.course.course
+        ) FROM Teacher t join t.aClasses c LEFT JOIN Schedule s WHERE c.id = ?1
     """)
     List<TeacherEssential> findAllClasseTeachers(int classId);
 

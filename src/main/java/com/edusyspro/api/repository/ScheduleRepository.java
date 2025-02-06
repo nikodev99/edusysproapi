@@ -1,6 +1,8 @@
 package com.edusyspro.api.repository;
 
 import com.edusyspro.api.dto.custom.ScheduleEssential;
+import com.edusyspro.api.dto.custom.TeacherClasseCourse;
+import com.edusyspro.api.dto.custom.TeacherEssential;
 import com.edusyspro.api.model.Schedule;
 import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.model.enums.Day;
@@ -42,6 +44,13 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
         select distinct s.teacher from Schedule s where s.academicYear.current = true and s.classeEntity.id = ?1 and s.academicYear.school.id = ?2
     """)
     Teacher findTeacherByClasseEntityId(int classeEntity_id, UUID school_id);
+
+    @Query("""
+        SELECT DISTINCT new com.edusyspro.api.dto.custom.TeacherClasseCourse(
+            t.id, t.personalInfo, t.hireDate, c.id, c.name, co.id, co.course
+        ) FROM Schedule s left join s.teacher t left join s.classeEntity c left join s.course co WHERE c.id = ?1
+    """)
+    List<TeacherClasseCourse> findAllClasseTeachers(int classId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScheduleEssential(

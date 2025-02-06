@@ -25,6 +25,11 @@ public class AcademicYearServiceImpl implements AcademicYearService {
     }
 
     @Override
+    public List<AcademicYear> getAcademicYearsFromYear(String schoolId, int year) {
+        return academicYearRepository.findAllBeginningOfYear(UUID.fromString(schoolId), year);
+    }
+
+    @Override
     public AcademicYear getCurrentAcademicYear(String schoolId) {
         return academicYearRepository.findAcademicYearBySchoolIdAndCurrentIsTrue(UUID.fromString(schoolId));
     }

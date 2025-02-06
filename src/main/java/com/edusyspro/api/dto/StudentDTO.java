@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -30,6 +29,16 @@ public class StudentDTO {
     private List<Attendance> attendances;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
+
+    public static StudentDTO fromEntity(StudentEntity student) {
+        return StudentDTO.builder()
+                .id(student.getId())
+                .personalInfo(student.getPersonalInfo())
+                .enrollmentEntities(student.getEnrollmentEntities().stream().map(EnrollmentDTO::fromEntity).toList())
+                .dadName(student.getDadName())
+                .momName(student.getMomName())
+                .build();
+    }
 
     public static StudentEntity toEntity(StudentDTO student) {
         return StudentEntity.builder()

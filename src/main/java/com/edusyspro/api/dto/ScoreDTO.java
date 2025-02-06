@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ScoreDTO {
-    private long id;
+    private Long id;
     private AssignmentDTO assignment;
     private StudentDTO student;
-    private long obtainedMark;
+    private Long obtainedMark;
 }

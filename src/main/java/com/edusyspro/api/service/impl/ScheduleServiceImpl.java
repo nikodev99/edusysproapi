@@ -1,7 +1,9 @@
 package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.ScheduleDTO;
+import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.ScheduleEssential;
+import com.edusyspro.api.dto.custom.TeacherClasseCourse;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.model.enums.Day;
@@ -52,6 +54,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<ScheduleDTO> getTeacherScheduleByDay(String teacherId, boolean allDay) {
         return scheduleRepository.findAllByTeacherIdByDay(UUID.fromString(teacherId), allDay ? Day.ALL_DAYS : Day.getCurrentDay()).stream()
                 .map(ScheduleEssential::toScheduleDto)
+                .toList();
+    }
+
+    @Override
+    public List<TeacherDTO> getAllClasseTeachers(int classeId) {
+        return scheduleRepository.findAllClasseTeachers(classeId).stream()
+                .map(TeacherClasseCourse::toTeacher)
                 .toList();
     }
 

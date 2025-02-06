@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @Builder
 public class DepartmentDTO {
-    private int id;
+    private Integer id;
     private String name;
     private String code;
     private String purpose;

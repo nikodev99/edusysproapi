@@ -14,21 +14,21 @@ import java.util.UUID;
 
 public interface ClasseStudentBossRepository extends JpaRepository<ClasseStudentBoss, Long> {
     @Query("""
-        select new com.edusyspro.api.dto.custom.StudentBossEssential(c.id, c.principalStudent.personalInfo.lastName,
+        select new com.edusyspro.api.dto.custom.StudentBossEssential(c.id, c.principalStudent.id, c.principalStudent.personalInfo.lastName,
         c.principalStudent.personalInfo.firstName, c.current, c.startPeriod, c.endPeriod)
         from ClasseStudentBoss c join c.principalStudent.enrollmentEntities cl where cl.classe.id = ?1
     """)
     Page<StudentBossEssential> findAllStudentBossByClasse(int classeId, Pageable pageable);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.StudentBossEssential(c.id, c.principalStudent.personalInfo.lastName,
+        select new com.edusyspro.api.dto.custom.StudentBossEssential(c.id, c.principalStudent.id, c.principalStudent.personalInfo.lastName,
         c.principalStudent.personalInfo.firstName, c.current, c.startPeriod, c.endPeriod) from ClasseStudentBoss c
         join c.principalStudent.enrollmentEntities cl where cl.classe.id = ?1 and c.academicYear.id = ?2
     """)
     List<StudentBossEssential> findStudentBossByClasseId(int classeId, UUID academicYearId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.StudentBossEssential(c.id, c.principalStudent.personalInfo.lastName,
+        select new com.edusyspro.api.dto.custom.StudentBossEssential(c.id, c.principalStudent.id, c.principalStudent.personalInfo.lastName,
         c.principalStudent.personalInfo.firstName, c.current, c.startPeriod, c.endPeriod) from ClasseStudentBoss c
         join c.principalStudent p join p.enrollmentEntities cl where cl.classe.id = ?1 and c.current = true
     """)

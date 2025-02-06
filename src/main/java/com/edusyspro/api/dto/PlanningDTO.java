@@ -2,6 +2,7 @@ package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Planning;
 import com.edusyspro.api.model.Semester;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,8 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @Builder
 public class PlanningDTO {
-    private long id;
+    private Long id;
+    @JsonProperty("semester")
     private Semester semestre;
     private String designation;
     private LocalDate termStartDate;
@@ -23,6 +25,19 @@ public class PlanningDTO {
     private GradeDTO grade;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
+
+    public static PlanningDTO fromEntity(Planning dto) {
+        return PlanningDTO.builder()
+                .id(dto.getId())
+                .semestre(dto.getSemestre())
+                .designation(dto.getDesignation())
+                .termStartDate(dto.getTermStartDate())
+                .termEndDate(dto.getTermEndDate())
+                .grade(GradeDTO.fromEntity(dto.getGrade()))
+                .createdAt(dto.getCreatedAt())
+                .updatedAt(dto.getUpdatedAt())
+                .build();
+    }
 
     public static Planning toEntity(PlanningDTO dto) {
         return Planning.builder()

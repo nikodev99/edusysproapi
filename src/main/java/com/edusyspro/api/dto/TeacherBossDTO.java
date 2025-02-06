@@ -14,19 +14,30 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class TeacherBossDTO {
-    private int id;
+    private Integer id;
     private AcademicYear academicYear;
     private TeacherDTO principalTeacher;
-    private boolean current;
+    private Boolean current;
     private LocalDate startPeriod;
     private LocalDate endPeriod;
 
+    public static TeacherBossDTO fromEntity (ClasseTeacherBoss dto) {
+        return TeacherBossDTO.builder()
+                .id(dto.getId())
+                .academicYear(dto.getAcademicYear())
+                .principalTeacher(TeacherDTO.fromEntity(dto.getPrincipalTeacher()))
+                .current(dto.isCurrent())
+                .startPeriod(dto.getStartPeriod())
+                .endPeriod(dto.getEndPeriod())
+                .build();
+    }
+
     public static ClasseTeacherBoss toEntity(TeacherBossDTO dto) {
         return ClasseTeacherBoss.builder()
-                .id(dto.id)
+                .id(dto.getId())
                 .academicYear(dto.getAcademicYear())
                 .principalTeacher(TeacherDTO.toEntity(dto.getPrincipalTeacher()))
-                .current(dto.isCurrent())
+                .current(dto.getCurrent())
                 .startPeriod(dto.getStartPeriod())
                 .endPeriod(dto.getEndPeriod())
                 .build();

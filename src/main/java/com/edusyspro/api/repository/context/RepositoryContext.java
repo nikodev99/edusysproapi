@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class EnrollmentRepositoryContext {
+public class RepositoryContext {
 
     private final EntityManager entityManager;
 
     @Value("${spring.profiles.active[0]}")
     private String activeProfile;
 
-    public EnrollmentRepositoryContext(EntityManager entityManager) {
+    public RepositoryContext(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
@@ -47,4 +47,9 @@ public class EnrollmentRepositoryContext {
                 "e.classe.monthCost, e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.student.id <> ?2 and e.classe.id = ?3 " +
                 "and e.academicYear.current = true and e.isArchived = false order by " + randomFunction;
     }
+
+    /*private String findAcademicYearStatement() {
+        String extractYear = activeProfile.contains("mysql") ? "year()" : "year()";
+        return "select "
+    }*/
 }

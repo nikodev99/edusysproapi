@@ -25,6 +25,20 @@ public class ScheduleDTO {
     private LocalTime startTime;
     private LocalTime endTime;
 
+    public static ScheduleDTO fromEntity(Schedule schedule) {
+        return ScheduleDTO.builder()
+                .id(schedule.getId())
+                .academicYear(schedule.getAcademicYear())
+                .classe(ClasseDTO.fromEntity(schedule.getClasseEntity()))
+                .teacher(TeacherDTO.fromEntity(schedule.getTeacher()))
+                .course(CourseDTO.fromEntity(schedule.getCourse()))
+                .designation(schedule.getDesignation())
+                .dayOfWeek(schedule.getDayOfWeek())
+                .startTime(schedule.getStartTime())
+                .endTime(schedule.getEndTime())
+                .build();
+    }
+
     public static Schedule toEntity(ScheduleDTO schedule) {
         return Schedule.builder()
                 .id(schedule.getId())

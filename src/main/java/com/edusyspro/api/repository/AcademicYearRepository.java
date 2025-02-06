@@ -17,6 +17,9 @@ import java.util.UUID;
 @Repository
 public interface AcademicYearRepository extends JpaRepository<AcademicYear, UUID> {
 
+    @Query("SELECT a FROM AcademicYear a WHERE a.school.id = ?1 and EXTRACT(YEAR FROM a.startDate) >= ?2 ")
+    List<AcademicYear> findAllBeginningOfYear(UUID schoolId, int year);
+
     @Query("select a.startDate, a.endDate from AcademicYear a where a.school.id = ?1")
     Optional<Tuple> findBySchool(UUID schoolId);
 

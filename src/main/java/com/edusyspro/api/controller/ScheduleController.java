@@ -32,4 +32,9 @@ public class ScheduleController {
     ResponseEntity<List<ScheduleDTO>> teacherSchedulesByDay(@PathVariable String teacherId, @RequestParam boolean allDay) {
         return ResponseEntity.ok(scheduleService.getTeacherScheduleByDay(teacherId, allDay));
     }
+
+    @GetMapping("/teachers/{classeId}")
+    ResponseEntity<List<?>> findClasseTeachers(@PathVariable int classeId) {
+        return ResponseEntity.ok(scheduleService.getAllClasseTeachers(classeId));
+    }
 }

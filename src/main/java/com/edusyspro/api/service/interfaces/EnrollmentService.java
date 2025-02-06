@@ -3,6 +3,8 @@ package com.edusyspro.api.service.interfaces;
 import com.edusyspro.api.dto.EnrollmentDTO;
 import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.custom.EnrolledStudent;
+import com.edusyspro.api.dto.custom.GenderCount;
+import com.edusyspro.api.model.enums.Gender;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -70,7 +72,7 @@ public interface EnrollmentService {
      * Get the all guardians of the enrolled studentDTOS
      * @param schoolId school id
      * @param pageable The pageable for the pagination
-     * @return List<GuardianDTO>
+     * @return Page<GuardianDTO>
      */
     Page<GuardianDTO> getEnrolledStudentGuardians(String schoolId, Pageable pageable);
 
@@ -83,9 +85,17 @@ public interface EnrollmentService {
     List<GuardianDTO> getEnrolledStudentGuardians(String schoolId, String lastname);
 
     /**
+     * This counts the gender of students by classe and specific academic year
+     * @param classeId The classe id.
+     * @param academicYear the id or the academic year
+     * @return List<GenderCount>
+     */
+    List<GenderCount> countClasseStudents(int classeId, String academicYear);
+
+    /**
      * Get the number of all student by schoolID
      * @param schoolId The school id.
-     * @return List<GuardianDTO>
+     * @return Map<GuardianDTO>
      */
     Map<String, Long> countStudents(String schoolId);
 

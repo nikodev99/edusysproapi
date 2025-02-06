@@ -1,6 +1,7 @@
 package com.edusyspro.api.service.interfaces;
 
 import com.edusyspro.api.dto.ScheduleDTO;
+import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.model.Schedule;
 import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.model.enums.Day;
@@ -17,6 +18,8 @@ public interface ScheduleService extends CustomService<ScheduleDTO, Long> {
     List<ScheduleDTO> getTeacherSchedule(String teacherId);
 
     List<ScheduleDTO> getTeacherScheduleByDay(String teacherId, boolean allDay);
+
+    List<TeacherDTO> getAllClasseTeachers(int classeId);
 
     Teacher getOnlyTeacherOfCourseInClasse(int classeId, int courseId, UUID schoolId);
 

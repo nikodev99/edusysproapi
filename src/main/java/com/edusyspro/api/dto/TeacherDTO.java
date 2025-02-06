@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -26,21 +25,39 @@ public class TeacherDTO {
     private List<ClasseDTO> aClasses;
 
     private List<CourseDTO> courses;
-    private double salaryByHour;
+    private Double salaryByHour;
     private List<CourseProgramDTO> courseProgram;
     private School school;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
 
-    public static TeacherDTO fromEntity(com.edusyspro.api.model.Teacher teacher){
-        TeacherDTO copiedTeacherDTO = new TeacherDTO();
-        BeanUtils.copyProperties(teacher, copiedTeacherDTO);
-        return copiedTeacherDTO;
+    public static TeacherDTO fromEntity(Teacher teacher){
+        return TeacherDTO.builder()
+                .id(teacher.getId())
+                .personalInfo(teacher.getPersonalInfo())
+                .hireDate(teacher.getHireDate())
+                .aClasses(teacher.getAClasses().stream().map(ClasseDTO::fromEntity).toList())
+                .courses(teacher.getCourses().stream().map(CourseDTO::fromEntity).toList())
+                .salaryByHour(teacher.getSalaryByHour())
+                .courseProgram(teacher.getCourseProgram().stream().map(CourseProgramDTO::fromEntity).toList())
+                .school(teacher.getSchool())
+                .createdAt(teacher.getCreatedAt())
+                .modifyAt(teacher.getModifyAt())
+                .build();
     }
 
-    public static com.edusyspro.api.model.Teacher toEntity(TeacherDTO teacherDTO){
-        com.edusyspro.api.model.Teacher copiedTeacher = com.edusyspro.api.model.Teacher.builder().build();
-        BeanUtils.copyProperties(teacherDTO, copiedTeacher);
-        return copiedTeacher;
+    public static Teacher toEntity(TeacherDTO teacherDTO){
+        return Teacher.builder()
+                .id(teacherDTO.getId())
+                .personalInfo(teacherDTO.getPersonalInfo())
+                .hireDate(teacherDTO.getHireDate())
+                .aClasses(teacherDTO.getAClasses().stream().map(ClasseDTO::toEntity).toList())
+                .courses(teacherDTO.getCourses().stream().map(CourseDTO::toEntity).toList())
+                .salaryByHour(teacherDTO.getSalaryByHour())
+                .courseProgram(teacherDTO.getCourseProgram().stream().map(CourseProgramDTO::toEntity).toList())
+                .school(teacherDTO.getSchool())
+                .createdAt(teacherDTO.getCreatedAt())
+                .modifyAt(teacherDTO.getModifyAt())
+                .build();
     }
 }

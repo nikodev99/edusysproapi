@@ -26,7 +26,7 @@ public class AssignmentDTO {
     private LocalDate examDate;
     private LocalTime startTime;
     private LocalTime endTime;
-    private boolean passed;
+    private Boolean passed;
     private List<ScoreDTO> marks;
     private ZonedDateTime addedDate;
     private ZonedDateTime updatedDate;
