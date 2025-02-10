@@ -59,8 +59,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
     @Override
     @Transactional
     public EnrollmentDTO enrollStudent(EnrollmentDTO enrollmentDTO) {
-        EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder().build();
-        BeanUtils.copyProperties(enrollmentDTO, enrollmentEntity);
+        EnrollmentEntity enrollmentEntity = EnrollmentDTO.toEntity(enrollmentDTO);
 
         GuardianEntity guardianEntity = enrollmentEntity.getStudent().getGuardian();
         if (guardianEntity != null) {
@@ -96,7 +95,10 @@ public class EnrollmentServiceImp implements EnrollmentService {
             Page<EnrolledStudent> enrollments = enrollmentRepository.findStudentEnrollments(
                     UUID.fromString(schoolId), UUID.fromString(studentId), pageable
             );
-            Page<Attendance> attendances = attendanceService.getLastStudentAttendances(studentId, pageable);
+            Page<AttendanceDTO> attendances = attendanceService.getLastStudentAttendances(
+                    student.getStudent().getPersonalInfo().getId(),
+                    pageable
+            );
 
             ClasseDTO classe = student.getClasse();
             List<ScheduleDTO> schedules = scheduleService.getAllClasseSchedule(classe.getId(), classe.getGrade().getSection());
@@ -112,17 +114,29 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public List<EnrollmentDTO> getStudentClassmates(String schoolId, String studentId, int classeId, int classmateNumber) {
-        Pageable pageable = PageRequest.of(0, classmateNumber);
-        List<EnrolledStudent> enrolledStudents = enrollmentRepositoryContext.findStudentRandomClassmateByClasseId(
-                UUID.fromString(schoolId),
-                UUID.fromString(studentId),
-                classeId,
-                pageable
-        ).getContent();
-        return enrolledStudents.stream()
+    public Page<EnrollmentDTO> getClasseEnrolledStudents(int classeId, String academicYear, Pageable pageable) {
+        return enrollmentRepository.getEnrolledStudentsByClassId(classeId, UUID.fromString(academicYear), pageable)
+                .map(EnrolledStudent::populateStudent);
+    }
+
+    @Override
+    public List<EnrollmentDTO> getClasseEnrolledStudents(int classeId, int numberOfStudents) {
+        Pageable pageable = PageRequest.of(0, numberOfStudents);
+        return enrollmentRepositoryContext.findStudentRandomClassmateByClasseId(null, classeId, pageable, false)
                 .map(EnrolledStudent::populateStudent)
                 .toList();
+    }
+
+    @Override
+    public List<EnrollmentDTO> getStudentClassmates(String schoolId, String studentId, int classeId, int classmateNumber) {
+        Pageable pageable = PageRequest.of(0, classmateNumber);
+        return enrollmentRepositoryContext.findStudentRandomClassmateByClasseId(
+                UUID.fromString(studentId),
+                classeId,
+                pageable,
+                true
+        ).map(EnrolledStudent::populateStudent)
+        .toList();
     }
 
     @Override

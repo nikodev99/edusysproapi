@@ -50,9 +50,6 @@ public class StudentEntity {
     @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL)
     private List<Score> marks;
 
-    @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL)
-    private List<Attendance> attendances;
-
     private ZonedDateTime createdAt;
 
     private ZonedDateTime modifyAt;

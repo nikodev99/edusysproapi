@@ -1,5 +1,6 @@
 package com.edusyspro.api.controller;
 
+import com.edusyspro.api.dto.AttendanceDTO;
 import com.edusyspro.api.model.Attendance;
 import com.edusyspro.api.service.interfaces.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ public class AttendanceController {
     }
 
     @GetMapping("/{studentId}")
-    ResponseEntity<Page<Attendance>> getStudentAttendance(
-            @PathVariable String studentId,
+    ResponseEntity<Page<AttendanceDTO>> getStudentAttendance(
+            @PathVariable long studentId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam String academicYear
@@ -34,8 +35,13 @@ public class AttendanceController {
     }
 
     @GetMapping("/all/{studentId}")
-    ResponseEntity<List<Attendance>> getAllStudentAttendances(@PathVariable String studentId, @RequestParam String academicYear) {
+    ResponseEntity<List<AttendanceDTO>> getAllStudentAttendances(@PathVariable long studentId, @RequestParam String academicYear) {
         return ResponseEntity.ok(attendanceService.getStudentAttendances(studentId, academicYear));
+    }
+
+    @GetMapping("/classe_{classeId}")
+    ResponseEntity<?> getClasseAttendanceStatusCounts(@PathVariable int classeId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(attendanceService.getClasseAttendanceCount(classeId, academicYear));
     }
 
 }

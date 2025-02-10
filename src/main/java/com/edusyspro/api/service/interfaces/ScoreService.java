@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ScoreService {
 
@@ -22,5 +23,7 @@ public interface ScoreService {
     List<ScoreDTO> getBestStudentBySubjectScore(long teacherId, int subjectId);
 
     List<ScoreDTO> getBestStudentByScore(long teacherId);
+
+    List<ScoreDTO> getClasseBestStudents(int classeId, String academicYearId);
 
 }

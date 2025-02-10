@@ -51,6 +51,17 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudent(ConstantUtils.SCHOOL_ID, studentId));
     }
 
+    @GetMapping("/classroom/{classeId}")
+    ResponseEntity<Page<EnrollmentDTO>> getClasseEnrolledStudents(
+            @PathVariable int classeId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = true) String academicYear
+    ) {
+        Pageable pageable = ControllerUtils.setPage(page, size);
+        return ResponseEntity.ok(enrollmentService.getClasseEnrolledStudents(classeId, academicYear, pageable));
+    }
+
     @GetMapping("/classmates/{studentId}_{classeId}")
     ResponseEntity<List<EnrollmentDTO>> getStudentClassmates(@PathVariable String studentId, @PathVariable int classeId) {
         return ResponseEntity.ok(enrollmentService.getStudentClassmates(ConstantUtils.SCHOOL_ID, studentId, classeId, 5));

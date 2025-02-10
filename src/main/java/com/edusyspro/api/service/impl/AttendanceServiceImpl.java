@@ -1,7 +1,10 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.AttendanceDTO;
 import com.edusyspro.api.dto.custom.AttendanceEssential;
+import com.edusyspro.api.dto.custom.AttendanceStatusCount;
 import com.edusyspro.api.model.Attendance;
+import com.edusyspro.api.model.enums.AttendanceStatus;
 import com.edusyspro.api.repository.AttendanceRepository;
 import com.edusyspro.api.service.interfaces.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,27 +26,49 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Page<Attendance> getLastStudentAttendances(String studentId, Pageable pageable) {
-        return attendanceRepository.findAttendanceByStudentId(UUID.fromString(studentId), pageable);
+    public Page<AttendanceDTO> getLastStudentAttendances(long studentId, Pageable pageable) {
+        return attendanceRepository.findAttendanceByStudentId(studentId, pageable)
+                .map(AttendanceEssential::populate);
     }
 
     @Override
-    public Page<Attendance> getStudentAttendancesByAcademicYear(String studentId, String academicYearId, Pageable pageable) {
-        return attendanceRepository.findAttendanceByStudentEntityIdAndAcademicYearIdOrderByAttendanceDateDesc(
-                UUID.fromString(studentId),
+    public Page<AttendanceDTO> getStudentAttendancesByAcademicYear(long studentId, String academicYearId, Pageable pageable) {
+        return attendanceRepository.findAttendanceByStudentAndAcademicYear(
+                studentId,
                 UUID.fromString(academicYearId),
                 pageable
-        );
+        ).map(AttendanceEssential::populate);
     }
 
     @Override
-    public List<Attendance> getStudentAttendances(String studentId, String academicYearId) {
-        List<AttendanceEssential> attendanceList = attendanceRepository.findAllByStudentEntityIdAndAcademicYearId(
-                UUID.fromString(studentId), UUID.fromString(academicYearId)
-        );
-        return attendanceList.stream()
+    public List<AttendanceDTO> getStudentAttendances(long studentId, String academicYearId) {
+        return attendanceRepository.findAllByStudentAndAcademicYear(studentId, UUID.fromString(academicYearId))
+                .stream()
                 .map(AttendanceEssential::populate)
                 .toList();
     }
 
+    @Override
+    public List<AttendanceStatusCount> getStudentAttendanceCount(long studentId, String academicYearId) {
+        return attendanceRepository.findAttendanceStatusCountByStudent(studentId, UUID.fromString(academicYearId))
+                .stream()
+                .map(o -> new AttendanceStatusCount((AttendanceStatus) o[0], (long) o[1]))
+                .toList();
+    }
+
+    @Override
+    public List<AttendanceStatusCount> getClasseAttendanceCount(int classeId, String academicYearId) {
+        return attendanceRepository.findAttendanceStatusCountByClasse(classeId, UUID.fromString(academicYearId))
+                .stream()
+                .map(o -> new AttendanceStatusCount((AttendanceStatus) o[0], (long) o[1]))
+                .toList();
+    }
+
+    @Override
+    public List<AttendanceStatusCount> getSchoolAttendanceCount(String schoolId, String academicYearId) {
+        return attendanceRepository.findAttendanceStatusCountBySchool(UUID.fromString(schoolId), UUID.fromString(academicYearId))
+                .stream()
+                .map(o -> new AttendanceStatusCount((AttendanceStatus) o[0], (long) o[1]))
+                .toList();
+    }
 }

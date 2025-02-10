@@ -72,4 +72,9 @@ public class ScoreController {
                 Long.parseLong(teacherId)
         ));
     }
+
+    @GetMapping("/classe/{classeId}")
+    ResponseEntity<?> getBestClasseStudentByMarks(@PathVariable int classeId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(scoreService.getClasseBestStudents(classeId, academicYear));
+    }
 }

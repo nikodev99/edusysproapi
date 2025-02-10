@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public interface EnrollmentService {
 
@@ -46,6 +47,23 @@ public interface EnrollmentService {
      * @return EnrollmentDTO
      */
     EnrollmentDTO getEnrolledStudent(String schoolId, String studentId);
+
+    /**
+     * Get pagination of the student of a single class.
+     * @param classeId the classe ID
+     * @param academicYear the academicYear ID
+     * @param pageable the pagination
+     * @return Page<EnrollmentDTO>
+     */
+    Page<EnrollmentDTO> getClasseEnrolledStudents(int classeId, String academicYear, Pageable pageable);
+
+    /**
+     * Get pagination of the student of a single class.
+     * @param classeId the classe ID
+     * @param numberOfStudents the number of student to fetch
+     * @return List<EnrollmentDTO>
+     */
+    List<EnrollmentDTO> getClasseEnrolledStudents(int classeId, int numberOfStudents);
 
     /**
      * Get a student current classe classmates

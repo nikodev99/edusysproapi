@@ -26,7 +26,7 @@ public class StudentDTO {
     private GuardianEntity guardian;
     private HealthCondition healthCondition;
     private List<ScoreDTO> marks;
-    private List<Attendance> attendances;
+    private List<AttendanceDTO> attendances;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
 
@@ -37,6 +37,9 @@ public class StudentDTO {
                 .enrollmentEntities(student.getEnrollmentEntities().stream().map(EnrollmentDTO::fromEntity).toList())
                 .dadName(student.getDadName())
                 .momName(student.getMomName())
+                .reference(student.getReference())
+                .guardian(student.getGuardian())
+                .healthCondition(student.getHealthCondition())
                 .build();
     }
 
@@ -47,6 +50,9 @@ public class StudentDTO {
                 .enrollmentEntities(student.getEnrollmentEntities().stream().map(EnrollmentDTO::toEntity).toList())
                 .dadName(student.getDadName())
                 .momName(student.getMomName())
+                .reference(student.getReference())
+                .guardian(student.getGuardian())
+                .healthCondition(student.getHealthCondition())
                 .build();
     }
 }

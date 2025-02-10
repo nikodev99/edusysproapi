@@ -67,15 +67,23 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     public List<ScoreDTO> getBestStudentBySubjectScore(long teacherId, int subjectId) {
-        return scoreRepository.findBestStudentByScores(teacherId, subjectId, PageRequest.of(0, 5))
+        return scoreRepository.findBestStudentByTeacherScores(teacherId, subjectId, PageRequest.of(0, 5))
                 .map(ScoreBasicValue::toDTO)
                 .toList();
     }
 
     @Override
     public List<ScoreDTO> getBestStudentByScore(long teacherId) {
-        return scoreRepository.findBestStudentByScores(teacherId, PageRequest.of(0, 5))
+        return scoreRepository.findBestStudentByTeacherScores(teacherId, PageRequest.of(0, 5))
                 .map(ScoreBasicValue::toDTO)
                 .toList();
     }
+
+    @Override
+    public List<ScoreDTO> getClasseBestStudents(int classeId, String academicYearId) {
+        return scoreRepository.findBestStudentByClasseScores(classeId, UUID.fromString(academicYearId), PageRequest.of(0, 5))
+                .map(ScoreBasicValue::toDTO)
+                .toList();
+    }
+
 }

@@ -5,10 +5,7 @@ import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.repository.ClasseRepository;
 import com.edusyspro.api.repository.GradeRepository;
-import com.edusyspro.api.service.interfaces.ClasseServiceInterface;
-import com.edusyspro.api.service.interfaces.ClasseStudentBossService;
-import com.edusyspro.api.service.interfaces.ClasseTeacherBossService;
-import com.edusyspro.api.service.interfaces.ScheduleService;
+import com.edusyspro.api.service.interfaces.*;
 import com.edusyspro.api.service.mod.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,7 +22,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
     private final ScheduleService scheduleService;
     private final ClasseTeacherBossService classeTeacherBossService;
     private final ClasseStudentBossService classeStudentBossService;
-    private final TeacherService teacherService;
+    private final EnrollmentService enrollmentService;
 
     @Override
     public ClasseDTO save(ClasseDTO entity) {
@@ -115,6 +112,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
             StudentBossDTO studentBoss = classeStudentBossService.fetchStudentBoss(classe.getId());
             CourseDTO principalCourse = getClassePrincipalCourse(classe.getId());
             List<TeacherDTO> classeTeachers = scheduleService.getAllClasseTeachers(classe.getId());
+            List<EnrollmentDTO> enrolledStudents = enrollmentService.getClasseEnrolledStudents(classe.getId(), 6);
 
             grade.setPlanning(
                     plannings.stream()
@@ -122,6 +120,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
                             .toList()
             );
             classe.setGrade(grade);
+            classe.setStudents(enrolledStudents);
             classe.setSchedule(schedules);
             classe.setPrincipalTeacher(teacherBoss);
             classe.setPrincipalStudent(studentBoss);

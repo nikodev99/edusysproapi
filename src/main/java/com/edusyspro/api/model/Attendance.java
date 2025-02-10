@@ -26,13 +26,12 @@ public class Attendance {
     @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
     private AcademicYear academicYear;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "student_id", referencedColumnName = "id")
-    @JsonProperty("student")
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "individual_id", referencedColumnName = "id")
     @JsonIgnore
-    private StudentEntity studentEntity;
+    private Individual individual;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "class_id", referencedColumnName = "id")
     @JsonProperty("classe")
     private ClasseEntity classeEntity;

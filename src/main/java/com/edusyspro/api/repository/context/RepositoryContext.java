@@ -24,12 +24,17 @@ public class RepositoryContext {
         this.entityManager = entityManager;
     }
 
-    public Page<EnrolledStudent> findStudentRandomClassmateByClasseId(UUID schoolId, UUID studentId, int classeId, Pageable pageable) {
-        final String statement = getStatement();
-        TypedQuery<EnrolledStudent> query = entityManager.createQuery(statement, EnrolledStudent.class)
-                .setParameter(1, schoolId)
-                .setParameter(2, studentId)
-                .setParameter(3, classeId);
+    public Page<EnrolledStudent> findStudentRandomClassmateByClasseId(UUID studentId, int classeId, Pageable pageable, boolean exclude) {
+        final String statement = getStatement(exclude);
+        System.out.println("statement: " + statement);
+        TypedQuery<EnrolledStudent> query = entityManager.createQuery(statement, EnrolledStudent.class);
+
+        if (exclude && studentId != null) {
+            query.setParameter(1, studentId);
+            query.setParameter(2, classeId);
+        }else {
+            query.setParameter(1, classeId);
+        }
 
         query.setFirstResult((int) pageable.getOffset());
         query.setMaxResults(pageable.getPageSize());
@@ -39,13 +44,14 @@ public class RepositoryContext {
         return new PageImpl<>(enrolledStudents, pageable, enrolledStudents.size());
     }
 
-    private String getStatement() {
+    private String getStatement(boolean exclude) {
         String randomFunction = activeProfile.contains("mysql") ? "rand()" : "random()";
 
         return "select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear," +
                 "e.student.reference, e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section," +
-                "e.classe.monthCost, e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.student.id <> ?2 and e.classe.id = ?3 " +
-                "and e.academicYear.current = true and e.isArchived = false order by " + randomFunction;
+                "e.classe.monthCost, e.student.dadName, e.student.momName) from EnrollmentEntity e where " +
+                (exclude ?  "e.student.id <> ?1 and " : "") + "e.classe.id = ?" + (exclude ? "2" : "1") +
+                " and e.academicYear.current = true and e.isArchived = false order by " + randomFunction;
     }
 
     /*private String findAcademicYearStatement() {

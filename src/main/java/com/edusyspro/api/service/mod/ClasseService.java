@@ -6,6 +6,7 @@ import com.edusyspro.api.repository.GradeRepository;
 import com.edusyspro.api.service.impl.ClasseServiceImp;
 import com.edusyspro.api.service.interfaces.ClasseStudentBossService;
 import com.edusyspro.api.service.interfaces.ClasseTeacherBossService;
+import com.edusyspro.api.service.interfaces.EnrollmentService;
 import com.edusyspro.api.service.interfaces.ScheduleService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class ClasseService extends ClasseServiceImp {
             ScheduleService scheduleService,
             ClasseTeacherBossService classeTeacherBossService,
             ClasseStudentBossService classeStudentBossService,
-            TeacherService teacherService
+            EnrollmentService enrollmentService
     ) {
         super(
             classeRepository,
@@ -30,7 +31,7 @@ public class ClasseService extends ClasseServiceImp {
             scheduleService,
             classeTeacherBossService,
             classeStudentBossService,
-            teacherService
+            enrollmentService
         );
     }
 
