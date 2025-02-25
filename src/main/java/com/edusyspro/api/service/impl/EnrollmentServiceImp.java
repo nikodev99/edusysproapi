@@ -120,6 +120,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
+    public List<EnrollmentDTO> getClasseEnrolledStudentsSearch(int classeId, String academicYear, String searchName) {
+        return enrollmentRepository.getEnrolledStudentsByClassIdSearch(classeId, UUID.fromString(academicYear), "%" + searchName + "%").stream()
+                .map(EnrolledStudent::populateStudent)
+                .toList();
+    }
+
+    @Override
     public List<EnrollmentDTO> getClasseEnrolledStudents(int classeId, int numberOfStudents) {
         Pageable pageable = PageRequest.of(0, numberOfStudents);
         return enrollmentRepositoryContext.findStudentRandomClassmateByClasseId(null, classeId, pageable, false)

@@ -13,6 +13,8 @@ import java.util.UUID;
 
 public interface ScheduleService extends CustomService<ScheduleDTO, Long> {
 
+    List<ScheduleDTO> getAllClasseSchedule(int classeId);
+
     List<ScheduleDTO> getAllClasseSchedule(int classeId, Section section);
 
     List<ScheduleDTO> getTeacherSchedule(String teacherId);
@@ -21,7 +23,7 @@ public interface ScheduleService extends CustomService<ScheduleDTO, Long> {
 
     List<TeacherDTO> getAllClasseTeachers(int classeId);
 
-    Teacher getOnlyTeacherOfCourseInClasse(int classeId, int courseId, UUID schoolId);
+    TeacherDTO getOnlyTeacherOfCourseInClasse(int classeId, int courseId, UUID schoolId);
 
-    Teacher getOnlyTeacherOfClasse(int classeId, UUID schoolId);
+    TeacherDTO getOnlyTeacherOfClasse(int classeId, UUID schoolId);
 }

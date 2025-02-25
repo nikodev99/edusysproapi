@@ -58,6 +58,8 @@ public class Assignment {
 
     private boolean passed;
 
+    private int coefficient;
+
     @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
     private List<Score> marks;
 

@@ -28,14 +28,15 @@ public class AssignmentRepositoryTest {
                         .id(2)
                         .build())
                 .preparedBy(Individual.builder()
-                        .id(398)
+                        .id(389)
                         .build())
-                .classeEntity(MockUtils.TERD)
-                .subject(MockUtils.ANG)
-                .examName("Deuxième Devoir d'Anglais du 2e Trimestre")
-                .examDate(LocalDate.now().plusDays(35))
-                .startTime(LocalTime.of(10, 0))
-                .endTime(LocalTime.of(12, 0))
+                .classeEntity(MockUtils.FIRSTA)
+                .subject(MockUtils.MATH)
+                .examName("Premier Devoir de Mathématique du 2e Trimestre")
+                .examDate(LocalDate.of(2025, 1, 14))
+                .startTime(LocalTime.of(8, 0))
+                .endTime(LocalTime.of(11, 0))
+                .passed(true)
                 .build();
 
         repository.save(assignment);

@@ -1,6 +1,7 @@
 package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.ScoreDTO;
+import com.edusyspro.api.dto.custom.ScoreAvg;
 import com.edusyspro.api.dto.custom.ScoreBasicValue;
 import com.edusyspro.api.dto.custom.ScoreEssential;
 import com.edusyspro.api.repository.ScoreRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
@@ -42,14 +44,14 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public List<ScoreDTO> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, int subjectId) {
+    public List<ScoreDTO> getScoresByStudentPerSubjectPerAcademicYear(String studentId, String academicYearId, int subjectId) {
         return scoreRepository.findAllByStudentIdAcademicYearAndSubjectId(
-                UUID.fromString(academicYearId),
                 UUID.fromString(studentId),
-                subjectId
+                subjectId,
+                UUID.fromString(academicYearId)
         ).stream()
-            .map(ScoreEssential::toDTO)
-            .collect(Collectors.toList());
+        .map(ScoreEssential::toDTO)
+        .collect(Collectors.toList());
     }
 
     @Override
@@ -81,8 +83,25 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     public List<ScoreDTO> getClasseBestStudents(int classeId, String academicYearId) {
-        return scoreRepository.findBestStudentByClasseScores(classeId, UUID.fromString(academicYearId), PageRequest.of(0, 5))
+        Pageable pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "s.obtainedMark");
+        return scoreRepository.findBestStudentByClasseScores(classeId, UUID.fromString(academicYearId), pageable)
                 .map(ScoreBasicValue::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<ScoreDTO> getClassePoorStudents(int classeId, String academicYearId) {
+        Pageable pageable = PageRequest.of(0, 5, Sort.Direction.ASC, "s.obtainedMark");
+        return scoreRepository.findBestStudentByClasseScores(classeId, UUID.fromString(academicYearId), pageable)
+                .map(ScoreBasicValue::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<ScoreAvg> getClasseAvgScore(int classeId, String academicYearId) {
+        return scoreRepository.findClasseScoresAvgByClasse(classeId, UUID.fromString(academicYearId))
+                .stream()
+                .map(score -> new ScoreAvg((String) score[0], (long) score[1]))
                 .toList();
     }
 

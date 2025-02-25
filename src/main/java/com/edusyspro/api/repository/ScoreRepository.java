@@ -30,8 +30,8 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     @Query("select new com.edusyspro.api.dto.custom.ScoreEssential(s.id, s.assignment.id, s.assignment.examName, s.assignment.examDate, " +
             "s.assignment.startTime, s.assignment.endTime, s.assignment.classeEntity.name, s.assignment.classeEntity.grade.section, " +
             "s.assignment.subject.id, s.assignment.subject.course, s.obtainedMark) " +
-            "from Score s where s.studentEntity.id = ?2 and s.assignment.semester.semestre.academicYear.id = ?1 and s.assignment.subject.id = ?3 order by s.assignment.examDate desc")
-    List<ScoreEssential> findAllByStudentIdAcademicYearAndSubjectId(UUID academicYearId, UUID studentId, int subjectId);
+            "from Score s where s.studentEntity.id = ?1 and s.assignment.subject.id = ?2 and s.assignment.semester.semestre.academicYear.id = ?3 order by s.assignment.examDate desc")
+    List<ScoreEssential> findAllByStudentIdAcademicYearAndSubjectId(UUID studentId,  int subjectId, UUID academicYearId);
 
     @Query("select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.studentEntity.id, s.studentEntity.personalInfo, s.obtainedMark) from Score s " +
             "where s.assignment.preparedBy.id = ?1 and s.assignment.semester.semestre.academicYear.current = true")
@@ -53,6 +53,10 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
 
     @Query("select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.studentEntity.id, s.studentEntity.personalInfo, sum(s.obtainedMark)) from Score s " +
             "where s.assignment.classeEntity.id = ?1 and s.assignment.semester.semestre.academicYear.id = ?2 " +
-            "group by s.studentEntity order by s.obtainedMark desc")
+            "group by s.studentEntity")
     Page<ScoreBasicValue> findBestStudentByClasseScores(int classeId, UUID academicYear, Pageable pageable);
+
+    @Query("select s.assignment.subject.department.code, avg(s.obtainedMark) from Score s where s.assignment.classeEntity.id = ?1 " +
+            "and s.assignment.semester.semestre.academicYear.id = ?2 group by s.assignment.subject.department.code")
+    List<Object[]> findClasseScoresAvgByClasse(int classeId, UUID academicYear);
 }

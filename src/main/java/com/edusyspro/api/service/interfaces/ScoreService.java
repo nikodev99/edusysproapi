@@ -1,12 +1,11 @@
 package com.edusyspro.api.service.interfaces;
 
 import com.edusyspro.api.dto.ScoreDTO;
-import com.edusyspro.api.model.Score;
+import com.edusyspro.api.dto.custom.ScoreAvg;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface ScoreService {
 
@@ -14,7 +13,7 @@ public interface ScoreService {
 
     Page<ScoreDTO> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, Pageable pageable);
 
-    List<ScoreDTO> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, int subjectId);
+    List<ScoreDTO> getScoresByStudentPerSubjectPerAcademicYear(String studentId, String academicYearId, int subjectId);
 
     List<ScoreDTO> getAllTeacherMarks(long teacherId);
 
@@ -25,5 +24,9 @@ public interface ScoreService {
     List<ScoreDTO> getBestStudentByScore(long teacherId);
 
     List<ScoreDTO> getClasseBestStudents(int classeId, String academicYearId);
+
+    List<ScoreDTO> getClassePoorStudents(int classeId, String academicYearId);
+
+    List<ScoreAvg> getClasseAvgScore(int classeId, String academicYearId);
 
 }

@@ -35,13 +35,13 @@ public class ScoreController {
         ));
     }
 
-    @GetMapping({"/all/{studentId}-{subjectId}", "/{studentId}-{subjectId}"})
+    @GetMapping({"/all/{studentId}/{subjectId}", "/{studentId}/{subjectId}"})
     ResponseEntity<List<ScoreDTO>> getAllScores(
             @PathVariable String studentId,
-            @RequestParam String academicYearId,
-            @PathVariable int subjectId
+            @PathVariable int subjectId,
+            @RequestParam String academicYearId
     ) {
-        return ResponseEntity.ok(scoreService.getScoresByStudentPerAcademicYear(
+        return ResponseEntity.ok(scoreService.getScoresByStudentPerSubjectPerAcademicYear(
                 studentId,
                 academicYearId,
                 subjectId
@@ -73,8 +73,18 @@ public class ScoreController {
         ));
     }
 
-    @GetMapping("/classe/{classeId}")
+    @GetMapping("/classe_best/{classeId}")
     ResponseEntity<?> getBestClasseStudentByMarks(@PathVariable int classeId, @RequestParam String academicYear) {
         return ResponseEntity.ok(scoreService.getClasseBestStudents(classeId, academicYear));
+    }
+
+    @GetMapping("/classe_poor/{classeId}")
+    ResponseEntity<?> getPoorClasseStudentByMarks(@PathVariable int classeId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(scoreService.getClassePoorStudents(classeId, academicYear));
+    }
+
+    @GetMapping("/classe_avg/{classeId}")
+    ResponseEntity<?> getScoreAvgByCourse(@PathVariable int classeId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(scoreService.getClasseAvgScore(classeId, academicYear));
     }
 }

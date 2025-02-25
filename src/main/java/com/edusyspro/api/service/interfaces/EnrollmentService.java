@@ -60,6 +60,14 @@ public interface EnrollmentService {
     /**
      * Get pagination of the student of a single class.
      * @param classeId the classe ID
+     * @param academicYear the academicYear ID
+     * @return List<EnrollmentDTO>
+     */
+    List<EnrollmentDTO> getClasseEnrolledStudentsSearch(int classeId, String academicYear, String searchName);
+
+    /**
+     * Get pagination of the student of a single class.
+     * @param classeId the classe ID
      * @param numberOfStudents the number of student to fetch
      * @return List<EnrollmentDTO>
      */

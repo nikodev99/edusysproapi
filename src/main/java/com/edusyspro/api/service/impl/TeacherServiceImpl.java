@@ -81,9 +81,8 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     public List<TeacherDTO> fetchAll(Object... args) {
         String schoolId = UUID.fromString(args[0].toString()).toString();
         String lastname = "%" + args[1].toString() + "%";
-        List<com.edusyspro.api.model.Teacher> teacherEssentials = teacherRepository.findAllBySchoolId(UUID.fromString(schoolId), lastname);
-        return teacherEssentials.stream()
-                .map(TeacherDTO::fromEntity)
+        return teacherRepository.findAllBySchoolId(UUID.fromString(schoolId), lastname).stream()
+                .map(TeacherEssential::toTeacher)
                 .toList();
     }
 

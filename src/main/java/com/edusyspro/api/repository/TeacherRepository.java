@@ -40,8 +40,11 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     """)
     List<CourseEssential> findTeacherEssentialCourses(UUID teacherId);
 
-    @Query("select t from Teacher t where t.school.id = ?1 and (lower(t.personalInfo.lastName) like lower(?2) or lower(t.personalInfo.firstName) like lower(?2)) order by t.personalInfo.lastName asc")
-    List<Teacher> findAllBySchoolId(UUID schoolId, String lastname);
+    @Query("select new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, t.hireDate, t.salaryByHour, " +
+        "t.school.id, t.school.name, t.createdAt, t.modifyAt) from Teacher t where t.school.id = ?1 " +
+        "and (lower(t.personalInfo.lastName) like lower(?2) or lower(t.personalInfo.firstName) like lower(?2)) " +
+        "order by t.personalInfo.lastName asc")
+    List<TeacherEssential> findAllBySchoolId(UUID schoolId, String lastname);
 
     @Query("""
         SELECT new com.edusyspro.api.dto.custom.TeacherEssential(

@@ -56,10 +56,20 @@ public class EnrollmentController {
             @PathVariable int classeId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = true) String academicYear
+            @RequestParam(required = false) String sortCriteria,
+            @RequestParam String academicYear
     ) {
-        Pageable pageable = ControllerUtils.setPage(page, size);
+        Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
         return ResponseEntity.ok(enrollmentService.getClasseEnrolledStudents(classeId, academicYear, pageable));
+    }
+
+    @GetMapping("/classroom_search/{classeId}")
+    ResponseEntity<List<EnrollmentDTO>> getClasseEnrolledStudents(
+            @PathVariable int classeId,
+            @RequestParam String academicYear,
+            @RequestParam String search
+    ) {
+        return ResponseEntity.ok(enrollmentService.getClasseEnrolledStudentsSearch(classeId, academicYear, search));
     }
 
     @GetMapping("/classmates/{studentId}_{classeId}")

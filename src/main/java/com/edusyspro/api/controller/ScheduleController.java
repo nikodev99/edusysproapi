@@ -23,6 +23,11 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleService.getAllClasseSchedule(classId, Section.COLLEGE));
     }
 
+    @GetMapping("/classe/{classeId}")
+    ResponseEntity<List<ScheduleDTO>> allClasseSchedule(@PathVariable int classeId) {
+        return ResponseEntity.ok(scheduleService.getAllClasseSchedule(classeId));
+    }
+
     @GetMapping("/teacher/{teacherId}")
     ResponseEntity<List<ScheduleDTO>> allTeacherSchedules(@PathVariable String teacherId) {
         return ResponseEntity.ok(scheduleService.getTeacherSchedule(teacherId));

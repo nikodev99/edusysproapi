@@ -4,7 +4,6 @@ import com.edusyspro.api.dto.custom.ScheduleEssential;
 import com.edusyspro.api.dto.custom.TeacherClasseCourse;
 import com.edusyspro.api.dto.custom.TeacherEssential;
 import com.edusyspro.api.model.Schedule;
-import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.model.enums.Day;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -36,14 +35,17 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<ScheduleEssential> findAllDayClasseSchedules(@Param("id") int classeId);
 
     @Query("""
-        select distinct s.teacher from Schedule s where s.academicYear.current = true and s.classeEntity.id = ?1 and s.course.id = ?2 and s.academicYear.school.id = ?3
+        select distinct new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, t.hireDate, t.salaryByHour,
+        t.school.id, t.school.name, t.createdAt, t.modifyAt) from Schedule s join s.teacher t where s.academicYear.current = true
+        and s.classeEntity.id = ?1 and s.course.id = ?2 and s.academicYear.school.id = ?3
     """)
-    Teacher findTeacherByClasseEntityIdAndCourseId(int classeEntity_id, int course_id, UUID school_id);
+    TeacherEssential findTeacherByClasseEntityIdAndCourseId(int classeEntity_id, int course_id, UUID school_id);
 
     @Query("""
-        select distinct s.teacher from Schedule s where s.academicYear.current = true and s.classeEntity.id = ?1 and s.academicYear.school.id = ?2
+        select distinct new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, t.hireDate, t.salaryByHour,
+        t.school.id, t.school.name, t.createdAt, t.modifyAt) from Schedule s join s.teacher t where s.academicYear.current = true and s.classeEntity.id = ?1 and s.academicYear.school.id = ?2
     """)
-    Teacher findTeacherByClasseEntityId(int classeEntity_id, UUID school_id);
+    TeacherEssential findTeacherByClasseEntityId(int classeEntity_id, UUID school_id);
 
     @Query("""
         SELECT DISTINCT new com.edusyspro.api.dto.custom.TeacherClasseCourse(
