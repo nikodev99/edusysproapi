@@ -1,12 +1,15 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.EnrollmentDTO;
 import com.edusyspro.api.model.Attendance;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.AttendanceStatus;
+import com.edusyspro.api.service.interfaces.EnrollmentService;
 import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -20,14 +23,23 @@ public class AttendanceRepositoryTest {
     @Autowired
     private AttendanceRepository attendanceRepository;
 
+    @Autowired
+    private EnrollmentService enrollmentService;
+
     private static final Random random = new Random();
 
     @Test
     public void insertIntoAttendance () {
         List<LocalDate> dates = getDates();
         List<Attendance> attendances = new ArrayList<>();
+        List<EnrollmentDTO> dtoList = enrollmentService.getClasseEnrolledStudents(
+                17,
+                String.valueOf(MockUtils.ACADEMIC_YEAR_MOCK.getId()),
+                PageRequest.of(0, 21)).toList();
 
-        long[] students = new long[]{84, 86, 206, 82, 216, 100, 88, 208, 90, 204, 98, 92, 412, 220, 218, 96, 212, 202, 94, 210};
+        List<Long> students = dtoList.stream()
+                .map(s -> s.getStudent().getPersonalInfo().getId())
+                .toList();
 
         for (long student : students) {
             for (LocalDate date : dates) {
@@ -38,17 +50,16 @@ public class AttendanceRepositoryTest {
                                 .build())
                         .attendanceDate(date)
                         .status(getStatus())
-                        .classeEntity(MockUtils.THREE)
+                        .classeEntity(MockUtils.TERC)
                         .build());
             }
         }
-
         attendanceRepository.saveAll(attendances);
     }
 
     private List<LocalDate> getDates () {
         LocalDate today = LocalDate.now();
-        LocalDate lastMonday = today.with(DayOfWeek.MONDAY).minusWeeks(1);
+        LocalDate lastMonday = today.with(DayOfWeek.MONDAY).plusWeeks(1);
         List<LocalDate> dates = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) { // Loop from Monday to Friday
@@ -60,7 +71,7 @@ public class AttendanceRepositoryTest {
 
     private AttendanceStatus getStatus () {
         int roll = random.nextInt(100);
-        if (roll < 40) {
+        if (roll < 60) {
             return AttendanceStatus.PRESENT;
         } else if (roll < 80) {
             return AttendanceStatus.ABSENT;

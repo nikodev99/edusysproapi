@@ -40,8 +40,28 @@ public class AttendanceController {
     }
 
     @GetMapping("/classe_{classeId}")
-    ResponseEntity<?> getClasseAttendanceStatusCounts(@PathVariable int classeId, @RequestParam String academicYear) {
-        return ResponseEntity.ok(attendanceService.getClasseAttendanceCount(classeId, academicYear));
+    ResponseEntity<?> getClasseAttendanceStatusCounts(
+            @PathVariable int classeId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam String academicYear
+    ) {
+        return ResponseEntity.ok(attendanceService.getClasseAttendanceCount(classeId, academicYear, PageRequest.of(page, size)));
+    }
+
+    @GetMapping("/classe_status/{classeId}")
+    ResponseEntity<?> getClasseStatusAttendanceStatusCounts(@PathVariable int classeId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(attendanceService.getStudentAttendanceStatus(classeId, academicYear));
+    }
+
+    @GetMapping("/school_status/{schoolId}")
+    ResponseEntity<?> getSchoolStatusAttendanceStatusCounts(@PathVariable String schoolId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(attendanceService.getSchoolAttendanceCount(schoolId, academicYear));
+    }
+
+    @GetMapping("/classe_stat/{classeId}")
+    ResponseEntity<?> getClasseAttendanceStatPerStatus(@PathVariable int classeId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(attendanceService.getClasseAttendanceStats(classeId, academicYear));
     }
 
 }
