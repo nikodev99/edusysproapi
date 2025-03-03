@@ -2,21 +2,19 @@ package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.AttendanceDTO;
 import com.edusyspro.api.dto.custom.*;
-import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.AttendanceStatus;
 import com.edusyspro.api.repository.AttendanceRepository;
 import com.edusyspro.api.repository.StudentRepository;
 import com.edusyspro.api.service.interfaces.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class AttendanceServiceImpl implements AttendanceService {
@@ -62,9 +60,10 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Page<AttendanceStatusCount> getClasseAttendanceCount(int classeId, String academicYearId, Pageable pageable) {
-        return attendanceRepository.findAttendanceStatusCountByClasse(classeId, UUID.fromString(academicYearId), pageable)
-                .map(o -> new AttendanceStatusCount((AttendanceStatus) o[0], (long) o[1]));
+    public List<AttendanceStatusCount> getClasseAttendanceCount(int classeId, String academicYearId) {
+        return attendanceRepository.findAttendanceStatusCountByClasse(classeId, UUID.fromString(academicYearId)).stream()
+                .map(o -> new AttendanceStatusCount((AttendanceStatus) o[0], (long) o[1]))
+                .toList();
     }
 
     @Override
@@ -76,33 +75,40 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public List<AttendanceStatusCount> getBestStudentAtAttendance(int classeId, String academicYearId) {
+    public List<IndividualAttendanceSummary> getBestStudentAtAttendance(int classeId, String academicYearId) {
         Pageable pageable = PageRequest.of(0, 5);
-        return getClasseAttendanceCount(classeId, academicYearId, pageable)
-                .toList();
+        Page<Object[]> studentRanked = attendanceRepository.findAttendanceStatusRanking(
+                classeId, UUID.fromString(academicYearId), AttendanceStatus.PRESENT, pageable
+        );
+        return getSummaryStatus(studentRanked);
     }
 
     @Override
-    public List<AttendanceStatusCount> getWorstStudentAtAttendance(int classeId, String academicYearId) {
+    public List<IndividualAttendanceSummary> getWorstStudentAtAttendance(int classeId, String academicYearId) {
         Pageable pageable = PageRequest.of(0, 5);
-        return getClasseAttendanceCount(classeId, academicYearId, pageable)
-                .toList();
+        Page<Object[]> studentRanked = attendanceRepository.findAttendanceStatusRanking(
+                classeId, UUID.fromString(academicYearId), AttendanceStatus.ABSENT, pageable
+        );
+        return getSummaryStatus(studentRanked);
     }
 
     @Override
-    public List<IndividualAttendanceSummary> getStudentAttendanceStatus(int classeId, String academicYearId) {
-        List<Object[]> objectsCount = attendanceRepository.findClasseAttendanceStatus(classeId, UUID.fromString(academicYearId));
-        return objectsCount.stream()
-                .collect(Collectors.groupingBy(
-                        row -> {
-                            IndividualBasic individualBasic = (IndividualBasic) row[0];
-                            return individualBasic.toEntity();
-                        },
-                        Collectors.mapping(row -> new IndividualAttendanceCount((AttendanceStatus) row[1], (Long) row[2]), Collectors.toList())
-                ))
-                .entrySet().stream()
-                .map(entry -> new IndividualAttendanceSummary(entry.getKey(), entry.getValue()))
-                .toList();
+    public Page<IndividualAttendanceSummary> getStudentAttendanceStatus(int classeId, String academicYearId, Pageable pageable) {
+        Page<Long> individualIds = attendanceRepository.findClasseAttendanceStatus(classeId, UUID.fromString(academicYearId), pageable);
+        List<Object[]> statuses = attendanceRepository.findClasseAttendanceStatus(
+                individualIds.getContent(),
+                UUID.fromString(academicYearId)
+        );
+
+        List<IndividualAttendanceSummary> summaries = getSummaryStatus(statuses);
+        return new PageImpl<>(summaries, individualIds.getPageable(), individualIds.getTotalElements());
+    }
+
+    @Override
+    public List<IndividualAttendanceSummary> getStudentAttendanceStatus(int classeId, String academicYearId, String name) {
+        List<Long> individualIds = attendanceRepository.findClasseAttendanceStatus(classeId, UUID.fromString(academicYearId), "%" +  name + "%");
+        List<Object[]> statuses = attendanceRepository.findClasseAttendanceStatus(individualIds, UUID.fromString(academicYearId));
+        return getSummaryStatus(statuses);
     }
 
     @Override
@@ -130,6 +136,28 @@ public class AttendanceServiceImpl implements AttendanceService {
 
                     return new AttendanceStatusStat(formattedDate, present, absent, late, excused);
                 })
+                .toList();
+    }
+
+    private List<IndividualAttendanceSummary> getSummaryStatus(Page<Object[]> objectsCount) {
+        return getIndividualAttendanceSummaries(objectsCount.stream());
+    }
+
+    private List<IndividualAttendanceSummary> getSummaryStatus(List<Object[]> objectsCount) {
+        return getIndividualAttendanceSummaries(objectsCount.stream());
+    }
+
+    private List<IndividualAttendanceSummary> getIndividualAttendanceSummaries(Stream<Object[]> stream) {
+        return stream.collect(Collectors.groupingBy(
+                        row -> {
+                            IndividualBasic individualBasic = (IndividualBasic) row[0];
+                            return individualBasic.toEntity();
+                        },
+                        LinkedHashMap::new,
+                        Collectors.mapping(row -> new IndividualAttendanceCount((AttendanceStatus) row[1], (Long) row[2]), Collectors.toList())
+                ))
+                .entrySet().stream()
+                .map(entry -> new IndividualAttendanceSummary(entry.getKey(), entry.getValue()))
                 .toList();
     }
 }

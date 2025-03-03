@@ -43,12 +43,12 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
 
     @Query("select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.studentEntity.id, s.studentEntity.personalInfo, sum(s.obtainedMark)) from Score s " +
             "where s.assignment.preparedBy.id = ?1 and s.assignment.subject.id = ?2 and s.assignment.semester.semestre.academicYear.current = true " +
-            "group by s.studentEntity order by s.obtainedMark desc")
+            "group by s.studentEntity order by sum(s.obtainedMark) desc")
     Page<ScoreBasicValue> findBestStudentByTeacherScores(long teacherId, int subjectId, Pageable pageable);
 
     @Query("select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.studentEntity.id, s.studentEntity.personalInfo, sum(s.obtainedMark)) from Score s " +
             "where s.assignment.preparedBy.id = ?1 and s.assignment.semester.semestre.academicYear.current = true " +
-            "group by s.studentEntity order by s.obtainedMark desc")
+            "group by s.studentEntity order by sum(s.obtainedMark) desc")
     Page<ScoreBasicValue> findBestStudentByTeacherScores(long teacherId, Pageable pageable);
 
     @Query("select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.studentEntity.id, s.studentEntity.personalInfo, sum(s.obtainedMark)) from Score s " +

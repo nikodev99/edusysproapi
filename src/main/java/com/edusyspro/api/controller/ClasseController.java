@@ -25,7 +25,6 @@ public class ClasseController {
 
     @PostMapping
     ResponseEntity<?> saveClasse(@RequestBody ClasseDTO classeDTO) {
-        System.out.println("Classe: " + classeDTO);
         try {
             return ResponseEntity.ok(classeService.save(classeDTO));
         }catch (AlreadyExistException a) {

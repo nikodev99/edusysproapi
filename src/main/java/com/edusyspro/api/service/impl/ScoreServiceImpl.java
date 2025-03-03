@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
 
@@ -83,7 +84,7 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     public List<ScoreDTO> getClasseBestStudents(int classeId, String academicYearId) {
-        Pageable pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "s.obtainedMark");
+        Pageable pageable = PageRequest.of(0, 5, JpaSort.unsafe("sum(s.obtainedMark)").descending());
         return scoreRepository.findBestStudentByClasseScores(classeId, UUID.fromString(academicYearId), pageable)
                 .map(ScoreBasicValue::toDTO)
                 .toList();
@@ -91,7 +92,7 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     public List<ScoreDTO> getClassePoorStudents(int classeId, String academicYearId) {
-        Pageable pageable = PageRequest.of(0, 5, Sort.Direction.ASC, "s.obtainedMark");
+        Pageable pageable = PageRequest.of(0, 5, JpaSort.unsafe("sum(s.obtainedMark)"));
         return scoreRepository.findBestStudentByClasseScores(classeId, UUID.fromString(academicYearId), pageable)
                 .map(ScoreBasicValue::toDTO)
                 .toList();

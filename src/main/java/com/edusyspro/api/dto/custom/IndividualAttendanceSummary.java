@@ -4,5 +4,5 @@ import com.edusyspro.api.model.Individual;
 
 import java.util.List;
 
-public record IndividualAttendanceSummary(Individual individualBasic, List<IndividualAttendanceCount> statusCount) {
+public record IndividualAttendanceSummary(Individual individual, List<IndividualAttendanceCount> statusCount) {
 }
