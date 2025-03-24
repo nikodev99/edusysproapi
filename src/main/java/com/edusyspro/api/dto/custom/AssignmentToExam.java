@@ -1,18 +1,21 @@
 package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.*;
-import com.edusyspro.api.model.*;
+import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.model.Semester;
+import com.edusyspro.api.model.enums.AssignmentType;
 import com.edusyspro.api.model.enums.Section;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
 
-public record AssignmentEssential(
+public record AssignmentToExam(
         Long id,
         String semesterName,
-        ExamType examType,
-        Individual preparedBy,
+        long teacherId,
+        String teacherFirstName,
+        String teacherLastName,
+        String teacherImage,
         Integer classeId,
         String classeName,
         Section classeSection,
@@ -23,10 +26,11 @@ public record AssignmentEssential(
         LocalDate examDate,
         LocalTime startTime,
         LocalTime endTime,
+        AssignmentType type,
         boolean passed,
-        ZonedDateTime addedDate,
-        ZonedDateTime updatedDate
+        int coefficient
 ) {
+
     public AssignmentDTO toDTO() {
         return AssignmentDTO.builder()
                 .id(id)
@@ -35,10 +39,12 @@ public record AssignmentEssential(
                                 .semesterName(semesterName)
                                 .build())
                         .build())
-                .exam(ExamDTO.builder()
-                        .examType(examType)
+                .preparedBy(Individual.builder()
+                        .id(teacherId)
+                        .firstName(teacherFirstName)
+                        .lastName(teacherLastName)
+                        .image(teacherImage)
                         .build())
-                .preparedBy(preparedBy)
                 .classe(ClasseDTO.builder()
                         .id(classeId)
                         .name(classeName)
@@ -55,9 +61,10 @@ public record AssignmentEssential(
                 .examDate(examDate)
                 .startTime(startTime)
                 .endTime(endTime)
+                .coefficient(coefficient)
                 .passed(passed)
-                .addedDate(addedDate)
-                .updatedDate(updatedDate)
+                .type(type)
                 .build();
     }
+
 }

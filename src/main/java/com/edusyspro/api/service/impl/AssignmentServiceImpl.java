@@ -2,15 +2,16 @@ package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.AssignmentDTO;
 import com.edusyspro.api.dto.custom.AssignmentEssential;
+import com.edusyspro.api.dto.custom.AssignmentToExam;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
 import com.edusyspro.api.repository.AssignmentRepository;
 import com.edusyspro.api.service.interfaces.AssignmentService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class AssignmentServiceImpl implements AssignmentService {
@@ -19,6 +20,27 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     public AssignmentServiceImpl(AssignmentRepository assignmentRepository) {
         this.assignmentRepository = assignmentRepository;
+    }
+
+    @Override
+    public List<AssignmentDTO> findAllClasseAssignments(Integer classeId, String academicYear) {
+        return assignmentRepository.findAllClasseAssignments(classeId, UUID.fromString(academicYear)).stream()
+                .map(AssignmentEssential::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<AssignmentDTO> findAllClasseExamAssignments(Integer classeId, String academicYear, Long examId) {
+        return assignmentRepository.findAllClasseAssignmentsByExam(classeId, UUID.fromString(academicYear), examId).stream()
+                .map(AssignmentToExam::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<AssignmentDTO> findAllClasseAssignmentsBySubject(Integer classeId, String academicYear, Integer subjectId) {
+        return assignmentRepository.findAllClasseAssignmentsBySubject(classeId, UUID.fromString(academicYear), subjectId).stream()
+                .map(AssignmentEssential::toDTO)
+                .toList();
     }
 
     @Override
@@ -47,5 +69,29 @@ public class AssignmentServiceImpl implements AssignmentService {
         return assignmentRepository.findAllAssignmentsByTeacher(teacherId, ids.classId()).stream()
                 .map(AssignmentEssential::toDTO)
                 .toList();
+    }
+
+    @Override
+    public Map<String, Boolean> updateAssignmentDates(AssignmentDTO assignmentDTO, long assignmentId) {
+        int hasUpdated = assignmentRepository.changeAssignmentDateById(
+                assignmentDTO.getExamDate(),
+                assignmentDTO.getStartTime(),
+                assignmentDTO.getEndTime(),
+                assignmentId
+        );
+        if (hasUpdated > 0) {
+            return Map.of("updated", Boolean.TRUE);
+        }
+        return Map.of("updated", Boolean.FALSE);
+    }
+
+    @Override
+    public Map<String, Boolean> removeAssignment(Long id) {
+        boolean isRemoved = false;
+        try {
+            assignmentRepository.deleteById(id);
+            isRemoved = true;
+        }catch (Exception ignored){}
+        return Map.of("status", isRemoved);
     }
 }

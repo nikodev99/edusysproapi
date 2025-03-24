@@ -63,6 +63,14 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getClasseEnrolledStudents(classeId, academicYear, pageable));
     }
 
+    @GetMapping("/classe/{classeId}")
+    ResponseEntity<List<EnrollmentDTO>> getClasseEnrolledStudents(
+            @PathVariable int classeId,
+            @RequestParam String academicYear
+    ) {
+        return ResponseEntity.ok(enrollmentService.getClasseEnrolledStudents(classeId, academicYear));
+    }
+
     @GetMapping("/classroom_search/{classeId}")
     ResponseEntity<List<EnrollmentDTO>> getClasseEnrolledStudents(
             @PathVariable int classeId,

@@ -1,5 +1,6 @@
 package com.edusyspro.api.model;
 
+import com.edusyspro.api.model.enums.AssignmentType;
 import com.edusyspro.api.utils.Datetime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,7 +36,7 @@ public class Assignment {
 
     //Ceci sera toujours l'ID de l'enseignant
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "prepardeBy_id", referencedColumnName = "id")
+    @JoinColumn(name = "preparde_by_id", referencedColumnName = "id")
     private Individual preparedBy;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
@@ -47,6 +48,9 @@ public class Assignment {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course subject;
+
+    @Enumerated(EnumType.ORDINAL)
+    private AssignmentType type;
 
     private String examName;
 

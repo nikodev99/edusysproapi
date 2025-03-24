@@ -78,6 +78,15 @@ public class ScoreController {
         return ResponseEntity.ok(scoreService.getClasseBestStudents(classeId, academicYear));
     }
 
+    @GetMapping("/classe_best/{classeId}/{courseId}")
+    ResponseEntity<?> getBestClasseStudentByMarks(
+            @PathVariable int classeId,
+            @RequestParam String academicYear,
+            @PathVariable int courseId
+    ) {
+        return ResponseEntity.ok(scoreService.getClasseBestStudentsByCourse(classeId, academicYear, courseId));
+    }
+
     @GetMapping("/classe_poor/{classeId}")
     ResponseEntity<?> getPoorClasseStudentByMarks(@PathVariable int classeId, @RequestParam String academicYear) {
         return ResponseEntity.ok(scoreService.getClassePoorStudents(classeId, academicYear));

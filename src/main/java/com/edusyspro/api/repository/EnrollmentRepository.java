@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.custom.EnrolledStudentBasic;
 import com.edusyspro.api.dto.custom.GenderCount;
 import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.model.EnrollmentEntity;
@@ -79,6 +80,13 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
         and e.academicYear.id = ?2
    """)
     Page<EnrolledStudent> getEnrolledStudentsByClassId(int classeId, UUID academicYear, Pageable pageable);
+
+    @Query(value = """
+        select new com.edusyspro.api.dto.custom.EnrolledStudentBasic(e.id, e.student.id, e.student.personalInfo.firstName,
+        e.student.personalInfo.lastName, e.student.personalInfo.image, e.student.reference) from EnrollmentEntity e where e.classe.id = ?1
+        and e.academicYear.id = ?2
+   """)
+    List<EnrolledStudentBasic> getEnrolledStudentsByClassId(int classeId, UUID academicYear);
 
     @Query(value = """
         select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,

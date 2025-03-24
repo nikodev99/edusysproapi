@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -25,4 +26,8 @@ public class Exam {
 
     @OneToMany(mappedBy = "exam")
     private List<Assignment> assignments;
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
 }

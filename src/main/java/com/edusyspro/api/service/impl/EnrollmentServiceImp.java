@@ -1,6 +1,7 @@
 package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.*;
+import com.edusyspro.api.dto.custom.EnrolledStudentBasic;
 import com.edusyspro.api.dto.custom.GenderCount;
 import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.model.*;
@@ -131,6 +132,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
         Pageable pageable = PageRequest.of(0, numberOfStudents);
         return enrollmentRepositoryContext.findStudentRandomClassmateByClasseId(null, classeId, pageable, false)
                 .map(EnrolledStudent::populateStudent)
+                .toList();
+    }
+
+    @Override
+    public List<EnrollmentDTO> getClasseEnrolledStudents(int classeId, String academicYear) {
+        return enrollmentRepository.getEnrolledStudentsByClassId(classeId, UUID.fromString(academicYear)).stream()
+                .map(EnrolledStudentBasic::toDTO)
                 .toList();
     }
 

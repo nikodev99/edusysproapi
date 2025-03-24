@@ -3,6 +3,7 @@ package com.edusyspro.api.dto;
 import com.edusyspro.api.model.Grade;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Section;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GradeDTO {
     private Integer id;
     private Section section;

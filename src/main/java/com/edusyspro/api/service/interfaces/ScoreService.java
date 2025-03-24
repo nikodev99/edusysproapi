@@ -19,11 +19,15 @@ public interface ScoreService {
 
     Page<ScoreDTO> getAllAssignmentScores(long assignmentId, Pageable pageable);
 
+    List<ScoreDTO> getAllAssignmentScores(List<Long> assignmentId);
+
     List<ScoreDTO> getBestStudentBySubjectScore(long teacherId, int subjectId);
 
     List<ScoreDTO> getBestStudentByScore(long teacherId);
 
     List<ScoreDTO> getClasseBestStudents(int classeId, String academicYearId);
+
+    List<ScoreDTO> getClasseBestStudentsByCourse(int classeId, String academicYearId, int courseId);
 
     List<ScoreDTO> getClassePoorStudents(int classeId, String academicYearId);
 

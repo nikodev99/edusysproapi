@@ -8,8 +8,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.net.http.HttpRequest;
-
 @Configuration
 @EnableWebMvc
 public class CorsConfig {

@@ -3,6 +3,7 @@ package com.edusyspro.api.model;
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.model.enums.Status;
 import com.edusyspro.api.utils.JpaConverter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Individual {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

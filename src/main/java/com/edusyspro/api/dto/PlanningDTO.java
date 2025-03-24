@@ -2,6 +2,7 @@ package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Planning;
 import com.edusyspro.api.model.Semester;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,7 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlanningDTO {
     private Long id;
     @JsonProperty("semester")

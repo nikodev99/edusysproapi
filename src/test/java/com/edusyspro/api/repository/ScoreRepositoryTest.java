@@ -27,22 +27,25 @@ public class ScoreRepositoryTest {
     @Test
     public void insertScoreData() {
         List<EnrollmentDTO> students = studentService.getClasseEnrolledStudents(
-                13,
+                MockUtils.STC.getId(),
                 String.valueOf(MockUtils.ACADEMIC_YEAR_MOCK.getId()),
                 PageRequest.of(0, 21)).toList();
 
         List<Score> scores = new ArrayList<>();
+        List<Long> assignmentIds = List.of(34L, 35L, 36L, 37L, 38L, 39L, 40L, 41L);
 
         for (EnrollmentDTO student : students) {
-            scores.add(Score.builder()
-                            .assignment(Assignment.builder()
-                                    .id(12L)
-                                    .build())
-                            .studentEntity(StudentEntity.builder()
-                                    .id(student.getStudent().getId())
-                                    .build())
-                            .obtainedMark(getMark())
-                    .build());
+            for (Long assignmentId : assignmentIds) {
+                scores.add(Score.builder()
+                        .assignment(Assignment.builder()
+                                .id(assignmentId)
+                                .build())
+                        .studentEntity(StudentEntity.builder()
+                                .id(student.getStudent().getId())
+                                .build())
+                        .obtainedMark(getMark())
+                        .build());
+            }
         }
 
         scoreRepository.saveAll(scores);

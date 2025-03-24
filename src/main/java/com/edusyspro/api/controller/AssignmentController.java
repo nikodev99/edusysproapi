@@ -1,6 +1,6 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.controller.utils.ControllerUtils;
+import com.edusyspro.api.dto.AssignmentDTO;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
 import com.edusyspro.api.service.interfaces.AssignmentService;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +14,20 @@ public class AssignmentController {
 
     public AssignmentController(AssignmentService assignmentService) {
         this.assignmentService = assignmentService;
+    }
+
+    @GetMapping("/classe/{classeId}")
+    ResponseEntity<?> fetchClasseAssignments(@PathVariable Integer classeId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(assignmentService.findAllClasseAssignments(classeId, academicYear));
+    }
+
+    @GetMapping("/classe/{classeId}/{subjectId}")
+    ResponseEntity<?> fetchClasseAssignments(
+            @PathVariable Integer classeId,
+            @PathVariable Integer subjectId,
+            @RequestParam String academicYear
+    ) {
+        return ResponseEntity.ok(assignmentService.findAllClasseAssignmentsBySubject(classeId, academicYear, subjectId));
     }
 
     @GetMapping("/teacher_some_{teacherId}")
@@ -53,5 +67,16 @@ public class AssignmentController {
                         Long.parseLong(teacherId), new CourseAndClasseIds(0, classe)
                 )
         );
+    }
+
+    @PutMapping("/change/{assignmentId}")
+    ResponseEntity<?> changeAssignmentDates(@RequestBody AssignmentDTO assignment, @PathVariable long assignmentId) {
+        System.out.println("assignment: " + assignment);
+        return ResponseEntity.ok(assignmentService.updateAssignmentDates(assignment, assignmentId));
+    }
+
+    @DeleteMapping("/{assignmentId}")
+    ResponseEntity<?> deleteAssignment(@PathVariable long assignmentId) {
+        return ResponseEntity.ok(assignmentService.removeAssignment(assignmentId));
     }
 }

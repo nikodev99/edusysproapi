@@ -1,6 +1,8 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.*;
+import com.edusyspro.api.model.enums.AssignmentType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,10 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AssignmentDTO {
     private Long id;
-    private Planning semester;
-    private Exam exam;
+    private PlanningDTO semester;
+    private ExamDTO exam;
     private Individual preparedBy;
     private ClasseDTO classe;
     private CourseDTO subject;
@@ -27,7 +30,9 @@ public class AssignmentDTO {
     private LocalTime startTime;
     private LocalTime endTime;
     private Boolean passed;
+    private int coefficient;
     private List<ScoreDTO> marks;
+    private AssignmentType type;
     private ZonedDateTime addedDate;
     private ZonedDateTime updatedDate;
 }

@@ -66,12 +66,20 @@ public interface EnrollmentService {
     List<EnrollmentDTO> getClasseEnrolledStudentsSearch(int classeId, String academicYear, String searchName);
 
     /**
-     * Get pagination of the student of a single class.
+     * Get a certain number of students of a single class.
      * @param classeId the classe ID
      * @param numberOfStudents the number of student to fetch
      * @return List<EnrollmentDTO>
      */
     List<EnrollmentDTO> getClasseEnrolledStudents(int classeId, int numberOfStudents);
+
+    /**
+     * Get all students of a single class per academic year.
+     * @param classeId the classe ID
+     * @param academicYear the academic year
+     * @return List<EnrollmentDTO>
+     */
+    List<EnrollmentDTO> getClasseEnrolledStudents(int classeId, String academicYear);
 
     /**
      * Get a student current classe classmates
