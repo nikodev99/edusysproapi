@@ -26,7 +26,6 @@ public class RepositoryContext {
 
     public Page<EnrolledStudent> findStudentRandomClassmateByClasseId(UUID studentId, int classeId, Pageable pageable, boolean exclude) {
         final String statement = getStatement(exclude);
-        System.out.println("statement: " + statement);
         TypedQuery<EnrolledStudent> query = entityManager.createQuery(statement, EnrolledStudent.class);
 
         if (exclude && studentId != null) {

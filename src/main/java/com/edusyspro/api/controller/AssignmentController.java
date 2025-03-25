@@ -71,7 +71,6 @@ public class AssignmentController {
 
     @PutMapping("/change/{assignmentId}")
     ResponseEntity<?> changeAssignmentDates(@RequestBody AssignmentDTO assignment, @PathVariable long assignmentId) {
-        System.out.println("assignment: " + assignment);
         return ResponseEntity.ok(assignmentService.updateAssignmentDates(assignment, assignmentId));
     }
 

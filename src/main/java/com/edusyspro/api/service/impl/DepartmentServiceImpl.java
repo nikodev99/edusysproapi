@@ -122,6 +122,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public Map<String, Boolean> update(DepartmentDTO entity, Integer id) {
+        return Map.of();
+    }
+
+    @Override
     public int patch(Integer id, UpdateField field) {
         return 0;
     }

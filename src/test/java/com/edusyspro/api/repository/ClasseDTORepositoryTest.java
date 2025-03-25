@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -173,6 +174,12 @@ class ClasseDTORepositoryTest {
                 .build();
         boolean exists = classeRepository.existsByName(classe.getName());
         assertTrue(exists);
+    }
+
+    @Test
+    public void TestExistWhenUpdating() {
+        int e = classeRepository.countByName("STC", 12);
+        System.out.println("COUNT: " + e);
     }
 
     private Course getPrincipalCourse(int id) {

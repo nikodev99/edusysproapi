@@ -163,6 +163,11 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     }
 
     @Override
+    public Map<String, Boolean> update(TeacherDTO entity, UUID id) {
+        return Map.of();
+    }
+
+    @Override
     public int patch(UUID id, UpdateField field) {
         return updateContext.updateTeacherField(field.field(), field.value(), id);
     }

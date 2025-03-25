@@ -120,6 +120,11 @@ public class GardeServiceImpl implements GradeService {
     }
 
     @Override
+    public Map<String, Boolean> update(GradeDTO entity, Integer id) {
+        return Map.of();
+    }
+
+    @Override
     public int patch(Integer id, UpdateField field) {
         return 0;
     }

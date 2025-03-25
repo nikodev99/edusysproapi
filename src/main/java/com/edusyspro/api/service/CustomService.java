@@ -47,6 +47,8 @@ public interface CustomService<T, U> {
 
     int update(T entity);
 
+    Map<String, Boolean> update(T entity, U id);
+
     int patch(U id, UpdateField field);
 
     int delete(T entity);

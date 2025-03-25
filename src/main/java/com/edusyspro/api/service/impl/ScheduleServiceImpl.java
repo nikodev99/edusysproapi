@@ -177,6 +177,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public Map<String, Boolean> update(ScheduleDTO entity, Long id) {
+        return Map.of();
+    }
+
+    @Override
     public int patch(Long id, UpdateField field) {
         return 0;
     }

@@ -123,6 +123,11 @@ public class CourseProgramImpl implements CourseProgramService {
     }
 
     @Override
+    public Map<String, Boolean> update(CourseProgramDTO entity, Long id) {
+        return Map.of();
+    }
+
+    @Override
     public int patch(Long id, UpdateField field) {
         return 0;
     }

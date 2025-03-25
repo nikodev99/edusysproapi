@@ -130,6 +130,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Map<String, Boolean> update(CourseDTO entity, Integer id) {
+        return Map.of();
+    }
+
+    @Override
     public int patch(Integer id, UpdateField field) {
         return 0;
     }

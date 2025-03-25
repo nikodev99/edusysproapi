@@ -6,7 +6,6 @@ import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.repository.ClasseRepository;
 import com.edusyspro.api.repository.GradeRepository;
 import com.edusyspro.api.service.interfaces.*;
-import com.edusyspro.api.service.mod.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -156,6 +155,26 @@ public class ClasseServiceImp implements ClasseServiceInterface {
     }
 
     @Override
+    public Map<String, Boolean> update(ClasseDTO entity, Integer id) {
+        if (countClasseName(entity, id) ) {
+            throw new AlreadyExistException("La classe " + entity.getName() + " existe déjà");
+        }
+        int hasUpdated = classeRepository.updateClasseValues(
+                entity.getName(),
+                entity.getCategory(),
+                entity.getGrade().getId(),
+                entity.getRoomNumber(),
+                entity.getMonthCost(),
+                id
+        ).orElseThrow();
+        if (hasUpdated > 0) {
+            return Map.of("updated", Boolean.TRUE);
+        }else {
+            return Map.of("updated", Boolean.FALSE);
+        }
+    }
+
+    @Override
     public int patch(Integer id, UpdateField field) {
         return 0;
     }
@@ -190,5 +209,10 @@ public class ClasseServiceImp implements ClasseServiceInterface {
         return classeRepository.existsByName(
                 entity.getName()
         );
+    }
+
+    private boolean countClasseName(ClasseDTO entity, int classeId) {
+        int count = classeRepository.countByName(entity.getName(), classeId);
+        return count >= 1;
     }
 }

@@ -13,6 +13,7 @@ public record ClasseEssential(
         Section section,
         String subSection,
         int roomNumber,
+        double monthCost,
         ZonedDateTime createdAt
 ) {
     public ClasseDTO convertToDTO() {
@@ -25,6 +26,7 @@ public record ClasseEssential(
                         .subSection(subSection)
                         .build())
                 .roomNumber(roomNumber)
+                .monthCost(monthCost)
                 .createdAt(createdAt)
                 .build();
     }
