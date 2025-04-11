@@ -57,7 +57,7 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     public List<ScoreDTO> getAllTeacherMarks(long teacherId) {
-        return scoreRepository.finsAllTeacherMarks(teacherId).stream()
+        return scoreRepository.findAllTeacherMarks(teacherId).stream()
                 .map(ScoreBasicValue::toDTO)
                 .toList();
     }
@@ -109,6 +109,22 @@ public class ScoreServiceImpl implements ScoreService {
     public List<ScoreDTO> getClassePoorStudents(int classeId, String academicYearId) {
         Pageable pageable = PageRequest.of(0, 5, JpaSort.unsafe("sum(s.obtainedMark)"));
         return scoreRepository.findBestStudentByClasseScores(classeId, UUID.fromString(academicYearId), pageable)
+                .map(ScoreBasicValue::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<ScoreDTO> getCourseBestStudents(int courseId, String academicYearId) {
+        Pageable pageable = PageRequest.of(0, 5, JpaSort.unsafe("sum(s.obtainedMark)").descending());
+        return scoreRepository.findBestStudentByCourseScores(courseId, UUID.fromString(academicYearId), pageable)
+                .map(ScoreBasicValue::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<ScoreDTO> getCoursePoorStudents(int courseId, String academicYearId) {
+        Pageable pageable = PageRequest.of(0, 5, JpaSort.unsafe("sum(s.obtainedMark)"));
+        return scoreRepository.findBestStudentByCourseScores(courseId, UUID.fromString(academicYearId), pageable)
                 .map(ScoreBasicValue::toDTO)
                 .toList();
     }

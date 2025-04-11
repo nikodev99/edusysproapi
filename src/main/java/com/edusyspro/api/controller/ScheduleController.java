@@ -28,6 +28,11 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleService.getAllClasseSchedule(classeId));
     }
 
+    @GetMapping("/course/{courseId}")
+    ResponseEntity<List<ScheduleDTO>> getAllCourseSchedules(@PathVariable int courseId, @RequestParam boolean byDay) {
+        return ResponseEntity.ok(scheduleService.getCourseSchedules(courseId, byDay));
+    }
+
     @GetMapping("/teacher/{teacherId}")
     ResponseEntity<List<ScheduleDTO>> allTeacherSchedules(@PathVariable String teacherId) {
         return ResponseEntity.ok(scheduleService.getTeacherSchedule(teacherId));
@@ -41,5 +46,15 @@ public class ScheduleController {
     @GetMapping("/teachers/{classeId}")
     ResponseEntity<List<?>> findClasseTeachers(@PathVariable int classeId) {
         return ResponseEntity.ok(scheduleService.getAllClasseTeachers(classeId));
+    }
+
+    @GetMapping("/classe_course_hours/{courseId}")
+    ResponseEntity<?> findCourseHoursByClasse(@PathVariable int courseId) {
+        return ResponseEntity.ok(scheduleService.getTotalCourseHoursByClasses(courseId));
+    }
+
+    @GetMapping("/teacher_course_hours/{courseId}")
+    ResponseEntity<?> findCourseHoursByTeachers(@PathVariable int courseId) {
+        return ResponseEntity.ok(scheduleService.getTotalCourseHoursByTeachers(courseId));
     }
 }

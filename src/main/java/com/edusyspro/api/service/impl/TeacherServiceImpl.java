@@ -6,6 +6,7 @@ import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
+import com.edusyspro.api.service.CustomMethod;
 import com.edusyspro.api.service.interfaces.CourseProgramService;
 import com.edusyspro.api.service.interfaces.ScheduleService;
 import com.edusyspro.api.service.interfaces.TeacherServiceInterface;
@@ -201,6 +202,12 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
                         "count", row[1]
                 ))
                 .toList();
+    }
+
+    @Override
+    public List<GenderCount> countAllTeachers(String schoolId) {
+        List<Object[]> countTeachers = teacherRepository.countAllTeachers(UUID.fromString(schoolId));
+        return CustomMethod.genderCountInClasse(countTeachers);
     }
 
     private boolean teacherEmailExists(TeacherDTO teacherDTO) {

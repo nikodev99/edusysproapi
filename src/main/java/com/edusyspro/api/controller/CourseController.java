@@ -54,4 +54,14 @@ public class CourseController {
                 String.valueOf(q)
         ));
     }
+
+    @GetMapping("/{courseId}")
+    ResponseEntity<CourseDTO> getCourseById(@PathVariable Integer courseId) {
+        return ResponseEntity.ok(courseService.findCourse(courseId));
+    }
+
+    @GetMapping("/count/{courseId}")
+    ResponseEntity<?> countByCourseId(@PathVariable Integer courseId) {
+        return ResponseEntity.ok(courseService.count(courseId));
+    }
 }

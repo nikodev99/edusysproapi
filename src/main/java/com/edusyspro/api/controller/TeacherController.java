@@ -62,6 +62,11 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.findAllTeachers(ConstantUtils.SCHOOL_ID, q));
     }
 
+    @GetMapping("/count")
+    ResponseEntity<?> countTeachers() {
+        return ResponseEntity.ok(teacherService.countAllTeachers(ConstantUtils.SCHOOL_ID));
+    }
+
     @GetMapping("/{id}/count_student")
     ResponseEntity<Map<String, Long>> getTeacherStudentCounts(@PathVariable String id) {
         return ResponseEntity.ok(teacherService.count(UUID.fromString(id)));

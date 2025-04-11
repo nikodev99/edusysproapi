@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -119,6 +120,14 @@ public class EnrollmentController {
     @GetMapping("/count/{classeId}")
     ResponseEntity<?> countStudents(@PathVariable int classeId, @RequestParam String academicYear) {
         return ResponseEntity.ok(enrollmentService.countClasseStudents(classeId, academicYear));
+    }
+
+    @GetMapping("/count/classe/{classeIds}")
+    ResponseEntity<?> countStudents(@PathVariable String classeIds, @RequestParam String academicYear) {
+        List<Integer> classIdList = Arrays.stream(classeIds.split(","))
+                .map(Integer::parseInt)
+                .toList();
+        return ResponseEntity.ok(enrollmentService.countClasseStudents(classIdList, academicYear));
     }
 
     @GetMapping("/count")

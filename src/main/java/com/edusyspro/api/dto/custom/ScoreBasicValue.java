@@ -8,7 +8,10 @@ import java.util.UUID;
 
 public record ScoreBasicValue(
         UUID studentId,
-        Individual student,
+        String studentFirstName,
+        String studentLastName,
+        String studentImage,
+        String studentReference,
         long obtainedMark
 ) {
 
@@ -17,7 +20,12 @@ public record ScoreBasicValue(
                 .obtainedMark(obtainedMark)
                 .student(StudentDTO.builder()
                         .id(studentId)
-                        .personalInfo(student)
+                        .personalInfo(Individual.builder()
+                                .firstName(studentFirstName)
+                                .lastName(studentLastName)
+                                .image(studentImage)
+                                .build())
+                        .reference(studentReference)
                         .build())
                 .build();
     }

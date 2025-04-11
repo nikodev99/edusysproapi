@@ -7,14 +7,18 @@ import com.edusyspro.api.model.enums.Day;
 import com.edusyspro.api.model.enums.Section;
 
 import java.time.LocalTime;
+import java.util.UUID;
 
 public record ScheduleEssential(
     Long id,
     String academicYear,
+    UUID teacherId,
     String teacherFirstName,
     String teacherLastName,
+    Integer courseId,
     String courseName,
     String courseAbbr,
+    Integer classeId,
     String classeName,
     Section classeSection,
     String designation,
@@ -29,16 +33,19 @@ public record ScheduleEssential(
                         .years(academicYear)
                         .build())
                 .teacher(TeacherDTO.builder()
+                        .id(teacherId)
                         .personalInfo(Individual.builder()
                                 .firstName(teacherFirstName)
                                 .lastName(teacherLastName)
                                 .build())
                         .build())
                 .course(CourseDTO.builder()
+                        .id(courseId)
                         .abbr(courseAbbr)
                         .course(courseName)
                         .build())
                 .classe(ClasseDTO.builder()
+                        .id(classeId)
                         .name(classeName)
                         .grade(GradeDTO.builder()
                                 .section(classeSection)

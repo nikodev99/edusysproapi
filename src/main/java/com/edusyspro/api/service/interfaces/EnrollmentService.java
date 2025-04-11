@@ -127,9 +127,16 @@ public interface EnrollmentService {
     List<GenderCount> countClasseStudents(int classeId, String academicYear);
 
     /**
+     * Get the number of all student in multiple classes
+     * @param classeIds multiple classe ids.
+     * @return List<GenderCount>
+     */
+    List<GenderCount> countClasseStudents(List<Integer> classeIds, String academicYear);
+
+    /**
      * Get the number of all student by schoolID
      * @param schoolId The school id.
-     * @return Map<GuardianDTO>
+     * @return Map<String, Long> the number of students
      */
     Map<String, Long> countStudents(String schoolId);
 

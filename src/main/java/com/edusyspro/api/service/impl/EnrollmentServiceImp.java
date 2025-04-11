@@ -6,11 +6,10 @@ import com.edusyspro.api.dto.custom.GenderCount;
 import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.model.*;
 import com.edusyspro.api.dto.custom.EnrolledStudent;
-import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.repository.EnrollmentRepository;
 import com.edusyspro.api.repository.context.RepositoryContext;
+import com.edusyspro.api.service.CustomMethod;
 import com.edusyspro.api.service.interfaces.*;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,12 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class EnrollmentServiceImp implements EnrollmentService {
@@ -102,6 +98,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
             );
 
             ClasseDTO classe = student.getClasse();
+            System.out.println("ID: " + classe.getId() + " GRADE: " + classe.getGrade().getSection());
             List<ScheduleDTO> schedules = scheduleService.getAllClasseSchedule(classe.getId(), classe.getGrade().getSection());
 
             student.getStudent().setGuardian(studentService.getStudentGuardian(studentId));
@@ -183,25 +180,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
     @Override
     public List<GenderCount> countClasseStudents(int classeId, String academicYear) {
         List<Object[]> results = enrollmentRepository.countAllStudentsByClasseAndAcademicYear(classeId, UUID.fromString(academicYear));
+        return CustomMethod.genderCountInClasse(results);
+    }
 
-        Map<Gender, List<LocalDate>> groupedByGender = results.stream()
-                .collect(Collectors.groupingBy(
-                        row -> (Gender) row[0],
-                        Collectors.mapping(row -> ((LocalDate) row[1]), Collectors.toList())
-                ));
-
-        return groupedByGender.entrySet().stream()
-                .map(entry -> {
-                    Gender gender = entry.getKey();
-                    List<LocalDate> birthdays = entry.getValue();
-                    long count = birthdays.size();
-                    int averageAge = (int) birthdays.stream()
-                            .mapToInt(birthday -> Period.between(birthday, LocalDate.now()).getYears())
-                            .average()
-                            .orElse(0);
-                    return new GenderCount(gender, count, averageAge);
-                })
-                .toList();
+    @Override
+    public List<GenderCount> countClasseStudents(List<Integer> classeIds, String academicYear) {
+        List<Object[]> results = enrollmentRepository.countAllStudentInMultipleClasses(classeIds, UUID.fromString(academicYear));
+        return CustomMethod.genderCountInClasse(results);
     }
 
     @Override

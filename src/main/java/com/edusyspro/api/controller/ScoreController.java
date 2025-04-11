@@ -92,6 +92,16 @@ public class ScoreController {
         return ResponseEntity.ok(scoreService.getClassePoorStudents(classeId, academicYear));
     }
 
+    @GetMapping("/course_best/{courseId}")
+    ResponseEntity<?> getBestCourseStudentByMarks(@PathVariable int courseId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(scoreService.getCourseBestStudents(courseId, academicYear));
+    }
+
+    @GetMapping("/course_poor/{classeId}")
+    ResponseEntity<?> getPoorCourseStudentByMarks(@PathVariable int classeId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(scoreService.getCoursePoorStudents(classeId, academicYear));
+    }
+
     @GetMapping("/classe_avg/{classeId}")
     ResponseEntity<?> getScoreAvgByCourse(@PathVariable int classeId, @RequestParam String academicYear) {
         return ResponseEntity.ok(scoreService.getClasseAvgScore(classeId, academicYear));

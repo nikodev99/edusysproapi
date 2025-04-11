@@ -1,8 +1,10 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.ClasseDTO;
 import com.edusyspro.api.dto.ScheduleDTO;
 import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.ScheduleEssential;
+import com.edusyspro.api.dto.custom.ScheduleHoursBy;
 import com.edusyspro.api.dto.custom.TeacherClasseCourse;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.model.Teacher;
@@ -15,9 +17,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
@@ -45,6 +48,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }else {
             scheduleEssentials =  scheduleRepository.findAllByClasseEntityId(classeId, currentDay(section));
         }
+        System.out.println("scheduleEssentials: " + scheduleEssentials);
         return scheduleEssentials.stream()
                 .map(ScheduleEssential::toScheduleDto)
                 .toList();
@@ -79,6 +83,31 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public TeacherDTO getOnlyTeacherOfClasse(int classeId, UUID schoolId) {
         return scheduleRepository.findTeacherByClasseEntityId(classeId, schoolId).toTeacher();
+    }
+
+    @Override
+    public List<ScheduleDTO> getCourseSchedules(int courseId, boolean byDay) {
+        if (byDay) {
+            return scheduleRepository.findCourseSchedulesByDay(courseId, Day.getCurrentDay()).stream()
+                    .map(ScheduleEssential::toScheduleDto)
+                    .toList();
+        }else {
+            return scheduleRepository.findCourseSchedules(courseId).stream()
+                    .map(ScheduleEssential::toScheduleDto)
+                    .toList();
+        }
+    }
+
+    @Override
+    public List<ScheduleHoursBy> getTotalCourseHoursByClasses(int courseId) {
+        List<Object[]> results = scheduleRepository.findCourseHourByClasse(courseId);
+        return !results.isEmpty() ? calculateTotalHours(results) : List.of();
+    }
+
+    @Override
+    public List<ScheduleHoursBy> getTotalCourseHoursByTeachers(int courseId) {
+        List<Object[]> results = scheduleRepository.findCourseHourByTeacher(courseId);
+        return !results.isEmpty() ? calculateTotalHours(results) : List.of();
     }
 
     @Override
@@ -213,5 +242,16 @@ public class ScheduleServiceImpl implements ScheduleService {
             default -> currentDay = Day.getCurrentDay();
         }
         return currentDay;
+    }
+
+    private List<ScheduleHoursBy> calculateTotalHours(List<Object[]> schedules) {
+        return schedules.stream()
+                .collect(Collectors.groupingBy(
+                        t -> (String) t[0],
+                        Collectors.summingLong(t -> Duration.between((LocalTime)t[1], (LocalTime)t[2]).toHours()))
+                )
+                .entrySet().stream()
+                .map(entry -> new ScheduleHoursBy(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 }

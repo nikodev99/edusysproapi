@@ -60,6 +60,9 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     """)
     List<TeacherEssential> findAllClasseTeachers(int classId);
 
+    @Query("select t.personalInfo.gender, t.personalInfo.birthDate from Teacher t where t.school.id = ?1")
+    List<Object[]> countAllTeachers (UUID schoolId);
+
     boolean existsByPersonalInfoEmailIdAndSchoolId(String emailId, UUID schoolId);
 
     @Query("select count(s.id) from Teacher t join t.aClasses c join c.students s where t.id = :teacherId and s.academicYear.current = true")

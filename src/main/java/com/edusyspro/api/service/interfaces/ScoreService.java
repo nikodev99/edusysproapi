@@ -31,6 +31,10 @@ public interface ScoreService {
 
     List<ScoreDTO> getClassePoorStudents(int classeId, String academicYearId);
 
+    List<ScoreDTO> getCourseBestStudents(int courseId, String academicYearId);
+
+    List<ScoreDTO> getCoursePoorStudents(int courseId, String academicYearId);
+
     List<ScoreAvg> getClasseAvgScore(int classeId, String academicYearId);
 
 }
