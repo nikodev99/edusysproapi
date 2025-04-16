@@ -178,13 +178,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public List<GenderCount> countClasseStudents(int classeId, String academicYear) {
+    public GenderCount countClasseStudents(int classeId, String academicYear) {
         List<Object[]> results = enrollmentRepository.countAllStudentsByClasseAndAcademicYear(classeId, UUID.fromString(academicYear));
         return CustomMethod.genderCountInClasse(results);
     }
 
     @Override
-    public List<GenderCount> countClasseStudents(List<Integer> classeIds, String academicYear) {
+    public GenderCount countClasseStudents(List<Integer> classeIds, String academicYear) {
         List<Object[]> results = enrollmentRepository.countAllStudentInMultipleClasses(classeIds, UUID.fromString(academicYear));
         return CustomMethod.genderCountInClasse(results);
     }

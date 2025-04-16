@@ -1,6 +1,7 @@
 package com.edusyspro.api.service;
 
 import com.edusyspro.api.dto.custom.GenderCount;
+import com.edusyspro.api.dto.custom.StudentCount;
 import com.edusyspro.api.model.enums.Gender;
 
 import java.time.LocalDate;
@@ -11,25 +12,33 @@ import java.util.stream.Collectors;
 
 public class CustomMethod {
 
-    public static List<GenderCount> genderCountInClasse(List<Object[]> fetchedData) {
+    public static GenderCount genderCountInClasse(List<Object[]> fetchedData) {
         Map<Gender, List<LocalDate>> groupedByGender = fetchedData.stream()
                 .collect(Collectors.groupingBy(
                         row -> (Gender) row[0],
                         Collectors.mapping(row -> ((LocalDate) row[1]), Collectors.toList())
                 ));
 
-        return groupedByGender.entrySet().stream()
-                .map(entry -> {
-                    Gender gender = entry.getKey();
-                    List<LocalDate> birthdays = entry.getValue();
-                    long count = birthdays.size();
-                    int averageAge = (int) birthdays.stream()
-                            .mapToInt(birthday -> Period.between(birthday, LocalDate.now()).getYears())
-                            .average()
-                            .orElse(0);
-                    return new GenderCount(gender, count, averageAge);
-                })
-                .toList();
+        double overallAverage = groupedByGender.values().stream()
+                .flatMap(List::stream)
+                .mapToInt(birth -> Period.between(birth, LocalDate.now()).getYears())
+                .average()
+                .orElse(0);
+
+        return new GenderCount(
+                fetchedData.size(),
+                overallAverage,
+                groupedByGender.entrySet().stream()
+                    .map(entry -> new StudentCount(
+                            entry.getKey(),
+                            entry.getValue().size(),
+                            entry.getValue().stream()
+                                    .mapToInt(birthday -> Period.between(birthday, LocalDate.now()).getYears())
+                                    .average()
+                                    .orElse(0)
+                            ))
+                .toList()
+        );
     }
 
 }

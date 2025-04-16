@@ -205,7 +205,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     }
 
     @Override
-    public List<GenderCount> countAllTeachers(String schoolId) {
+    public GenderCount countAllTeachers(String schoolId) {
         List<Object[]> countTeachers = teacherRepository.countAllTeachers(UUID.fromString(schoolId));
         return CustomMethod.genderCountInClasse(countTeachers);
     }

@@ -16,6 +16,6 @@ public interface TeacherServiceInterface extends CustomService<TeacherDTO, UUID>
      * @param schoolId The school id.
      * @return List<GenderCount>
      */
-    List<GenderCount> countAllTeachers(String schoolId);
+    GenderCount countAllTeachers(String schoolId);
 
 }

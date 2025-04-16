@@ -1,7 +1,6 @@
 package com.edusyspro.api.repository;
 
 import com.edusyspro.api.dto.custom.EnrolledStudentBasic;
-import com.edusyspro.api.dto.custom.GenderCount;
 import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.model.EnrollmentEntity;
 import com.edusyspro.api.dto.custom.EnrolledStudent;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Repository

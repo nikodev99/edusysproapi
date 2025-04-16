@@ -124,14 +124,14 @@ public interface EnrollmentService {
      * @param academicYear the id or the academic year
      * @return List<GenderCount>
      */
-    List<GenderCount> countClasseStudents(int classeId, String academicYear);
+    GenderCount countClasseStudents(int classeId, String academicYear);
 
     /**
      * Get the number of all student in multiple classes
      * @param classeIds multiple classe ids.
      * @return List<GenderCount>
      */
-    List<GenderCount> countClasseStudents(List<Integer> classeIds, String academicYear);
+    GenderCount countClasseStudents(List<Integer> classeIds, String academicYear);
 
     /**
      * Get the number of all student by schoolID

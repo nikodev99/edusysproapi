@@ -1,11 +1,10 @@
 package com.edusyspro.api.dto.custom;
 
-import com.edusyspro.api.model.enums.Gender;
+import java.util.List;
 
 public record GenderCount(
-        Gender gender,
-        long count,
-        int ageAverage
+        long total,
+        double totalAverageAge,
+        List<StudentCount> genders
 ) {
 }
-
