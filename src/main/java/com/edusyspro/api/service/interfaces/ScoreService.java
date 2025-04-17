@@ -15,7 +15,7 @@ public interface ScoreService {
 
     List<ScoreDTO> getScoresByStudentPerSubjectPerAcademicYear(String studentId, String academicYearId, int subjectId);
 
-    List<ScoreDTO> getAllTeacherMarks(long teacherId);
+    List<ScoreDTO> getAllTeacherMarks(Long teacherId, List<Long> teacherIds);
 
     Page<ScoreDTO> getAllAssignmentScores(long assignmentId, Pageable pageable);
 

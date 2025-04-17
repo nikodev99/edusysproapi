@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -50,7 +51,14 @@ public class ScoreController {
 
     @GetMapping("/all_teacher_marks/{teacherId}")
     ResponseEntity<?> getAllTeacherMarks(@PathVariable String teacherId) {
-        return ResponseEntity.ok(scoreService.getAllTeacherMarks(Long.parseLong(teacherId)));
+        boolean isMultiple = teacherId.contains(",");
+        List<Long> teacherIds = Arrays.stream(teacherId.split(","))
+                .map(Long::parseLong)
+                .toList();
+        return ResponseEntity.ok(scoreService.getAllTeacherMarks(
+                isMultiple ? null : teacherIds.get(0),
+                teacherIds
+        ));
     }
 
     @GetMapping("/all_assignment_marks/{assignmentId}")

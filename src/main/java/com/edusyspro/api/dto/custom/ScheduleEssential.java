@@ -13,6 +13,7 @@ public record ScheduleEssential(
     Long id,
     String academicYear,
     UUID teacherId,
+    Long personalInfoId,
     String teacherFirstName,
     String teacherLastName,
     Integer courseId,
@@ -35,6 +36,7 @@ public record ScheduleEssential(
                 .teacher(TeacherDTO.builder()
                         .id(teacherId)
                         .personalInfo(Individual.builder()
+                                .id(personalInfoId)
                                 .firstName(teacherFirstName)
                                 .lastName(teacherLastName)
                                 .build())

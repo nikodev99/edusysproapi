@@ -56,8 +56,13 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public List<ScoreDTO> getAllTeacherMarks(long teacherId) {
-        return scoreRepository.findAllTeacherMarks(teacherId).stream()
+    public List<ScoreDTO> getAllTeacherMarks(Long teacherId, List<Long> teacherIds) {
+        if (teacherId != null) {
+            return scoreRepository.findAllTeacherMarks(teacherId).stream()
+                    .map(ScoreBasicValue::toDTO)
+                    .toList();
+        }
+        return scoreRepository.findAllTeacherMarks(teacherIds).stream()
                 .map(ScoreBasicValue::toDTO)
                 .toList();
     }

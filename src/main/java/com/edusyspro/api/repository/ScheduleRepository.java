@@ -18,7 +18,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScheduleEssential(
-            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
+            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
             s.course.abbr, s.classeEntity.id, s.classeEntity.name, s.classeEntity.grade.section, s.designation, s.dayOfWeek, s.startTime, s.endTime
         ) from Schedule s left join s.teacher t left join t.personalInfo left join s.course
         where s.academicYear.current = true and s.classeEntity.id = ?1 and s.dayOfWeek = ?2
@@ -27,7 +27,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScheduleEssential(
-            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
+            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
             s.course.abbr, s.classeEntity.id, s.classeEntity.name, s.classeEntity.grade.section, s.designation, s.dayOfWeek, s.startTime, s.endTime
         ) from Schedule s left join s.teacher t left join t.personalInfo left join s.course
         where s.academicYear.current = true and s.classeEntity.id = :id
@@ -56,7 +56,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScheduleEssential(
-            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
+            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
             s.course.abbr, s.classeEntity.id, s.classeEntity.name, s.classeEntity.grade.section, s.designation, s.dayOfWeek, s.startTime, s.endTime
         ) from Schedule s left join s.course where s.academicYear.current = true and s.teacher.id = ?1
     """)
@@ -64,7 +64,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScheduleEssential(
-            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
+            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
             s.course.abbr, s.classeEntity.id, s.classeEntity.name, s.classeEntity.grade.section, s.designation, s.dayOfWeek, s.startTime, s.endTime
         ) from Schedule s left join s.course c where s.academicYear.current = true and s.teacher.id = ?1 and s.dayOfWeek = ?2
     """)
@@ -72,7 +72,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScheduleEssential(
-            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
+            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
             s.course.abbr, s.classeEntity.id, s.classeEntity.name, s.classeEntity.grade.section, s.designation, s.dayOfWeek, s.startTime, s.endTime
         ) from Schedule s where s.academicYear.current = true and s.course.id = ?1 and s.dayOfWeek = ?2
     """)
@@ -80,7 +80,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScheduleEssential(
-            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
+            s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
             s.course.abbr, s.classeEntity.id, s.classeEntity.name, s.classeEntity.grade.section, s.designation, s.dayOfWeek, s.startTime, s.endTime
         ) from Schedule s where s.academicYear.current = true and s.course.id = ?1
     """)
