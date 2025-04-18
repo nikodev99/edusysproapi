@@ -1,5 +1,7 @@
 package com.edusyspro.api.dto.custom;
 
+import com.edusyspro.api.dto.AssignmentDTO;
+import com.edusyspro.api.dto.ClasseDTO;
 import com.edusyspro.api.dto.ScoreDTO;
 import com.edusyspro.api.dto.StudentDTO;
 import com.edusyspro.api.model.Individual;
@@ -12,6 +14,7 @@ public record ScoreBasicValue(
         String studentLastName,
         String studentImage,
         String studentReference,
+        String classeName,
         long obtainedMark
 ) {
 
@@ -26,6 +29,11 @@ public record ScoreBasicValue(
                                 .image(studentImage)
                                 .build())
                         .reference(studentReference)
+                        .build())
+                .assignment(AssignmentDTO.builder()
+                        .classe(ClasseDTO.builder()
+                                .name(classeName)
+                                .build())
                         .build())
                 .build();
     }

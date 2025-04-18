@@ -12,7 +12,10 @@ public record AssignmentEssential(
         Long id,
         String semesterName,
         ExamType examType,
-        Individual preparedBy,
+        long teacherId,
+        String teacherFirstName,
+        String teacherLastName,
+        String teacherImage,
         Integer classeId,
         String classeName,
         Section classeSection,
@@ -38,7 +41,12 @@ public record AssignmentEssential(
                 .exam(ExamDTO.builder()
                         .examType(examType)
                         .build())
-                .preparedBy(preparedBy)
+                .preparedBy(Individual.builder()
+                        .id(teacherId)
+                        .firstName(teacherFirstName)
+                        .lastName(teacherLastName)
+                        .image(teacherImage)
+                        .build())
                 .classe(ClasseDTO.builder()
                         .id(classeId)
                         .name(classeName)

@@ -14,6 +14,8 @@ public interface AssignmentService {
 
     List<AssignmentDTO> findAllClasseAssignmentsBySubject(Integer classeId, String academicYear, Integer subjectId);
 
+    List<AssignmentDTO> findAllCourseAssignments(Integer courseId, String academicYear);
+
     List<AssignmentDTO> findSomeAssignmentsPreparedByTeacher(long teacherId);
 
     List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId);

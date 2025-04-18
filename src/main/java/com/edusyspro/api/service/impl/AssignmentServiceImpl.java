@@ -44,6 +44,13 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
+    public List<AssignmentDTO> findAllCourseAssignments(Integer courseId, String academicYear) {
+        return assignmentRepository.findAllSubjectAssignments(courseId, UUID.fromString(academicYear)).stream()
+                .map(AssignmentEssential::toDTO)
+                .toList();
+    }
+
+    @Override
     public List<AssignmentDTO> findSomeAssignmentsPreparedByTeacher(long teacherId) {
         return assignmentRepository.findAssignmentsByTeacher(teacherId, PageRequest.of(0, 5))
                 .map(AssignmentEssential::toDTO)

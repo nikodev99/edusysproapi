@@ -21,7 +21,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester.semestre.semesterName, a.exam.examType,
-        a.preparedBy, a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
+        a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
         a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.passed, a.addedDate, a.updatedDate)
         from Assignment a where a.classeEntity.id = ?1 and a.semester.semestre.academicYear.id = ?2
     """)
@@ -38,7 +39,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester.semestre.semesterName, a.exam.examType,
-        a.preparedBy, a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
+        a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
         a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.passed, a.addedDate, a.updatedDate)
         from Assignment a where a.classeEntity.id = ?1 and a.semester.semestre.academicYear.id = ?2 and a.subject.id = ?3
     """)
@@ -46,7 +48,17 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester.semestre.semesterName, a.exam.examType,
-        a.preparedBy, a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
+        a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
+        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.passed, a.addedDate, a.updatedDate)
+        from Assignment a where a.subject.id = ?1 and a.semester.semestre.academicYear.id = ?2
+    """)
+    List<AssignmentEssential> findAllSubjectAssignments(int courseId, UUID academicYear);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester.semestre.semesterName, a.exam.examType,
+        a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
         a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.passed, a.addedDate, a.updatedDate)
         from Assignment a where a.preparedBy.id = ?1 and a.passed = false and
         a.semester.semestre.academicYear.current = true order by a.examDate desc
@@ -55,7 +67,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester.semestre.semesterName, a.exam.examType,
-        a.preparedBy, a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
+        a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
         a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.passed, a.addedDate, a.updatedDate)
         from Assignment a where a.preparedBy.id = ?1 and a.semester.semestre.academicYear.current = true order by a.examDate desc
     """)
@@ -63,7 +76,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester.semestre.semesterName, a.exam.examType,
-        a.preparedBy, a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
+        a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
         a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.passed, a.addedDate, a.updatedDate)
         from Assignment a where a.preparedBy.id = ?1 and a.classeEntity.id = ?2 and a.subject.id = ?3
         and a.semester.semestre.academicYear.current = true order by a.examDate desc
@@ -72,7 +86,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester.semestre.semesterName, a.exam.examType,
-        a.preparedBy, a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
+        a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
         a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.passed, a.addedDate, a.updatedDate)
         from Assignment a where a.preparedBy.id = ?1 and a.classeEntity.id = ?2
         and a.semester.semestre.academicYear.current = true order by a.examDate desc

@@ -30,6 +30,14 @@ public class AssignmentController {
         return ResponseEntity.ok(assignmentService.findAllClasseAssignmentsBySubject(classeId, academicYear, subjectId));
     }
 
+    @GetMapping("/course/{courseId}")
+    ResponseEntity<?> fetchAllCourseAssignments(
+            @PathVariable Integer courseId,
+            @RequestParam String academicYear
+    ) {
+        return ResponseEntity.ok(assignmentService.findAllCourseAssignments(courseId, academicYear));
+    }
+
     @GetMapping("/teacher_some_{teacherId}")
     ResponseEntity<?> fetchSomeTeacherAssignments(@PathVariable String teacherId) {
         return ResponseEntity.ok(

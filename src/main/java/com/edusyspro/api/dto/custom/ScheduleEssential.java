@@ -36,7 +36,7 @@ public record ScheduleEssential(
                 .teacher(TeacherDTO.builder()
                         .id(teacherId)
                         .personalInfo(Individual.builder()
-                                .id(personalInfoId)
+                                .id(personalInfoId == null ? 0 : personalInfoId)
                                 .firstName(teacherFirstName)
                                 .lastName(teacherLastName)
                                 .build())

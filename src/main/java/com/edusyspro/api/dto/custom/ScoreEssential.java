@@ -27,6 +27,7 @@ public class ScoreEssential {
     private int subjectId;
     private String subjectName;
     private long obtainedMark;
+    private int coefficient;
 
     public static ScoreDTO toDTO(ScoreEssential e) {
         return ScoreDTO.builder()
@@ -47,6 +48,7 @@ public class ScoreEssential {
                                 .id(e.subjectId)
                                 .course(e.subjectName)
                                 .build())
+                        .coefficient(e.coefficient)
                         .build())
                 .obtainedMark(e.obtainedMark)
                 .build();
