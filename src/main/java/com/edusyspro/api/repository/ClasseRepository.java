@@ -75,7 +75,7 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
 
     boolean existsByName(String classeName);
 
-    @Query("select count(c.name) from ClasseEntity c where lower(c.name) = lower(?1) and c.id != ?2")
+    @Query("select count(c) from ClasseEntity c where lower(c.name) = lower(?1) and c.id != ?2")
     int countByName(String classeName, Integer classeId);
 
     //TEST

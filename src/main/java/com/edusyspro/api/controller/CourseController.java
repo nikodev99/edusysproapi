@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/courses")
@@ -63,5 +64,23 @@ public class CourseController {
     @GetMapping("/count/{courseId}")
     ResponseEntity<?> countByCourseId(@PathVariable Integer courseId) {
         return ResponseEntity.ok(courseService.count(courseId));
+    }
+
+    @PutMapping("/{courseId}")
+    ResponseEntity<?> updateCourse(@PathVariable Integer courseId, @RequestBody CourseDTO course) {
+        try {
+            Map<String, Boolean> hasUpdate = courseService.update(course, courseId);
+            if (hasUpdate.containsKey("updated"))
+                return ResponseEntity.ok(Map.of(
+                        "updated",
+                        "Mise à jour de la matière " + course.getCourse() + " effective.")
+                );
+        }catch (AlreadyExistException a) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error",
+                    a.getMessage()
+            ));
+        }
+        return null;
     }
 }

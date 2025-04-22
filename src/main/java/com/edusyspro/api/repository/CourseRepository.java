@@ -1,15 +1,19 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.CourseDTO;
 import com.edusyspro.api.dto.custom.CourseBasicValue;
 import com.edusyspro.api.dto.custom.CourseEssential;
 import com.edusyspro.api.model.Course;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -48,9 +52,16 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     """)
     CourseEssential findCourseById(Integer id);
 
+    @Modifying
+    @Transactional
+    @Query("update Course c set c.course = ?1, c.abbr = ?2, c.department.id = ?3 where c.id = ?4")
+    Optional<Integer> updateCourseValues(String courseName, String abbr, int departmentId, int courseId);
+
     boolean existsCourseByCourseAndAbbr(String course, String abbr);
+
+    @Query("select count(c.course) from Course c where (lower(c.course) = lower(?1) or lower(c.abbr) = lower(?2)) and c.id != ?3")
+    int countByCourse(String course, String abbr, int courseId);
 
     //TEST
     Course getCourseByAbbrContainingIgnoreCase(String abbr);
-
 }

@@ -131,7 +131,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Map<String, Boolean> update(CourseDTO entity, Integer id) {
-        return Map.of();
+        if (countCourseNames(entity, id))
+            throw new AlreadyExistException("La matière " + entity.getCourse() + " existe déjà");
+
+        int hasUpdated = courseRepository.updateCourseValues(
+                entity.getCourse(), entity.getAbbr(), entity.getDepartment().getId(), id
+        ).orElseThrow();
+
+        return hasUpdated > 0 ? Map.of("updated", Boolean.TRUE) : Map.of("updated", Boolean.FALSE);
     }
 
     @Override
@@ -164,5 +171,10 @@ public class CourseServiceImpl implements CourseService {
           entity.getCourse(),
           entity.getAbbr()
         );
+    }
+
+    private boolean countCourseNames(CourseDTO course, int courseId) {
+        int count = courseRepository.countByCourse(course.getCourse(), course.getAbbr(), courseId);
+        return count >= 1;
     }
 }
