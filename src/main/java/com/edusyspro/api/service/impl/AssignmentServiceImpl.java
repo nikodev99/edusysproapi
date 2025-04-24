@@ -4,9 +4,13 @@ import com.edusyspro.api.dto.AssignmentDTO;
 import com.edusyspro.api.dto.custom.AssignmentEssential;
 import com.edusyspro.api.dto.custom.AssignmentToExam;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
+import com.edusyspro.api.dto.filters.AssignmentFilter;
 import com.edusyspro.api.repository.AssignmentRepository;
+import com.edusyspro.api.repository.spec.AssignmentSpec;
 import com.edusyspro.api.service.interfaces.AssignmentService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +21,17 @@ import java.util.UUID;
 public class AssignmentServiceImpl implements AssignmentService {
 
     private final AssignmentRepository assignmentRepository;
+    private final AssignmentSpec assignmentSpec;
 
-    public AssignmentServiceImpl(AssignmentRepository assignmentRepository) {
+    public AssignmentServiceImpl(AssignmentRepository assignmentRepository, AssignmentSpec assignmentSpec) {
         this.assignmentRepository = assignmentRepository;
+        this.assignmentSpec = assignmentSpec;
+    }
+
+    @Override
+    public Page<AssignmentDTO> findAllAssignments(AssignmentFilter filter, Pageable pageable) {
+        return assignmentSpec.findAllSearchAndFilteredAssignments(filter, pageable)
+                .map(AssignmentEssential::toDTO);
     }
 
     @Override

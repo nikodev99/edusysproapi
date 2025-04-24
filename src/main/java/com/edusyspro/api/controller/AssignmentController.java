@@ -1,10 +1,14 @@
 package com.edusyspro.api.controller;
 
+import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.AssignmentDTO;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
+import com.edusyspro.api.dto.filters.AssignmentFilter;
 import com.edusyspro.api.service.interfaces.AssignmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/assignment")
@@ -14,6 +18,33 @@ public class AssignmentController {
 
     public AssignmentController(AssignmentService assignmentService) {
         this.assignmentService = assignmentService;
+    }
+
+    @GetMapping(value = {"", "/all"})
+    ResponseEntity<?> fetchAllAssignments(
+            @RequestParam String academicYear,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortCriteria,
+            @RequestParam(required = false) Long planning,
+            @RequestParam(required = false) Integer grade,
+            @RequestParam(required = false) Integer semester,
+            @RequestParam(required = false) Integer classe,
+            @RequestParam(required = false) Integer course,
+            @RequestParam(required = false) String search
+    ) {
+        return ResponseEntity.ok(assignmentService.findAllAssignments(
+                new AssignmentFilter(
+                        UUID.fromString(academicYear),
+                        planning,
+                        grade,
+                        semester,
+                        classe,
+                        course,
+                        search
+                ),
+                ControllerUtils.setSort(page, size, sortCriteria)
+        ));
     }
 
     @GetMapping("/classe/{classeId}")

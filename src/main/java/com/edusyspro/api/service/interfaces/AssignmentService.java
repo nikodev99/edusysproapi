@@ -2,11 +2,17 @@ package com.edusyspro.api.service.interfaces;
 
 import com.edusyspro.api.dto.AssignmentDTO;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
+import com.edusyspro.api.dto.filters.AssignmentFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public interface AssignmentService {
+
+    Page<AssignmentDTO> findAllAssignments(AssignmentFilter filter, Pageable pageable);
 
     List<AssignmentDTO> findAllClasseAssignments(Integer classeId, String academicYear);
 
