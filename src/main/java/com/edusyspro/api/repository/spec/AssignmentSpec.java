@@ -80,9 +80,6 @@ public class AssignmentSpec {
                 assignment.get("semester").get("semestre").get("academicYear").get("id"),
                 filters.academicYearId()));
 
-        if (filters.planningId()   != null) {
-            predicates.add(cb.equal(assignment.get("semester").get("id"), filters.planningId()));
-        }
         if (filters.gradeId()      != null) {
             predicates.add(cb.equal(assignment.get("classeEntity").get("grade").get("id"), filters.gradeId()));
         }

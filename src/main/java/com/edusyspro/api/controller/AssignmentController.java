@@ -26,7 +26,6 @@ public class AssignmentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria,
-            @RequestParam(required = false) Long planning,
             @RequestParam(required = false) Integer grade,
             @RequestParam(required = false) Integer semester,
             @RequestParam(required = false) Integer classe,
@@ -36,7 +35,6 @@ public class AssignmentController {
         return ResponseEntity.ok(assignmentService.findAllAssignments(
                 new AssignmentFilter(
                         UUID.fromString(academicYear),
-                        planning,
                         grade,
                         semester,
                         classe,
