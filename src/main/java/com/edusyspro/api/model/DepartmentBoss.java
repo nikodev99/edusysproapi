@@ -19,7 +19,7 @@ public class DepartmentBoss {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
@@ -29,7 +29,7 @@ public class DepartmentBoss {
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Teacher d_boss;
 
-    private boolean current;
+    private Boolean current;
 
     private LocalDate startPeriod;
 

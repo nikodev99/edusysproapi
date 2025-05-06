@@ -20,7 +20,7 @@ public class Grade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "section_name", length = 50)
     @Enumerated(EnumType.STRING)

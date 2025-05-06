@@ -25,8 +25,8 @@ public class CourseProgram {
     private String purpose;
     @Column(length = 1000)
     private String description;
-    private boolean active;
-    private boolean passed;
+    private Boolean active;
+    private Boolean passed;
     private LocalDate updateDate;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE}, fetch = FetchType.LAZY)

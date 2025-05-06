@@ -20,7 +20,7 @@ public class EnrollmentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
@@ -37,10 +37,11 @@ public class EnrollmentEntity {
 
     private ZonedDateTime enrollmentDate;
 
-    private boolean isArchived;
+    private Boolean isArchived;
 
     @PrePersist
     public void onCreate() {
+        isArchived = false;
         enrollmentDate = Datetime.brazzavilleDatetime();
     }
 }

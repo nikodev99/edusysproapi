@@ -21,15 +21,15 @@ import java.time.LocalDate;
 public class Punishment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    private boolean isRequire;
+    private Boolean isRequire;
     private PunishmentType type;
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
     private PunishmentStatus status;
     private String executedBy;
-    private boolean appealed;
+    private Boolean appealed;
     private String appealedNote;
 }

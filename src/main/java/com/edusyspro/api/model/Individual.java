@@ -25,7 +25,7 @@ import java.util.List;
 public class Individual {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String firstName;
 

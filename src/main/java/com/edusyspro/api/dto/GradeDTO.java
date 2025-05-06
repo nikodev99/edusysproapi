@@ -39,6 +39,7 @@ public class GradeDTO {
     }
 
     public static Grade toEntity(GradeDTO entity) {
+        if(entity == null) return null;
         return Grade.builder()
                 .id(entity.getId())
                 .section(entity.getSection())

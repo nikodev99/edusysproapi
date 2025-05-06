@@ -28,7 +28,7 @@ public class EnrollmentDTO {
                 .student(StudentDTO.fromEntity(dto.getStudent()))
                 .classe(ClasseDTO.fromEntity(dto.getClasse()))
                 .enrollmentDate(dto.getEnrollmentDate())
-                .isArchived(dto.isArchived())
+                .isArchived(dto.getIsArchived())
                 .build();
     }
 

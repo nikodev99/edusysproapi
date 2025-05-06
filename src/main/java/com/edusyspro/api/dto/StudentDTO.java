@@ -49,7 +49,6 @@ public class StudentDTO {
         return StudentEntity.builder()
                 .id(student.getId())
                 .personalInfo(student.getPersonalInfo())
-                .enrollmentEntities(student.getEnrollmentEntities().stream().map(EnrollmentDTO::toEntity).toList())
                 .dadName(student.getDadName())
                 .momName(student.getMomName())
                 .reference(student.getReference())

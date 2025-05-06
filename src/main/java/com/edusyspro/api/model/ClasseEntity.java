@@ -20,7 +20,7 @@ public class ClasseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(length = 100, nullable = false)
     private String name;
@@ -35,7 +35,7 @@ public class ClasseEntity {
     @OneToMany(mappedBy = "classeEntity", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private List<Schedule> schedule;
 
-    private int roomNumber;
+    private Integer roomNumber;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "principal_teacher_id", referencedColumnName = "id")
@@ -60,7 +60,7 @@ public class ClasseEntity {
     @JsonIgnore
     private List<Teacher> classTeacherCourses;
 
-    private double monthCost;
+    private Double monthCost;
 
     private ZonedDateTime createdAt;
 

@@ -26,7 +26,7 @@ public class AcademicYear {
 
     private LocalDate endDate;
 
-    private boolean current;
+    private Boolean current;
 
     @JsonProperty("academicYear")
     private String years;

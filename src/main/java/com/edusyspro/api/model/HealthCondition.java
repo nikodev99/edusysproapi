@@ -19,7 +19,7 @@ public class HealthCondition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Long id;
 
     @Convert(converter = JpaConverter.class)
     private List<String> medicalConditions;
@@ -35,8 +35,8 @@ public class HealthCondition {
 
     private String handicap;
 
-    private int weight;
+    private Integer weight;
 
-    private int height;
+    private Integer height;
 
 }

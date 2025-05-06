@@ -29,6 +29,7 @@ public class EnrollmentController {
 
     @PostMapping
     ResponseEntity<EnrollmentDTO> save(@RequestBody EnrollmentDTO enrollmentDTO) {
+        System.out.println("Student: "+ enrollmentDTO);
         return ResponseEntity.ok(enrollmentService.enrollStudent(enrollmentDTO));
     }
 

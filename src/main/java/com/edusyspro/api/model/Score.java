@@ -17,7 +17,7 @@ public class Score {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
     @JoinColumn(name = "assignment_id", referencedColumnName = "id")

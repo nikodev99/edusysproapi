@@ -28,7 +28,7 @@ public class StudentBossDTO {
                 .id(dto.getId())
                 .academicYear(dto.getAcademicYear())
                 .principalStudent(StudentDTO.fromEntity(dto.getPrincipalStudent()))
-                .current(dto.isCurrent())
+                .current(dto.getCurrent())
                 .startPeriod(dto.getStartPeriod())
                 .endPeriod(dto.getEndPeriod())
                 .build();

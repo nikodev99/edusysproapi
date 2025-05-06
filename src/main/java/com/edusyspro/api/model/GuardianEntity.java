@@ -1,10 +1,7 @@
 package com.edusyspro.api.model;
 
-import com.edusyspro.api.model.enums.Gender;
-import com.edusyspro.api.model.enums.Status;
 import com.edusyspro.api.utils.Datetime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

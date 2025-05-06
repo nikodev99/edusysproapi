@@ -49,7 +49,7 @@ public class Teacher {
     )
     private List<Course> courses;
 
-    private double salaryByHour;
+    private Double salaryByHour;
 
     @OneToMany(mappedBy = "teacher")
     @JsonIgnore
