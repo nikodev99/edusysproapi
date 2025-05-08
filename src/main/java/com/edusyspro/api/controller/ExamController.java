@@ -1,5 +1,6 @@
 package com.edusyspro.api.controller;
 
+import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.service.interfaces.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,11 @@ public class ExamController {
     @Autowired
     public ExamController(ExamService examService) {
         this.examService = examService;
+    }
+
+    @GetMapping
+    ResponseEntity<?> getAllExams(@RequestParam String academicYear){
+        return ResponseEntity.ok(examService.findAllSchoolExams(ConstantUtils.SCHOOL_ID, academicYear));
     }
 
     @GetMapping("/classe/{classeId}")

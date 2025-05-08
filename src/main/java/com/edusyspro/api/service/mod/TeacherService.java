@@ -2,6 +2,7 @@ package com.edusyspro.api.service.mod;
 
 import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.impl.TeacherServiceImpl;
@@ -43,6 +44,10 @@ public class TeacherService extends TeacherServiceImpl {
 
     public List<TeacherDTO> findAllClasseTeachers(int classeId) {
         return fetchAllByOtherEntityId(String.valueOf(classeId));
+    }
+
+    public List<TeacherDTO> findAllTeacherBasicValue(int classeId, Section section) {
+        return fetchAllByOtherEntityId(String.valueOf(classeId), section.toString());
     }
 
     public int updateTeacherField(String id, UpdateField updateField) {

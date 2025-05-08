@@ -60,9 +60,9 @@ public class Assignment {
 
     private LocalTime endTime;
 
-    private boolean passed;
+    private Boolean passed;
 
-    private int coefficient;
+    private Integer coefficient;
 
     @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
     private List<Score> marks;
@@ -75,6 +75,7 @@ public class Assignment {
     public void prePersistAddedDate() {
         addedDate = Datetime.brazzavilleDatetime();
         updatedDate = Datetime.brazzavilleDatetime();
+        passed = false;
     }
 
     @PreUpdate

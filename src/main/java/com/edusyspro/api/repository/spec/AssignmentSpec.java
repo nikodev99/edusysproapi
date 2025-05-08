@@ -5,10 +5,7 @@ import com.edusyspro.api.dto.filters.AssignmentFilter;
 import com.edusyspro.api.model.Assignment;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +32,7 @@ public class AssignmentSpec {
                 AssignmentEssential.class,
                 assignment.get("id"),
                 assignment.get("semester").get("semestre").get("semesterName"),
+                assignment.get("semester").get("designation"),
                 assignment.get("exam").get("examType"),
                 assignment.get("preparedBy").get("id"),
                 assignment.get("preparedBy").get("firstName"),
@@ -50,6 +48,7 @@ public class AssignmentSpec {
                 assignment.get("examDate"),
                 assignment.get("startTime"),
                 assignment.get("endTime"),
+                assignment.get("type"),
                 assignment.get("passed"),
                 assignment.get("addedDate"),
                 assignment.get("updatedDate")
@@ -57,6 +56,8 @@ public class AssignmentSpec {
 
         List<Predicate> dataCriteria = buildPredicates(filters, assignment, cb);
         cq.where(dataCriteria.toArray(new Predicate[0]));
+
+        SpecificationUtils.specSorter(pageable, assignment, cb, cq);
 
         TypedQuery<AssignmentEssential> query = entityManager.createQuery(cq);
         List<AssignmentEssential> assignments = query.setFirstResult((int) pageable.getOffset())
@@ -84,7 +85,7 @@ public class AssignmentSpec {
             predicates.add(cb.equal(assignment.get("classeEntity").get("grade").get("id"), filters.gradeId()));
         }
         if (filters.semesterId()   != null) {
-            predicates.add(cb.equal(assignment.get("semester").get("semester").get("semesterId"), filters.semesterId()));
+            predicates.add(cb.equal(assignment.get("semester").get("semestre").get("semesterId"), filters.semesterId()));
         }
         if (filters.classeId()      != null) {
             predicates.add(cb.equal(assignment.get("classeEntity").get("id"), filters.classeId()));

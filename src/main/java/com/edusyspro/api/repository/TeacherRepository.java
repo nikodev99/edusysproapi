@@ -2,6 +2,7 @@ package com.edusyspro.api.repository;
 
 import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.model.Teacher;
+import com.edusyspro.api.model.enums.Section;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -59,6 +60,13 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
         ) FROM Teacher t join t.aClasses c LEFT JOIN Schedule s WHERE c.id = ?1
     """)
     List<TeacherEssential> findAllClasseTeachers(int classId);
+
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.TeacherBasic(
+            t.id, t.personalInfo.id, t.personalInfo.firstName, t.personalInfo.lastName, t.personalInfo.image, c.id, c.name
+        ) FROM Teacher t join t.aClasses c WHERE c.id = ?1 and c.grade.section = ?2
+    """)
+    List<TeacherBasic> findAllTeacherBasicValue(int classId, Section section);
 
     @Query("select t.personalInfo.gender, t.personalInfo.birthDate from Teacher t where t.school.id = ?1")
     List<Object[]> countAllTeachers (UUID schoolId);

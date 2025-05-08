@@ -35,4 +35,24 @@ public class AssignmentDTO {
     private AssignmentType type;
     private ZonedDateTime addedDate;
     private ZonedDateTime updatedDate;
+
+    public Assignment toEntity() {
+        return Assignment.builder()
+                .id(id)
+                .semester(PlanningDTO.toEntity(semester))
+                .exam(exam.toEntity())
+                .preparedBy(preparedBy)
+                .classeEntity(ClasseDTO.toEntity(classe))
+                .subject(CourseDTO.toEntity(subject))
+                .examName(examName)
+                .examDate(examDate)
+                .startTime(startTime)
+                .endTime(endTime)
+                .passed(passed)
+                .coefficient(coefficient)
+                .type(type)
+                .addedDate(addedDate)
+                .updatedDate(updatedDate)
+                .build();
+    }
 }

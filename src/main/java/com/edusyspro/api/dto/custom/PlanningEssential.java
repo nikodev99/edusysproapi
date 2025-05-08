@@ -11,7 +11,7 @@ public record PlanningEssential(
         String designation,
         LocalDate termStartDate,
         LocalDate termEndDate,
-        int semestreId,
+        Integer semestreId,
         String semestre,
         String academicYear
 ) {

@@ -5,14 +5,19 @@ import com.edusyspro.api.dto.custom.AssignmentEssential;
 import com.edusyspro.api.dto.custom.AssignmentToExam;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
 import com.edusyspro.api.dto.filters.AssignmentFilter;
+import com.edusyspro.api.exception.sql.AlreadyExistException;
+import com.edusyspro.api.model.Assignment;
 import com.edusyspro.api.repository.AssignmentRepository;
 import com.edusyspro.api.repository.spec.AssignmentSpec;
 import com.edusyspro.api.service.interfaces.AssignmentService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.beans.Beans;
+import java.beans.beancontext.BeanContextServiceAvailableEvent;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -29,9 +34,26 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
+    public AssignmentDTO addNewAssignment(AssignmentDTO assignmentData) {
+        if (!assignmentExists(assignmentData)) {
+            Assignment assignment = assignmentData.toEntity();
+            assignmentRepository.save(assignment);
+            return assignmentData;
+        }
+        return null;
+    }
+
+    @Override
     public Page<AssignmentDTO> findAllAssignments(AssignmentFilter filter, Pageable pageable) {
         return assignmentSpec.findAllSearchAndFilteredAssignments(filter, pageable)
                 .map(AssignmentEssential::toDTO);
+    }
+
+    @Override
+    public List<AssignmentDTO> findAllNotCompleteAssignment(String academicYear) {
+        return assignmentRepository.findAllNotCompleteAssignments(UUID.fromString(academicYear)).stream()
+                .map(AssignmentEssential::toDTO)
+                .toList();
     }
 
     @Override
@@ -112,5 +134,11 @@ public class AssignmentServiceImpl implements AssignmentService {
             isRemoved = true;
         }catch (Exception ignored){}
         return Map.of("status", isRemoved);
+    }
+
+    private boolean assignmentExists(AssignmentDTO assignment) {
+        Long count = assignmentRepository.assignmentExists(assignment.getExamName())
+                .orElseThrow(() -> new AlreadyExistException("Le devoir avec le nom '" + assignment.getExamName() + "' existe déjà cette année."));
+        return count > 0;
     }
 }

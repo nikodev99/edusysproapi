@@ -20,7 +20,7 @@ public class Planning {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "semester_id", referencedColumnName = "semester_id")

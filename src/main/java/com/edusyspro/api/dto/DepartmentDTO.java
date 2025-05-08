@@ -25,6 +25,7 @@ public class DepartmentDTO {
     private ZonedDateTime modifyAt;
 
     public static Department toEntity(DepartmentDTO dto) {
+        if(dto == null) return null;
         return Department.builder()
                 .id(dto.getId())
                 .name(dto.getName())

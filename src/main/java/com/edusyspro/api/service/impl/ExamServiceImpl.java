@@ -62,5 +62,13 @@ public class ExamServiceImpl implements ExamService {
        return examDTO;
     }
 
+    @Override
+    public List<ExamDTO> findAllSchoolExams(String schoolId, String academicYear) {
+        return examRepository.findAllSchoolExams(
+                UUID.fromString(schoolId),
+                UUID.fromString(academicYear)
+        ).stream().map(ExamEssential::toDto).toList();
+    }
+
 
 }

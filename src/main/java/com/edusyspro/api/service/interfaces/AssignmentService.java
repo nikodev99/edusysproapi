@@ -12,7 +12,11 @@ import java.util.UUID;
 
 public interface AssignmentService {
 
+    AssignmentDTO addNewAssignment(AssignmentDTO assignmentData);
+
     Page<AssignmentDTO> findAllAssignments(AssignmentFilter filter, Pageable pageable);
+
+    List<AssignmentDTO> findAllNotCompleteAssignment(String academicYear);
 
     List<AssignmentDTO> findAllClasseAssignments(Integer classeId, String academicYear);
 

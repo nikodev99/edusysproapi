@@ -12,6 +12,7 @@ import java.time.LocalTime;
 public record AssignmentToExam(
         Long id,
         String semesterName,
+        String planningName,
         long teacherId,
         String teacherFirstName,
         String teacherLastName,
@@ -35,6 +36,7 @@ public record AssignmentToExam(
         return AssignmentDTO.builder()
                 .id(id)
                 .semester(PlanningDTO.builder()
+                        .designation(planningName)
                         .semestre(Semester.builder()
                                 .semesterName(semesterName)
                                 .build())

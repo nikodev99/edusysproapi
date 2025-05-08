@@ -1,9 +1,11 @@
 package com.edusyspro.api.controller;
 
 import com.edusyspro.api.controller.utils.ControllerUtils;
+import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.AssignmentDTO;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
 import com.edusyspro.api.dto.filters.AssignmentFilter;
+import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.service.interfaces.AssignmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,15 @@ public class AssignmentController {
 
     public AssignmentController(AssignmentService assignmentService) {
         this.assignmentService = assignmentService;
+    }
+
+    @PostMapping
+    ResponseEntity<?> saveAssignment(@RequestBody AssignmentDTO assignment) {
+        try {
+            return ResponseEntity.ok(assignmentService.addNewAssignment(assignment));
+        }catch (AlreadyExistException a) {
+            return ResponseEntity.badRequest().body(a.getMessage());
+        }
     }
 
     @GetMapping(value = {"", "/all"})
@@ -43,6 +54,13 @@ public class AssignmentController {
                 ),
                 ControllerUtils.setSort(page, size, sortCriteria)
         ));
+    }
+
+    @GetMapping("/not_completed")
+    ResponseEntity<?> fetchAllNotCompletedAssignments() {
+        return ResponseEntity.ok(
+                assignmentService.findAllNotCompleteAssignment(ConstantUtils.ACADEMIC_YEAR)
+        );
     }
 
     @GetMapping("/classe/{classeId}")

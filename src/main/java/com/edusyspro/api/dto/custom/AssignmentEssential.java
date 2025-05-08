@@ -2,6 +2,7 @@ package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.*;
 import com.edusyspro.api.model.*;
+import com.edusyspro.api.model.enums.AssignmentType;
 import com.edusyspro.api.model.enums.Section;
 
 import java.time.LocalDate;
@@ -11,8 +12,9 @@ import java.time.ZonedDateTime;
 public record AssignmentEssential(
         Long id,
         String semesterName,
+        String planningName,
         ExamType examType,
-        long teacherId,
+        Long teacherId,
         String teacherFirstName,
         String teacherLastName,
         String teacherImage,
@@ -26,6 +28,7 @@ public record AssignmentEssential(
         LocalDate examDate,
         LocalTime startTime,
         LocalTime endTime,
+        AssignmentType type,
         boolean passed,
         ZonedDateTime addedDate,
         ZonedDateTime updatedDate
@@ -34,6 +37,7 @@ public record AssignmentEssential(
         return AssignmentDTO.builder()
                 .id(id)
                 .semester(PlanningDTO.builder()
+                        .designation(planningName)
                         .semestre(Semester.builder()
                                 .semesterName(semesterName)
                                 .build())
@@ -63,6 +67,7 @@ public record AssignmentEssential(
                 .examDate(examDate)
                 .startTime(startTime)
                 .endTime(endTime)
+                .type(type)
                 .passed(passed)
                 .addedDate(addedDate)
                 .updatedDate(updatedDate)

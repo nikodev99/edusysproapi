@@ -4,6 +4,7 @@ import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
+import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.CustomMethod;
@@ -116,7 +117,11 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public List<TeacherDTO> fetchAllByOtherEntityId(Object... arg) {
-        return List.of();
+        int classeId = Integer.parseInt(arg[0].toString());
+        Section section = Section.valueOf(arg[1].toString());
+        return teacherRepository.findAllTeacherBasicValue(classeId, section).stream()
+                .map(TeacherBasic::toDTO)
+                .toList();
     }
 
     @Override

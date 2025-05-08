@@ -6,6 +6,7 @@ import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
+import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.service.mod.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -60,6 +61,11 @@ public class TeacherController {
     @GetMapping("/search/")
     ResponseEntity<List<TeacherDTO>> getSearchedTeachers(@RequestParam String q) {
         return ResponseEntity.ok(teacherService.findAllTeachers(ConstantUtils.SCHOOL_ID, q));
+    }
+
+    @GetMapping("/basic/{classeId}")
+    ResponseEntity<?> getTeacherBasicValues(@PathVariable int classeId, @RequestParam Section section) {
+        return ResponseEntity.ok(teacherService.findAllTeacherBasicValue(classeId, section));
     }
 
     @GetMapping("/count")
