@@ -3,6 +3,7 @@ package com.edusyspro.api.service.impl;
 import com.edusyspro.api.dto.PlanningDTO;
 import com.edusyspro.api.dto.custom.PlanningBasic;
 import com.edusyspro.api.dto.custom.PlanningEssential;
+import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.PlanningRepository;
 import com.edusyspro.api.service.interfaces.PlanningService;
@@ -30,7 +31,6 @@ public class PlanningServiceImpl implements PlanningService {
         ).stream()
         .map(PlanningBasic::toDto)
         .toList();
-
     }
 
     @Override
@@ -38,5 +38,12 @@ public class PlanningServiceImpl implements PlanningService {
         return planningRepository.findPlanningsByGrade(UUID.fromString(schoolId), section).stream()
                 .map(PlanningEssential::toDto)
                 .toList();
+    }
+
+    @Override
+    public PlanningDTO findBasicPlanningById(long planningId) {
+        return planningRepository.findPlanningById(planningId)
+                .orElseThrow(() -> new NotFountException("Planning not found"))
+                .toDto();
     }
 }

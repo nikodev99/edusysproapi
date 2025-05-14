@@ -31,7 +31,7 @@ public interface ExamRepository extends JpaRepository<Exam, Integer> {
         select new com.edusyspro.api.dto.custom.ExamEssential(e.id, e.examType, e.startDate, e.endDate) from Exam e
         where e.id = ?1 order by e.id
     """)
-    Optional<ExamEssential> findClasseExams(Long examId);
+    Optional<ExamEssential> findExamById(Long examId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ExamEssential(e.id, e.examType, e.startDate, e.endDate)

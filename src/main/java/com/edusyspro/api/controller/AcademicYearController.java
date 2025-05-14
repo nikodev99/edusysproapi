@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
@@ -24,6 +26,14 @@ public class AcademicYearController {
     @GetMapping("/from")
     ResponseEntity<List<AcademicYear>> fetchAllFromYear(@RequestParam int fromYear) {
         return ResponseEntity.ok(academicYearService.getAcademicYearsFromYear(ConstantUtils.SCHOOL_ID, fromYear));
+    }
+
+    @GetMapping("/from_date")
+    ResponseEntity<AcademicYear> fetchFromDate(@RequestParam String fromDate) {
+        return ResponseEntity.ok(academicYearService.getAcademicYearsFromDate(
+                ConstantUtils.SCHOOL_ID,
+                ZonedDateTime.parse(fromDate).toLocalDate()
+        ));
     }
 
     @GetMapping

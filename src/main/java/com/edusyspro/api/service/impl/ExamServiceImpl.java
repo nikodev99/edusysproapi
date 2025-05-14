@@ -63,6 +63,13 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
+    public ExamDTO findExamById(Long examId) {
+        return examRepository.findExamById(examId)
+                .orElseThrow(() -> new NotFountException("Exam Not found"))
+                .toDto();
+    }
+
+    @Override
     public List<ExamDTO> findAllSchoolExams(String schoolId, String academicYear) {
         return examRepository.findAllSchoolExams(
                 UUID.fromString(schoolId),

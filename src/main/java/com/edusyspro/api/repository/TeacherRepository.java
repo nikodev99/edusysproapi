@@ -68,6 +68,14 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     """)
     List<TeacherBasic> findAllTeacherBasicValue(int classId, Section section);
 
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.TeacherBasic(
+            t.id, t.personalInfo.id, t.personalInfo.firstName, t.personalInfo.lastName, t.personalInfo.image, c.id, c.name
+        ) FROM Teacher t join t.aClasses c WHERE t.personalInfo.id = ?1
+    """)
+    Optional<TeacherBasic> findTeacherBasicValue(long teacherId);
+
+
     @Query("select t.personalInfo.gender, t.personalInfo.birthDate from Teacher t where t.school.id = ?1")
     List<Object[]> countAllTeachers (UUID schoolId);
 

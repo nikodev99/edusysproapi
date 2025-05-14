@@ -5,15 +5,14 @@ import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.Semester;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record PlanningEssential(
         long id,
         String designation,
         LocalDate termStartDate,
         LocalDate termEndDate,
-        Integer semestreId,
-        String semestre,
-        String academicYear
+        Semester semestre
 ) {
     public PlanningDTO toDto() {
         return PlanningDTO.builder()
@@ -21,13 +20,7 @@ public record PlanningEssential(
                 .designation(designation)
                 .termStartDate(termStartDate)
                 .termEndDate(termEndDate)
-                .semestre(Semester.builder()
-                        .semesterId(semestreId)
-                        .semesterName(semestre)
-                        .academicYear(AcademicYear.builder()
-                                .years(academicYear)
-                                .build())
-                        .build())
+                .semestre(semestre)
                 .build();
     }
 }

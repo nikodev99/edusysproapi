@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -21,10 +22,15 @@ public interface PlanningRepository extends JpaRepository<Planning, Long> {
     List<PlanningBasic> findPlanningBasicValues(UUID schoolId, UUID academicYearId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate,
-        p.semestre.semesterId, p.semestre.semesterName, p.semestre.academicYear.years)
+        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre)
         from Planning p join p.semestre s join s.academicYear a join a.school sc where sc.id = ?1 and a.current = true
         and p.grade.section = ?2 order by p.termStartDate
     """)
     List<PlanningEssential> findPlanningsByGrade(UUID schoolId, Section section);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre)
+        from Planning p where p.id = ?1
+    """)
+    Optional<PlanningEssential> findPlanningById(long planningId);
 }

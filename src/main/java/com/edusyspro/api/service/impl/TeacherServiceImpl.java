@@ -150,7 +150,9 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public TeacherDTO fetchOneByCustomColumn(String columnValue) {
-        return null;
+        return teacherRepository.findTeacherBasicValue(Long.parseLong(columnValue))
+                .orElseThrow(() -> new NotFountException("Teacher not found"))
+                .toDTO();
     }
 
     @Override

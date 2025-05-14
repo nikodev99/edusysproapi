@@ -64,8 +64,13 @@ public class TeacherController {
     }
 
     @GetMapping("/basic/{classeId}")
-    ResponseEntity<?> getTeacherBasicValues(@PathVariable int classeId, @RequestParam Section section) {
+    ResponseEntity<?> getTeachersBasicValues(@PathVariable int classeId, @RequestParam Section section) {
         return ResponseEntity.ok(teacherService.findAllTeacherBasicValue(classeId, section));
+    }
+
+    @GetMapping("/basic-one/{teacherId}")
+    ResponseEntity<?> getTeacherBasicValues(@PathVariable long teacherId) {
+        return ResponseEntity.ok(teacherService.findTeacherBasicValue(teacherId));
     }
 
     @GetMapping("/count")

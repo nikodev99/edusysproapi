@@ -9,5 +9,6 @@ public interface PlanningService {
 
     List<PlanningDTO> findBasicPlanningValues(String schoolId, String academicYearId);
     List<PlanningDTO> findBasicPlanningByGrade(String schoolId, Section section);
+    PlanningDTO findBasicPlanningById(long planningId);
 
 }

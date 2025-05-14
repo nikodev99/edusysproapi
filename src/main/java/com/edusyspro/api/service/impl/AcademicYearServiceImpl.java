@@ -1,5 +1,6 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.repository.AcademicYearRepository;
@@ -30,8 +31,19 @@ public class AcademicYearServiceImpl implements AcademicYearService {
     }
 
     @Override
+    public AcademicYear getAcademicYearsFromDate(String schoolId, LocalDate date) {
+        return academicYearRepository.findBeginningOfYear(UUID.fromString(schoolId), date);
+    }
+
+    @Override
     public AcademicYear getCurrentAcademicYear(String schoolId) {
         return academicYearRepository.findAcademicYearBySchoolIdAndCurrentIsTrue(UUID.fromString(schoolId));
+    }
+
+    @Override
+    public AcademicYear getAcademicYearById(String academicYearId) {
+        return academicYearRepository.findAcademicYearById(UUID.fromString(academicYearId))
+                .orElseThrow(() -> new NotFountException("Academic Year Not found for ID: " + academicYearId));
     }
 
     @Override

@@ -50,6 +50,10 @@ public class TeacherService extends TeacherServiceImpl {
         return fetchAllByOtherEntityId(String.valueOf(classeId), section.toString());
     }
 
+    public TeacherDTO findTeacherBasicValue(long teacherId) {
+        return fetchOneByCustomColumn(String.valueOf(teacherId));
+    }
+
     public int updateTeacherField(String id, UpdateField updateField) {
         return patch(UUID.fromString(id), updateField);
     }

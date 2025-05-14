@@ -10,5 +10,7 @@ public interface ExamService {
 
     ExamDTO findClasseExamsAssignments(Long examId, Integer classeId, String academicYear);
 
+    ExamDTO findExamById(Long examId);
+
     List<ExamDTO> findAllSchoolExams(String schoolId, String academicYear);
 }
