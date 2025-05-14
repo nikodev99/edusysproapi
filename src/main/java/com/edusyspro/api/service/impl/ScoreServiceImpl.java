@@ -74,6 +74,13 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
+    public List<ScoreDTO> getAssignmentScores(long assignmentId) {
+        return scoreRepository.findScoresByAssignment(assignmentId).stream()
+                .map(ScoreBasic::toDTO)
+                .toList();
+    }
+
+    @Override
     public List<ScoreDTO> getAllAssignmentScores(List<Long> assignmentId) {
         return scoreRepository.findScoresByAssignmentIds(assignmentId).stream()
                 .map(ScoreBasic::toDTO)

@@ -1,6 +1,7 @@
 package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.*;
+import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.model.enums.AssignmentType;
@@ -8,12 +9,16 @@ import com.edusyspro.api.model.enums.Section;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 
 public record AssignmentToExam(
         Long id,
         String semesterName,
+        UUID academicYearId,
+        Long planningId,
         String planningName,
-        long teacherId,
+        Long examId,
+        Long teacherId,
         String teacherFirstName,
         String teacherLastName,
         String teacherImage,
@@ -28,17 +33,21 @@ public record AssignmentToExam(
         LocalTime startTime,
         LocalTime endTime,
         AssignmentType type,
-        boolean passed,
-        int coefficient
+        Boolean passed,
+        Integer coefficient
 ) {
 
     public AssignmentDTO toDTO() {
         return AssignmentDTO.builder()
                 .id(id)
                 .semester(PlanningDTO.builder()
+                        .id(planningId)
                         .designation(planningName)
                         .semestre(Semester.builder()
                                 .semesterName(semesterName)
+                                .academicYear(AcademicYear.builder()
+                                        .id(academicYearId)
+                                        .build())
                                 .build())
                         .build())
                 .preparedBy(Individual.builder()
@@ -58,6 +67,9 @@ public record AssignmentToExam(
                         .id(courseId)
                         .course(courseName)
                         .abbr(courseAbbr)
+                        .build())
+                .exam(ExamDTO.builder()
+                        .id(examId)
                         .build())
                 .examName(examName)
                 .examDate(examDate)

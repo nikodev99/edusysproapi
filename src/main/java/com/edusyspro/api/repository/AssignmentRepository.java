@@ -1,6 +1,7 @@
 package com.edusyspro.api.repository;
 
 import com.edusyspro.api.dto.custom.AssignmentEssential;
+import com.edusyspro.api.dto.custom.AssignmentExhaustif;
 import com.edusyspro.api.dto.custom.AssignmentToExam;
 import com.edusyspro.api.model.Assignment;
 import jakarta.transaction.Transactional;
@@ -39,9 +40,10 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     List<AssignmentEssential> findAllClasseAssignments(Integer classeId, UUID academicYear);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.AssignmentToExam(a.id, a.semester.semestre.semesterName, a.semester.designation, a.preparedBy.id,
-        a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image, a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section,
-        a.subject.id, a.subject.course, a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.coefficient)
+        select new com.edusyspro.api.dto.custom.AssignmentToExam(a.id, a.semester.semestre.semesterName, a.semester.semestre.academicYear.id,
+        a.semester.id, a.semester.designation, a.exam.id, a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName,
+        a.preparedBy.image, a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
+        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.coefficient)
         from Assignment a where a.classeEntity.id = ?1 and a.semester.semestre.academicYear.id = ?2 and a.exam.id = ?3
         and a.passed = true order by a.addedDate asc
     """)
@@ -103,6 +105,14 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
         and a.semester.semestre.academicYear.current = true order by a.examDate desc
     """)
     List<AssignmentEssential> findAllAssignmentsByTeacher(Long teacherId, int classId);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.AssignmentExhaustif(a.id, a.semester.id, a.exam.id, a.exam.examType, a.exam.startDate,
+        a.exam.endDate, a.preparedBy.id, a.classeEntity.id, a.subject.id, a.subject.course, a.subject.abbr, a.subject.department.code,
+        a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.coefficient, a.addedDate, a.updatedDate)
+        from Assignment a where a.id = ?1
+    """)
+    Optional<AssignmentExhaustif> findAssignmentById(Long assignmentId);
 
     @Modifying
     @Transactional

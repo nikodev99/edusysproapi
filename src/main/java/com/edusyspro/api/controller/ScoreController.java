@@ -69,6 +69,11 @@ public class ScoreController {
         ));
     }
 
+    @GetMapping("/assignment/{assignmentId}")
+    ResponseEntity<?> getAllAssignmentMarks(@PathVariable String assignmentId) {
+        return ResponseEntity.ok(scoreService.getAssignmentScores(Long.parseLong(assignmentId)));
+    }
+
     @GetMapping("/students/{teacherId}/{subjectId}")
     ResponseEntity<?> getBestStudentByMarks(@PathVariable long teacherId, @PathVariable int subjectId) {
         return ResponseEntity.ok(scoreService.getBestStudentBySubjectScore(teacherId, subjectId));

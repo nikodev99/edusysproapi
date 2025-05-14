@@ -4,9 +4,11 @@ import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.AssignmentDTO;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.dto.filters.AssignmentFilter;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.service.interfaces.AssignmentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -122,6 +124,26 @@ public class AssignmentController {
                         Long.parseLong(teacherId), new CourseAndClasseIds(0, classe)
                 )
         );
+    }
+
+    @GetMapping("/{assignmentId}")
+    ResponseEntity<?> fetchAssignmentById(@PathVariable long assignmentId) {
+        return ResponseEntity.ok(assignmentService.findAssignmentById(assignmentId));
+    }
+
+    @PatchMapping("/{assignmentId}")
+    ResponseEntity<?> updateAssignmentByFields(@PathVariable long assignmentId, @RequestBody UpdateField assignment) {
+        try {
+            int updated = assignmentService.patchUpdateAssignment(assignment, assignmentId);
+            if (updated > 0) {
+                return ResponseEntity.ok("Modification effective");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("update failed");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @PutMapping("/change/{assignmentId}")

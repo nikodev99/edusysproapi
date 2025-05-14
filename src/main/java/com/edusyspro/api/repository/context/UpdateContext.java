@@ -1,18 +1,21 @@
 package com.edusyspro.api.repository.context;
 
 import com.edusyspro.api.model.Address;
+import com.edusyspro.api.model.Assignment;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Repository
@@ -67,11 +70,51 @@ public class UpdateContext {
         return entityManager.createQuery(update).executeUpdate();
     }
 
+    @Modifying
+    @Transactional
+    public int updateAssignmentField(String field, Object value, long assignmentId) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaUpdate<Assignment> update = cb.createCriteriaUpdate(Assignment.class);
+        Root<Assignment> assignment = update.from(Assignment.class);
+
+        value = adjustDate("examDate", field, value);
+        value = adjustTime("startTime", field, value);
+        value = adjustTime("endTime", field, value);
+        Path<Object> path = resolvePath(assignment, field);
+
+        update.set(path, value)
+                .set(assignment.get("updatedDate"), Datetime.systemDatetime())
+                .where(cb.equal(assignment.get("id"), assignmentId));
+
+        return entityManager.createQuery(update).executeUpdate();
+    }
+
     private Object adjustDate(String field, String existingField, Object value) {
         if (field.equals(existingField)) {
             ZonedDateTime zonedDateTime = Datetime.zonedDateTime((String) value);
             value = zonedDateTime.toLocalDate();
         }
         return value;
+    }
+
+    private Object adjustTime(String field, String existingField, Object value) {
+        if (field.equals(existingField)) {
+            ZonedDateTime zonedDateTime = Datetime.zonedDateTime((String) value);
+            value = zonedDateTime.toLocalTime();
+        }
+        return value;
+    }
+
+    private <T> Path<T> resolvePath(Root<Assignment> root, String field) {
+        if (field.contains(".")) {
+            String[] parts = field.split("\\.");
+            Path<T> p = root.get(parts[0]);
+            for (int i = 1; i < parts.length; i++) {
+                p = p.get(parts[i]);
+            }
+            return p;
+        }
+        // simple (non‐nested) field
+        return root.get(field);
     }
 }

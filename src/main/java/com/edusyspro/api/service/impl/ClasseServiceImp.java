@@ -97,7 +97,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     @Override
     public ClasseDTO fetchOneById(Integer id) {
-        return null;
+        return classeRepository.findClasseById(id).convertToDTO();
     }
 
     @Override

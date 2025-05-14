@@ -2,6 +2,7 @@ package com.edusyspro.api.service.interfaces;
 
 import com.edusyspro.api.dto.AssignmentDTO;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.dto.filters.AssignmentFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,10 @@ public interface AssignmentService {
     List<AssignmentDTO> findAllAssignmentsPreparedByTeacherByCourse(long teacherId, CourseAndClasseIds ids);
 
     List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, CourseAndClasseIds ids);
+
+    AssignmentDTO findAssignmentById(long id);
+
+    int patchUpdateAssignment(UpdateField assignment, long assignmentId);
 
     Map<String, Boolean> updateAssignmentDates(AssignmentDTO assignmentDTO, long assignmentId);
 

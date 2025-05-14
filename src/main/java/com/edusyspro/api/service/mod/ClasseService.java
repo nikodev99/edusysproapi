@@ -47,6 +47,10 @@ public class ClasseService extends ClasseServiceImp {
         return fetchOneById(classeId, academicYear);
     }
 
+    public ClasseDTO getClasseById(int classeId) {
+        return fetchOneById(classeId);
+    }
+
     public List<ClasseDTO> getClassBasicValues(String schoolId) {
         return fetchAll(schoolId);
     }

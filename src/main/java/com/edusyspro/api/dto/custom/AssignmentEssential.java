@@ -29,7 +29,7 @@ public record AssignmentEssential(
         LocalTime startTime,
         LocalTime endTime,
         AssignmentType type,
-        boolean passed,
+        Boolean passed,
         ZonedDateTime addedDate,
         ZonedDateTime updatedDate
 ) {

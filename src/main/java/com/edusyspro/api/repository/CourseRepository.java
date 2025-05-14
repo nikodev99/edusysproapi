@@ -1,6 +1,5 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.dto.CourseDTO;
 import com.edusyspro.api.dto.custom.CourseBasicValue;
 import com.edusyspro.api.dto.custom.CourseEssential;
 import com.edusyspro.api.model.Course;

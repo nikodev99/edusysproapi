@@ -1,23 +1,26 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.AssignmentDTO;
+import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.AssignmentEssential;
 import com.edusyspro.api.dto.custom.AssignmentToExam;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.dto.filters.AssignmentFilter;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
+import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.Assignment;
 import com.edusyspro.api.repository.AssignmentRepository;
+import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.repository.spec.AssignmentSpec;
 import com.edusyspro.api.service.interfaces.AssignmentService;
-import org.springframework.context.annotation.Bean;
+import com.edusyspro.api.service.interfaces.ExamService;
+import com.edusyspro.api.service.interfaces.PlanningService;
+import com.edusyspro.api.service.mod.ClasseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.beans.Beans;
-import java.beans.beancontext.BeanContextServiceAvailableEvent;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -27,10 +30,22 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     private final AssignmentRepository assignmentRepository;
     private final AssignmentSpec assignmentSpec;
+    private final UpdateContext updateContext;
+    private final PlanningService planningService;
+    private final ClasseService classeService;
 
-    public AssignmentServiceImpl(AssignmentRepository assignmentRepository, AssignmentSpec assignmentSpec) {
+    public AssignmentServiceImpl(
+            AssignmentRepository assignmentRepository,
+            AssignmentSpec assignmentSpec,
+            UpdateContext updateContext,
+            PlanningService planningService,
+            ClasseService classeService
+    ) {
         this.assignmentRepository = assignmentRepository;
         this.assignmentSpec = assignmentSpec;
+        this.updateContext = updateContext;
+        this.planningService = planningService;
+        this.classeService = classeService;
     }
 
     @Override
@@ -110,6 +125,28 @@ public class AssignmentServiceImpl implements AssignmentService {
         return assignmentRepository.findAllAssignmentsByTeacher(teacherId, ids.classId()).stream()
                 .map(AssignmentEssential::toDTO)
                 .toList();
+    }
+
+    @Override
+    public AssignmentDTO findAssignmentById(long id) {
+        AssignmentDTO assignment = assignmentRepository.findAssignmentById(id)
+                .orElseThrow(() -> new NotFountException("Devoir "+ id +" introuvable"))
+                .toDTO();
+
+        if (assignment != null && assignment.getId() > 0) {
+            PlanningDTO planning = planningService.findBasicPlanningById(assignment.getSemester().getId());
+            ClasseDTO classe = classeService.getClasseById(assignment.getClasse().getId());
+
+            assignment.setSemester(planning);
+            assignment.setClasse(classe);
+        }
+
+        return assignment;
+    }
+
+    @Override
+    public int patchUpdateAssignment(UpdateField assignment, long assignmentId) {
+        return updateContext.updateAssignmentField(assignment.field(), assignment.value(), assignmentId);
     }
 
     @Override
