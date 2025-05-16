@@ -1,13 +1,11 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.ClasseDTO;
 import com.edusyspro.api.dto.ScheduleDTO;
 import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.ScheduleEssential;
 import com.edusyspro.api.dto.custom.ScheduleHoursBy;
 import com.edusyspro.api.dto.custom.TeacherClasseCourse;
 import com.edusyspro.api.dto.custom.UpdateField;
-import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.model.enums.Day;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.ScheduleRepository;

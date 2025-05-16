@@ -20,16 +20,16 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
 
     @Query("""
         SELECT new com.edusyspro.api.dto.custom.TeacherEssential(
-            t.id, t.personalInfo, t.hireDate, t.salaryByHour, t.school.id, t.school.name, t.createdAt, t.modifyAt
-        ) FROM Teacher t WHERE t.school.id = ?1
+            t.id, t.personalInfo, t.hireDate, t.salaryByHour, s.id, s.name, t.createdAt, t.modifyAt
+        ) FROM Teacher t JOIN t.school s WHERE s.id = ?1
     """)
     Page<TeacherEssential> findAllBySchoolId(UUID schoolId, Pageable pageable);
 
     @Query("select new com.edusyspro.api.dto.custom.ClassBasicValue(c.id, c.name, c.category, c.grade.section) from Teacher t " +
-            "join t.aClasses c where t.id = ?1 and t.school.id = ?2")
+            "join t.aClasses c join t.school s where t.id = ?1 and s.id = ?2")
     List<ClassBasicValue> findTeacherClasses(UUID teacherId, UUID schoolId);
 
-    @Query("select new com.edusyspro.api.dto.custom.CourseBasicValue(c.id, c.course, c.abbr) from Teacher t join t.courses c where t.id = ?1 and t.school.id = ?2")
+    @Query("select new com.edusyspro.api.dto.custom.CourseBasicValue(c.id, c.course, c.abbr) from Teacher t join t.courses c join t.school s where t.id = ?1 and s.id = ?2")
     List<CourseBasicValue> findTeacherCourses(UUID teacherId, UUID schoolId);
 
     @Query("""
@@ -42,15 +42,15 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     List<CourseEssential> findTeacherEssentialCourses(UUID teacherId);
 
     @Query("select new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, t.hireDate, t.salaryByHour, " +
-        "t.school.id, t.school.name, t.createdAt, t.modifyAt) from Teacher t where t.school.id = ?1 " +
+        "s.id, s.name, t.createdAt, t.modifyAt) from Teacher t join t.school s where s.id = ?1 " +
         "and (lower(t.personalInfo.lastName) like lower(?2) or lower(t.personalInfo.firstName) like lower(?2)) " +
         "order by t.personalInfo.lastName asc")
     List<TeacherEssential> findAllBySchoolId(UUID schoolId, String lastname);
 
     @Query("""
         SELECT new com.edusyspro.api.dto.custom.TeacherEssential(
-            t.id, t.personalInfo, t.hireDate, t.salaryByHour, t.school.id, t.school.name, t.createdAt, t.modifyAt
-        ) FROM Teacher t WHERE t.id = ?1 AND t.school.id = ?2
+            t.id, t.personalInfo, t.hireDate, t.salaryByHour, s.id, s.name, t.createdAt, t.modifyAt
+        ) FROM Teacher t JOIN t.school s WHERE t.id = ?1 AND s.id = ?2
     """)
     Optional<TeacherEssential> findTeacherById(UUID id, UUID schoolId);
 
@@ -63,20 +63,22 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
 
     @Query("""
         SELECT new com.edusyspro.api.dto.custom.TeacherBasic(
-            t.id, t.personalInfo.id, t.personalInfo.firstName, t.personalInfo.lastName, t.personalInfo.image, c.id, c.name
+            t.id, t.personalInfo.id, t.personalInfo.firstName, t.personalInfo.lastName, t.personalInfo.image, t.personalInfo.gender,
+            t.personalInfo.emailId, t.personalInfo.birthDate, t.personalInfo.nationality, t.personalInfo.birthCity, t.personalInfo.telephone, c.id, c.name
         ) FROM Teacher t join t.aClasses c WHERE c.id = ?1 and c.grade.section = ?2
     """)
     List<TeacherBasic> findAllTeacherBasicValue(int classId, Section section);
 
     @Query("""
         SELECT new com.edusyspro.api.dto.custom.TeacherBasic(
-            t.id, t.personalInfo.id, t.personalInfo.firstName, t.personalInfo.lastName, t.personalInfo.image, c.id, c.name
-        ) FROM Teacher t join t.aClasses c WHERE t.personalInfo.id = ?1
+            t.id, t.personalInfo.id, t.personalInfo.firstName, t.personalInfo.lastName, t.personalInfo.image, t.personalInfo.gender,
+            t.personalInfo.emailId, t.personalInfo.birthDate, t.personalInfo.nationality, t.personalInfo.birthCity, t.personalInfo.telephone, c.id, c.name
+        ) FROM Teacher t join t.aClasses c WHERE t.personalInfo.id = :teacherId and c.id = :classeId
     """)
-    Optional<TeacherBasic> findTeacherBasicValue(long teacherId);
+    Optional<TeacherBasic> findTeacherBasicValue(@Param("teacherId") long teacherId, @Param("classeId") int classId);
 
 
-    @Query("select t.personalInfo.gender, t.personalInfo.birthDate from Teacher t where t.school.id = ?1")
+    @Query("select t.personalInfo.gender, t.personalInfo.birthDate from Teacher t join t.school s where s.id = ?1")
     List<Object[]> countAllTeachers (UUID schoolId);
 
     boolean existsByPersonalInfoEmailIdAndSchoolId(String emailId, UUID schoolId);

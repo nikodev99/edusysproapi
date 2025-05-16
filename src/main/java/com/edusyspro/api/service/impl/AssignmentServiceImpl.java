@@ -13,7 +13,6 @@ import com.edusyspro.api.repository.AssignmentRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.repository.spec.AssignmentSpec;
 import com.edusyspro.api.service.interfaces.AssignmentService;
-import com.edusyspro.api.service.interfaces.ExamService;
 import com.edusyspro.api.service.interfaces.PlanningService;
 import com.edusyspro.api.service.mod.ClasseService;
 import org.springframework.data.domain.Page;

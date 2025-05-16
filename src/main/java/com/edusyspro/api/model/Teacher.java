@@ -55,10 +55,14 @@ public class Teacher {
     @JsonIgnore
     private List<CourseProgram> courseProgram;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "school_id", referencedColumnName = "id")
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinTable(
+            name = "teacher_schools",
+            joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "school_id", referencedColumnName = "id")
+    )
     @JsonIgnore
-    private School school;
+    private List<School> school;
 
     private ZonedDateTime createdAt;
 

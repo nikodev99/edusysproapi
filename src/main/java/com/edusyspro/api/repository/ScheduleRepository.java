@@ -36,14 +36,15 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("""
         select distinct new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, t.hireDate, t.salaryByHour,
-        t.school.id, t.school.name, t.createdAt, t.modifyAt) from Schedule s join s.teacher t where s.academicYear.current = true
+        sc.id, sc.name, t.createdAt, t.modifyAt) from Schedule s join s.teacher t join t.school sc where s.academicYear.current = true
         and s.classeEntity.id = ?1 and s.course.id = ?2 and s.academicYear.school.id = ?3
     """)
     TeacherEssential findTeacherByClasseEntityIdAndCourseId(int classeEntity_id, int course_id, UUID school_id);
 
     @Query("""
         select distinct new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, t.hireDate, t.salaryByHour,
-        t.school.id, t.school.name, t.createdAt, t.modifyAt) from Schedule s join s.teacher t where s.academicYear.current = true and s.classeEntity.id = ?1 and s.academicYear.school.id = ?2
+        sc.id, sc.name, t.createdAt, t.modifyAt) from Schedule s join s.teacher t join t.school sc where s.academicYear.current = true
+        and s.classeEntity.id = ?1 and s.academicYear.school.id = ?2
     """)
     TeacherEssential findTeacherByClasseEntityId(int classeEntity_id, UUID school_id);
 

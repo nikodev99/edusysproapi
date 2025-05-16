@@ -42,7 +42,7 @@ public class TeacherDTO {
                 .courses(teacher.getCourses().stream().map(CourseDTO::fromEntity).toList())
                 .salaryByHour(teacher.getSalaryByHour())
                 .courseProgram(teacher.getCourseProgram().stream().map(CourseProgramDTO::fromEntity).toList())
-                .school(teacher.getSchool())
+                .school(teacher.getSchool().get(0))
                 .createdAt(teacher.getCreatedAt())
                 .modifyAt(teacher.getModifyAt())
                 .build();
@@ -57,7 +57,7 @@ public class TeacherDTO {
                 .courses(teacherDTO.getCourses().stream().map(CourseDTO::toEntity).toList())
                 .salaryByHour(teacherDTO.getSalaryByHour())
                 .courseProgram(teacherDTO.getCourseProgram().stream().map(CourseProgramDTO::toEntity).toList())
-                .school(teacherDTO.getSchool())
+                .school(List.of(teacherDTO.getSchool()))
                 .createdAt(teacherDTO.getCreatedAt())
                 .modifyAt(teacherDTO.getModifyAt())
                 .build();

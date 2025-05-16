@@ -69,8 +69,8 @@ public class TeacherController {
     }
 
     @GetMapping("/basic-one/{teacherId}")
-    ResponseEntity<?> getTeacherBasicValues(@PathVariable long teacherId) {
-        return ResponseEntity.ok(teacherService.findTeacherBasicValue(teacherId));
+    ResponseEntity<?> getTeacherBasicValues(@PathVariable long teacherId, @RequestParam int classe) {
+        return ResponseEntity.ok(teacherService.findTeacherBasicValue(teacherId, classe));
     }
 
     @GetMapping("/count")
