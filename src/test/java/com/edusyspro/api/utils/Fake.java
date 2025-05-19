@@ -74,7 +74,7 @@ public class Fake {
                 .hireDate(randomDate())
                 .courses(courseList.isEmpty() ? null : courseList)
                 .aClasses(List.of(classes))
-                .school(school)
+                .school(List.of(school))
                 .salaryByHour(1500.00)
                 .build();
     }

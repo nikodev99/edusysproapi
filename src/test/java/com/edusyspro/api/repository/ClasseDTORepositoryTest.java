@@ -170,7 +170,7 @@ class ClasseDTORepositoryTest {
                 .name("Terminale A")
                 .category("Terminale Littéraire")
                 .grade(getGrade(Section.LYCEE))
-                .monthCost(3300)
+                .monthCost(3300D)
                 .build();
         boolean exists = classeRepository.existsByName(classe.getName());
         assertTrue(exists);

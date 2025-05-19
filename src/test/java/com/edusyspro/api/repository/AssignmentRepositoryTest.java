@@ -38,10 +38,10 @@ public class AssignmentRepositoryTest {
 
         Assignment assignmentMath = Assignment.builder()
                 .semester(Planning.builder()
-                        .id(14)
+                        .id(14L)
                         .build())
                 .exam(Exam.builder()
-                        .id(3)
+                        .id(3L)
                         .build())
                 .preparedBy(Individual.builder()
                         .id(mathTeacher.getPersonalInfo().getId())

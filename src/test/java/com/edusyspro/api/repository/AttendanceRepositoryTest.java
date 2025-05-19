@@ -33,7 +33,7 @@ public class AttendanceRepositoryTest {
         List<LocalDate> dates = getDates();
         List<Attendance> attendances = new ArrayList<>();
         List<EnrollmentDTO> dtoList = enrollmentService.getClasseEnrolledStudents(
-                10,
+                17,
                 String.valueOf(MockUtils.ACADEMIC_YEAR_MOCK.getId()),
                 PageRequest.of(0, 21)).toList();
 
@@ -50,7 +50,7 @@ public class AttendanceRepositoryTest {
                                 .build())
                         .attendanceDate(date)
                         .status(getStatus())
-                        .classeEntity(MockUtils.THREE)
+                        .classeEntity(MockUtils.TERC)
                         .build());
             }
         }
@@ -58,8 +58,8 @@ public class AttendanceRepositoryTest {
     }
 
     private List<LocalDate> getDates () {
-        LocalDate today = LocalDate.now();
-        LocalDate lastMonday = today.with(DayOfWeek.MONDAY).minusWeeks(1);
+        LocalDate today = LocalDate.of(2025, 4, 1);
+        LocalDate lastMonday = today.with(DayOfWeek.MONDAY).plusWeeks(4);
         List<LocalDate> dates = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) { // Loop from Monday to Friday
@@ -71,7 +71,7 @@ public class AttendanceRepositoryTest {
 
     private AttendanceStatus getStatus () {
         int roll = random.nextInt(100);
-        if (roll < 60) {
+        if (roll < 70) {
             return AttendanceStatus.PRESENT;
         } else if (roll < 80) {
             return AttendanceStatus.ABSENT;
