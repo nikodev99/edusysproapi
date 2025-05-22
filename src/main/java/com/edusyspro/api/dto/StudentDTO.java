@@ -56,4 +56,10 @@ public class StudentDTO {
                 .healthCondition(student.getHealthCondition())
                 .build();
     }
+
+    public static StudentEntity toMergeEntity(StudentDTO student) {
+        return StudentEntity.builder()
+                .id(student.getId())
+                .build();
+    }
 }

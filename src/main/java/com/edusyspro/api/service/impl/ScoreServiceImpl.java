@@ -5,6 +5,8 @@ import com.edusyspro.api.dto.custom.ScoreAvg;
 import com.edusyspro.api.dto.custom.ScoreBasic;
 import com.edusyspro.api.dto.custom.ScoreBasicValue;
 import com.edusyspro.api.dto.custom.ScoreEssential;
+import com.edusyspro.api.exception.sql.InsertException;
+import com.edusyspro.api.model.Score;
 import com.edusyspro.api.repository.ScoreRepository;
 import com.edusyspro.api.service.interfaces.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,8 @@ import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +29,42 @@ public class ScoreServiceImpl implements ScoreService {
     @Autowired
     public ScoreServiceImpl(ScoreRepository scoreRepository) {
         this.scoreRepository = scoreRepository;
+    }
+
+    @Override
+    public boolean saveAllScores(List<ScoreDTO> scores, long assignmentId) {
+        boolean exists = scoreExists(assignmentId);
+        boolean saved = false;
+        try {
+            if(!exists) {
+                List<Score> scoreEntities = scores.stream()
+                                .map(ScoreDTO::toDTO)
+                                        .toList();
+                scoreRepository.saveAll(scoreEntities);
+                saved = true;
+            }
+        }catch (Exception e) {
+            throw new InsertException("Error wile inserting data: " + e.getMessage());
+        }
+
+        return saved;
+    }
+
+    @Override
+    public boolean updateAllScores(List<ScoreDTO> scores, long assignmentId) {
+        List<Integer> updatedIds = new ArrayList<>();
+
+        scores.forEach(score -> {
+            int updateId = scoreRepository.updateScoresByAssignmentId(
+                    score.getObtainedMark(),
+                    score.getIsPresent(),
+                    score.getId(),
+                    assignmentId
+            );
+            updatedIds.add(updateId);
+        });
+
+        return updatedIds.stream().allMatch(n -> n > 0);
     }
 
     @Override
@@ -76,7 +114,7 @@ public class ScoreServiceImpl implements ScoreService {
     @Override
     public List<ScoreDTO> getAssignmentScores(long assignmentId) {
         return scoreRepository.findScoresByAssignment(assignmentId).stream()
-                .map(ScoreBasic::toDTO)
+                .map(ScoreBasicValue::toDTO)
                 .toList();
     }
 
@@ -147,6 +185,10 @@ public class ScoreServiceImpl implements ScoreService {
                 .stream()
                 .map(score -> new ScoreAvg((String) score[0], (long) score[1]))
                 .toList();
+    }
+
+    private boolean scoreExists(long assignmentId) {
+        return scoreRepository.countAssignmentInScores(assignmentId).orElse(0L) > 0;
     }
 
 }

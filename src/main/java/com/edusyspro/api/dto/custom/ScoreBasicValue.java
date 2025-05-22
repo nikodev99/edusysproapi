@@ -9,18 +9,22 @@ import com.edusyspro.api.model.Individual;
 import java.util.UUID;
 
 public record ScoreBasicValue(
+        Long scoreId,
         UUID studentId,
         String studentFirstName,
         String studentLastName,
         String studentImage,
         String studentReference,
         String classeName,
-        long obtainedMark
+        Long obtainedMark,
+        Boolean isPresent
 ) {
 
     public ScoreDTO toDTO() {
         return ScoreDTO.builder()
+                .id(scoreId)
                 .obtainedMark(obtainedMark)
+                .isPresent(isPresent)
                 .student(StudentDTO.builder()
                         .id(studentId)
                         .personalInfo(Individual.builder()

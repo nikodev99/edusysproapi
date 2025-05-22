@@ -23,6 +23,16 @@ public class ScoreController {
         this.scoreService = scoreService;
     }
 
+    @PostMapping
+    ResponseEntity<Boolean> saveScores(@RequestBody List<ScoreDTO> scoreDTOs, @RequestParam Long assignment) {
+        return ResponseEntity.ok(scoreService.saveAllScores(scoreDTOs, assignment));
+    }
+
+    @PutMapping
+    ResponseEntity<Boolean> modifyingScores(@RequestBody List<ScoreDTO> scoreDTOs, @RequestParam Long assignment) {
+        return ResponseEntity.ok(scoreService.updateAllScores(scoreDTOs, assignment));
+    }
+
     @GetMapping({"/all/{studentId}", "/{studentId}"})
     ResponseEntity<Page<ScoreDTO>> getAllScores(
             @PathVariable String studentId,

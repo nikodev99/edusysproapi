@@ -30,7 +30,7 @@ public class AssignmentDTO {
     private LocalTime startTime;
     private LocalTime endTime;
     private Boolean passed;
-    private int coefficient;
+    private Integer coefficient;
     private List<ScoreDTO> marks;
     private AssignmentType type;
     private ZonedDateTime addedDate;
@@ -53,6 +53,12 @@ public class AssignmentDTO {
                 .type(type)
                 .addedDate(addedDate)
                 .updatedDate(updatedDate)
+                .build();
+    }
+
+    public Assignment toMergeEntity() {
+        return Assignment.builder()
+                .id(id)
                 .build();
     }
 }

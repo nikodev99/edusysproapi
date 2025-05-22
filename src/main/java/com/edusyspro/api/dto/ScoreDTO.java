@@ -1,5 +1,6 @@
 package com.edusyspro.api.dto;
 
+import com.edusyspro.api.model.Score;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,4 +17,15 @@ public class ScoreDTO {
     private AssignmentDTO assignment;
     private StudentDTO student;
     private Long obtainedMark;
+    private Boolean isPresent;
+
+    public Score toDTO() {
+        return Score.builder()
+                .id(id)
+                .assignment(assignment.toMergeEntity())
+                .isPresent(isPresent)
+                .obtainedMark(obtainedMark)
+                .studentEntity(StudentDTO.toMergeEntity(student))
+                .build();
+    }
 }

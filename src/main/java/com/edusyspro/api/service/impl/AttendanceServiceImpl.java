@@ -115,6 +115,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     public List<AttendanceStatusStat> getClasseAttendanceStats(int classeId, String academicYearId) {
         List<LocalDate> dates = attendanceRepository.findRecentAttendanceDate(classeId, UUID.fromString(academicYearId), PageRequest.of(0, 10));
         Collections.reverse(dates);
+        System.out.println("DATE_GOT: " + Arrays.deepToString(dates.toArray(new LocalDate[0])));
         List<Object[]> stats = attendanceRepository.findRecentClasseAttendanceStatsPerStatus(classeId, dates, UUID.fromString(academicYearId));
 
         Map<LocalDate, Map<AttendanceStatus, Long>> dateStatusCount = stats.stream()

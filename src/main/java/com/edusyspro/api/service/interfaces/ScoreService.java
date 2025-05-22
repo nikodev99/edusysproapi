@@ -9,6 +9,10 @@ import java.util.List;
 
 public interface ScoreService {
 
+    boolean saveAllScores(List<ScoreDTO> scores, long assignmentId);
+
+    boolean updateAllScores(List<ScoreDTO> scores, long assignmentId);
+
     Page<ScoreDTO> getLastScoresByStudent(String studentId, Pageable pageable);
 
     Page<ScoreDTO> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, Pageable pageable);
