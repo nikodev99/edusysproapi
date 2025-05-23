@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +37,7 @@ public class ScoreServiceImpl implements ScoreService {
         try {
             if(!exists) {
                 List<Score> scoreEntities = scores.stream()
-                                .map(ScoreDTO::toDTO)
+                                .map(ScoreDTO::toEntity)
                                         .toList();
                 scoreRepository.saveAll(scoreEntities);
                 saved = true;

@@ -16,7 +16,7 @@ public record ScoreBasicValue(
         String studentImage,
         String studentReference,
         String classeName,
-        Long obtainedMark,
+        Float obtainedMark,
         Boolean isPresent
 ) {
 

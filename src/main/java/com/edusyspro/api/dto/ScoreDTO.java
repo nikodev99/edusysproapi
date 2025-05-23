@@ -16,10 +16,10 @@ public class ScoreDTO {
     private Long id;
     private AssignmentDTO assignment;
     private StudentDTO student;
-    private Long obtainedMark;
+    private Float obtainedMark;
     private Boolean isPresent;
 
-    public Score toDTO() {
+    public Score toEntity() {
         return Score.builder()
                 .id(id)
                 .assignment(assignment.toMergeEntity())

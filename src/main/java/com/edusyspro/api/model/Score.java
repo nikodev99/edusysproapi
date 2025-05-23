@@ -28,7 +28,7 @@ public class Score {
     @JsonIgnore
     private StudentEntity studentEntity;
 
-    private Long obtainedMark;
+    private Float obtainedMark;
 
     @ColumnDefault( value = "true")
     private Boolean isPresent;

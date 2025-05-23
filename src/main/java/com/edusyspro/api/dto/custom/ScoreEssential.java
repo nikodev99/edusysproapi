@@ -26,7 +26,7 @@ public class ScoreEssential {
     private Section section;
     private int subjectId;
     private String subjectName;
-    private long obtainedMark;
+    private Float obtainedMark;
     private int coefficient;
 
     public static ScoreDTO toDTO(ScoreEssential e) {

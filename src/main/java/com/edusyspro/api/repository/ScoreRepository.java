@@ -123,7 +123,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     @Query("""
         update Score s set s.obtainedMark = ?1, s.isPresent = ?2 where s.id = ?3 and s.assignment.id = ?4
     """)
-    int updateScoresByAssignmentId(long obtainedMarks, boolean presents, Long scoreId, Long assignmentId);
+    int updateScoresByAssignmentId(float obtainedMarks, boolean presents, Long scoreId, Long assignmentId);
 
     @Query("""
         select count(s.id) from Score s where s.assignment.id = ?1
