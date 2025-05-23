@@ -186,8 +186,13 @@ public class ScoreServiceImpl implements ScoreService {
                 .toList();
     }
 
+    @Override
+    public Long countAssignmentSCores(long assignmentId) {
+        return scoreRepository.countAssignmentInScores(assignmentId).orElse(0L);
+    }
+
     private boolean scoreExists(long assignmentId) {
-        return scoreRepository.countAssignmentInScores(assignmentId).orElse(0L) > 0;
+        return countAssignmentSCores(assignmentId) > 0L;
     }
 
 }

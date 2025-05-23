@@ -43,4 +43,6 @@ public interface ScoreService {
 
     List<ScoreAvg> getClasseAvgScore(int classeId, String academicYearId);
 
+    Long countAssignmentSCores(long assignmentId);
+
 }

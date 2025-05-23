@@ -129,4 +129,9 @@ public class ScoreController {
     ResponseEntity<?> getScoreAvgByCourse(@PathVariable int classeId, @RequestParam String academicYear) {
         return ResponseEntity.ok(scoreService.getClasseAvgScore(classeId, academicYear));
     }
+
+    @GetMapping("/count/{assignmentId}")
+    ResponseEntity<Long> countAssignmentScores(@PathVariable long assignmentId) {
+        return ResponseEntity.ok(scoreService.countAssignmentSCores(assignmentId));
+    }
 }
