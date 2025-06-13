@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.service.impl.AcademicYearServiceImpl;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Profile;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @SpringBootTest
 @Profile("dev")
@@ -30,14 +32,13 @@ class AcademicYearRepositoryTest {
     @Test
     public void saveAcademicYear() {
         AcademicYear academicYear = AcademicYear.builder()
-                .startDate(LocalDate.of(2024, 10, 1))
-                .endDate(LocalDate.of(2025, 6, 29))
-                .current(true)
+                .startDate(LocalDate.of(2025, 10, 2))
+                .endDate(LocalDate.of(2026, 6, 28))
+                .current(false)
+                .school(School.builder()
+                        .id(UUID.fromString(ConstantUtils.SCHOOL_ID))
+                        .build())
                 .build();
-        School school = MockUtils.SCHOOL_MOCK;
-        if (school.getId() != null) {
-            academicYear.setSchool(school);
-        }
         academicYearRepository.save(academicYear);
     }
 

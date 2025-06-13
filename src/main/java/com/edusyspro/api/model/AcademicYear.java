@@ -33,14 +33,18 @@ public class AcademicYear {
     @JsonProperty("academicYear")
     private String years;
 
-    @OneToOne(cascade = {CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     @JsonIgnore
     private School school;
 
     @PrePersist
     public void preUpdate() {
-        years = startDate.getYear() + " - " + endDate.getYear();
-        current = true;
+        if (years == null) {
+            years = startDate.getYear() + " - " + endDate.getYear();
+        }
+        if (current == null) {
+            current = true;
+        }
     }
 }
