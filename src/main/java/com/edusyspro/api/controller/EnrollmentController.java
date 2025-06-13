@@ -132,7 +132,7 @@ public class EnrollmentController {
     }
 
     @GetMapping("/count")
-    ResponseEntity<Map<String, Long>> countStudents() {
+    ResponseEntity<?> countStudents() {
         return ResponseEntity.ok(enrollmentService.countStudents(ConstantUtils.SCHOOL_ID));
     }
 }

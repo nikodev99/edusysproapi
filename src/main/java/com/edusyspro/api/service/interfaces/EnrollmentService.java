@@ -136,8 +136,8 @@ public interface EnrollmentService {
     /**
      * Get the number of all student by schoolID
      * @param schoolId The school id.
-     * @return Map<String, Long> the number of students
+     * @return @return GenderCount
      */
-    Map<String, Long> countStudents(String schoolId);
+    GenderCount countStudents(String schoolId);
 
 }

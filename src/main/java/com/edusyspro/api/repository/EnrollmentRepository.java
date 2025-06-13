@@ -117,6 +117,6 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     @Query("select e.academicYear.years, count(e.id) from EnrollmentEntity e where e.classe.id = ?1 group by e.academicYear.id")
     List<Object> countAllStudentsByClassByAcademicYear(int classeId);
 
-    @Query("select count(e.id) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true")
-    Long countAllStudents(UUID schoolId);
+    @Query("select e.student.personalInfo.gender, e.student.personalInfo.birthDate from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true")
+    List<Object[]> countAllStudents(UUID schoolId);
 }

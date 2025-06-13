@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -190,7 +189,8 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public Map<String, Long> countStudents(String schoolId) {
-        return Map.of("count", enrollmentRepository.countAllStudents(UUID.fromString(schoolId)));
+    public GenderCount countStudents(String schoolId) {
+        List<Object[]> results = enrollmentRepository.countAllStudents(UUID.fromString(schoolId));
+        return CustomMethod.genderCountInClasse(results);
     }
 }
