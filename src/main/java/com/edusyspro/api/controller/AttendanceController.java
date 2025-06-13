@@ -1,10 +1,9 @@
 package com.edusyspro.api.controller;
 
 import com.edusyspro.api.controller.utils.ControllerUtils;
-import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.AttendanceDTO;
-import com.edusyspro.api.model.Attendance;
 import com.edusyspro.api.service.interfaces.AttendanceService;
+import com.edusyspro.api.utils.Datetime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -42,9 +42,51 @@ public class AttendanceController {
         return ResponseEntity.ok(attendanceService.getStudentAttendances(studentId, academicYear));
     }
 
+    @GetMapping("/all_classe/{classeId}")
+    ResponseEntity<?> getAllClasseStudentAttendanceOfTheDay(
+            @PathVariable Integer classeId,
+            @RequestParam String academicYear,
+            @RequestParam(required = false) String dateOfTheDay
+    ) {
+        return ResponseEntity.ok(attendanceService.getAllClasseAttendancesPerDate(
+                classeId,
+                academicYear,
+                dateOfTheDay != null ? LocalDate.parse(dateOfTheDay): null
+        ));
+    }
+
+    @GetMapping("/status_count/{studentId}")
+    ResponseEntity<?> getStudentAttendanceStatusCounts(@PathVariable long studentId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(attendanceService.getStudentAttendanceCount(studentId, academicYear));
+    }
+
+    @GetMapping("/all_school/{schoolId}")
+    ResponseEntity<?> getAllSchoolStudentAttendanceOfTheDay(
+            @PathVariable String schoolId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam String academicYear,
+            @RequestParam(required = false) String dateOfTheDay,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String sortCriteria
+    ) {
+        LocalDate date = dateOfTheDay != null ? Datetime.zonedDateTime(dateOfTheDay).toLocalDate() : null;
+        Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
+        if(search == null) {
+            return ResponseEntity.ok(attendanceService.getAllSchoolPerDateAttendances(
+                    schoolId, academicYear, date, pageable
+            ));
+        }else {
+            return ResponseEntity.ok(attendanceService.getAllSchoolPerDateAttendances(
+                    schoolId, academicYear, date, search, pageable
+            ));
+        }
+    }
+
     @GetMapping("/classe_{classeId}")
-    ResponseEntity<?> getClasseAttendanceStatusCounts(@PathVariable int classeId, @RequestParam String academicYear) {
-        return ResponseEntity.ok(attendanceService.getClasseAttendanceCount(classeId, academicYear));
+    ResponseEntity<?> getClasseAttendanceStatusCounts(@PathVariable int classeId, @RequestParam String academicYear, String date) {
+        LocalDate dateOfTheDay = date != null ? Datetime.zonedDateTime(date).toLocalDate() : null;
+        return ResponseEntity.ok(attendanceService.getClasseAttendanceCount(classeId, academicYear, dateOfTheDay));
     }
 
     @GetMapping("/classe_status/{classeId}")
@@ -78,14 +120,51 @@ public class AttendanceController {
         return ResponseEntity.ok(attendanceService.getWorstStudentAtAttendance(classeId, academicYear));
     }
 
-    @GetMapping("/school_status/{schoolId}")
-    ResponseEntity<?> getSchoolStatusAttendanceStatusCounts(@PathVariable String schoolId, @RequestParam String academicYear) {
-        return ResponseEntity.ok(attendanceService.getSchoolAttendanceCount(schoolId, academicYear));
+    @GetMapping("/school_ranking/{schoolId}")
+    ResponseEntity<?> getSchoolStudentRanking(
+            @PathVariable String schoolId,
+            @RequestParam String academicYear,
+            @RequestParam(defaultValue = "false") boolean isWorst
+    ) {
+        return ResponseEntity.ok(attendanceService.getStudentAtAttendanceRanking(schoolId, academicYear, isWorst));
+    }
+
+    @GetMapping("/school_status/{academicYear}")
+    ResponseEntity<?> getSchoolAttendanceStatusCounts(@PathVariable String academicYear, @RequestParam(required = false) String date) {
+        LocalDate dateOfTheDay = null;
+        if (date != null) {
+            if (date.length() > 10) {
+                dateOfTheDay = Datetime.zonedDateTime(date).toLocalDate();
+            }else {
+                dateOfTheDay = LocalDate.parse(date);
+            }
+        }
+        return ResponseEntity.ok(attendanceService.getSchoolAttendanceCount(academicYear, dateOfTheDay));
     }
 
     @GetMapping("/classe_stat/{classeId}")
-    ResponseEntity<?> getClasseAttendanceStatPerStatus(@PathVariable int classeId, @RequestParam String academicYear) {
-        return ResponseEntity.ok(attendanceService.getClasseAttendanceStats(classeId, academicYear));
+    ResponseEntity<?> getClasseAttendanceStatPerStatus(
+            @PathVariable int classeId,
+            @RequestParam String academicYear,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
+    ) {
+        LocalDate start = startDate != null ? Datetime.zonedDateTime(startDate).toLocalDate() : null;
+        LocalDate end = endDate != null ? Datetime.zonedDateTime(endDate).toLocalDate() : null;
+
+        return ResponseEntity.ok(attendanceService.getClasseAttendanceStats(classeId, academicYear, start, end));
+    }
+
+    @GetMapping("/school_stat/{schoolId}")
+    ResponseEntity<?> getSchoolAttendanceStatPerStatus(
+            @PathVariable String schoolId,
+            @RequestParam String academicYear,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
+    ) {
+        LocalDate start = startDate != null ? Datetime.zonedDateTime(startDate).toLocalDate() : null;
+        LocalDate end = endDate != null ? Datetime.zonedDateTime(endDate).toLocalDate() : null;
+        return ResponseEntity.ok(attendanceService.getSchoolAttendanceStats(schoolId, academicYear, start, end));
     }
 
 }

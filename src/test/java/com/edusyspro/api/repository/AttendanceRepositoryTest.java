@@ -1,7 +1,10 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.EnrollmentDTO;
+import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.Attendance;
+import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.AttendanceStatus;
 import com.edusyspro.api.service.interfaces.EnrollmentService;
@@ -16,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @SpringBootTest
 public class AttendanceRepositoryTest {
@@ -27,6 +31,30 @@ public class AttendanceRepositoryTest {
     private EnrollmentService enrollmentService;
 
     private static final Random random = new Random();
+
+    @Test
+    public void insertTodayAttendance () {
+        String academicYear = ConstantUtils.ACADEMIC_YEAR;
+        ClasseEntity classe = MockUtils.TERC;
+        List<Attendance> attendances = new ArrayList<>();
+        List<EnrollmentDTO> students = enrollmentService.getClasseEnrolledStudents(
+                classe.getId(), academicYear, PageRequest.of(0, 21)
+        ).toList();
+
+        students.forEach(student -> attendances.add(Attendance.builder()
+                .academicYear(AcademicYear.builder()
+                        .id(UUID.fromString(academicYear))
+                        .build())
+                .individual(Individual.builder()
+                        .id(student.getStudent().getPersonalInfo().getId())
+                        .build())
+                .attendanceDate(LocalDate.now())
+                .status(getStatus())
+                .classeEntity(classe)
+                .build()));
+
+        attendanceRepository.saveAll(attendances);
+    }
 
     @Test
     public void insertIntoAttendance () {
