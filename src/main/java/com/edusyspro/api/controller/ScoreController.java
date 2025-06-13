@@ -1,7 +1,6 @@
 package com.edusyspro.api.controller;
 
 import com.edusyspro.api.dto.ScoreDTO;
-import com.edusyspro.api.service.interfaces.AcademicYearService;
 import com.edusyspro.api.service.interfaces.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +18,7 @@ public class ScoreController {
     private final ScoreService scoreService;
 
     @Autowired
-    public ScoreController(ScoreService scoreService, AcademicYearService academicYearService) {
+    public ScoreController(ScoreService scoreService) {
         this.scoreService = scoreService;
     }
 

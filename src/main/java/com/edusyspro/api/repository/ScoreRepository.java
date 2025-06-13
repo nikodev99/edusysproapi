@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -80,7 +79,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
-        s.assignment.classeEntity.name, s.obtainedMark, s.isPresent)
+        s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.preparedBy.id = ?1 and s.assignment.subject.id = ?2
         and s.assignment.semester.semestre.academicYear.current = true group by s.studentEntity order by sum(s.obtainedMark) desc
     """)
@@ -88,7 +87,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
-        s.assignment.classeEntity.name, s.obtainedMark, s.isPresent)
+        s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.preparedBy.id = ?1 and s.assignment.semester.semestre.academicYear.current = true
         group by s.studentEntity.id order by sum(s.obtainedMark) desc
     """)
@@ -96,7 +95,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
-        s.assignment.classeEntity.name, s.obtainedMark, s.isPresent)
+        s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.classeEntity.id = ?1 and s.assignment.semester.semestre.academicYear.id = ?2
         group by s.studentEntity.id
     """)
@@ -104,7 +103,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
-        s.assignment.classeEntity.name, s.obtainedMark, s.isPresent)
+        s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.classeEntity.id = ?1 and s.assignment.semester.semestre.academicYear.id = ?2
         and s.assignment.subject.id = ?3 group by s.studentEntity.id
     """)
@@ -112,7 +111,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
-        s.assignment.classeEntity.name, s.obtainedMark, s.isPresent)
+        s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.subject.id = ?1 and s.assignment.semester.semestre.academicYear.id = ?2
         group by s.studentEntity.id
     """)
@@ -123,7 +122,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     @Query("""
         update Score s set s.obtainedMark = ?1, s.isPresent = ?2 where s.id = ?3 and s.assignment.id = ?4
     """)
-    int updateScoresByAssignmentId(float obtainedMarks, boolean presents, Long scoreId, Long assignmentId);
+    int updateScoresByAssignmentId(Double obtainedMarks, boolean presents, Long scoreId, Long assignmentId);
 
     @Query("""
         select count(s.id) from Score s where s.assignment.id = ?1

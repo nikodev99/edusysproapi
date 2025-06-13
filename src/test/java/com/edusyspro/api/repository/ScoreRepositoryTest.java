@@ -51,7 +51,7 @@ public class ScoreRepositoryTest {
         scoreRepository.saveAll(scores);
     }
 
-    public int getMark() {
+    public float getMark() {
         final Random random = new Random();
         return random.nextInt(21);
     }

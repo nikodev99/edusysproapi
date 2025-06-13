@@ -16,7 +16,7 @@ public class ScoreDTO {
     private Long id;
     private AssignmentDTO assignment;
     private StudentDTO student;
-    private Float obtainedMark;
+    private Double obtainedMark;
     private Boolean isPresent;
 
     public Score toEntity() {

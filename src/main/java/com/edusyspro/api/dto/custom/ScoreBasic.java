@@ -10,7 +10,7 @@ public record ScoreBasic(
         Long scoreId,
         UUID studentId,
         Long assignmentId,
-        Float obtainedMark
+        Double obtainedMark
 ) {
     public ScoreDTO toDTO() {
         return ScoreDTO.builder()
