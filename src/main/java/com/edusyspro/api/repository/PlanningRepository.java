@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Repository
 public interface PlanningRepository extends JpaRepository<Planning, Long> {
     @Query("""
-        select new com.edusyspro.api.dto.custom.PlanningBasic(p.id, p.designation, p.termStartDate, p.termEndDate)
+        select new com.edusyspro.api.dto.custom.PlanningBasic(p.id, p.semestre.semesterId, p.designation, p.termStartDate, p.termEndDate)
         from Planning p join p.semestre s join s.academicYear a join a.school sc where sc.id = ?1 and a.id = ?2
         order by p.termStartDate
     """)
@@ -33,4 +34,10 @@ public interface PlanningRepository extends JpaRepository<Planning, Long> {
         from Planning p where p.id = ?1
     """)
     Optional<PlanningEssential> findPlanningById(long planningId);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.PlanningBasic(p.id, p.semestre.semesterId, p.designation, p.termStartDate, p.termEndDate)
+        from ClasseEntity c join c.grade g join g.planning p where c.id = ?1 and p.termStartDate between ?2 and ?3
+    """)
+    Optional<List<PlanningBasic>> getClassePlanningByDates(int classeId, LocalDate startDate, LocalDate endDate);
 }

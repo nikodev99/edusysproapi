@@ -10,6 +10,7 @@ import com.edusyspro.api.service.interfaces.PlanningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,5 +46,14 @@ public class PlanningServiceImpl implements PlanningService {
         return planningRepository.findPlanningById(planningId)
                 .orElseThrow(() -> new NotFountException("Planning not found"))
                 .toDto();
+    }
+
+    @Override
+    public List<PlanningDTO> findAllPlanningByClasseThroughoutTheAcademicYear(int classeId, LocalDate startDate, LocalDate endDate) {
+        return planningRepository.getClassePlanningByDates(classeId, startDate, endDate)
+                .orElse(List.of())
+                .stream()
+                .map(PlanningBasic::toDto)
+                .toList();
     }
 }
