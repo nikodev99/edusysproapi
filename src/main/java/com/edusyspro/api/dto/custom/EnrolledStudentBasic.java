@@ -9,6 +9,7 @@ import java.util.UUID;
 public record EnrolledStudentBasic (
     long enrollmentId,
     UUID id,
+    long individualId,
     String firstName,
     String lastName,
     String image,
@@ -20,6 +21,7 @@ public record EnrolledStudentBasic (
                 .student(StudentDTO.builder()
                         .id(id)
                         .personalInfo(Individual.builder()
+                                .id(individualId)
                                 .firstName(firstName)
                                 .lastName(lastName)
                                 .image(image)

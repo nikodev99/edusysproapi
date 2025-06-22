@@ -64,4 +64,10 @@ public class ClasseDTO {
                .modifyAt(classe.getModifyAt())
                .build();
     }
+
+    public ClasseEntity toMergeEntity(){
+        return ClasseEntity.builder()
+                .id(id)
+                .build();
+    }
 }

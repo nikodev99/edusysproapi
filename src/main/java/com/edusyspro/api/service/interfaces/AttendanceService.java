@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AttendanceService {
+    Boolean saveAllAttendances(List<AttendanceDTO> attendances, int schoolId, LocalDate attendanceDate);
+    Boolean updateAllAttendances(List<AttendanceDTO> attendances);
 
     Page<AttendanceDTO> getLastStudentAttendances(long studentId, Pageable pageable);
     Page<AttendanceDTO> getStudentAttendancesByAcademicYear(long studentId, String academicYearId, Pageable pageable);

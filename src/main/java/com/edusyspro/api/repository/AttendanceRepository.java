@@ -5,15 +5,18 @@ import com.edusyspro.api.dto.custom.AttendanceInfo;
 import com.edusyspro.api.dto.custom.AttendanceStudentIndividual;
 import com.edusyspro.api.model.Attendance;
 import com.edusyspro.api.model.enums.AttendanceStatus;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -97,14 +100,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     """)
     List<AttendanceInfo> findAttendanceInfoByClasseAndDate(Integer classeId, UUID academicYearId, LocalDate date);
 
-    @Query("select a.status, count(a.status) from Attendance a where a.classeEntity.id = ?1 and a.academicYear.id = ?2 group by a.status")
-    List<Object[]> findAttendanceStatusCountByClasse(int classeId, UUID academicYearId);
-
-    @Query("""
-        select a.status, count(a.status) from Attendance a where a.classeEntity.id = ?1 and a.academicYear.id = ?2 and a.attendanceDate = ?3 group by a.status
-    """)
-    List<Object[]> findAttendanceStatusCountByClassePerDate(int classeId, UUID academicYearId, LocalDate date);
-
     @Query("select a.status from Attendance a where a.individual.id = ?1 and a.academicYear.id = ?2")
     List<Object[]> findAttendanceStatusCountByStudent(long studentId, UUID academicYearId);
 
@@ -119,34 +114,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
         from Attendance a where a.academicYear.id = ?1 and a.attendanceDate = ?2
     """)
     List<AttendanceInfo> findAttendanceInfoByAcademicYearAndDate(UUID academicYearId, LocalDate date);
-
-    @Query("select a.status, count(a.status) from Attendance a where a.academicYear.school.id = ?1 and a.academicYear.id = ?2 group by a.status")
-    List<Object[]> findAttendanceStatusCountBySchool(UUID schoolId, UUID academicYearId);
-
-    @Query("""
-        select a.status, count(a.status) from Attendance a where a.academicYear.id = ?1 and a.attendanceDate = ?2 group by a.status
-    """)
-    List<Object[]> findAttendanceStatusCountBySchoolPerDate(UUID academicYearId, LocalDate date);
-
-    @Query("""
-        select a.classeEntity.grade.section, a.status, count(a.status) from Attendance a where a.academicYear.id = ?1 group by a.classeEntity.grade.section, a.status
-    """)
-    List<Object[]> findAttendanceStatusCountByGrade(UUID academicYearId, List<Integer> gradeIds);
-
-    @Query("""
-        select a.classeEntity.grade.section, a.status, count(a.status) from Attendance a where a.academicYear.id = ?1 and a.attendanceDate = ?2 group by a.classeEntity.grade.section, a.status
-    """)
-    List<Object[]> findAttendanceStatusCountByGradePerDate(UUID academicYearId, LocalDate date);
-
-    @Query("""
-        select a.individual.gender, a.status, count(a.status) from Attendance a where a.academicYear.id = ?1 group by a.individual.gender, a.status
-    """)
-    List<Object[]> findAttendanceStatusCountByGender(UUID academicYearId, List<Integer> gradeIds);
-
-    @Query("""
-        select a.individual.gender, a.status, count(a.status) from Attendance a where a.academicYear.id = ?1 and a.attendanceDate = ?2 group by a.individual.gender, a.status
-    """)
-    List<Object[]> findAttendanceStatusCountByGenderPerDate(UUID academicYearId, LocalDate date);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AttendanceEssential(a.id, a.attendanceDate, a.status, a.classeEntity.name,
@@ -204,4 +171,16 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
         and a.academicYear.id = ?4 group by a.attendanceDate, a.status order by a.attendanceDate
     """)
     List<Object[]> findSchoolAttendanceStatsPerDates(UUID schoolId, LocalDate startDate, LocalDate endDate, UUID academicYearId);
+
+    @Transactional
+    @Modifying
+    @Query("""
+        update Attendance a set a.status = ?1 where a.id = ?2
+    """)
+    int updateAttendanceStatus(AttendanceStatus status, Long attendanceId);
+
+    @Query("""
+        select count(a.id) from Attendance a where a.classeEntity.id = ?1 and a.attendanceDate = ?2
+    """)
+    Optional<Long> countAttendanceOfDay(int classeId, LocalDate date);
 }

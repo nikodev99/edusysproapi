@@ -1,6 +1,7 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.AcademicYear;
+import com.edusyspro.api.model.Attendance;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.AttendanceStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,4 +26,15 @@ public class AttendanceDTO {
 
     private LocalDate attendanceDate;
     private AttendanceStatus status;
+
+    public Attendance toEntity() {
+        return Attendance.builder()
+                .id(id)
+                .academicYear(academicYear)
+                .individual(individual)
+                .classeEntity(classeEntity.toMergeEntity())
+                .attendanceDate(attendanceDate)
+                .status(status)
+                .build();
+    }
 }

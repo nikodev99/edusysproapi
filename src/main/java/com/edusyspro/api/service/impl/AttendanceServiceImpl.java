@@ -4,6 +4,7 @@ import com.edusyspro.api.dto.AttendanceDTO;
 import com.edusyspro.api.dto.PlanningDTO;
 import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.model.AcademicYear;
+import com.edusyspro.api.model.Attendance;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.AttendanceStatus;
 import com.edusyspro.api.model.enums.Gender;
@@ -33,6 +34,35 @@ public class AttendanceServiceImpl implements AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final AcademicYearService academicYearService;
     private final PlanningService planningService;
+
+    @Override
+    public Boolean saveAllAttendances(List<AttendanceDTO> attendances, int schoolId, LocalDate attendanceDate) {
+        boolean exists = exists(schoolId, attendanceDate);
+        boolean saved = false;
+        if (!exists) {
+            List<Attendance> att = attendances.stream()
+                    .map(AttendanceDTO::toEntity)
+                    .toList();
+            attendanceRepository.saveAll(att);
+            saved = true;
+        }
+        return saved;
+    }
+
+    @Override
+    public Boolean updateAllAttendances(List<AttendanceDTO> attendances) {
+        List<Integer> updatedIds = new ArrayList<>();
+
+        attendances.forEach(attendance -> {
+            int updateId = attendanceRepository.updateAttendanceStatus(
+                    attendance.getStatus(),
+                    attendance.getId()
+            );
+            updatedIds.add(updateId);
+        });
+
+        return updatedIds.stream().allMatch(n -> n > 0);
+    }
 
     @Override
     public Page<AttendanceDTO> getLastStudentAttendances(long studentId, Pageable pageable) {
@@ -406,5 +436,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     private LocalDate getAttendanceDate(LocalDate date) {
         return date != null ? date : LocalDate.now();
+    }
+
+    private boolean exists(int schoolId, LocalDate date) {
+        long count = attendanceRepository.countAttendanceOfDay(schoolId, date).orElse(0L);
+        return count > 0;
     }
 }

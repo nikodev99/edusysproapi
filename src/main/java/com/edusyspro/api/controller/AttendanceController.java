@@ -3,7 +3,6 @@ package com.edusyspro.api.controller;
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.AttendanceDTO;
 import com.edusyspro.api.service.interfaces.AttendanceService;
-import com.edusyspro.api.utils.Datetime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +22,23 @@ public class AttendanceController {
     @Autowired
     public AttendanceController(AttendanceService attendanceService) {
         this.attendanceService = attendanceService;
+    }
+
+    @PostMapping
+    ResponseEntity<?> saveAttendance(
+            @RequestBody List<AttendanceDTO> attendances,
+            @RequestParam int classe,
+            @RequestParam String date
+    ) {
+        LocalDate dateOfTheDay = ControllerUtils.parseDate(date);
+        return ResponseEntity.ok(
+                attendanceService.saveAllAttendances(attendances, classe, dateOfTheDay)
+        );
+    }
+
+    @PutMapping
+    ResponseEntity<Boolean> modifyingAttendanceStatus(@RequestBody List<AttendanceDTO> attendances) {
+        return ResponseEntity.ok(attendanceService.updateAllAttendances(attendances));
     }
 
     @GetMapping("/{studentId}")
@@ -51,7 +67,7 @@ public class AttendanceController {
         return ResponseEntity.ok(attendanceService.getAllClasseAttendancesPerDate(
                 classeId,
                 academicYear,
-                dateOfTheDay != null ? LocalDate.parse(dateOfTheDay): null
+                ControllerUtils.parseDate(dateOfTheDay)
         ));
     }
 
@@ -70,7 +86,7 @@ public class AttendanceController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String sortCriteria
     ) {
-        LocalDate date = dateOfTheDay != null ? Datetime.zonedDateTime(dateOfTheDay).toLocalDate() : null;
+        LocalDate date = ControllerUtils.parseDate(dateOfTheDay);
         Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
         if(search == null) {
             return ResponseEntity.ok(attendanceService.getAllSchoolPerDateAttendances(
@@ -85,7 +101,7 @@ public class AttendanceController {
 
     @GetMapping("/classe_{classeId}")
     ResponseEntity<?> getClasseAttendanceStatusCounts(@PathVariable int classeId, @RequestParam String academicYear, String date) {
-        LocalDate dateOfTheDay = date != null ? Datetime.zonedDateTime(date).toLocalDate() : null;
+        LocalDate dateOfTheDay = ControllerUtils.parseDate(date);
         return ResponseEntity.ok(attendanceService.getClasseAttendanceCount(classeId, academicYear, dateOfTheDay));
     }
 
@@ -131,14 +147,7 @@ public class AttendanceController {
 
     @GetMapping("/school_status/{academicYear}")
     ResponseEntity<?> getSchoolAttendanceStatusCounts(@PathVariable String academicYear, @RequestParam(required = false) String date) {
-        LocalDate dateOfTheDay = null;
-        if (date != null) {
-            if (date.length() > 10) {
-                dateOfTheDay = Datetime.zonedDateTime(date).toLocalDate();
-            }else {
-                dateOfTheDay = LocalDate.parse(date);
-            }
-        }
+        LocalDate dateOfTheDay = ControllerUtils.parseDate(date);
         return ResponseEntity.ok(attendanceService.getSchoolAttendanceCount(academicYear, dateOfTheDay));
     }
 
@@ -149,8 +158,8 @@ public class AttendanceController {
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate
     ) {
-        LocalDate start = startDate != null ? Datetime.zonedDateTime(startDate).toLocalDate() : null;
-        LocalDate end = endDate != null ? Datetime.zonedDateTime(endDate).toLocalDate() : null;
+        LocalDate start = ControllerUtils.parseDate(startDate);
+        LocalDate end = ControllerUtils.parseDate(endDate);
 
         return ResponseEntity.ok(attendanceService.getClasseAttendanceStats(classeId, academicYear, start, end));
     }
@@ -162,8 +171,8 @@ public class AttendanceController {
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate
     ) {
-        LocalDate start = startDate != null ? Datetime.zonedDateTime(startDate).toLocalDate() : null;
-        LocalDate end = endDate != null ? Datetime.zonedDateTime(endDate).toLocalDate() : null;
+        LocalDate start = ControllerUtils.parseDate(startDate);
+        LocalDate end = ControllerUtils.parseDate(endDate);
         return ResponseEntity.ok(attendanceService.getSchoolAttendanceStats(schoolId, academicYear, start, end));
     }
 

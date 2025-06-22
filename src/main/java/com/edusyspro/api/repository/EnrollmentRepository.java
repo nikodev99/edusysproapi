@@ -80,9 +80,9 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     Page<EnrolledStudent> getEnrolledStudentsByClassId(int classeId, UUID academicYear, Pageable pageable);
 
     @Query(value = """
-        select new com.edusyspro.api.dto.custom.EnrolledStudentBasic(e.id, e.student.id, e.student.personalInfo.firstName,
-        e.student.personalInfo.lastName, e.student.personalInfo.image, e.student.reference) from EnrollmentEntity e where e.classe.id = ?1
-        and e.academicYear.id = ?2
+        select new com.edusyspro.api.dto.custom.EnrolledStudentBasic(e.id, e.student.id, e.student.personalInfo.id,
+        e.student.personalInfo.firstName, e.student.personalInfo.lastName, e.student.personalInfo.image, e.student.reference)
+        from EnrollmentEntity e where e.classe.id = ?1 and e.academicYear.id = ?2
    """)
     List<EnrolledStudentBasic> getEnrolledStudentsByClassId(int classeId, UUID academicYear);
 
