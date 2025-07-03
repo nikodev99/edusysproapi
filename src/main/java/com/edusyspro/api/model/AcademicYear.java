@@ -33,7 +33,7 @@ public class AcademicYear {
     @JsonProperty("academicYear")
     private String years;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     @JsonIgnore
     private School school;

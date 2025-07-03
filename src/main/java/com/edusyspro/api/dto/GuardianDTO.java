@@ -1,6 +1,7 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.model.School;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

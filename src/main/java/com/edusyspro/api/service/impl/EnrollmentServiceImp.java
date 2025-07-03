@@ -97,7 +97,6 @@ public class EnrollmentServiceImp implements EnrollmentService {
             );
 
             ClasseDTO classe = student.getClasse();
-            System.out.println("ID: " + classe.getId() + " GRADE: " + classe.getGrade().getSection());
             List<ScheduleDTO> schedules = scheduleService.getAllClasseSchedule(classe.getId(), classe.getGrade().getSection());
 
             student.getStudent().setGuardian(studentService.getStudentGuardian(studentId));

@@ -101,13 +101,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDTO> findStudentByGuardian(String guardianId) {
-        List<StudentEssential> studentEssentials = studentRepository.findStudentByGuardianId(UUID.fromString(guardianId)).orElseThrow();
-        return studentEssentials.stream()
+        return studentRepository.findStudentByGuardianId(UUID.fromString(guardianId)).stream()
                 .map(StudentEssential::toStudent)
-                .peek(student -> {
-                    HealthCondition healthCondition = getStudentHealthCondition(student.getId().toString());
-                    student.setHealthCondition(healthCondition);
-                })
                 .toList();
     }
 

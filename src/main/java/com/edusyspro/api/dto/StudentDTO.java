@@ -29,6 +29,8 @@ public class StudentDTO {
     private HealthCondition healthCondition;
     private List<ScoreDTO> marks;
     private List<AttendanceDTO> attendances;
+    private School school;
+    private ClasseDTO classe;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
 

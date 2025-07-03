@@ -28,10 +28,11 @@ public interface StudentRepository extends JpaRepository<StudentEntity, UUID> {
     Optional<HealthCondition> findStudentEntityHealthConditionByStudentId(UUID id);
 
     @Query("""
-            select new com.edusyspro.api.dto.custom.StudentEssential(s.id, s.personalInfo.firstName, s.personalInfo.lastName,
-            s.personalInfo.gender, s.personalInfo.emailId, s.personalInfo.birthDate, s.personalInfo.birthCity,
-            s.personalInfo.nationality, s.dadName, s.momName, s.reference, s.personalInfo.telephone, s.personalInfo.address,
-            s.personalInfo.image) from StudentEntity s where s.guardian.id = ?1
+            select new com.edusyspro.api.dto.custom.StudentEssential(s.student.id, s.student.personalInfo,
+            s.student.dadName, s.student.momName, s.student.reference, s.classe.id, s.classe.name, s.classe.category,
+            s.classe.grade.section, s.classe.monthCost, s.academicYear.school.id, s.academicYear.school.name, 
+            s.academicYear.school.abbr, s.academicYear.school.websiteURL)
+            from EnrollmentEntity s where s.student.guardian.id = ?1 and s.academicYear.current = true
     """)
-    Optional<List<StudentEssential>> findStudentByGuardianId(UUID guardianId);
+    List<StudentEssential> findStudentByGuardianId(UUID guardianId);
 }

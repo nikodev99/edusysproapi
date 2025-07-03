@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class GuardianServiceImp implements GuardianService {
@@ -46,12 +44,9 @@ public class GuardianServiceImp implements GuardianService {
 
     @Override
     public GuardianDTO findGuardianById(String id) {
-        GuardianEssential essential = guardianRepository.findGuardianEntityById(UUID.fromString(id));
-        GuardianDTO guardianDTO = new GuardianDTO();
-        if (essential != null)
-            guardianDTO = GuardianEssential.populateGuardian(essential);
-
-        return guardianDTO;
+        return guardianRepository.findGuardianEntityById(UUID.fromString(id))
+                .map(GuardianEssential::populateGuardian)
+                .orElseGet(GuardianDTO::new);
     }
 
     @Override
@@ -64,13 +59,9 @@ public class GuardianServiceImp implements GuardianService {
 
     @Override
     public List<GuardianDTO> findAll() {
-        List<GuardianEssential> allGuardians = guardianRepository.findAllGuardians();
-        List<GuardianDTO> guardianDTOS = new ArrayList<>();
-        if (!allGuardians.isEmpty())
-            guardianDTOS = allGuardians.stream()
-                    .map(GuardianEssential::populateGuardian)
-                    .toList();
-
-        return guardianDTOS;
+        return guardianRepository.findAllGuardians()
+                .stream()
+                .map(GuardianEssential::populateGuardian)
+                .toList();
     }
 }

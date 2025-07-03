@@ -21,4 +21,6 @@ public class Employee {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "personalInfo", referencedColumnName = "id")
     private Individual personalInfo;
+
+    private UUID schoolId;
 }
