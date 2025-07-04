@@ -15,18 +15,20 @@ import java.util.UUID;
 public interface EnrollmentService {
 
     /**
-     * Adding a new student
-     * @param enrollmentDTO data to add
-     * @return EnrollmentDTO
+     * Enrolls a student based on the provided enrollment details.
+     *
+     * @param enrollmentDTO the enrollment data transfer object (DTO) containing
+     *                       necessary details for student enrollment
+     * @return the enrolled student's details encapsulated in an EnrollmentDTO
      */
     EnrollmentDTO enrollStudent(EnrollmentDTO enrollmentDTO);
 
     /**
-     * TODO Change enrolledStudent to EnrollmentDTO
-     * Get all the student enrolled in a school
-     * @param schoolId The school id.
-     * @param pageable The pageable for the pagination
-     * @return Page<EnrolledStudent>
+     * Retrieves a paginated list of students enrolled in a specific school.
+     *
+     * @param schoolId the unique identifier of the school
+     * @param pageable an object containing pagination and sorting information
+     * @return a paginated collection of EnrollmentDTO objects representing the enrolled students
      */
     Page<EnrollmentDTO> getEnrolledStudents(String schoolId, Pageable pageable);
 
@@ -41,12 +43,11 @@ public interface EnrollmentService {
 
     /**
      * Get an enrolled student with its address, guardian, its health status,
-     * 5 marks, 5 history, 5 attendances and 5 classe schedule
-     * @param schoolId The school id.
+     * 5 marks, 5 histories, 5 attendances and 5 classe schedules
      * @param studentId The student id
      * @return EnrollmentDTO
      */
-    EnrollmentDTO getEnrolledStudent(String schoolId, String studentId);
+    EnrollmentDTO getEnrolledStudent(String studentId);
 
     /**
      * Get pagination of the student of a single class.
@@ -93,14 +94,13 @@ public interface EnrollmentService {
 
     /***
      * Get a student classmates from current and previous years
-     * @param schoolId The school id
      * @param studentId The student id
      * @param classeId The classe id
      * @param academicYear The academic year id
      * @param pageable The pageable for the pagination
      * @return List<EnrollmentDTO>
      */
-    Page<EnrollmentDTO> getAllStudentClassmates(String schoolId, String studentId, int classeId, String academicYear, Pageable pageable);
+    Page<EnrollmentDTO> getAllStudentClassmates(String studentId, int classeId, String academicYear, Pageable pageable);
 
     /***
      * Get the all guardians of the enrolled studentDTOS

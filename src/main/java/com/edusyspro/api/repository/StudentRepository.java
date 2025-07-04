@@ -30,7 +30,7 @@ public interface StudentRepository extends JpaRepository<StudentEntity, UUID> {
     @Query("""
             select new com.edusyspro.api.dto.custom.StudentEssential(s.student.id, s.student.personalInfo,
             s.student.dadName, s.student.momName, s.student.reference, s.classe.id, s.classe.name, s.classe.category,
-            s.classe.grade.section, s.classe.monthCost, s.academicYear.school.id, s.academicYear.school.name, 
+            s.classe.grade.section, s.classe.monthCost, s.academicYear.school.id, s.academicYear.school.name,
             s.academicYear.school.abbr, s.academicYear.school.websiteURL)
             from EnrollmentEntity s where s.student.guardian.id = ?1 and s.academicYear.current = true
     """)

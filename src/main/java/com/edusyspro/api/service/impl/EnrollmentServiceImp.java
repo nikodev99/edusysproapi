@@ -81,15 +81,15 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public EnrollmentDTO getEnrolledStudent(String schoolId, String studentId) {
-        EnrollmentDTO student = enrollmentRepository.findEnrollmentById(UUID.fromString(schoolId), UUID.fromString(studentId))
+    public EnrollmentDTO getEnrolledStudent(String studentId) {
+        EnrollmentDTO student = enrollmentRepository.findEnrollmentById(UUID.fromString(studentId))
                 .populateStudent();
 
         if (student != null) {
             Pageable pageable = PageRequest.of(0, 5);
             Page<ScoreDTO> scores = scoreService.getLastScoresByStudent(studentId, pageable);
             Page<EnrolledStudent> enrollments = enrollmentRepository.findStudentEnrollments(
-                    UUID.fromString(schoolId), UUID.fromString(studentId), pageable
+                    UUID.fromString(studentId), pageable
             );
             Page<AttendanceDTO> attendances = attendanceService.getLastStudentAttendances(
                     student.getStudent().getPersonalInfo().getId(),
@@ -150,9 +150,8 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public Page<EnrollmentDTO> getAllStudentClassmates(String schoolId, String studentId, int classeId, String academicYear, Pageable pageable) {
+    public Page<EnrollmentDTO> getAllStudentClassmates(String studentId, int classeId, String academicYear, Pageable pageable) {
         Page<EnrolledStudent> enrolledStudents = enrollmentRepository.findStudentClassmateByAcademicYear(
-                UUID.fromString(schoolId),
                 UUID.fromString(studentId),
                 classeId,
                 UUID.fromString(academicYear),

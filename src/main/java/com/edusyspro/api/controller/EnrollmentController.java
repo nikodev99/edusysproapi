@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/enroll")
@@ -32,6 +31,14 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.enrollStudent(enrollmentDTO));
     }
 
+    /**
+     * Retrieves a paginated list of enrolled students.
+     *
+     * @param page the page number to retrieve, default value is 0
+     * @param size the number of records per page, the default value is 10
+     * @param sortCriteria optional sorting criteria to order the results
+     * @return a {@link ResponseEntity} containing a {@link Page} of {@link EnrollmentDTO} objects
+     */
     @GetMapping
     ResponseEntity<Page<EnrollmentDTO>> getEnrolledStudents(
             @RequestParam(defaultValue = "0") int page,
@@ -42,16 +49,38 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudents(ConstantUtils.SCHOOL_ID, pageable));
     }
 
+    /**
+     * Retrieves a list of enrolled students based on the specified search query.
+     *
+     * @param q the search query to filter enrolled students
+     * @return a {@link ResponseEntity} containing a {@link List} of {@link EnrollmentDTO} objects matching the query
+     */
     @GetMapping("/search/")
     ResponseEntity<List<EnrollmentDTO>> getEnrolledStudents(@RequestParam String q) {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudents(ConstantUtils.SCHOOL_ID, q));
     }
 
+    /**
+     * Retrieves enrollment details for a specific student based on the provided student ID.
+     *
+     * @param studentId the unique identifier of the student whose enrollment details are to be retrieved
+     * @return a {@link ResponseEntity} containing the enrollment details encapsulated in an {@link EnrollmentDTO} object
+     */
     @GetMapping("/student/{studentId}")
     ResponseEntity<EnrollmentDTO> getEnrollmentById(@PathVariable String studentId) {
-        return ResponseEntity.ok(enrollmentService.getEnrolledStudent(ConstantUtils.SCHOOL_ID, studentId));
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudent(studentId));
     }
 
+    /**
+     * Retrieves a paginated list of enrolled students for a specific class and academic year.
+     *
+     * @param classeId the unique identifier of the class whose enrolled students are to be retrieved
+     * @param page the page number to retrieve, default value is 0
+     * @param size the number of records per page, the default value is 10
+     * @param sortCriteria optional sorting criteria to order the results
+     * @param academicYear the academic year to filter the enrolled students
+     * @return a {@link ResponseEntity} containing a {@link Page} of {@link EnrollmentDTO} objects
+     */
     @GetMapping("/classroom/{classeId}")
     ResponseEntity<Page<EnrollmentDTO>> getClasseEnrolledStudents(
             @PathVariable int classeId,
@@ -64,6 +93,13 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getClasseEnrolledStudents(classeId, academicYear, pageable));
     }
 
+    /**
+     * Retrieves a list of enrolled students for a specific class and academic year.
+     *
+     * @param classeId the unique identifier of the class whose enrolled students are to be retrieved
+     * @param academicYear the academic year to filter the enrolled students
+     * @return a {@link ResponseEntity} containing a {@link List} of {@link EnrollmentDTO} objects
+     */
     @GetMapping("/classe/{classeId}")
     ResponseEntity<List<EnrollmentDTO>> getClasseEnrolledStudents(
             @PathVariable int classeId,
@@ -72,6 +108,15 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getClasseEnrolledStudents(classeId, academicYear));
     }
 
+    /**
+     * Retrieves a list of enrolled students for a specific class and academic year
+     * based on the provided search query.
+     *
+     * @param classeId the unique identifier of the class whose enrolled students are to be retrieved
+     * @param academicYear the academic year to filter the enrolled students
+     * @param search the search query to filter the enrolled students
+     * @return a {@link ResponseEntity} containing a {@link List} of {@link EnrollmentDTO} objects
+     */
     @GetMapping("/classroom_search/{classeId}")
     ResponseEntity<List<EnrollmentDTO>> getClasseEnrolledStudents(
             @PathVariable int classeId,
@@ -81,11 +126,28 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getClasseEnrolledStudentsSearch(classeId, academicYear, search));
     }
 
+    /**
+     * Retrieves a list of classmates for a specific student in a specified class.
+     *
+     * @param studentId the unique identifier of the student whose classmates are to be retrieved
+     * @param classeId the unique identifier of the class from which to retrieve the classmates
+     * @return a {@link ResponseEntity} containing a {@link List} of {@link EnrollmentDTO} objects representing the classmates
+     */
     @GetMapping("/classmates/{studentId}_{classeId}")
     ResponseEntity<List<EnrollmentDTO>> getStudentClassmates(@PathVariable String studentId, @PathVariable int classeId) {
         return ResponseEntity.ok(enrollmentService.getStudentClassmates(ConstantUtils.SCHOOL_ID, studentId, classeId, 5));
     }
 
+    /**
+     * Retrieves a paginated list of classmates for a specific student in a given class and academic year.
+     *
+     * @param classeId the unique identifier of the class from which to retrieve the classmates
+     * @param studentId the unique identifier of the student whose classmates are to be retrieved
+     * @param academicYearId the unique identifier of the academic year used for filtering the classmates
+     * @param page the page number to retrieve, default value is 0
+     * @param size the number of records per page, the default value is 10
+     * @return a {@link ResponseEntity} containing a {@link Page} of {@link EnrollmentDTO} objects representing the classmates
+     */
     @GetMapping("/{studentId}_{classeId}")
     ResponseEntity<Page<EnrollmentDTO>> getAllStudentClassmates(
             @PathVariable int classeId,
@@ -96,10 +158,18 @@ public class EnrollmentController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(enrollmentService.getAllStudentClassmates(
-                ConstantUtils.SCHOOL_ID, studentId, classeId, academicYearId, pageable
+                studentId, classeId, academicYearId, pageable
         ));
     }
 
+    /**
+     * Fetches a paginated list of guardians for enrolled students.
+     *
+     * @param page the page number to retrieve, default is 0
+     * @param size the number of records per page, default is 10
+     * @param sortCriteria an optional parameter to specify the sorting criteria
+     * @return a ResponseEntity containing a Page of GuardianDTO objects
+     */
     @GetMapping("/guardians")
     ResponseEntity<Page<GuardianDTO>> fetchEnrolledStudentsGuardians(
             @RequestParam(defaultValue = "0") int page,
@@ -112,16 +182,36 @@ public class EnrollmentController {
         );
     }
 
+    /**
+     * Fetches the list of guardians for students enrolled in the school based on search criteria.
+     *
+     * @param q the query parameter used for filtering guardians by specific criteria.
+     * @return a ResponseEntity containing a list of GuardianDTO objects that match the query.
+     */
     @GetMapping("/guardians/search/")
     ResponseEntity<List<GuardianDTO>> fetchEnrolledStudentsGuardians(@RequestParam String q) {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudentGuardians(ConstantUtils.SCHOOL_ID, q));
     }
 
+    /**
+     * Counts the number of students in a specific class for a given academic year.
+     *
+     * @param classeId the ID of the class for which student count is to be retrieved
+     * @param academicYear the academic year for which the student count is to be calculated
+     * @return a ResponseEntity containing the count of students in the specified class and academic year
+     */
     @GetMapping("/count/{classeId}")
     ResponseEntity<?> countStudents(@PathVariable int classeId, @RequestParam String academicYear) {
         return ResponseEntity.ok(enrollmentService.countClasseStudents(classeId, academicYear));
     }
 
+    /**
+     * Counts the number of students in the specified classes for a given academic year.
+     *
+     * @param classeIds A comma-separated string of class IDs.
+     * @param academicYear The academic year for which the student count is calculated.
+     * @return A ResponseEntity containing the count of students.
+     */
     @GetMapping("/count/classe/{classeIds}")
     ResponseEntity<?> countStudents(@PathVariable String classeIds, @RequestParam String academicYear) {
         List<Integer> classIdList = Arrays.stream(classeIds.split(","))
@@ -130,6 +220,13 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.countClasseStudents(classIdList, academicYear));
     }
 
+    /**
+     * Handles an HTTP GET request to count the number of students enrolled
+     * in a specific school using the configured school ID.
+     *
+     * @return ResponseEntity containing the total count of students
+     *         enrolled in the school as the response body.
+     */
     @GetMapping("/count")
     ResponseEntity<?> countStudents() {
         return ResponseEntity.ok(enrollmentService.countStudents(ConstantUtils.SCHOOL_ID));
