@@ -78,14 +78,10 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateLastLogin(Long userId) {
-        userRepository.findUserById(userId).ifPresent(user -> {
-            List<ZonedDateTime> lastLogin = user.getLastLogin();
-            if (lastLogin == null) {
-                lastLogin = new ArrayList<>();
-            }
-            lastLogin.add(Datetime.brazzavilleDatetime());
-            userRepository.updateLastLogin(user.getId(), lastLogin);
-        });
+        userRepository.findUserById(userId)
+                .ifPresent(
+                        user -> userRepository.updateLastLogin(user.getId(), Datetime.brazzavilleDatetime())
+                );
     }
 
     public void updateFailedLoginAttempts(Long userId) {

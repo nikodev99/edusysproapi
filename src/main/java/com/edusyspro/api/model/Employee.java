@@ -19,8 +19,10 @@ public class Employee {
     private UUID id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "personalInfo", referencedColumnName = "id")
+    @JoinColumn(name = "personal_info", referencedColumnName = "id")
     private Individual personalInfo;
 
-    private UUID schoolId;
+    @OneToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "school_id", referencedColumnName = "id")
+    private School school;
 }

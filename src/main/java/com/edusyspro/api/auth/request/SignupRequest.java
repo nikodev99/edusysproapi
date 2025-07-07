@@ -1,6 +1,5 @@
 package com.edusyspro.api.auth.request;
 
-import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.Role;
 import com.edusyspro.api.auth.user.User;
 import jakarta.validation.constraints.Email;
@@ -39,7 +38,7 @@ public class SignupRequest {
     @Pattern(regexp = "^[+]?[0-9]{9,15}$", message = "Please provide a valid phone number")
     private String phoneNumber;
 
-    private Individual personalInfo;
+    private Long personalInfoId;
 
     private List<Role> roles;
 
@@ -49,9 +48,7 @@ public class SignupRequest {
                 .password(password)
                 .email(email)
                 .phoneNumber(phoneNumber)
-                .personalInfo(Individual.builder()
-                        .id(personalInfo.getId())
-                        .build())
+                .personalInfoId(personalInfoId)
                 .enabled(true)
                 .accountNonLocked(true)
                 .failedLoginAttempts(0)

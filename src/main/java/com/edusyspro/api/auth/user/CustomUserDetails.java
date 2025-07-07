@@ -25,10 +25,7 @@ public class CustomUserDetails implements UserDetails {
     private final String phoneNumber;
 
     @Getter
-    private final String firstName;
-
-    @Getter
-    private final String lastName;
+    private final UserType userType;
 
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
@@ -37,9 +34,8 @@ public class CustomUserDetails implements UserDetails {
 
 
     protected CustomUserDetails (
-            long id, long personalInfoId, String username, String email, String phoneNumber, String password, String firstName, String lastName,
-            Collection<? extends GrantedAuthority> authorities,
-            boolean enabled, boolean accountNonLocked
+            long id, long personalInfoId, String username, String email, String phoneNumber, UserType userType, String password,
+            Collection<? extends GrantedAuthority> authorities, boolean enabled, boolean accountNonLocked
     ) {
         this.id = id;
         this.personalInfoId = personalInfoId;
@@ -47,8 +43,7 @@ public class CustomUserDetails implements UserDetails {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.userType = userType;
         this.authorities = authorities;
         this.enabled = enabled;
         this.accountNonLocked = accountNonLocked;
@@ -64,13 +59,12 @@ public class CustomUserDetails implements UserDetails {
 
         return new CustomUserDetails(
                 user.getId(),
-                user.getPersonalInfo().getId(),
+                user.getPersonalInfoId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getPhoneNumber(),
+                user.getUserType(),
                 user.getPassword(),
-                user.getPersonalInfo().getFirstName(),
-                user.getPersonalInfo().getLastName(),
                 authorities,
                 isEnabled,
                 isNotLocked

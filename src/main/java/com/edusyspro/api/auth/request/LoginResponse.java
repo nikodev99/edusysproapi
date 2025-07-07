@@ -1,6 +1,6 @@
 package com.edusyspro.api.auth.request;
 
-import com.edusyspro.api.model.School;
+import com.edusyspro.api.dto.IndividualUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class LoginResponse {
-
     private String accessToken;
     private String refreshToken;
     private String userAgent;
@@ -22,5 +21,5 @@ public class LoginResponse {
     private String username;
     private String email;
     private List<String> roles;
-    private School school;
+    private IndividualUser user;
 }

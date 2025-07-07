@@ -1,8 +1,6 @@
 package com.edusyspro.api.auth.user;
 
 import com.edusyspro.api.helper.RoleListConverter;
-import com.edusyspro.api.helper.ZonedDatetimeConverter;
-import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.Role;
 import com.edusyspro.api.utils.Datetime;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -46,16 +44,16 @@ public class User {
     private Boolean accountNonLocked = true;
     private Integer failedLoginAttempts = 0;
 
-    @Convert(converter = ZonedDatetimeConverter.class)
-    private List<ZonedDateTime> lastLogin;
+    private ZonedDateTime lastLogin;
 
-    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
-    @JoinColumn(name = "personal_info_id", referencedColumnName = "id")
-    private Individual personalInfo;
+    private Long personalInfoId;
 
     @Enumerated(EnumType.STRING)
     @Convert(converter = RoleListConverter.class)
     private List<Role> roles;
+
+    @Enumerated
+    private UserType userType;
 
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;

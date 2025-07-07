@@ -14,7 +14,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByUsername(String username);
+    @Query("SELECT u FROM User u WHERE u.username = :username OR u.email = :username OR u.phoneNumber = :username")
+    Optional<User> findByUsername(@Param("username") String username);
 
     @Query("SELECT u FROM User u WHERE u.id = ?1")
     Optional<User> findUserById(Long id);
@@ -32,7 +33,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE User u SET u.lastLogin = :lastLogin WHERE u.id = :userId")
-    void updateLastLogin(@Param("userId") Long userId, @Param("lastLogin") List<ZonedDateTime> lastLogin);
+    void updateLastLogin(@Param("userId") Long userId, @Param("lastLogin") ZonedDateTime lastLogin);
 
     @Modifying
     @Transactional

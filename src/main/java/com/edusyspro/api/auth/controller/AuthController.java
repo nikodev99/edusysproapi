@@ -8,6 +8,8 @@ import com.edusyspro.api.auth.token.jwt.JwtAuthentificationEntryPoint;
 import com.edusyspro.api.auth.token.refresh.RefreshTokenService;
 import com.edusyspro.api.auth.user.CustomUserDetails;
 import com.edusyspro.api.auth.user.UserService;
+import com.edusyspro.api.dto.IndividualUser;
+import com.edusyspro.api.service.interfaces.IndividualService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -38,6 +40,8 @@ public class AuthController {
 
     private final RefreshTokenService refreshTokenService;
 
+    private final IndividualService individualService;
+
     private final JWTUtils jwtUtils;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
@@ -47,12 +51,14 @@ public class AuthController {
             JwtAuthentificationEntryPoint authenticationEntryPoint,
             UserService userService,
             RefreshTokenService refreshTokenService,
+            IndividualService individualService,
             JWTUtils jwtUtils
     ) {
         this.authenticationManager = authenticationManager;
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.userService = userService;
         this.refreshTokenService = refreshTokenService;
+        this.individualService = individualService;
         this.jwtUtils = jwtUtils;
     }
 
@@ -100,6 +106,10 @@ public class AuthController {
             }
 
             userService.updateLastLogin(userPrincipal.getId());
+            IndividualUser user = individualService.getLoginUser(
+                    userPrincipal.getPersonalInfoId(),
+                    userPrincipal.getUserType()
+            );
 
             LoginResponse response = LoginResponse.builder()
                     .accessToken(accessToken)
@@ -110,6 +120,7 @@ public class AuthController {
                     .tokenType("Bearer")
                     .id(userPrincipal.getPersonalInfoId())
                     .roles(userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                    .user(user)
                     .build();
 
             logger.info(

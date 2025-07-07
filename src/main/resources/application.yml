@@ -83,7 +83,7 @@ spring:
 ---
 jwt:
   secret: mySecretKey12345678901234567890123456789012
-  expiration: 86400000
+  expiration: 1800000
   refresh:
     expiration: 604800000
 

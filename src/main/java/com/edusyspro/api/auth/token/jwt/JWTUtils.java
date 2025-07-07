@@ -32,9 +32,9 @@ public class JWTUtils {
 
         if (userDetails instanceof CustomUserDetails customUserDetails) {
             claims.put("id", customUserDetails.getId());
-            claims.put("firstName", customUserDetails.getFirstName());
-            claims.put("lastName", customUserDetails.getLastName());
+            claims.put("username", customUserDetails.getUsername());
             claims.put("email", customUserDetails.getEmail());
+            claims.put("phoneNumber", customUserDetails.getPhoneNumber());
             claims.put("roles", customUserDetails.getAuthorities()
                     .stream()
                     .map(GrantedAuthority::getAuthority)
