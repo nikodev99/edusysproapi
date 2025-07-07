@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -60,7 +61,8 @@ public class ClasseEntity {
     @JsonIgnore
     private List<Teacher> classTeacherCourses;
 
-    private Double monthCost;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal monthCost;
 
     private ZonedDateTime createdAt;
 

@@ -25,8 +25,8 @@ public record EnrolledStudentBasic (
                                 .firstName(firstName)
                                 .lastName(lastName)
                                 .image(image)
+                                .reference(reference)
                                 .build())
-                        .reference(reference)
                         .build())
                 .build();
     }

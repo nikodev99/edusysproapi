@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -27,7 +28,7 @@ public class TeacherDTO {
     private List<ClasseDTO> aClasses;
 
     private List<CourseDTO> courses;
-    private Double salaryByHour;
+    private BigDecimal salaryByHour;
     private List<CourseProgramDTO> courseProgram;
     private School school;
     private ZonedDateTime createdAt;

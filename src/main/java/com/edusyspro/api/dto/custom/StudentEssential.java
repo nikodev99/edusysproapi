@@ -7,6 +7,7 @@ import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Section;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public record StudentEssential (
@@ -14,12 +15,11 @@ public record StudentEssential (
     Individual personalInfo,
     String dadName,
     String momName,
-    String reference,
     int classeId,
     String classe,
     String classeCategory,
     Section grade,
-    double monthCost,
+    BigDecimal monthCost,
     UUID schoolId,
     String name,
     String abbr,
@@ -31,7 +31,6 @@ public record StudentEssential (
                 .personalInfo(personalInfo)
                 .dadName(dadName)
                 .momName(momName)
-                .reference(reference)
                 .classe(ClasseDTO.builder()
                         .id(classeId)
                         .name(classe)

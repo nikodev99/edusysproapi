@@ -36,9 +36,6 @@ public class StudentEntity {
 
     private String momName;
 
-    @Column(length = 50)
-    private String reference;
-
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "guardian_id", referencedColumnName = "id")
     private GuardianEntity guardian;

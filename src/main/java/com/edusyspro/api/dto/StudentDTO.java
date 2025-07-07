@@ -24,7 +24,6 @@ public class StudentDTO {
     private List<EnrollmentDTO> enrollmentEntities;
     private String dadName;
     private String momName;
-    private String reference;
     private GuardianEntity guardian;
     private HealthCondition healthCondition;
     private List<ScoreDTO> marks;
@@ -41,7 +40,6 @@ public class StudentDTO {
                 .enrollmentEntities(student.getEnrollmentEntities().stream().map(EnrollmentDTO::fromEntity).toList())
                 .dadName(student.getDadName())
                 .momName(student.getMomName())
-                .reference(student.getReference())
                 .guardian(student.getGuardian())
                 .healthCondition(student.getHealthCondition())
                 .build();
@@ -53,7 +51,6 @@ public class StudentDTO {
                 .personalInfo(student.getPersonalInfo())
                 .dadName(student.getDadName())
                 .momName(student.getMomName())
-                .reference(student.getReference())
                 .guardian(student.getGuardian())
                 .healthCondition(student.getHealthCondition())
                 .build();

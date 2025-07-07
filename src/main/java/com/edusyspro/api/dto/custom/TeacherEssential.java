@@ -7,6 +7,7 @@ import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.model.enums.Status;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -15,7 +16,7 @@ public record TeacherEssential(
         UUID id,
         Individual personalInfo,
         LocalDate hireDate,
-        double salaryByHour,
+        BigDecimal salaryByHour,
         UUID schoolId,
         String schoolName,
         ZonedDateTime createdAt,

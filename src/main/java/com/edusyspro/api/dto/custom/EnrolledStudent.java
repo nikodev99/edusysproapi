@@ -8,6 +8,7 @@ import com.edusyspro.api.model.*;
 import com.edusyspro.api.model.enums.Section;
 import lombok.Builder;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -17,13 +18,12 @@ public record EnrolledStudent(
         UUID id,
         Individual personalInfo,
         AcademicYear academicYear,
-        String reference,
         ZonedDateTime lastEnrolledDate,
         int classeId,
         String classe,
         String classeCategory,
         Section grade,
-        double monthCost,
+        BigDecimal monthCost,
         String dadName,
         String momName
 ) {
@@ -37,7 +37,6 @@ public record EnrolledStudent(
                         .personalInfo(personalInfo)
                         .dadName(dadName)
                         .momName(momName)
-                        .reference(reference)
                         .build())
                 .enrollmentDate(lastEnrolledDate)
                 .classe(ClasseDTO.builder()

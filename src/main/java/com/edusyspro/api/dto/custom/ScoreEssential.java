@@ -1,7 +1,6 @@
 package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.*;
-import com.edusyspro.api.model.Grade;
 import com.edusyspro.api.model.enums.Section;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

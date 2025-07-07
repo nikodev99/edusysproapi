@@ -38,28 +38,28 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     List<ScoreEssential> findAllByStudentIdAcademicYearAndSubjectId(UUID studentId,  int subjectId, UUID academicYearId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
+        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
         s.assignment.classeEntity.name, s.obtainedMark, s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.preparedBy.id = ?1 and s.assignment.semester.semestre.academicYear.current = true
     """)
     List<ScoreBasicValue> findAllTeacherMarks(long teacherId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
+        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
         s.assignment.classeEntity.name, s.obtainedMark, s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.preparedBy.id in ?1 and s.assignment.semester.semestre.academicYear.current = true
     """)
     List<ScoreBasicValue> findAllTeacherMarks(List<Long> teacherId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
+        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
         s.assignment.classeEntity.name, s.obtainedMark, s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.id = ?1 order by s.obtainedMark desc
     """)
     Page<ScoreBasicValue> findScoresByAssignment(long assignmentId, Pageable pageable);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
+        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
         s.assignment.classeEntity.name, s.obtainedMark, s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.id = ?1 order by s.obtainedMark desc
     """)
@@ -78,7 +78,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     List<ScoreBasic> findScoresByAssignmentIds(List<Long> assignmentId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
+        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
         s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.preparedBy.id = ?1 and s.assignment.subject.id = ?2
         and s.assignment.semester.semestre.academicYear.current = true group by s.studentEntity order by sum(s.obtainedMark) desc
@@ -86,7 +86,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     Page<ScoreBasicValue> findBestStudentByTeacherScores(long teacherId, int subjectId, Pageable pageable);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
+        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
         s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.preparedBy.id = ?1 and s.assignment.semester.semestre.academicYear.current = true
         group by s.studentEntity.id order by sum(s.obtainedMark) desc
@@ -94,7 +94,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     Page<ScoreBasicValue> findBestStudentByTeacherScores(long teacherId, Pageable pageable);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
+        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
         s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.classeEntity.id = ?1 and s.assignment.semester.semestre.academicYear.id = ?2
         group by s.studentEntity.id
@@ -102,7 +102,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     Page<ScoreBasicValue> findBestStudentByClasseScores(int classeId, UUID academicYear, Pageable pageable);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
+        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
         s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.classeEntity.id = ?1 and s.assignment.semester.semestre.academicYear.id = ?2
         and s.assignment.subject.id = ?3 group by s.studentEntity.id
@@ -110,7 +110,7 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     Page<ScoreBasicValue> findBestStudentByClasseBySubjectScores(int classeId, UUID academicYear, int courseId, Pageable pageable);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.reference,
+        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
         s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.subject.id = ?1 and s.assignment.semester.semestre.academicYear.id = ?2
         group by s.studentEntity.id

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Entity
@@ -22,7 +24,20 @@ public class Employee {
     @JoinColumn(name = "personal_info", referencedColumnName = "id")
     private Individual personalInfo;
 
+    private String jobTitle;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal salary;
+
+    private String contractType;
+
+    private boolean active;
+
     @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     private School school;
+
+    private ZonedDateTime createdAt;
+
+    private ZonedDateTime modifyAt;
 }

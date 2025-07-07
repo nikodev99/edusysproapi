@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -49,7 +50,8 @@ public class Teacher {
     )
     private List<Course> courses;
 
-    private Double salaryByHour;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal salaryByHour;
 
     @OneToMany(mappedBy = "teacher")
     @JsonIgnore

@@ -55,6 +55,9 @@ public class Individual {
     @Column(length = 50)
     private String mobile;
 
+    @Column(length = 50)
+    private String reference;
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;

@@ -4,6 +4,7 @@ import com.edusyspro.api.dto.ClasseDTO;
 import com.edusyspro.api.dto.GradeDTO;
 import com.edusyspro.api.model.enums.Section;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 public record ClasseEssential(
@@ -13,7 +14,7 @@ public record ClasseEssential(
         Section section,
         String subSection,
         int roomNumber,
-        double monthCost,
+        BigDecimal monthCost,
         ZonedDateTime createdAt
 ) {
     public ClasseDTO convertToDTO() {

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class ClasseDTO {
     private List<EnrollmentDTO> students;
     @JsonProperty("classeTeachers")
     private List<TeacherDTO> classTeacherCourses;
-    private Double monthCost;
+    private BigDecimal monthCost;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
 
