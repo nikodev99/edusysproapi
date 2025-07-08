@@ -1,7 +1,6 @@
 package com.edusyspro.api.controller;
 
 import com.edusyspro.api.controller.utils.ControllerUtils;
-import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.AssignmentDTO;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
 import com.edusyspro.api.dto.custom.UpdateField;
@@ -59,9 +58,9 @@ public class AssignmentController {
     }
 
     @GetMapping("/not_completed")
-    ResponseEntity<?> fetchAllNotCompletedAssignments() {
+    ResponseEntity<?> fetchAllNotCompletedAssignments(@RequestParam String academicYear) {
         return ResponseEntity.ok(
-                assignmentService.findAllNotCompleteAssignment(ConstantUtils.ACADEMIC_YEAR)
+                assignmentService.findAllNotCompleteAssignment(academicYear)
         );
     }
 

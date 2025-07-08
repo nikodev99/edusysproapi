@@ -4,10 +4,7 @@ import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.DepartmentDTO;
 import com.edusyspro.api.service.interfaces.DepartmentService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/department")
@@ -24,9 +21,9 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.fetchOneByCustomColumn(departmentCode));
     }
 
-    @GetMapping("/basics")
-    ResponseEntity<?> getDepartmentBasicValues() {
-        return ResponseEntity.ok(departmentService.fetchAll(ConstantUtils.SCHOOL_ID));
+    @GetMapping("/basics/{schoolId}")
+    ResponseEntity<?> getDepartmentBasicValues(@PathVariable String schoolId) {
+        return ResponseEntity.ok(departmentService.fetchAll(schoolId));
     }
 
 }

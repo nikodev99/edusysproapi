@@ -1,15 +1,10 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.service.impl.AcademicYearServiceImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -23,27 +18,33 @@ public class AcademicYearController {
         this.academicYearService = academicYearService;
     }
 
-    @GetMapping("/from")
-    ResponseEntity<List<AcademicYear>> fetchAllFromYear(@RequestParam int fromYear) {
-        return ResponseEntity.ok(academicYearService.getAcademicYearsFromYear(ConstantUtils.SCHOOL_ID, fromYear));
+    @GetMapping("/from/{schoolId}")
+    ResponseEntity<List<AcademicYear>> fetchAllFromYear(
+            @PathVariable String schoolId,
+            @RequestParam int fromYear
+    ) {
+        return ResponseEntity.ok(academicYearService.getAcademicYearsFromYear(schoolId, fromYear));
     }
 
-    @GetMapping("/from_date")
-    ResponseEntity<AcademicYear> fetchFromDate(@RequestParam String fromDate) {
+    @GetMapping("/from_date/{schoolId}")
+    ResponseEntity<AcademicYear> fetchFromDate(
+            @PathVariable String schoolId,
+            @RequestParam String fromDate
+    ) {
         return ResponseEntity.ok(academicYearService.getAcademicYearsFromDate(
-                ConstantUtils.SCHOOL_ID,
+                schoolId,
                 ZonedDateTime.parse(fromDate).toLocalDate()
         ));
     }
 
-    @GetMapping
-    ResponseEntity<AcademicYear> academicYear() {
-        return ResponseEntity.ok(academicYearService.getCurrentAcademicYear(ConstantUtils.SCHOOL_ID));
+    @GetMapping("/{schoolId}")
+    ResponseEntity<AcademicYear> academicYear(@PathVariable String schoolId) {
+        return ResponseEntity.ok(academicYearService.getCurrentAcademicYear(schoolId));
     }
 
-    @GetMapping("/all")
-    ResponseEntity<List<AcademicYear>> getAcademicYearList() {
-        return ResponseEntity.ok(academicYearService.getAllSchoolAcademicYear(ConstantUtils.SCHOOL_ID));
+    @GetMapping("/all/{schoolId}")
+    ResponseEntity<List<AcademicYear>> getAcademicYearList(@PathVariable String schoolId) {
+        return ResponseEntity.ok(academicYearService.getAllSchoolAcademicYear(schoolId));
     }
 
 }

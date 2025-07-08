@@ -31,28 +31,27 @@ public class CourseController {
         }
     }
 
-    @GetMapping
-    ResponseEntity<List<CourseDTO>> getAllCourses() {
-        return ResponseEntity.ok(courseService.findAllBasicCourses(ConstantUtils.SCHOOL_ID));
+    @GetMapping("/basic/{schoolId}")
+    ResponseEntity<List<CourseDTO>> getAllCourses(@PathVariable String schoolId) {
+        return ResponseEntity.ok(courseService.findAllBasicCourses(schoolId));
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all/{schoolId}")
     ResponseEntity<Page<CourseDTO>> getAllSchoolCourses(
+            @PathVariable String schoolId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
     ) {
         return ResponseEntity.ok(courseService.findAllSchoolCourses(
-                ConstantUtils.SCHOOL_ID,
-                ControllerUtils.setSort(page, size, sortCriteria)
+                schoolId, ControllerUtils.setSort(page, size, sortCriteria)
         ));
     }
 
-    @GetMapping("/search/")
-    ResponseEntity<List<CourseDTO>> getAllSchoolCourses(@RequestParam String q) {
+    @GetMapping("/search/{schoolId}")
+    ResponseEntity<List<CourseDTO>> getAllSchoolCourses(@PathVariable String schoolId, @RequestParam String q) {
         return ResponseEntity.ok(courseService.findAllSchoolCourses(
-                ConstantUtils.SCHOOL_ID,
-                String.valueOf(q)
+                schoolId, String.valueOf(q)
         ));
     }
 

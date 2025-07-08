@@ -19,9 +19,9 @@ public class ExamController {
         this.examService = examService;
     }
 
-    @GetMapping
-    ResponseEntity<?> getAllExams(@RequestParam String academicYear){
-        return ResponseEntity.ok(examService.findAllSchoolExams(ConstantUtils.SCHOOL_ID, academicYear));
+    @GetMapping("/{schoolId}")
+    ResponseEntity<?> getAllExams(@PathVariable String schoolId, @RequestParam String academicYear){
+        return ResponseEntity.ok(examService.findAllSchoolExams(schoolId, academicYear));
     }
 
     @GetMapping("/classe/{classeId}")

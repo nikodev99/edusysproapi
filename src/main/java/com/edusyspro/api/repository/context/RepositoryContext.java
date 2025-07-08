@@ -47,7 +47,7 @@ public class RepositoryContext {
         String randomFunction = activeProfile.contains("mysql") ? "rand()" : "random()";
 
         return "select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear," +
-                "e.student.reference, e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section," +
+                "e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section," +
                 "e.classe.monthCost, e.student.dadName, e.student.momName) from EnrollmentEntity e where " +
                 (exclude ?  "e.student.id <> ?1 and " : "") + "e.classe.id = ?" + (exclude ? "2" : "1") +
                 " and e.academicYear.current = true and e.isArchived = false order by " + randomFunction;

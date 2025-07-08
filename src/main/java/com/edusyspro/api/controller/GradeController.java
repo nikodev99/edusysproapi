@@ -6,6 +6,7 @@ import com.edusyspro.api.dto.GradeDTO;
 import com.edusyspro.api.service.interfaces.GradeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +22,8 @@ public class GradeController {
         this.gradeService = gradeService;
     }
 
-    @GetMapping
-    ResponseEntity<List<GradeDTO>> getSchoolGrades() {
-        return ResponseEntity.ok(gradeService.fetchAll(ConstantUtils.SCHOOL_ID));
+    @GetMapping("/{schoolId}")
+    ResponseEntity<List<GradeDTO>> getSchoolGrades(@PathVariable String schoolId) {
+        return ResponseEntity.ok(gradeService.fetchAll(schoolId));
     }
 }

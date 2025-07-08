@@ -1,7 +1,6 @@
 package com.edusyspro.api.controller;
 
 import com.edusyspro.api.controller.utils.ControllerUtils;
-import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
@@ -39,28 +38,29 @@ public class TeacherController {
         }
     }
 
-    @GetMapping("/{id}")
-    ResponseEntity<?> getTeacher(@PathVariable(name = "id") String id) {
+    @GetMapping("/{id}/{schoolId}")
+    ResponseEntity<?> getTeacher(@PathVariable(name = "id") String id, @PathVariable(name = "schoolId") String schoolId) {
         try {
-            return ResponseEntity.ok(teacherService.findTeacherById(id, ConstantUtils.SCHOOL_ID));
+            return ResponseEntity.ok(teacherService.findTeacherById(id, schoolId));
         }catch (NotFountException n) {
             return ResponseEntity.badRequest().body(n.getMessage());
         }
     }
 
-    @GetMapping(value = {"", "/all"})
+    @GetMapping(value = {"/{schoolId}", "/all/{schoolId}"})
     ResponseEntity<Page<TeacherDTO>> getTeachers(
+            @PathVariable(name = "schoolId") String schoolId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
     ) {
         Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
-        return ResponseEntity.ok(teacherService.findAllTeachers(ConstantUtils.SCHOOL_ID, pageable));
+        return ResponseEntity.ok(teacherService.findAllTeachers(schoolId, pageable));
     }
 
-    @GetMapping("/search/")
-    ResponseEntity<List<TeacherDTO>> getSearchedTeachers(@RequestParam String q) {
-        return ResponseEntity.ok(teacherService.findAllTeachers(ConstantUtils.SCHOOL_ID, q));
+    @GetMapping("/search/{schoolId}")
+    ResponseEntity<List<TeacherDTO>> getSearchedTeachers(@PathVariable(name = "schoolId") String schoolId, @RequestParam String q) {
+        return ResponseEntity.ok(teacherService.findAllTeachers(schoolId, q));
     }
 
     @GetMapping("/basic/{classeId}")
@@ -73,9 +73,9 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.findTeacherBasicValue(teacherId, classe));
     }
 
-    @GetMapping("/count")
-    ResponseEntity<?> countTeachers() {
-        return ResponseEntity.ok(teacherService.countAllTeachers(ConstantUtils.SCHOOL_ID));
+    @GetMapping("/count/{schoolId}")
+    ResponseEntity<?> countTeachers(@PathVariable(name = "schoolId") String schoolId) {
+        return ResponseEntity.ok(teacherService.countAllTeachers(schoolId));
     }
 
     @GetMapping("/{id}/count_student")

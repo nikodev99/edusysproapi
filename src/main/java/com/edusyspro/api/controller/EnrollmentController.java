@@ -39,14 +39,15 @@ public class EnrollmentController {
      * @param sortCriteria optional sorting criteria to order the results
      * @return a {@link ResponseEntity} containing a {@link Page} of {@link EnrollmentDTO} objects
      */
-    @GetMapping
+    @GetMapping("/{schoolId}")
     ResponseEntity<Page<EnrollmentDTO>> getEnrolledStudents(
+            @PathVariable String schoolId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
     ) {
         Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
-        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(ConstantUtils.SCHOOL_ID, pageable));
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(schoolId, pageable));
     }
 
     /**
@@ -55,9 +56,9 @@ public class EnrollmentController {
      * @param q the search query to filter enrolled students
      * @return a {@link ResponseEntity} containing a {@link List} of {@link EnrollmentDTO} objects matching the query
      */
-    @GetMapping("/search/")
-    ResponseEntity<List<EnrollmentDTO>> getEnrolledStudents(@RequestParam String q) {
-        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(ConstantUtils.SCHOOL_ID, q));
+    @GetMapping("/search/{schoolId}")
+    ResponseEntity<List<EnrollmentDTO>> getEnrolledStudents(@PathVariable String schoolId, @RequestParam String q) {
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudents(schoolId, q));
     }
 
     /**
@@ -133,9 +134,13 @@ public class EnrollmentController {
      * @param classeId the unique identifier of the class from which to retrieve the classmates
      * @return a {@link ResponseEntity} containing a {@link List} of {@link EnrollmentDTO} objects representing the classmates
      */
-    @GetMapping("/classmates/{studentId}_{classeId}")
-    ResponseEntity<List<EnrollmentDTO>> getStudentClassmates(@PathVariable String studentId, @PathVariable int classeId) {
-        return ResponseEntity.ok(enrollmentService.getStudentClassmates(ConstantUtils.SCHOOL_ID, studentId, classeId, 5));
+    @GetMapping("/classmates/{schoolId}/{studentId}_{classeId}")
+    ResponseEntity<List<EnrollmentDTO>> getStudentClassmates(
+            @PathVariable String schoolId,
+            @PathVariable String studentId,
+            @PathVariable int classeId
+    ) {
+        return ResponseEntity.ok(enrollmentService.getStudentClassmates(schoolId, studentId, classeId, 5));
     }
 
     /**
@@ -148,7 +153,7 @@ public class EnrollmentController {
      * @param size the number of records per page, the default value is 10
      * @return a {@link ResponseEntity} containing a {@link Page} of {@link EnrollmentDTO} objects representing the classmates
      */
-    @GetMapping("/{studentId}_{classeId}")
+    @GetMapping("/classmates/{studentId}_{classeId}")
     ResponseEntity<Page<EnrollmentDTO>> getAllStudentClassmates(
             @PathVariable int classeId,
             @PathVariable String studentId,
@@ -170,15 +175,16 @@ public class EnrollmentController {
      * @param sortCriteria an optional parameter to specify the sorting criteria
      * @return a ResponseEntity containing a Page of GuardianDTO objects
      */
-    @GetMapping("/guardians")
+    @GetMapping("/guardians/{schoolId}")
     ResponseEntity<Page<GuardianDTO>> fetchEnrolledStudentsGuardians(
+            @PathVariable String schoolId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
     ) {
         Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
         return ResponseEntity.ok(
-                enrollmentService.getEnrolledStudentGuardians(ConstantUtils.SCHOOL_ID, pageable)
+                enrollmentService.getEnrolledStudentGuardians(schoolId, pageable)
         );
     }
 
@@ -188,9 +194,9 @@ public class EnrollmentController {
      * @param q the query parameter used for filtering guardians by specific criteria.
      * @return a ResponseEntity containing a list of GuardianDTO objects that match the query.
      */
-    @GetMapping("/guardians/search/")
-    ResponseEntity<List<GuardianDTO>> fetchEnrolledStudentsGuardians(@RequestParam String q) {
-        return ResponseEntity.ok(enrollmentService.getEnrolledStudentGuardians(ConstantUtils.SCHOOL_ID, q));
+    @GetMapping("/guardians/search/{schoolId}")
+    ResponseEntity<List<GuardianDTO>> fetchEnrolledStudentsGuardians(@PathVariable String schoolId, @RequestParam String q) {
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudentGuardians(schoolId, q));
     }
 
     /**
@@ -227,8 +233,8 @@ public class EnrollmentController {
      * @return ResponseEntity containing the total count of students
      *         enrolled in the school as the response body.
      */
-    @GetMapping("/count")
-    ResponseEntity<?> countStudents() {
-        return ResponseEntity.ok(enrollmentService.countStudents(ConstantUtils.SCHOOL_ID));
+    @GetMapping("/count/{schoolId}")
+    ResponseEntity<?> countStudents(@PathVariable String schoolId) {
+        return ResponseEntity.ok(enrollmentService.countStudents(schoolId));
     }
 }

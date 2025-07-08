@@ -6,6 +6,7 @@ import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.service.interfaces.PlanningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,14 +24,14 @@ public class PlanningController {
         this.planningService = planningService;
     }
 
-    @RequestMapping("/basic")
-    ResponseEntity<List<PlanningDTO>> fetchBasicPlanningValues(@RequestParam String academicYear) {
-        return ResponseEntity.ok(planningService.findBasicPlanningValues(ConstantUtils.SCHOOL_ID, academicYear));
+    @RequestMapping("/basic/{schoolId}")
+    ResponseEntity<List<PlanningDTO>> fetchBasicPlanningValues(@PathVariable String schoolId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(planningService.findBasicPlanningValues(schoolId, academicYear));
     }
 
-    @RequestMapping(value = {"", "/all"})
-    ResponseEntity<?> fetchPlanningByGrades(@RequestParam Section section) {
-        return ResponseEntity.ok(planningService.findBasicPlanningByGrade(ConstantUtils.SCHOOL_ID, section));
+    @RequestMapping(value = {"/{schoolId}", "/all/{schoolId}"})
+    ResponseEntity<?> fetchPlanningByGrades(@PathVariable String schoolId, @RequestParam Section section) {
+        return ResponseEntity.ok(planningService.findBasicPlanningByGrade(schoolId, section));
     }
 
 }

@@ -34,23 +34,22 @@ public class ClasseController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/all/{schoolId}")
     ResponseEntity<Page<ClasseDTO>> getAllClasses(
+            @PathVariable String schoolId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
     ) {
         return ResponseEntity.ok(classeService.getAllClassesBySchool(
-                ConstantUtils.SCHOOL_ID,
-                ControllerUtils.setSort(page, size, sortCriteria)
+                schoolId, ControllerUtils.setSort(page, size, sortCriteria)
         ));
     }
 
-    @GetMapping("/search/")
-    ResponseEntity<List<ClasseDTO>> getAllClasses(@RequestParam String q) {
+    @GetMapping("/search/{schoolId}")
+    ResponseEntity<List<ClasseDTO>> getAllClasses(@PathVariable String schoolId, @RequestParam String q) {
         return ResponseEntity.ok(classeService.getAllClassesBySchool(
-                ConstantUtils.SCHOOL_ID,
-                String.valueOf(q)
+                schoolId, String.valueOf(q)
         ));
     }
 
@@ -59,9 +58,9 @@ public class ClasseController {
         return ResponseEntity.ok(classeService.getClasseById(classeId, academicYear));
     }
 
-    @GetMapping("/basic")
-    ResponseEntity<List<?>> getAllClassesBasicValue() {
-        return ResponseEntity.ok(classeService.getClassBasicValues(ConstantUtils.SCHOOL_ID));
+    @GetMapping("/basic/{schoolId}")
+    ResponseEntity<List<?>> getAllClassesBasicValue(@PathVariable String schoolId) {
+        return ResponseEntity.ok(classeService.getClassBasicValues(schoolId));
     }
 
     @PutMapping("/{classeId}")

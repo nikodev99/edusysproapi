@@ -1,9 +1,9 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.service.interfaces.SemesterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,8 +16,8 @@ public class SemesterController {
         this.semesterService = semesterService;
     }
 
-    @GetMapping
-    ResponseEntity<?> getAllSemester() {
-        return ResponseEntity.ok(semesterService.fetchAll(ConstantUtils.SCHOOL_ID));
+    @GetMapping("/{schoolId}")
+    ResponseEntity<?> getAllSemester(@PathVariable String schoolId) {
+        return ResponseEntity.ok(semesterService.fetchAll(schoolId));
     }
 }
