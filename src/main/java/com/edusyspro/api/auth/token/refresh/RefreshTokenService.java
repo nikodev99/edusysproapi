@@ -108,8 +108,4 @@ public class RefreshTokenService {
     public void cleanupExpiryTokens() {
         refreshRepository.deleteByExpiryDateBefore(Instant.now());
     }
-
-    public boolean isRefreshTokenValid(String refreshToken) {
-        return false;
-    }
 }

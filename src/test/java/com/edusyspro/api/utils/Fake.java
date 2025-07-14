@@ -8,6 +8,7 @@ import com.edusyspro.api.model.*;
 import com.edusyspro.api.model.enums.Blood;
 import com.edusyspro.api.model.enums.Status;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.temporal.ChronoUnit;
@@ -75,7 +76,7 @@ public class Fake {
                 .courses(courseList.isEmpty() ? null : courseList)
                 .aClasses(List.of(classes))
                 .school(List.of(school))
-                .salaryByHour(1500.00)
+                .salaryByHour(new BigDecimal("1500.00"))
                 .build();
     }
 
@@ -121,12 +122,12 @@ public class Fake {
                         .birthCity("Brazzaville")
                         .nationality("COG")
                         .telephone(randomNumber())
+                        .reference(school.getAbbr() + randomNumber().substring(0, 6))
                         .address(address)
                         .build()
                 )
                 .dadName(oneWord(randomWord()) + " " + oneWord(randomWord()))
                 .momName(oneWord(randomWord()) + " " + oneWord(randomWord()))
-                .reference(school.getAbbr() + randomNumber().substring(0, 6))
                 .healthCondition(healthCondition)
                 .guardian(GuardianEntity.builder()
                         .personalInfo(Individual.builder()

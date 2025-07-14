@@ -187,11 +187,6 @@ public class AuthController {
                         .body(MessageResponse.builder().message("Invalid or expired refresh token").build());
             }
 
-            if (!refreshTokenService.isRefreshTokenValid(refreshToken)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(MessageResponse.builder().message("Invalid refresh token").build());
-            }
-
             String username = jwtUtils.getUsernameFromToken(refreshToken);
             CustomUserDetails userDetails = (CustomUserDetails) userService.loadUserByUsername(username);
 

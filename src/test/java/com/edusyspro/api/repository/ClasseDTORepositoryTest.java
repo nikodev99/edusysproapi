@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -170,7 +171,7 @@ class ClasseDTORepositoryTest {
                 .name("Terminale A")
                 .category("Terminale Littéraire")
                 .grade(getGrade(Section.LYCEE))
-                .monthCost(3300D)
+                .monthCost(new BigDecimal("3300"))
                 .build();
         boolean exists = classeRepository.existsByName(classe.getName());
         assertTrue(exists);

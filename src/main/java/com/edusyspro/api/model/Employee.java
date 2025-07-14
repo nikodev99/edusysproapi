@@ -1,5 +1,6 @@
 package com.edusyspro.api.model;
 
+import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -33,6 +35,8 @@ public class Employee {
 
     private boolean active;
 
+    private LocalDate hireDate;
+
     @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     private School school;
@@ -40,4 +44,11 @@ public class Employee {
     private ZonedDateTime createdAt;
 
     private ZonedDateTime modifyAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = Datetime.brazzavilleDatetime();
+        modifyAt = Datetime.brazzavilleDatetime();
+        active = true;
+    }
 }
