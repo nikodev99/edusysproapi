@@ -5,6 +5,7 @@ import com.edusyspro.api.dto.EmployeeDTO;
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.Employee;
 import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Gender;
 import com.edusyspro.api.service.interfaces.EmployeeService;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 public class EmployeeRepositoryTest {
@@ -28,24 +29,30 @@ public class EmployeeRepositoryTest {
     @Test
     public void testSaveEmployee() {
         var personalInfo = Individual.builder()
-                .firstName("John")
+                .firstName("Jane")
                 .lastName("Doe")
-                .gender(Gender.HOMME)
+                .gender(Gender.FEMME)
                 .birthDate(LocalDate.of(1990, 1, 1))
                 .birthCity("Paris")
                 .nationality("France")
                 .telephone("058412563")
                 .address(Address.builder()
                         .number(2)
-                        .street("Rue du Rivolie")
-                        .neighborhood("Paris")
-                        .city("Paris")
+                        .street("Rue du Rivarole")
+                        .neighborhood("Brazzaville")
+                        .city("Brazzaville")
                         .zipCode("75008")
-                        .country("France")
+                        .country("Congo")
                         .build())
                 .build();
 
         Employee employee = Employee.builder()
+                .school(School.builder()
+                        .id(UUID.fromString("54e7731a-f2a8-4fc2-a29a-e24f0a01ae39"))
+                        .build())
+                .jobTitle("Informaticienne")
+                .contractType("CDI")
+                .hireDate(LocalDate.of(2020, 8, 1))
                 .personalInfo(personalInfo)
                 .build();
 

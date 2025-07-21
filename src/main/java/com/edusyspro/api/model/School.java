@@ -54,7 +54,7 @@ public class School {
     @Column(length = 50)
     private String websiteURL;
 
-    @OneToMany(mappedBy = "school", cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "school", cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Grade> grades;
 

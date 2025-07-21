@@ -51,4 +51,9 @@ public class Employee {
         modifyAt = Datetime.brazzavilleDatetime();
         active = true;
     }
+
+    @PreUpdate
+    public void preUpdate() {
+        modifyAt = Datetime.brazzavilleDatetime();
+    }
 }

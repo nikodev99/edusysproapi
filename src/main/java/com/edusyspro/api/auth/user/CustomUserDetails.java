@@ -1,21 +1,21 @@
 package com.edusyspro.api.auth.user;
 
+import com.edusyspro.api.dto.custom.SchoolBasic;
+import com.edusyspro.api.model.enums.Role;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails {
     @Getter
     private final Long id;
-
-    @Getter
-    private final Long personalInfoId;
-
     private final String username;
 
     @Getter
@@ -23,19 +23,26 @@ public class CustomUserDetails implements UserDetails {
 
     @Getter
     private final String phoneNumber;
+    private final String password;
+    private final boolean enabled;
+    private final boolean accountNonLocked;
+
+    @Getter
+    private final Long personalInfoId;
 
     @Getter
     private final UserType userType;
 
-    private final String password;
-    private final Collection<? extends GrantedAuthority> authorities;
-    private final boolean enabled;
-    private final boolean accountNonLocked;
+    List<UserSchoolRole> schoolAffiliations;
 
+    private UUID currentSchoolId;
+    private List<Role> currentSchoolRoles;
+
+    private final Collection<? extends GrantedAuthority> authorities;
 
     protected CustomUserDetails (
-            long id, long personalInfoId, String username, String email, String phoneNumber, UserType userType, String password,
-            Collection<? extends GrantedAuthority> authorities, boolean enabled, boolean accountNonLocked
+            Long id, String username, String email, String phoneNumber, String password, boolean enabled, boolean accountNonLocked,
+            Long personalInfoId, UserType userType, List<UserSchoolRole> schoolAffiliations, Collection<? extends GrantedAuthority> authorities
     ) {
         this.id = id;
         this.personalInfoId = personalInfoId;
@@ -44,36 +51,69 @@ public class CustomUserDetails implements UserDetails {
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.userType = userType;
-        this.authorities = authorities;
         this.enabled = enabled;
         this.accountNonLocked = accountNonLocked;
+        this.schoolAffiliations = schoolAffiliations != null ? schoolAffiliations : new ArrayList<>();
+        this.authorities = authorities;
     }
 
     public static CustomUserDetails build(User user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream()
+        List<GrantedAuthority> authorities = user.getSchoolAffiliations().stream()
+                .filter(UserSchoolRole::getIsActive)
+                .flatMap(affiliation -> affiliation.getRoles().stream())
+                .distinct()
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toUnmodifiableList());
 
-        boolean isEnabled = Boolean.TRUE.equals(user.getEnabled());
-        boolean isNotLocked = Boolean.TRUE.equals(user.getAccountNonLocked());
-
         return new CustomUserDetails(
                 user.getId(),
-                user.getPersonalInfoId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getPhoneNumber(),
-                user.getUserType(),
                 user.getPassword(),
-                authorities,
-                isEnabled,
-                isNotLocked
+                Boolean.TRUE.equals(user.getEnabled()),
+                Boolean.TRUE.equals(user.getAccountNonLocked()),
+                user.getPersonalInfoId(),
+                user.getUserType(),
+                user.getSchoolAffiliations(),
+                authorities
         );
+    }
+
+    public void setCurrentSchoolId(UUID schoolId) {
+        this.currentSchoolId = schoolId;
+        this.currentSchoolRoles = schoolAffiliations.stream()
+                .filter(affiliation -> affiliation.getSchool().getId().equals(currentSchoolId))
+                .findFirst()
+                .map(UserSchoolRole::getRoles)
+                .orElse(new ArrayList<>());
+    }
+
+    public List<SchoolBasic> getAvailableSchools() {
+        return schoolAffiliations.stream()
+                .filter(UserSchoolRole::getIsActive)
+                .map(affiliation -> new SchoolBasic(
+                        affiliation.getSchool().getId(),
+                        affiliation.getSchool().getName(),
+                        affiliation.getSchool().getAbbr(),
+                        affiliation.getSchool().getWebsiteURL()
+                ))
+                .toList();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        if (currentSchoolRoles != null && !currentSchoolRoles.isEmpty()) {
+            return currentSchoolRoles.stream()
+                    .map(role -> new SimpleGrantedAuthority(role.name()))
+                    .collect(Collectors.toList());
+        }
+        return schoolAffiliations.stream()
+                .filter(UserSchoolRole::getIsActive)
+                .flatMap(affiliation -> affiliation.getRoles().stream())
+                .distinct()
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .toList();
     }
 
     @Override

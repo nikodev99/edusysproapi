@@ -2,9 +2,11 @@ package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.EmployeeDTO;
 import com.edusyspro.api.dto.custom.EmployeeEssential;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.Employee;
 import com.edusyspro.api.repository.EmployeeRepository;
+import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,10 +19,12 @@ import java.util.UUID;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
+    private final UpdateContext updateContext;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, UpdateContext updateContext) {
         this.employeeRepository = employeeRepository;
+        this.updateContext = updateContext;
     }
 
     @Override
@@ -52,6 +56,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findOneEmployee(UUID.fromString(employeeId))
                 .map(EmployeeEssential::toDto)
                 .orElseThrow(() -> new NotFountException("Employee not found for ID: " + employeeId));
+    }
+
+    @Override
+    public Integer updateEmployeeField(String employeeId, UpdateField fields) {
+        return updateContext.updateEmployeeFields(fields.field(), fields.value(), UUID.fromString(employeeId));
     }
 
     private boolean employeeExists(String email, UUID schoolId) {

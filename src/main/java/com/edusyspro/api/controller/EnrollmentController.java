@@ -206,7 +206,7 @@ public class EnrollmentController {
      * @param academicYear the academic year for which the student count is to be calculated
      * @return a ResponseEntity containing the count of students in the specified class and academic year
      */
-    @GetMapping("/count/{classeId}")
+    @GetMapping("/count_classe/{classeId}")
     ResponseEntity<?> countStudents(@PathVariable int classeId, @RequestParam String academicYear) {
         return ResponseEntity.ok(enrollmentService.countClasseStudents(classeId, academicYear));
     }
@@ -233,7 +233,7 @@ public class EnrollmentController {
      * @return ResponseEntity containing the total count of students
      *         enrolled in the school as the response body.
      */
-    @GetMapping("/count/{schoolId}")
+    @GetMapping("/count_school/{schoolId}")
     ResponseEntity<?> countStudents(@PathVariable String schoolId) {
         return ResponseEntity.ok(enrollmentService.countStudents(schoolId));
     }

@@ -1,6 +1,7 @@
 package com.edusyspro.api.auth.request;
 
-import com.edusyspro.api.model.enums.Role;
+import com.edusyspro.api.auth.user.UserSchoolRole;
+import com.edusyspro.api.auth.user.UserType;
 import com.edusyspro.api.auth.user.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -40,7 +42,9 @@ public class SignupRequest {
 
     private Long personalInfoId;
 
-    private List<Role> roles;
+    private UserType userType;
+
+    private UserSchoolRole roles;
 
     public User toEntity() {
         return User.builder()
@@ -49,10 +53,21 @@ public class SignupRequest {
                 .email(email)
                 .phoneNumber(phoneNumber)
                 .personalInfoId(personalInfoId)
+                .userType(userType)
                 .enabled(true)
                 .accountNonLocked(true)
                 .failedLoginAttempts(0)
-                .roles(roles)
+                .schoolAffiliations(new ArrayList<>())
                 .build();
+    }
+
+    public List<UserSchoolRole> toUserSchoolRole(Long userId) {
+        UserSchoolRole userRoles =  UserSchoolRole.builder()
+                .userId(userId)
+                .schoolId(roles.getSchoolId())
+                .roles(roles.getRoles())
+                .build();
+
+        return new ArrayList<>(List.of(userRoles));
     }
 }

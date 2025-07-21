@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,6 +28,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByEmail(String email);
 
     Boolean existsByPhoneNumber(String phoneNumber);
+
+    Boolean existsByPersonalInfoId(Long personalInfoId);
 
     @Modifying
     @Transactional

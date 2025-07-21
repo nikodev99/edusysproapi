@@ -1,21 +1,17 @@
 package com.edusyspro.api.repository.context;
 
-import com.edusyspro.api.model.Address;
-import com.edusyspro.api.model.Assignment;
-import com.edusyspro.api.model.Individual;
-import com.edusyspro.api.model.Teacher;
+import com.edusyspro.api.model.*;
 import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Repository
@@ -66,6 +62,22 @@ public class UpdateContext {
 
         update.set(teacher.get(field), value).set(teacher.get("modifyAt"), Datetime.systemDatetime())
                 .where(cb.equal(teacher.get("id"), teacherId));
+
+        return entityManager.createQuery(update).executeUpdate();
+    }
+
+    @Modifying
+    @Transactional
+    public int updateEmployeeFields(String field, Object value, UUID employeeId) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaUpdate<Employee> update = cb.createCriteriaUpdate(Employee.class);
+        Root<Employee> employee = update.from(Employee.class);
+
+        value = adjustDate("hireDate", field, value);
+        value = adjustDate("birthDate", field, value);
+
+        update.set(employee.get(field), value).set(employee.get("modifyAt"), Datetime.systemDatetime())
+                .where(cb.equal(employee.get("id"), employeeId));
 
         return entityManager.createQuery(update).executeUpdate();
     }

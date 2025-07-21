@@ -1,5 +1,6 @@
 package com.edusyspro.api.auth.token.jwt;
 
+import com.edusyspro.api.auth.user.UserSchoolRole;
 import com.edusyspro.api.model.enums.Role;
 import com.edusyspro.api.auth.user.CustomUserDetails;
 import io.jsonwebtoken.Claims;
@@ -7,13 +8,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class JWTUtils {
@@ -31,14 +32,28 @@ public class JWTUtils {
         Map<String, Object> claims = new HashMap<>();
 
         if (userDetails instanceof CustomUserDetails customUserDetails) {
-            claims.put("id", customUserDetails.getId());
-            claims.put("username", customUserDetails.getUsername());
-            claims.put("email", customUserDetails.getEmail());
-            claims.put("phoneNumber", customUserDetails.getPhoneNumber());
-            claims.put("roles", customUserDetails.getAuthorities()
-                    .stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .toList());
+            userClaims(claims, customUserDetails);
+
+            claims.put("availableSchools", customUserDetails.getAvailableSchools());
+            claims.put("requiresSchoolSelection ", true);
+        }
+
+        return createToken(claims, userDetails.getUsername(), jwtExpiration);
+    }
+
+    public String generateTokenWithContext(UserDetails userDetails, UserSchoolRole schoolRole) {
+        Map<String, Object> claims = new HashMap<>();
+
+        if (userDetails instanceof CustomUserDetails customUserDetails) {
+            userClaims(claims, customUserDetails);
+
+            claims.put("schoolId", schoolRole.getSchool().getId().toString());
+            List<String> authorities = schoolRole.getRoles().stream()
+                    .map(Role::name)
+                    .toList();
+
+            claims.put("roles", authorities);
+            claims.put("requiresSchoolSelection ", false);
         }
 
         return createToken(claims, userDetails.getUsername(), jwtExpiration);
@@ -97,6 +112,31 @@ public class JWTUtils {
     }
 
     /**
+     * Gets the school ID from the token.
+     * Returns null if the token doesn't have school context.
+     */
+    public UUID getSchoolIdFromToken(String token) {
+        final Claims claims = getAllClaimsFromToken(token);
+        String schoolIdStr = claims.get("schoolId", String.class);
+        return schoolIdStr != null ? UUID.fromString(schoolIdStr) : null;
+    }
+
+    /**
+     * Gets roles for the school from the token.
+     * These are the actual Role enums for the selected school.
+     */
+    @SuppressWarnings("unchecked")
+    public List<String> getSchoolRolesFromToken(String token) {
+        final Claims claims = getAllClaimsFromToken(token);
+        return (List<String>) claims.get("roles");
+    }
+
+    public Boolean requiresSchoolSelection(String token) {
+        final Claims claims = getAllClaimsFromToken(token);
+        return Boolean.TRUE.equals(claims.get("requiresSchoolSelection", Boolean.class));
+    }
+
+    /**
      * Generates a JWT token based on the provided claims, subject, and expiration time.
      *
      * @param claims     a map containing the claims to include in the token
@@ -134,6 +174,14 @@ public class JWTUtils {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    private void userClaims(Map<String, Object> claims, CustomUserDetails customUserDetails) {
+        claims.put("id", customUserDetails.getId());
+        claims.put("username", customUserDetails.getUsername());
+        claims.put("email", customUserDetails.getEmail());
+        claims.put("phoneNumber", customUserDetails.getPhoneNumber());
+        claims.put("userType", customUserDetails.getUserType());
     }
 
 

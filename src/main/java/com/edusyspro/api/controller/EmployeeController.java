@@ -2,10 +2,12 @@ package com.edusyspro.api.controller;
 
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.EmployeeDTO;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.model.Employee;
 import com.edusyspro.api.service.interfaces.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,5 +49,21 @@ public class EmployeeController {
     @GetMapping("/{id}")
     ResponseEntity<EmployeeDTO> getEmployee(@PathVariable String id) {
         return ResponseEntity.ok(employeeService.findEmployee(id));
+    }
+
+    @PatchMapping("/{id}")
+    ResponseEntity<String> updateEmployeeFields(@PathVariable String id, @RequestBody UpdateField employee) {
+        System.out.println("GIVEN: {ID=" + id + "} {VALUE=" + employee.value() + "} {FIELD=" + employee.field() + "}");
+        try {
+            int updated = employeeService.updateEmployeeField(id, employee);
+            if (updated > 0) {
+                return ResponseEntity.ok("Modification " + employee.field() + " effective");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found or update failed");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.edusyspro.api.auth.user;
 
-import com.edusyspro.api.helper.RoleListConverter;
 import com.edusyspro.api.model.enums.Role;
 import com.edusyspro.api.utils.Datetime;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -11,7 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -48,9 +49,8 @@ public class User {
 
     private Long personalInfoId;
 
-    @Enumerated(EnumType.STRING)
-    @Convert(converter = RoleListConverter.class)
-    private List<Role> roles;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserSchoolRole> schoolAffiliations = new ArrayList<>();
 
     @Enumerated
     private UserType userType;
@@ -60,6 +60,9 @@ public class User {
 
     @PrePersist
     public void prePersist() {
+        enabled = true;
+        accountNonLocked = true;
+        failedLoginAttempts = 0;
         createdAt = Datetime.brazzavilleDatetime();
         updatedAt = Datetime.brazzavilleDatetime();
     }
@@ -67,5 +70,13 @@ public class User {
     @PreUpdate
     public void preUpdate() {
         updatedAt = Datetime.brazzavilleDatetime();
+    }
+
+    public List<Role> getRolesForSchool(UUID schoolId) {
+        return schoolAffiliations.stream()
+                .filter(affiliation -> affiliation.getSchool().getId().equals(schoolId) && affiliation.getIsActive())
+                .findFirst()
+                .map(UserSchoolRole::getRoles)
+                .orElse(new ArrayList<>());
     }
 }

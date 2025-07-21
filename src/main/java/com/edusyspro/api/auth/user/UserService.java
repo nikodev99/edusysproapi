@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZonedDateTime;
 import java.util.*;
 
 @Service
@@ -49,7 +48,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional()
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
@@ -57,26 +56,41 @@ public class UserService implements UserDetailsService {
         return CustomUserDetails.build(user);
     }
 
+    @Transactional
     public User createUser(SignupRequest request) {
         User user = request.toEntity();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         //TODO Send email and phone message to user
-        return userRepository.save(user);
+        User addedUser = userRepository.save(user);
+        if (addedUser.getId() != null) {
+            addedUser.setSchoolAffiliations(request.toUserSchoolRole(addedUser.getId()));
+        }
+
+        return userRepository.save(addedUser);
     }
 
+    @Transactional
     public Boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
 
+    @Transactional
     public Boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
+    @Transactional
     public Boolean existsByPhoneNumber(String phoneNumber) {
         return userRepository.existsByPhoneNumber(phoneNumber);
     }
 
+    @Transactional
+    public Boolean existsByPersonalInfoId(Long personalInfoId) {
+        return userRepository.existsByPersonalInfoId(personalInfoId);
+    }
+
+    @Transactional
     public void updateLastLogin(Long userId) {
         userRepository.findUserById(userId)
                 .ifPresent(
