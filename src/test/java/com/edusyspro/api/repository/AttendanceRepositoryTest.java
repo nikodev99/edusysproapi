@@ -72,7 +72,7 @@ public class AttendanceRepositoryTest {
         for (long student : students) {
             for (LocalDate date : dates) {
                 attendances.add(Attendance.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .individual(Individual.builder()
                                 .id(student)
                                 .build())

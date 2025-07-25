@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.custom.GradeBasicValue;
 import com.edusyspro.api.model.Grade;
 import com.edusyspro.api.model.Planning;
 import com.edusyspro.api.model.Semester;
@@ -74,7 +75,7 @@ class GradeRepositoryTest {
 
     @Test
     public void printGradesWithItsPlannings() {
-        List<Grade> grades = gradeRepository.findAllBySectionName(Section.LYCEE);
+        Optional<GradeBasicValue> grades = gradeRepository.findAllBySectionName(MockUtils.SCHOOL_MOCK.getId(), Section.LYCEE);
         System.out.println(grades);
     }
 

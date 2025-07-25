@@ -1,6 +1,7 @@
 package com.edusyspro.api.utils;
 
 import com.edusyspro.api.data.ConstantUtils;
+import com.edusyspro.api.dto.AcademicYearDTO;
 import com.edusyspro.api.model.*;
 import com.edusyspro.api.repository.*;
 import jakarta.annotation.PostConstruct;
@@ -13,7 +14,7 @@ import java.util.UUID;
 public class MockUtils {
 
     public static School SCHOOL_MOCK;
-    public static AcademicYear ACADEMIC_YEAR_MOCK;
+    public static AcademicYearDTO ACADEMIC_YEAR_MOCK;
     public static Semester FIRST_SEMESTER;
     public static Semester SECOND_SEMESTER;
     public static Semester THIRD_SEMESTER;

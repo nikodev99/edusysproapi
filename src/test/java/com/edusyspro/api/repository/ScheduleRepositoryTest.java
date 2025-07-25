@@ -298,7 +298,7 @@ class ScheduleRepositoryTest {
         };
         List<Schedule> schedules = List.of(
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[4]))
                         .course(courses[4])
@@ -308,7 +308,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(11, 0))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .dayOfWeek(Day.MONDAY)
                         .designation("Récréation")
@@ -316,7 +316,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(11, 30))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[6]))
                         .course(courses[6])
@@ -326,7 +326,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(13, 30))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[0]))
                         .course(courses[0])
@@ -336,7 +336,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(11, 0))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .dayOfWeek(Day.TUESDAY)
                         .designation("Récréation")
@@ -344,7 +344,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(11, 30))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[5]))
                         .course(courses[5])
@@ -354,7 +354,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(13, 30))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[2]))
                         .course(courses[2])
@@ -364,7 +364,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(11, 0))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .dayOfWeek(Day.WEDNESDAY)
                         .designation("Récréation")
@@ -372,7 +372,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(11, 30))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[4]))
                         .course(courses[4])
@@ -382,7 +382,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(13, 30))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[1]))
                         .course(courses[1])
@@ -392,7 +392,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(11, 0))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .dayOfWeek(Day.THURSDAY)
                         .designation("Récréation")
@@ -400,7 +400,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(11, 30))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[0]))
                         .course(courses[0])
@@ -410,7 +410,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(13, 30))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[5]))
                         .course(courses[5])
@@ -420,7 +420,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(11, 0))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .dayOfWeek(Day.FRIDAY)
                         .designation("Récréation")
@@ -428,7 +428,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(11, 30))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[2]))
                         .course(courses[2])
@@ -438,7 +438,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(13, 30))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[3]))
                         .course(courses[3])
@@ -448,7 +448,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(10, 0))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .dayOfWeek(Day.SATURDAY)
                         .designation("Récréation")
@@ -456,7 +456,7 @@ class ScheduleRepositoryTest {
                         .endTime(time(11, 30))
                         .build(),
                 Schedule.builder()
-                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK)
+                        .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
                         .classeEntity(classeEntity)
                         .teacher(getTeacherByClasseAndCourse(classeEntity, courses[1]))
                         .course(courses[1])

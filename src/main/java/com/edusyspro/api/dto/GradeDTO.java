@@ -31,23 +31,28 @@ public class GradeDTO {
                 .id(entity.getId())
                 .section(entity.getSection())
                 .subSection(entity.getSubSection())
-                .planning(entity.getPlanning().stream().map(PlanningDTO::fromEntity).toList())
+                .planning(
+                        entity.getPlanning() != null
+                                ? entity.getPlanning().stream().map(PlanningDTO::fromEntity).toList()
+                                : List.of()
+                )
                 .school(entity.getSchool())
                 .createdAt(entity.getCreatedAt())
                 .modifyAt(entity.getModifyAt())
                 .build();
     }
 
-    public static Grade toEntity(GradeDTO entity) {
-        if(entity == null) return null;
+    public Grade toEntity() {
         return Grade.builder()
-                .id(entity.getId())
-                .section(entity.getSection())
-                .subSection(entity.getSubSection())
-                .planning(entity.getPlanning().stream().map(PlanningDTO::toEntity).toList())
-                .school(entity.getSchool())
-                .createdAt(entity.getCreatedAt())
-                .modifyAt(entity.getModifyAt())
+                .id(id)
+                .section(section)
+                .subSection(subSection)
+                .planning(planning != null
+                        ? planning.stream().map(PlanningDTO::toEntity).toList()
+                        : List.of())
+                .school(school)
+                .createdAt(createdAt)
+                .modifyAt(modifyAt)
                 .build();
     }
 }

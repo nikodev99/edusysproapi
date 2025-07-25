@@ -48,7 +48,7 @@ public class PlanningDTO {
                 .designation(dto.getDesignation())
                 .termStartDate(dto.getTermStartDate())
                 .termEndDate(dto.getTermEndDate())
-                .grade(GradeDTO.toEntity(dto.getGrade()))
+                .grade(dto.getGrade().toEntity())
                 .createdAt(dto.getCreatedAt())
                 .updatedAt(dto.getUpdatedAt())
                 .build();

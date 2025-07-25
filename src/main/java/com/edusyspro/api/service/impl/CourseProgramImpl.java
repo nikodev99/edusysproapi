@@ -103,6 +103,11 @@ public class CourseProgramImpl implements CourseProgramService {
     }
 
     @Override
+    public CourseProgramDTO fetchOneByCustomColumn(String columnValue, String schoolId) {
+        return null;
+    }
+
+    @Override
     public CourseProgramDTO fetchOneByCustomColumn(String columnValue) {
         return null;
     }

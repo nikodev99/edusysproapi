@@ -96,6 +96,11 @@ public class SemesterServiceImpl implements SemesterService {
     }
 
     @Override
+    public Semester fetchOneByCustomColumn(String columnValue, String schoolId) {
+        return null;
+    }
+
+    @Override
     public Semester fetchOneByCustomColumn(String columnValue) {
         return null;
     }

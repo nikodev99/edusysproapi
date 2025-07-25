@@ -1,5 +1,6 @@
 package com.edusyspro.api.auth.request;
 
+import com.edusyspro.api.auth.user.UserType;
 import com.edusyspro.api.dto.IndividualUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,4 +23,5 @@ public class LoginResponse {
     private String email;
     private List<String> roles;
     private IndividualUser user;
+    private UserType userType;
 }

@@ -184,6 +184,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public ScheduleDTO fetchOneByCustomColumn(String columnValue, String schoolId) {
+        return null;
+    }
+
+    @Override
     public ScheduleDTO fetchOneByCustomColumn(String columnValue) {
         return null;
     }

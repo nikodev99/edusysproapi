@@ -1,5 +1,6 @@
 package com.edusyspro.api.auth.user;
 
+import com.edusyspro.api.auth.request.UserInfoResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,7 +9,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -22,6 +25,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     Optional<User> findByPhoneNumber(String phoneNumber);
+
+    @Query("""
+        SELECT new com.edusyspro.api.auth.request.UserInfoResponse(u.id, u.username, u.email, s.roles, u.phoneNumber,
+        u.enabled, u.accountNonLocked, u.failedLoginAttempts, u.lastLogin, u.userType, u.createdAt, u.updatedAt)
+        FROM User u JOIN u.schoolAffiliations s WHERE s.schoolId = ?1
+    """)
+    List<UserInfoResponse> findAllUsers(UUID schoolId);
 
     Boolean existsByUsername(String username);
 
@@ -45,4 +55,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User u SET u.accountNonLocked = :locked WHERE u.id = :userId")
     void setAccountLocked(@Param("userId") Long userId, @Param("locked") Boolean locked);
+
+    @Query("SELECT COUNT(u.id) FROM User u JOIN u.schoolAffiliations s WHERE s.schoolId = :schoolId")
+    Optional<Long> countAllUsersBySchoolId(@Param("schoolId") UUID schoolId);
 }

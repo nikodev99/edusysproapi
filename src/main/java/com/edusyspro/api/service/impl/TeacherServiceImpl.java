@@ -149,6 +149,11 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     }
 
     @Override
+    public TeacherDTO fetchOneByCustomColumn(String columnValue, String schoolId) {
+        return null;
+    }
+
+    @Override
     public TeacherDTO fetchOneByCustomColumn(String columnValue) {
         return null;
     }

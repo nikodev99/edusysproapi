@@ -196,6 +196,7 @@ public class AuthController {
                     .id(userDetails.getPersonalInfoId())
                     .roles(userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                     .user(user)
+                    .userType(userDetails.getUserType())
                     .build();
 
             return ResponseEntity.ok(response);
@@ -282,6 +283,7 @@ public class AuthController {
                     .id(userPrincipal.getPersonalInfoId())
                     .roles(userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                     .user(user)
+                    .userType(userPrincipal.getUserType())
                     .build();
 
             logger.info(
@@ -317,6 +319,7 @@ public class AuthController {
                         .tokenType("Bearer")
                         .id(userPrincipal.getPersonalInfoId())
                         .user(user)
+                        .userType(userPrincipal.getUserType())
                         .build();
                 return ResponseEntity.ok(response);
             }

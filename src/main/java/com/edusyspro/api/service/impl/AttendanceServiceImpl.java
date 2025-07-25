@@ -1,9 +1,9 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.AcademicYearDTO;
 import com.edusyspro.api.dto.AttendanceDTO;
 import com.edusyspro.api.dto.PlanningDTO;
 import com.edusyspro.api.dto.custom.*;
-import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.Attendance;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.AttendanceStatus;
@@ -252,7 +252,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Integer getNumberOfClasseDays(int classeId, String academicYearId) {
-        AcademicYear academicYear = academicYearService.getAcademicYearById(academicYearId);
+        AcademicYearDTO academicYear = academicYearService.getAcademicYearById(academicYearId);
         LocalDate currentDate = LocalDate.now();
         LocalDate endDate = currentDate.isBefore(academicYear.getEndDate()) ? currentDate : academicYear.getEndDate();
         List<PlanningDTO> plannings = planningService.findAllPlanningByClasseThroughoutTheAcademicYear(

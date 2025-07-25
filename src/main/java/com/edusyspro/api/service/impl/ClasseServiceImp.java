@@ -135,6 +135,11 @@ public class ClasseServiceImp implements ClasseServiceInterface {
     }
 
     @Override
+    public ClasseDTO fetchOneByCustomColumn(String columnValue, String schoolId) {
+        return null;
+    }
+
+    @Override
     public ClasseDTO fetchOneByCustomColumn(String columnValue) {
         return null;
     }

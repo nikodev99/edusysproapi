@@ -26,77 +26,85 @@ public class UpdateContext {
     @Modifying
     @Transactional
     public int updateAddressByField(String field, Object value, long addressId) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaUpdate<Address> update = cb.createCriteriaUpdate(Address.class);
-        Root<Address> address = update.from(Address.class);
-
-        update.set(address.get(field), value)
-                .where(cb.equal(address.get("id"), addressId));
-
-        return entityManager.createQuery(update).executeUpdate();
+        return updateEntityField(Address.class, field, value, addressId);
     }
 
     @Modifying
     @Transactional
     public int updatePersonalInfoByField(String field, Object value, long infoId) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaUpdate<Individual> update = cb.createCriteriaUpdate(Individual.class);
-        Root<Individual> personalInfo = update.from(Individual.class);
-
         value = adjustDate("birthDate", field, value);
-
-        update.set(personalInfo.get(field), value)
-                .where(cb.equal(personalInfo.get("id"), infoId));
-
-        return entityManager.createQuery(update).executeUpdate();
+        return updateEntityField(Individual.class, field, value, infoId);
     }
 
     @Modifying
     @Transactional
     public int updateTeacherField(String field, Object value, UUID teacherId) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaUpdate<Teacher> update = cb.createCriteriaUpdate(Teacher.class);
-        Root<Teacher> teacher = update.from(Teacher.class);
-
         value = adjustDate("hireDate", field, value);
-
-        update.set(teacher.get(field), value).set(teacher.get("modifyAt"), Datetime.systemDatetime())
-                .where(cb.equal(teacher.get("id"), teacherId));
-
-        return entityManager.createQuery(update).executeUpdate();
+        return updateEntityField(Teacher.class, field, value, teacherId, "modifyAt");
     }
 
     @Modifying
     @Transactional
     public int updateEmployeeFields(String field, Object value, UUID employeeId) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaUpdate<Employee> update = cb.createCriteriaUpdate(Employee.class);
-        Root<Employee> employee = update.from(Employee.class);
-
         value = adjustDate("hireDate", field, value);
         value = adjustDate("birthDate", field, value);
-
-        update.set(employee.get(field), value).set(employee.get("modifyAt"), Datetime.systemDatetime())
-                .where(cb.equal(employee.get("id"), employeeId));
-
-        return entityManager.createQuery(update).executeUpdate();
+        return updateEntityField(Employee.class, field, value, employeeId, "modifyAt");
     }
 
     @Modifying
     @Transactional
     public int updateAssignmentField(String field, Object value, long assignmentId) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaUpdate<Assignment> update = cb.createCriteriaUpdate(Assignment.class);
-        Root<Assignment> assignment = update.from(Assignment.class);
-
         value = adjustDate("examDate", field, value);
         value = adjustTime("startTime", field, value);
         value = adjustTime("endTime", field, value);
-        Path<Object> path = resolvePath(assignment, field);
+        return updateEntityField(Assignment.class, field, value, assignmentId, "updatedDate");
+    }
 
-        update.set(path, value)
-                .set(assignment.get("updatedDate"), Datetime.systemDatetime())
-                .where(cb.equal(assignment.get("id"), assignmentId));
+    @Modifying
+    @Transactional
+    public int updateSchoolField(String field, Object value, String schoolId) {
+        return updateEntityField(Schedule.class, field, value, UUID.fromString(schoolId), "modifyAt");
+    }
+
+    @Modifying
+    @Transactional
+    public int updateAcademicYearField(String field, Object value, String academicYearId) {
+        value = adjustDate("startDate", field, value);
+        value = adjustDate("endDate", field, value);
+        return updateEntityField(AcademicYear.class, field, value, UUID.fromString(academicYearId));
+    }
+
+    @Modifying
+    @Transactional
+    public int updateGradeField(String field, Object value, int gradeId) {
+        return updateEntityField(Grade.class, field, value, gradeId, "modifyAt");
+    }
+
+    @Modifying
+    @Transactional
+    public int updateDepartmentField(String field, Object value, int departmentId) {
+        return updateEntityField(Department.class, field, value, departmentId, "modifyAt");
+    }
+
+    private <T> int updateEntityField(Class<T> entityClass, String field, Object value, Object entityId) {
+        return updateEntityField(entityClass, field, value, entityId, null);
+    }
+
+    private  <T> int updateEntityField(Class<T> entityClass, String field, Object value, Object entityId, String modifyAtField) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaUpdate<T> update = cb.createCriteriaUpdate(entityClass);
+        Root<T> root = update.from(entityClass);
+
+
+        Path<Object> path = resolvePath(root, field);
+        update.set(path, value);
+
+        // Optionally update the modification timestamp field
+        if (modifyAtField != null && !modifyAtField.trim().isEmpty()) {
+            update.set(root.get(modifyAtField), Datetime.systemDatetime());
+        }
+
+        update.where(cb.equal(root.get("id"), entityId));
 
         return entityManager.createQuery(update).executeUpdate();
     }
@@ -117,10 +125,10 @@ public class UpdateContext {
         return value;
     }
 
-    private <T> Path<T> resolvePath(Root<Assignment> root, String field) {
+    private <T, Q> Path<Q> resolvePath(Root<T> root, String field) {
         if (field.contains(".")) {
             String[] parts = field.split("\\.");
-            Path<T> p = root.get(parts[0]);
+            Path<Q> p = root.get(parts[0]);
             for (int i = 1; i < parts.length; i++) {
                 p = p.get(parts[i]);
             }

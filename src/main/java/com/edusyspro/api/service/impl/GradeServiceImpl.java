@@ -3,7 +3,9 @@ package com.edusyspro.api.service.impl;
 import com.edusyspro.api.dto.GradeDTO;
 import com.edusyspro.api.dto.custom.GradeBasicValue;
 import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.repository.GradeRepository;
+import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.GradeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,20 +13,29 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class GardeServiceImpl implements GradeService {
+public class GradeServiceImpl implements GradeService {
 
     private final GradeRepository gradeRepository;
+    private final UpdateContext updateContext;
 
-    public GardeServiceImpl(GradeRepository gradeRepository) {
+    public GradeServiceImpl(GradeRepository gradeRepository, UpdateContext updateContext) {
         this.gradeRepository = gradeRepository;
+        this.updateContext = updateContext;
     }
 
     @Override
     public GradeDTO save(GradeDTO entity) {
-        return null;
+        Optional<GradeBasicValue> gradeExists = gradeRepository.findAllBySectionName(entity.getSchool().getId(), entity.getSection());
+        if (gradeExists.isPresent()) {
+            throw new AlreadyExistException("La grade existe déjà");
+        }
+        var addedGrade = gradeRepository.save(entity.toEntity());
+
+        return GradeDTO.fromEntity(addedGrade);
     }
 
     @Override
@@ -100,6 +111,11 @@ public class GardeServiceImpl implements GradeService {
     }
 
     @Override
+    public GradeDTO fetchOneByCustomColumn(String columnValue, String schoolId) {
+        return null;
+    }
+
+    @Override
     public GradeDTO fetchOneByCustomColumn(String columnValue) {
         return null;
     }
@@ -126,7 +142,7 @@ public class GardeServiceImpl implements GradeService {
 
     @Override
     public int patch(Integer id, UpdateField field) {
-        return 0;
+        return updateContext.updateGradeField(field.field(), field.value(), id);
     }
 
     @Override

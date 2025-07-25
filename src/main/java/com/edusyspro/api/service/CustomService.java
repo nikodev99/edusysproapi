@@ -39,6 +39,8 @@ public interface CustomService<T, U> {
 
     T fetchOneById(U id, Object ...args);
 
+    T fetchOneByCustomColumn(String columnValue, String schoolId);
+
     T fetchOneByCustomColumn(String columnValue);
 
     T fetchOneByCustomColumn(String columnValue, Object ...args);

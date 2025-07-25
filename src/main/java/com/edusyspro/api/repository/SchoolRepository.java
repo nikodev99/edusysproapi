@@ -18,5 +18,6 @@ public interface SchoolRepository extends JpaRepository<School, UUID> {
     @Query(value = "update School s set s.name = :name where s.id = :id")
     int updateSchoolNameById(@Param("name") String name, @Param("id") UUID id);
 
+    @Transactional
     School getSchoolById(UUID uuid);
 }

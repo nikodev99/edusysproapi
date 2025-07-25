@@ -110,6 +110,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public CourseDTO fetchOneByCustomColumn(String columnValue, String schoolId) {
+        return null;
+    }
+
+    @Override
     public CourseDTO fetchOneByCustomColumn(String columnValue) {
         return null;
     }

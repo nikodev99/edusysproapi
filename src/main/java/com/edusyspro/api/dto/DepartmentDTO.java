@@ -24,6 +24,19 @@ public class DepartmentDTO {
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
 
+    public static DepartmentDTO fromEntity(Department department) {
+        if (department == null) return null;
+        return DepartmentDTO.builder()
+                .id(department.getId())
+                .name(department.getName())
+                .code(department.getCode())
+                .purpose(department.getPurpose())
+                .school(department.getSchool())
+                .createdAt(department.getCreatedAt())
+                .modifyAt(department.getModifyAt())
+                .build();
+    }
+
     public static Department toEntity(DepartmentDTO dto) {
         if(dto == null) return null;
         return Department.builder()

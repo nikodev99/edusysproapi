@@ -31,14 +31,14 @@ class EnrollmentDTOEntityRepositoryTest {
 
     @Test
     public void saveEnrolledStudents() {
-        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, MockUtils.ACADEMIC_YEAR_MOCK, MockUtils.SCHOOL_MOCK, getClasse(1));
+        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, MockUtils.ACADEMIC_YEAR_MOCK.toEntity(), MockUtils.SCHOOL_MOCK, getClasse(1));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
 
     @Test
     public void saveEnrolledStudents2() {
         final School SCHOOL = MockUtils.SCHOOL_MOCK;
-        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK;
+        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK.toEntity();
         List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(2));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
@@ -46,7 +46,7 @@ class EnrollmentDTOEntityRepositoryTest {
     @Test
     public void saveEnrolledStudents3() {
         final School SCHOOL = MockUtils.SCHOOL_MOCK;
-        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK;
+        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK.toEntity();
         List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(3));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
@@ -54,7 +54,7 @@ class EnrollmentDTOEntityRepositoryTest {
     @Test
     public void saveEnrolledStudents4() {
         final School SCHOOL = MockUtils.SCHOOL_MOCK;
-        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK;
+        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK.toEntity();
         List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(4));
         enrollmentRepository.saveAll(enrollmentEntities);
     }
@@ -62,7 +62,7 @@ class EnrollmentDTOEntityRepositoryTest {
     @Test
     public void saveEnrolledStudents5() {
         final School SCHOOL = MockUtils.SCHOOL_MOCK;
-        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK;
+        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK.toEntity();
         List<EnrollmentEntity> enrollmentEntities = new ArrayList<>(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(10)));
         enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(5)));
         enrollmentEntities.addAll(Fake.studentToEnroll(10, ACADEMIC_YEAR, SCHOOL, getClasse(6)));
@@ -94,7 +94,7 @@ class EnrollmentDTOEntityRepositoryTest {
 
     @Test
     public void saveEnrollAgain() {
-        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK;
+        final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK.toEntity();
         EnrollmentEntity e = enrollmentRepository.findById(105L).orElseThrow();
         int updated = enrollmentRepository.updateEnrollmentByStudentId(true, e.getStudent().getId());
         EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder()

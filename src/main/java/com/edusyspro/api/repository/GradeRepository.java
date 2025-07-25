@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface GradeRepository extends JpaRepository<Grade, Integer> {
@@ -26,15 +27,18 @@ public interface GradeRepository extends JpaRepository<Grade, Integer> {
     """)
     List<PlanningEssential> findPlanningsByGrade(int gradeId, UUID academicYearId);
 
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection)
+        FROM Grade g WHERE g.school.id = ?1 AND g.section = ?2
+    """)
+    Optional<GradeBasicValue> findAllBySectionName(UUID schoolId, Section section);
+
     //TEST
 
     @Modifying
     @Transactional
     @Query("UPDATE Grade g SET g.subSection = ?1 WHERE g.id = ?2")
     int updateGradeSubSectionById(String subSection, int id);
-
-    @Query("SELECT g FROM Grade g LEFT JOIN FETCH g.planning WHERE g.section = ?1")
-    List<Grade> findAllBySectionName(Section section);
 
     Grade getGradeBySection(Section section);
 

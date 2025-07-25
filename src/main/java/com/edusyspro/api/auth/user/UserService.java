@@ -1,5 +1,6 @@
 package com.edusyspro.api.auth.user;
 
+import com.edusyspro.api.auth.request.UserInfoResponse;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.auth.request.SignupRequest;
 import com.edusyspro.api.utils.Datetime;
@@ -71,6 +72,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
+    public List<UserInfoResponse> getAllUsers(String schoolId) {
+        return userRepository.findAllUsers(UUID.fromString(schoolId));
+    }
+
+    @Transactional
     public Boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
@@ -96,6 +102,11 @@ public class UserService implements UserDetailsService {
                 .ifPresent(
                         user -> userRepository.updateLastLogin(user.getId(), Datetime.brazzavilleDatetime())
                 );
+    }
+
+    @Transactional
+    public Long countUsers(String schoolId) {
+        return userRepository.countAllUsersBySchoolId(UUID.fromString(schoolId)).orElseThrow();
     }
 
     public void updateFailedLoginAttempts(Long userId) {

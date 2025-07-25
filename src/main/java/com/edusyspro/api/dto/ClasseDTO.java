@@ -58,7 +58,7 @@ public class ClasseDTO {
                .id(classe.getId())
                .name(classe.getName())
                .category(classe.getCategory())
-               .grade(GradeDTO.toEntity(classe.getGrade()))
+               .grade(classe.getGrade().toEntity())
                .roomNumber(classe.getRoomNumber())
                .monthCost(classe.getMonthCost())
                .createdAt(classe.getCreatedAt())

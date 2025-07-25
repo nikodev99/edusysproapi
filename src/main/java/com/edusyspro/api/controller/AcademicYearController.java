@@ -1,7 +1,9 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.model.AcademicYear;
+import com.edusyspro.api.dto.AcademicYearDTO;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.service.impl.AcademicYearServiceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +20,32 @@ public class AcademicYearController {
         this.academicYearService = academicYearService;
     }
 
+    @PostMapping()
+    ResponseEntity<?> insertAcademicYear(@RequestBody AcademicYearDTO academicYear) {
+        try {
+            return ResponseEntity.ok(academicYearService.addAcademicYear(academicYear));
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/{academicYearId}")
+    ResponseEntity<?> updateAcademicYearFields(@PathVariable String academicYearId, @RequestBody UpdateField fields) {
+        try {
+            int updated = academicYearService.updateAcademicYearField(academicYearId, fields);
+            if (updated > 0) {
+                return ResponseEntity.ok("Modification " + fields.field() + " effective");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("School not found or update failed");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/from/{schoolId}")
-    ResponseEntity<List<AcademicYear>> fetchAllFromYear(
+    ResponseEntity<List<AcademicYearDTO>> fetchAllFromYear(
             @PathVariable String schoolId,
             @RequestParam int fromYear
     ) {
@@ -27,7 +53,7 @@ public class AcademicYearController {
     }
 
     @GetMapping("/from_date/{schoolId}")
-    ResponseEntity<AcademicYear> fetchFromDate(
+    ResponseEntity<AcademicYearDTO> fetchFromDate(
             @PathVariable String schoolId,
             @RequestParam String fromDate
     ) {
@@ -38,12 +64,12 @@ public class AcademicYearController {
     }
 
     @GetMapping("/{schoolId}")
-    ResponseEntity<AcademicYear> academicYear(@PathVariable String schoolId) {
+    ResponseEntity<AcademicYearDTO> academicYear(@PathVariable String schoolId) {
         return ResponseEntity.ok(academicYearService.getCurrentAcademicYear(schoolId));
     }
 
     @GetMapping("/all/{schoolId}")
-    ResponseEntity<List<AcademicYear>> getAcademicYearList(@PathVariable String schoolId) {
+    ResponseEntity<List<AcademicYearDTO>> getAcademicYearList(@PathVariable String schoolId) {
         return ResponseEntity.ok(academicYearService.getAllSchoolAcademicYear(schoolId));
     }
 

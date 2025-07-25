@@ -23,6 +23,11 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
             "d.id, d.name, d.code, d.purpose, d.boss.d_boss.id, d.boss.current, d.boss.d_boss.personalInfo.firstName, " +
             "d.boss.d_boss.personalInfo.lastName, d.boss.d_boss.personalInfo.image, d.boss.startPeriod, d.boss.endPeriod)" +
             "from Department d where d.code = ?1")
-    Optional<DepartmentEssential> findDepartmentByCode(String code);
+    Optional<DepartmentEssential> findDepartmentByCode(UUID schoolId, String code);
 
+    @Query("select new com.edusyspro.api.dto.custom.DepartmentBasicValue(d.id, d.name, d.code) from Department d where d.code = ?1 and d.school.id = ?2")
+    Optional<DepartmentBasicValue> findDepartmentByCodeAndSchoolId(String code, UUID schoolId);
+
+    @Query("select count(d.id) from Department d where d.name = ?1 or d.code = ?2")
+    Optional<Long> departmentExistsByNameOrCode(String name, String code);
 }

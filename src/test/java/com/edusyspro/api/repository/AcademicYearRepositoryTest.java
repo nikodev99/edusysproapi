@@ -34,9 +34,9 @@ class AcademicYearRepositoryTest {
         AcademicYear academicYear = AcademicYear.builder()
                 .startDate(LocalDate.of(2025, 10, 2))
                 .endDate(LocalDate.of(2026, 6, 28))
-                .current(false)
+                .current(true)
                 .school(School.builder()
-                        .id(UUID.fromString(ConstantUtils.SCHOOL_ID))
+                        .id(UUID.fromString(ConstantUtils.SECOND_SCHOOL))
                         .build())
                 .build();
         academicYearRepository.save(academicYear);

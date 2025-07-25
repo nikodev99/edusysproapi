@@ -4,8 +4,9 @@ import com.edusyspro.api.dto.custom.DepartmentBasicValue;
 import com.edusyspro.api.dto.custom.DepartmentEssential;
 import com.edusyspro.api.dto.DepartmentDTO;
 import com.edusyspro.api.dto.custom.UpdateField;
-import com.edusyspro.api.exception.sql.NotFountException;
+import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.repository.DepartmentRepository;
+import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.DepartmentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,19 +14,33 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
+    private final UpdateContext updateContext;
 
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository, UpdateContext updateContext) {
         this.departmentRepository = departmentRepository;
+        this.updateContext = updateContext;
     }
 
     @Override
     public DepartmentDTO save(DepartmentDTO entity) {
-        return null;
+        Optional<Long> itExist = departmentRepository.departmentExistsByNameOrCode(
+                entity.getName(), entity.getCode()
+        );
+
+        if (itExist.isPresent()) {
+            throw new AlreadyExistException(String.format(
+                    "Le département %s avec le code %s existe déjà", entity.getName(), entity.getCode()));
+        }
+
+        var addedDepartment = departmentRepository.save(DepartmentDTO.toEntity(entity));
+
+        return DepartmentDTO.fromEntity(addedDepartment);
     }
 
     @Override
@@ -101,9 +116,16 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public DepartmentDTO fetchOneByCustomColumn(String columnValue) {
-        DepartmentEssential basicDTO = departmentRepository.findDepartmentByCode(columnValue).orElseThrow();
+    public DepartmentDTO fetchOneByCustomColumn(String columnValue, String schoolId) {
+        DepartmentEssential basicDTO = departmentRepository.findDepartmentByCode(
+                UUID.fromString(schoolId), columnValue
+        ).orElseThrow();
         return basicDTO.toDepartmentDTO();
+    }
+
+    @Override
+    public DepartmentDTO fetchOneByCustomColumn(String columnValue) {
+        return null;
     }
 
     @Override
@@ -128,7 +150,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public int patch(Integer id, UpdateField field) {
-        return 0;
+        return updateContext.updateDepartmentField(field.field(), field.value(), id);
     }
 
     @Override
