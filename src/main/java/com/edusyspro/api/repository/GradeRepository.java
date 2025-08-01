@@ -16,7 +16,7 @@ import java.util.UUID;
 public interface GradeRepository extends JpaRepository<Grade, Integer> {
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection)
+        select new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection, g.createdAt, g.modifyAt)
         from Grade g where g.school.id = ?1
     """)
     List<GradeBasicValue> findAllGradeBySchool(UUID schoolId);
@@ -28,10 +28,16 @@ public interface GradeRepository extends JpaRepository<Grade, Integer> {
     List<PlanningEssential> findPlanningsByGrade(int gradeId, UUID academicYearId);
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection)
-        FROM Grade g WHERE g.school.id = ?1 AND g.section = ?2
+        SELECT new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection, g.createdAt, g.modifyAt)
+        FROM Grade g WHERE g.school.id = ?1 AND g.section = ?2 AND g.subSection = ?3
     """)
     Optional<GradeBasicValue> findAllBySectionName(UUID schoolId, Section section);
+
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection, g.createdAt, g.modifyAt)
+        FROM Grade g WHERE g.school.id = ?1 AND g.section = ?2 AND g.subSection = ?3
+    """)
+    Optional<GradeBasicValue> gradeExist(UUID schoolId, Section section, String subSection);
 
     //TEST
 

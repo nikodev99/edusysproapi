@@ -1,7 +1,5 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.controller.utils.ControllerUtils;
-import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.GradeDTO;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.service.interfaces.GradeService;
@@ -48,5 +46,10 @@ public class GradeController {
     @GetMapping("/{schoolId}")
     ResponseEntity<List<GradeDTO>> getSchoolGrades(@PathVariable String schoolId) {
         return ResponseEntity.ok(gradeService.fetchAll(schoolId));
+    }
+
+    @GetMapping("/all/{schoolId}")
+    ResponseEntity<?> getSchoolGradesWithPlannings(@PathVariable String schoolId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(gradeService.fetchAll(schoolId, academicYear));
     }
 }

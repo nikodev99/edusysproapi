@@ -1,11 +1,11 @@
 package com.edusyspro.api.controller;
 
+import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.service.interfaces.SemesterService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/semester")
@@ -14,6 +14,15 @@ public class SemesterController {
 
     public SemesterController(SemesterService semesterService) {
         this.semesterService = semesterService;
+    }
+
+    @PostMapping
+    ResponseEntity<?> getAllSemesters(@RequestBody List<Semester> semesters) {
+        try {
+            return ResponseEntity.ok(semesterService.saveAll(semesters));
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{schoolId}")

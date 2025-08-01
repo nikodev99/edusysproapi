@@ -1,7 +1,9 @@
 package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.GradeDTO;
+import com.edusyspro.api.dto.PlanningDTO;
 import com.edusyspro.api.dto.custom.GradeBasicValue;
+import com.edusyspro.api.dto.custom.PlanningEssential;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.repository.GradeRepository;
@@ -29,10 +31,22 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public GradeDTO save(GradeDTO entity) {
-        Optional<GradeBasicValue> gradeExists = gradeRepository.findAllBySectionName(entity.getSchool().getId(), entity.getSection());
+        Optional<GradeBasicValue> gradeExists = gradeRepository.gradeExist(
+                entity.getSchool().getId(),
+                entity.getSection(),
+                entity.getSubSection()
+        );
         if (gradeExists.isPresent()) {
-            throw new AlreadyExistException("La grade existe déjà");
+            throw new AlreadyExistException("Le grade existe déjà");
         }
+        var gradeToSave = entity.toEntity();
+
+        if (gradeToSave.getPlanning() != null) {
+            gradeToSave.getPlanning().forEach(planning -> {
+                planning.setGrade(gradeToSave);
+            });
+        }
+
         var addedGrade = gradeRepository.save(entity.toEntity());
 
         return GradeDTO.fromEntity(addedGrade);
@@ -62,7 +76,21 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public List<GradeDTO> fetchAll(Object... args) {
-        return List.of();
+        var schoolId = (String) args[0];
+        var academicYearId = (String) args[1];
+        List<GradeDTO> grades = fetchAll(schoolId);
+        if (!grades.isEmpty()) {
+            grades.forEach(grade -> {
+                List<PlanningDTO> plannings = gradeRepository.findPlanningsByGrade(grade.getId(), UUID.fromString(academicYearId))
+                        .stream()
+                        .map(PlanningEssential::toDto)
+                        .toList();
+
+                if (!plannings.isEmpty())
+                    grade.setPlanning(plannings);
+            });
+        }
+        return grades;
     }
 
     @Override

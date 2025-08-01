@@ -1,6 +1,7 @@
 package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.repository.SemesterRepository;
 import com.edusyspro.api.service.interfaces.SemesterService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,12 +24,27 @@ public class SemesterServiceImpl implements SemesterService {
 
     @Override
     public Semester save(Semester entity) {
-        return null;
+        Optional<Semester> fetchedSemester = entity.getSemesterId() != null
+                ? semesterRepository.findSemesterBySemesterId(entity.getSemesterId())
+                : semesterRepository.findSemesterBySemesterName(entity.getSemesterName());
+
+        if(fetchedSemester.isPresent()) {
+            Optional<Semester> sameSemester = semesterRepository.findSemesterByAcademicYearId(entity.getAcademicYear().getId());
+            if (sameSemester.isPresent()) {
+                throw new AlreadyExistException("Semester\\Trimestre existe déjà");
+            }else {
+                Semester semester = fetchedSemester.get();
+                semesterRepository.updateSemesterBySemesterId(entity.getAcademicYear(), semester.getSemesterId());
+                return semester;
+            }
+        }
+        return semesterRepository.save(entity);
     }
 
     @Override
     public List<Semester> saveAll(List<Semester> entities) {
-        return List.of();
+        entities.forEach(this::save);
+        return entities;
     }
 
     @Override

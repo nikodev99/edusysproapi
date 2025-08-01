@@ -53,8 +53,8 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
     Optional<CourseEssential> findClassePrincipalCourse(int classeId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.GradeBasicValue(c.grade.id, c.grade.section, c.grade.subSection)
-        from ClasseEntity c where c.id = ?1
+        select new com.edusyspro.api.dto.custom.GradeBasicValue(c.grade.id, c.grade.section, c.grade.subSection,
+        c.grade.createdAt, c.grade.modifyAt) from ClasseEntity c where c.id = ?1
     """)
     GradeBasicValue findGradeClasseId(int classeId);
 

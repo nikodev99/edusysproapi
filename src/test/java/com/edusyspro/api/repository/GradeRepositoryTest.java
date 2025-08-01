@@ -74,12 +74,6 @@ class GradeRepositoryTest {
     }
 
     @Test
-    public void printGradesWithItsPlannings() {
-        Optional<GradeBasicValue> grades = gradeRepository.findAllBySectionName(MockUtils.SCHOOL_MOCK.getId(), Section.LYCEE);
-        System.out.println(grades);
-    }
-
-    @Test
     public void printGradesBySection() {
         Grade grades = gradeRepository.getGradeBySection(Section.LYCEE);
         System.out.println(grades);
