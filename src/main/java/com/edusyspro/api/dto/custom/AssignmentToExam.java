@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public record AssignmentToExam(
         Long id,
-        String semesterName,
+        Semester semester,
         UUID academicYearId,
         Long planningId,
         String planningName,
@@ -43,12 +43,7 @@ public record AssignmentToExam(
                 .semester(PlanningDTO.builder()
                         .id(planningId)
                         .designation(planningName)
-                        .semestre(Semester.builder()
-                                .semesterName(semesterName)
-                                .academicYear(AcademicYear.builder()
-                                        .id(academicYearId)
-                                        .build())
-                                .build())
+                        .semestre(semester)
                         .build())
                 .preparedBy(Individual.builder()
                         .id(teacherId)

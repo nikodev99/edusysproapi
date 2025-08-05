@@ -20,7 +20,7 @@ public interface CourseProgramRepository extends JpaRepository<CourseProgram, Lo
 
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseProgramEssential(cp.id, cp.topic, cp.purpose, cp.description, cp.active,
-        cp.passed, cp.updateDate, cp.semester.semesterName, cp.semester.academicYear.years, cp.course.course, cp.course.abbr,
+        cp.passed, cp.updateDate, cp.semester, cp.semester.academicYear.years, cp.course.course, cp.course.abbr,
         cp.classe.name, cp.classe.grade.section, cp.teacher.personalInfo) from CourseProgram cp where cp.teacher.id = ?1
         and cp.classe.id = ?2 and (?3 is null or cp.course.id = ?3)
     """)
@@ -28,7 +28,7 @@ public interface CourseProgramRepository extends JpaRepository<CourseProgram, Lo
 
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseProgramEssential(cp.id, cp.topic, cp.purpose, cp.description, cp.active,
-        cp.passed, cp.updateDate, cp.semester.semesterName, cp.semester.academicYear.years, cp.course.course, cp.course.abbr,
+        cp.passed, cp.updateDate, cp.semester, cp.semester.academicYear.years, cp.course.course, cp.course.abbr,
         cp.classe.name, cp.classe.grade.section, cp.teacher.personalInfo) from CourseProgram cp where cp.teacher.id = ?1
         and cp.classe.id = ?2
     """)

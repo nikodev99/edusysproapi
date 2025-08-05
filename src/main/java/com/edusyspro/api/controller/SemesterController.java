@@ -17,7 +17,16 @@ public class SemesterController {
     }
 
     @PostMapping
-    ResponseEntity<?> getAllSemesters(@RequestBody List<Semester> semesters) {
+    ResponseEntity<?> saveSemester(@RequestBody Semester semester) {
+        try {
+            return ResponseEntity.ok(semesterService.save(semester));
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/all")
+    ResponseEntity<?> saveAllSemesters(@RequestBody List<Semester> semesters) {
         try {
             return ResponseEntity.ok(semesterService.saveAll(semesters));
         }catch (Exception e) {
@@ -28,5 +37,10 @@ public class SemesterController {
     @GetMapping("/{schoolId}")
     ResponseEntity<?> getAllSemester(@PathVariable String schoolId) {
         return ResponseEntity.ok(semesterService.fetchAll(schoolId));
+    }
+
+    @GetMapping
+    ResponseEntity<?> getAllSemesterByAcademicYear(@RequestParam String academicYear) {
+        return ResponseEntity.ok(semesterService.fetchAllByOtherEntityId(academicYear));
     }
 }

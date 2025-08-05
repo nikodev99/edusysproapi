@@ -1,10 +1,8 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.CourseProgramDTO;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
 import com.edusyspro.api.service.interfaces.CourseProgramService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

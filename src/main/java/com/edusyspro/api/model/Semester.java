@@ -22,12 +22,14 @@ public class Semester {
     @Column(name = "semester_id")
     private Integer semesterId;
 
-    private String semesterName;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "semester_template_id", referencedColumnName = "id")
+    private SemesterTemplate template;
+
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
     private AcademicYear academicYear;
-
-    @Lob
-    private String description;
 }

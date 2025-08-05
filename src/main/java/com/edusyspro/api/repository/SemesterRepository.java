@@ -15,12 +15,13 @@ import java.util.UUID;
 @Repository
 public interface SemesterRepository extends JpaRepository<Semester, Integer> {
 
-    @Query("select s from Semester s where s.academicYear.school.id = ?1")
+    @Query("select s from Semester s where s.academicYear.school.id = ?1 order by s.template.displayOrder")
     List<Semester> getAllBySchoolId(UUID schoolId);
 
+    @Query("SELECT s FROM Semester s WHERE s.template.semesterName = ?1")
     Optional<Semester> findSemesterBySemesterName(String semesterName);
 
-    Optional<Semester> findSemesterByAcademicYearId(UUID academicYearId);
+    Optional<List<Semester>> findSemesterByAcademicYearId(UUID academicYearId);
 
     Optional<Semester> findSemesterBySemesterId(int semesterId);
 

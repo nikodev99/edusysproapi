@@ -26,10 +26,10 @@ public class SemesterServiceImpl implements SemesterService {
     public Semester save(Semester entity) {
         Optional<Semester> fetchedSemester = entity.getSemesterId() != null
                 ? semesterRepository.findSemesterBySemesterId(entity.getSemesterId())
-                : semesterRepository.findSemesterBySemesterName(entity.getSemesterName());
+                : semesterRepository.findSemesterBySemesterName(entity.getTemplate().getSemesterName());
 
         if(fetchedSemester.isPresent()) {
-            Optional<Semester> sameSemester = semesterRepository.findSemesterByAcademicYearId(entity.getAcademicYear().getId());
+            Optional<List<Semester>> sameSemester = semesterRepository.findSemesterByAcademicYearId(entity.getAcademicYear().getId());
             if (sameSemester.isPresent()) {
                 throw new AlreadyExistException("Semester\\Trimestre existe déjà");
             }else {
@@ -89,7 +89,8 @@ public class SemesterServiceImpl implements SemesterService {
 
     @Override
     public List<Semester> fetchAllByOtherEntityId(String otherEntityId) {
-        return List.of();
+        return semesterRepository.findSemesterByAcademicYearId(UUID.fromString(otherEntityId))
+                .orElseThrow();
     }
 
     @Override
