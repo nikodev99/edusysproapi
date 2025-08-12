@@ -31,7 +31,7 @@ public class AssignmentSpec {
         cq.select(cb.construct(
                 AssignmentEssential.class,
                 assignment.get("id"),
-                assignment.get("semester").get("semestre").get("semesterName"),
+                assignment.get("semester").get("semestre"),
                 assignment.get("semester").get("designation"),
                 assignment.get("exam").get("examType"),
                 assignment.get("preparedBy").get("id"),

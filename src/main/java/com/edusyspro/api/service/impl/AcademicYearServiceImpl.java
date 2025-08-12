@@ -4,7 +4,9 @@ import com.edusyspro.api.dto.AcademicYearDTO;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
+import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.School;
+import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.repository.AcademicYearRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.AcademicYearService;
@@ -25,7 +27,10 @@ public class AcademicYearServiceImpl implements AcademicYearService {
     private final UpdateContext updateContext;
 
     @Autowired
-    public AcademicYearServiceImpl(AcademicYearRepository academicYearRepository, UpdateContext updateContext) {
+    public AcademicYearServiceImpl(
+            AcademicYearRepository academicYearRepository,
+            UpdateContext updateContext
+    ) {
         this.academicYearRepository = academicYearRepository;
         this.updateContext = updateContext;
     }
@@ -33,22 +38,27 @@ public class AcademicYearServiceImpl implements AcademicYearService {
     @Override
     public Boolean addAcademicYear(AcademicYearDTO academicYear) {
         boolean exists = academicYearExists(academicYear);
-        UUID addedAcademicYearId = null;
-        if (exists)
-            throw new AlreadyExistException("Academic Year already exists");
+        if (exists) throw new AlreadyExistException("Academic Year already exists");
 
         AcademicYearDTO currentAcademicYear = getCurrentAcademicYear(
                 academicYear.getSchool().getId().toString()
         );
 
-        boolean status = changeAcademicYearStatus(currentAcademicYear);
+        AcademicYear entity = academicYear.toEntity();
+        List<Semester> semesters = entity.getSemesters();
 
-        if (status)
-            addedAcademicYearId = academicYearRepository
-                    .save(academicYear.toEntity())
-                    .getId();
+        if (semesters != null && !semesters.isEmpty()) {
+            semesters.forEach(semester -> semester.setAcademicYear(entity));
+        }
 
-        return addedAcademicYearId != null;
+        AcademicYear insertedAcademicYear = academicYearRepository.save(entity);
+
+        boolean statusChange = false;
+        if (insertedAcademicYear.getId() != null) {
+            statusChange = changeAcademicYearStatus(currentAcademicYear);
+        }
+
+        return statusChange;
     }
 
     @Override

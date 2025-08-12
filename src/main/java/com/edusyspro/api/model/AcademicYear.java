@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +17,7 @@ import java.util.UUID;
 @Builder
 @Table(name = "academic_year")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@EqualsAndHashCode(exclude = {"semesters", "school"})
 public class AcademicYear {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -34,11 +32,11 @@ public class AcademicYear {
     @JsonProperty("academicYear")
     private String years;
 
-    @OneToMany(mappedBy = "academicYear", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "academicYear", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Semester> semesters;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.DETACH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     @JsonIgnore
     private School school;

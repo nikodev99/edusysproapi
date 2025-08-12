@@ -19,13 +19,13 @@ import java.util.UUID;
 public interface AcademicYearRepository extends JpaRepository<AcademicYear, UUID> {
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.AcademicYearDTO(a.id, a.startDate, a.endDate, a.current, a.years, null) 
+        SELECT new com.edusyspro.api.dto.AcademicYearDTO(a.id, a.startDate, a.endDate, a.current, a.years, null, null)
         FROM AcademicYear a WHERE a.school.id = ?1 and EXTRACT(YEAR FROM a.startDate) >= ?2
     """)
     List<AcademicYearDTO> findAllBeginningOfYear(UUID schoolId, int year);
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.AcademicYearDTO(a.id, a.startDate, a.endDate, a.current, a.years, null)
+        SELECT new com.edusyspro.api.dto.AcademicYearDTO(a.id, a.startDate, a.endDate, a.current, a.years, null, null)
         FROM AcademicYear a WHERE a.school.id = ?1 and ?2 >= a.startDate and a.endDate <= ?2
     """)
     AcademicYearDTO findBeginningOfYear(UUID schoolId, LocalDate date);
@@ -34,19 +34,19 @@ public interface AcademicYearRepository extends JpaRepository<AcademicYear, UUID
     Optional<Tuple> findBySchool(UUID schoolId);
 
     @Query("""
-        select new com.edusyspro.api.dto.AcademicYearDTO(a.id, a.startDate, a.endDate, a.current, a.years, null)
+        select new com.edusyspro.api.dto.AcademicYearDTO(a.id, a.startDate, a.endDate, a.current, a.years, null, null)
         from AcademicYear a where a.id = ?1
     """)
     Optional<AcademicYearDTO> findAcademicYearById(UUID id);
 
     @Query("""
-        select new com.edusyspro.api.dto.AcademicYearDTO(a.id, a.startDate, a.endDate, a.current, a.years, null)
+        select new com.edusyspro.api.dto.AcademicYearDTO(a.id, a.startDate, a.endDate, a.current, a.years, null, null)
         from AcademicYear a where a.school.id = ?1 and a.current = true
     """)
     AcademicYearDTO findAcademicYearBySchoolIdAndCurrentIsTrue(UUID schoolId);
 
     @Query("""
-        select new com.edusyspro.api.dto.AcademicYearDTO(a.id, a.startDate, a.endDate, a.current, a.years, null)
+        select new com.edusyspro.api.dto.AcademicYearDTO(a.id, a.startDate, a.endDate, a.current, a.years, null, null)
         from AcademicYear a where a.school.id = ?1
     """)
     List<AcademicYearDTO> findAllBySchoolId(UUID schoolId);

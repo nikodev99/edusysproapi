@@ -3,8 +3,10 @@ package com.edusyspro.api.service.impl;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.model.Semester;
+import com.edusyspro.api.model.SemesterTemplate;
 import com.edusyspro.api.repository.SemesterRepository;
 import com.edusyspro.api.service.interfaces.SemesterService;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class SemesterServiceImpl implements SemesterService {
     private final SemesterRepository semesterRepository;
+    private final SemesterTemplateService semesterTemplateService;
 
-    public SemesterServiceImpl(SemesterRepository semesterRepository) {
+    public SemesterServiceImpl(SemesterRepository semesterRepository, SemesterTemplateService semesterTemplateService) {
         this.semesterRepository = semesterRepository;
+        this.semesterTemplateService = semesterTemplateService;
     }
 
     @Override
@@ -29,15 +34,23 @@ public class SemesterServiceImpl implements SemesterService {
                 : semesterRepository.findSemesterBySemesterName(entity.getTemplate().getSemesterName());
 
         if(fetchedSemester.isPresent()) {
-            Optional<List<Semester>> sameSemester = semesterRepository.findSemesterByAcademicYearId(entity.getAcademicYear().getId());
-            if (sameSemester.isPresent()) {
+            Optional<List<Semester>> sameSemester = semesterRepository.findSemesterByAcademicYearId(
+                    entity.getAcademicYear() != null ? entity.getAcademicYear().getId() : UUID.randomUUID()
+            );
+            if (sameSemester.isPresent() && !sameSemester.get().isEmpty()) {
                 throw new AlreadyExistException("Semester\\Trimestre existe déjà");
             }else {
                 Semester semester = fetchedSemester.get();
-                semesterRepository.updateSemesterBySemesterId(entity.getAcademicYear(), semester.getSemesterId());
+                semesterRepository.updateSemesterBySemesterId(
+                        entity.getAcademicYear(),
+                        entity.getStartDate(),
+                        entity.getEndDate(),
+                        semester.getSemesterId()
+                );
                 return semester;
             }
         }
+
         return semesterRepository.save(entity);
     }
 
@@ -54,7 +67,15 @@ public class SemesterServiceImpl implements SemesterService {
 
     @Override
     public List<Semester> fetchAll(String schoolId) {
-        return semesterRepository.getAllBySchoolId(UUID.fromString(schoolId));
+        List<Semester> semesters = semesterRepository.getAllBySchoolId(UUID.fromString(schoolId));
+        if (!semesters.isEmpty()) {
+            return semesters;
+        }else {
+            List<SemesterTemplate> templates = semesterTemplateService.fetchAll(schoolId);
+            return templates.stream()
+                    .map(st -> Semester.builder().template(st).build())
+                    .toList();
+        }
     }
 
     @Override
@@ -100,7 +121,7 @@ public class SemesterServiceImpl implements SemesterService {
 
     @Override
     public Semester fetchOneById(Integer id) {
-        return null;
+        return semesterRepository.findSemesterBySemesterId(id).orElse(null);
     }
 
     @Override

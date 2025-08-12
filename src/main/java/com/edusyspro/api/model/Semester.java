@@ -2,10 +2,7 @@ package com.edusyspro.api.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -15,6 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@EqualsAndHashCode(exclude = {"template", "academicYear"})
 public class Semester {
 
     @Id
@@ -22,14 +20,14 @@ public class Semester {
     @Column(name = "semester_id")
     private Integer semesterId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.DETACH})
     @JoinColumn(name = "semester_template_id", referencedColumnName = "id")
     private SemesterTemplate template;
 
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
     private AcademicYear academicYear;
 }

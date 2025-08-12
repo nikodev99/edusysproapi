@@ -42,12 +42,10 @@ public class GradeServiceImpl implements GradeService {
         var gradeToSave = entity.toEntity();
 
         if (gradeToSave.getPlanning() != null) {
-            gradeToSave.getPlanning().forEach(planning -> {
-                planning.setGrade(gradeToSave);
-            });
+            gradeToSave.getPlanning().forEach(planning -> planning.setGrade(gradeToSave));
         }
 
-        var addedGrade = gradeRepository.save(entity.toEntity());
+        var addedGrade = gradeRepository.save(gradeToSave);
 
         return GradeDTO.fromEntity(addedGrade);
     }
