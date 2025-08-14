@@ -33,7 +33,7 @@ public class Grade {
     @JsonIgnore
     private List<Planning> planning;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     @JsonIgnore
     private School school;

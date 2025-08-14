@@ -29,6 +29,7 @@ public interface SemesterRepository extends JpaRepository<Semester, Integer> {
     @Query("SELECT s FROM Semester s WHERE s.template.semesterName = ?1")
     Optional<Semester> findSemesterBySemesterName(String semesterName);
 
+    @Query("SELECT s FROM Semester s WHERE s.academicYear.id = ?1 order by s.template.displayOrder")
     Optional<List<Semester>> findSemesterByAcademicYearId(UUID academicYearId);
 
     Optional<Semester> findSemesterBySemesterId(int semesterId);

@@ -22,7 +22,7 @@ public class Planning {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
     @JoinColumn(name = "semester_id", referencedColumnName = "semester_id")
     @JsonProperty("semester")
     private Semester semestre;
@@ -34,7 +34,7 @@ public class Planning {
 
     private LocalDate termEndDate;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
     @JoinColumn(name = "grade_id", referencedColumnName = "id")
     @JsonIgnore
     private Grade grade;
