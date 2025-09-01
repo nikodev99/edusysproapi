@@ -1,5 +1,6 @@
 package com.edusyspro.api.model;
 
+import com.edusyspro.api.utils.Datetime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -45,13 +46,13 @@ public class Department {
 
     @PrePersist
     public void prePersist() {
-        createdAt = ZonedDateTime.now();
-        modifyAt = ZonedDateTime.now();
+        createdAt = Datetime.brazzavilleDatetime();
+        modifyAt = Datetime.brazzavilleDatetime();
     }
 
     @PreUpdate
     public void preUpdate() {
-        modifyAt = ZonedDateTime.now();
+        modifyAt = Datetime.brazzavilleDatetime();
     }
 
     @Override

@@ -46,8 +46,8 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseEssential(
             c.id, c.course, c.abbr, c.department.id, c.department.name, c.department.code, c.department.purpose,
-            c.department.boss.d_boss.id, c.department.boss.current, c.department.boss.d_boss.personalInfo.firstName,
-            c.department.boss.d_boss.personalInfo.lastName, c.department.boss.startPeriod, c.department.boss.endPeriod, c.createdAt
+            c.department.boss.d_boss.id, c.department.boss.current, c.department.boss.d_boss.firstName,
+            c.department.boss.d_boss.lastName, c.department.boss.startPeriod, c.department.boss.endPeriod, c.createdAt
         ) from ClasseEntity cl join cl.principalCourse c where cl.id = ?1
     """)
     Optional<CourseEssential> findClassePrincipalCourse(int classeId);

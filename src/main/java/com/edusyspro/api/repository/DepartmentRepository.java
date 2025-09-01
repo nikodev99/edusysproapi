@@ -20,8 +20,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
     Optional<List<DepartmentBasicValue>> findBasicDepartmentBySchool(UUID schoolId);
 
     @Query("select new com.edusyspro.api.dto.custom.DepartmentEssential(" +
-            "d.id, d.name, d.code, d.purpose, d.boss.d_boss.id, d.boss.current, d.boss.d_boss.personalInfo.firstName, " +
-            "d.boss.d_boss.personalInfo.lastName, d.boss.d_boss.personalInfo.image, d.boss.startPeriod, d.boss.endPeriod)" +
+            "d.id, d.name, d.code, d.purpose, d.boss.d_boss.id, d.boss.current, d.boss.d_boss.firstName, " +
+            "d.boss.d_boss.lastName, d.boss.d_boss.image, d.boss.startPeriod, d.boss.endPeriod)" +
             "from Department d where d.code = ?1")
     Optional<DepartmentEssential> findDepartmentByCode(UUID schoolId, String code);
 

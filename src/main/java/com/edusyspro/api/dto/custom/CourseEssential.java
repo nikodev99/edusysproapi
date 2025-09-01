@@ -4,11 +4,9 @@ import com.edusyspro.api.dto.CourseDTO;
 import com.edusyspro.api.dto.DepartmentDTO;
 import com.edusyspro.api.model.DepartmentBoss;
 import com.edusyspro.api.model.Individual;
-import com.edusyspro.api.model.Teacher;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.UUID;
 
 public record CourseEssential(
         int id,
@@ -18,7 +16,7 @@ public record CourseEssential(
         String name,
         String code,
         String purpose,
-        UUID bossId,
+        long bossId,
         boolean bossCurrent,
         String firstName,
         String lastName,
@@ -38,12 +36,10 @@ public record CourseEssential(
                         .purpose(purpose)
                         .boss(DepartmentBoss.builder()
                                 .current(bossCurrent)
-                                .d_boss(Teacher.builder()
+                                .d_boss(Individual.builder()
                                         .id(bossId)
-                                        .personalInfo(Individual.builder()
-                                                .firstName(firstName)
-                                                .lastName(lastName)
-                                                .build())
+                                        .firstName(firstName)
+                                        .lastName(lastName)
                                         .build())
                                 .startPeriod(startPeriod)
                                 .endPeriod(endPeriod)
