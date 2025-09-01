@@ -52,4 +52,9 @@ public class GradeController {
     ResponseEntity<?> getSchoolGradesWithPlannings(@PathVariable String schoolId, @RequestParam String academicYear) {
         return ResponseEntity.ok(gradeService.fetchAll(schoolId, academicYear));
     }
+
+    @GetMapping()
+    ResponseEntity<?> getGradeById(@RequestParam int gradeId) {
+        return ResponseEntity.ok(gradeService.fetchOneById(gradeId));
+    }
 }

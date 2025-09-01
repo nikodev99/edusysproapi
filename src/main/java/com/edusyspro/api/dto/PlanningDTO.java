@@ -35,7 +35,6 @@ public class PlanningDTO {
                 .designation(dto.getDesignation())
                 .termStartDate(dto.getTermStartDate())
                 .termEndDate(dto.getTermEndDate())
-                .grade(dto.getGrade() != null ? GradeDTO.fromEntity(dto.getGrade()) : null)
                 .createdAt(dto.getCreatedAt())
                 .updatedAt(dto.getUpdatedAt())
                 .build();
@@ -48,9 +47,14 @@ public class PlanningDTO {
                 .designation(dto.getDesignation())
                 .termStartDate(dto.getTermStartDate())
                 .termEndDate(dto.getTermEndDate())
-                .grade(dto.getGrade().toEntity())
                 .createdAt(dto.getCreatedAt())
                 .updatedAt(dto.getUpdatedAt())
                 .build();
+    }
+
+    public static Planning toEntityWithGrade(PlanningDTO dto) {
+        Planning planning = toEntity(dto);
+        planning.setGrade(dto.getGrade() != null ? dto.grade.toEntity() : null);
+        return planning;
     }
 }

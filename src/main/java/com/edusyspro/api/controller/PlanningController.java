@@ -1,15 +1,12 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.PlanningDTO;
+import com.edusyspro.api.helper.log.L;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.service.interfaces.PlanningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,6 +19,26 @@ public class PlanningController {
     @Autowired
     public PlanningController(PlanningService planningService) {
         this.planningService = planningService;
+    }
+
+    @PostMapping
+    ResponseEntity<?> savePlanning(@RequestBody PlanningDTO planning) {
+        return ResponseEntity.ok(planningService.addPlanning(planning));
+    }
+
+    @PutMapping("/{planningId}")
+    ResponseEntity<?> updatePlanning(@RequestBody PlanningDTO planning, @PathVariable long planningId) {
+        return ResponseEntity.ok(planningService.updatePlanning(planning, planningId));
+    }
+
+    @DeleteMapping("/{planningId}")
+    ResponseEntity<?> deletePlanning(@PathVariable long planningId) {
+        L.info("deletePlanning planningId={}", planningId);
+        try {
+            return ResponseEntity.ok(planningService.deletePlanning(planningId));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e);
+        }
     }
 
     @RequestMapping("/basic/{schoolId}")

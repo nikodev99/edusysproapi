@@ -39,7 +39,7 @@ public class GradeServiceImpl implements GradeService {
         if (gradeExists.isPresent()) {
             throw new AlreadyExistException("Le grade existe déjà");
         }
-        var gradeToSave = entity.toEntity();
+        var gradeToSave = entity.toEntityWithPlannings();
 
         if (gradeToSave.getPlanning() != null) {
             gradeToSave.getPlanning().forEach(planning -> planning.setGrade(gradeToSave));
@@ -123,7 +123,17 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public GradeDTO fetchOneById(Integer id) {
-        return null;
+        GradeDTO grade = gradeRepository.findGradeById(id).map(GradeBasicValue::convertToDTO).orElse(null);
+        if (grade != null) {
+            List<PlanningDTO> plannings = gradeRepository.findPlanningsByGradeId(grade.getId())
+                    .stream()
+                    .map(PlanningEssential::toDto)
+                    .toList();
+
+            if (!plannings.isEmpty())
+                grade.setPlanning(plannings);
+        }
+        return grade;
     }
 
     @Override

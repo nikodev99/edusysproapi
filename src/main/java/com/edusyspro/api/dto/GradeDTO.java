@@ -47,12 +47,17 @@ public class GradeDTO {
                 .id(id)
                 .section(section)
                 .subSection(subSection)
-                .planning(planning != null
-                        ? planning.stream().map(PlanningDTO::toEntity).toList()
-                        : List.of())
                 .school(school)
                 .createdAt(createdAt)
                 .modifyAt(modifyAt)
                 .build();
+    }
+
+    public Grade toEntityWithPlannings() {
+        Grade grade = toEntity();
+        grade.setPlanning(planning != null
+                ? planning.stream().map(PlanningDTO::toEntity).toList()
+                : List.of());
+        return grade;
     }
 }

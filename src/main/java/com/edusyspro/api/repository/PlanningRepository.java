@@ -3,10 +3,14 @@ package com.edusyspro.api.repository;
 import com.edusyspro.api.dto.custom.PlanningBasic;
 import com.edusyspro.api.dto.custom.PlanningEssential;
 import com.edusyspro.api.model.Planning;
+import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.model.enums.Section;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,4 +44,23 @@ public interface PlanningRepository extends JpaRepository<Planning, Long> {
         from ClasseEntity c join c.grade g join g.planning p where c.id = ?1 and p.termStartDate between ?2 and ?3
     """)
     Optional<List<PlanningBasic>> getClassePlanningByDates(int classeId, LocalDate startDate, LocalDate endDate);
+
+    @Query("""
+        update Planning p set p.semestre = ?1, p.designation = ?2, p.termStartDate = ?3, p.termEndDate = ?4
+        where p.id = ?5
+    """)
+    @Modifying
+    @Transactional
+    int updatePlanning(
+            Semester semester,
+            String designation,
+            LocalDate termStartDate,
+            LocalDate termEndDate,
+            long planningId
+    );
+
+    @Query("DELETE FROM Planning p WHERE p.id = :planningId")
+    @Modifying
+    @Transactional
+    void deletePlanningById(@Param("planningId") long planningId);
 }
