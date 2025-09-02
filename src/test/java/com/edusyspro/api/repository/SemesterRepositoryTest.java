@@ -17,19 +17,13 @@ public class SemesterRepositoryTest {
     @Test
     public void SaveYearSemesters() {
         Semester semester = Semester.builder()
-                .semesterName("Premier Trimestre")
                 .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
-                .description("la première partie d'une année scolaire")
                 .build();
         Semester semester2 = Semester.builder()
-                .semesterName("Deuxième Trimestre")
                 .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
-                .description("la deuxième partie d'une année scolaire")
                 .build();
         Semester semester3 = Semester.builder()
-                .semesterName("Premier Trimestre")
                 .academicYear(MockUtils.ACADEMIC_YEAR_MOCK.toEntity())
-                .description("la Troisième et dernière partie d'une année scolaire")
                 .build();
 
         semesterRepository.saveAll(List.of(semester, semester2, semester3));

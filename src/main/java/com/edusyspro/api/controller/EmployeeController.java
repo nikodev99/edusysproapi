@@ -23,7 +23,6 @@ public class EmployeeController {
 
     @PostMapping
     ResponseEntity<?> saveEmployee(@RequestBody Employee employee) {
-        System.out.println("EMPLOYEE: " + employee);
         return ResponseEntity.ok(employeeService.saveEmployee(employee));
     }
 
@@ -49,6 +48,14 @@ public class EmployeeController {
     @GetMapping("/{id}")
     ResponseEntity<EmployeeDTO> getEmployee(@PathVariable String id) {
         return ResponseEntity.ok(employeeService.findEmployee(id));
+    }
+
+    @GetMapping("/ind/{schoolId}")
+    ResponseEntity<?> getEmployeeIndividuals(
+            @PathVariable String schoolId,
+            @RequestParam(required = false) String q
+    ) {
+        return ResponseEntity.ok(employeeService.getEmployeeIndividuals(schoolId, q));
     }
 
     @PatchMapping("/{id}")

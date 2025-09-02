@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.custom.EmployeeIndividual;
 import com.edusyspro.api.model.Individual;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface IndividualRepository extends JpaRepository<Individual, Long> {
@@ -42,7 +44,7 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
     /**
      * Retrieves information related to a teacher and their associated school based on the personal information ID.
      *
-     * @param emailId the ID of the personal information associated with the teacher
+     * @param personalInfo the ID of the personal information associated with the teacher
      * @return an {@code Optional} containing an {@code Object[]} with the following elements:
      *         [teacher ID, teacher firstname, teacher lastname, school ID, school name, school abbreviation, school website URL],
      *         if a teacher and their school are found; otherwise, an empty {@code Optional}
@@ -51,5 +53,5 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
         SELECT t.id, t.personalInfo.firstName, t.personalInfo.lastName, s.id, s.name, s.abbr, s.websiteURL
         FROM Teacher t LEFT JOIN t.school s WHERE t.personalInfo.id = ?1
     """)
-    List<Object[]> findTeacherIdByPersonalInfoId(long emailId);
+    List<Object[]> findTeacherIdByPersonalInfoId(long personalInfo);
 }

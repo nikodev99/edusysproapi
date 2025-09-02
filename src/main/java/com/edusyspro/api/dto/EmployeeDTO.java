@@ -2,6 +2,7 @@ package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.School;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EmployeeDTO {
     private UUID id;
     private Individual personalInfo;

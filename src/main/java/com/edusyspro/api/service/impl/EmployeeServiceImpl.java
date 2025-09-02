@@ -2,10 +2,12 @@ package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.EmployeeDTO;
 import com.edusyspro.api.dto.custom.EmployeeEssential;
+import com.edusyspro.api.dto.custom.EmployeeIndividual;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.Employee;
 import com.edusyspro.api.repository.EmployeeRepository;
+import com.edusyspro.api.repository.IndividualRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final UpdateContext updateContext;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, UpdateContext updateContext) {
+    public EmployeeServiceImpl(
+            EmployeeRepository employeeRepository,
+            UpdateContext updateContext
+    ) {
         this.employeeRepository = employeeRepository;
         this.updateContext = updateContext;
     }
@@ -61,6 +66,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Integer updateEmployeeField(String employeeId, UpdateField fields) {
         return updateContext.updateEmployeeFields(fields.field(), fields.value(), UUID.fromString(employeeId));
+    }
+
+    @Override
+    public List<EmployeeDTO> getEmployeeIndividuals(String schoolId, String searchInput) {
+        return searchInput != null && !searchInput.isEmpty()
+            ? employeeRepository.findEmployeeIndividuals(UUID.fromString(schoolId), "%" + searchInput + "%").stream()
+                .map(EmployeeIndividual::toEmployee)
+                .toList()
+
+            : employeeRepository.findEmployeeIndividuals(UUID.fromString(schoolId)).stream()
+                .map(EmployeeIndividual::toEmployee)
+                .toList();
     }
 
     private boolean employeeExists(String email, UUID schoolId) {

@@ -2,6 +2,7 @@ package com.edusyspro.api.repository;
 
 import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.EmployeeDTO;
+import com.edusyspro.api.dto.custom.EmployeeIndividual;
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.Employee;
 import com.edusyspro.api.model.Individual;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
@@ -65,6 +67,15 @@ public class EmployeeRepositoryTest {
     public void testFindAllEmployees() {
         Page<EmployeeDTO> employees = employeeService.findAllEmployees(ConstantUtils.SCHOOL_ID, PageRequest.of(0, 10));
         System.out.println("Employees: " + employees.toList());
+    }
+
+    @Test
+    public void testFindingEmployeeIndividuals() {
+        List<EmployeeIndividual> employeeIndividuals = employeeRepository.findEmployeeIndividuals(
+                UUID.fromString("81148a1b-bdb9-4be1-9efd-fdf4106341d6")
+        );
+
+        System.out.println("Employee Individuals: " + employeeIndividuals.size());
     }
 
     public void testFindEmployeeById() {

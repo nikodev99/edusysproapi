@@ -14,4 +14,6 @@ public interface EmployeeService {
     List<EmployeeDTO> findAllSearchedEmployees(String schoolId, String searchInput);
     EmployeeDTO findEmployee(String employeeId);
     Integer updateEmployeeField(String employeeId, UpdateField fields);
+
+    List<EmployeeDTO> getEmployeeIndividuals(String schoolId, String searchInput);
 }

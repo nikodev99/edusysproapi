@@ -31,7 +31,11 @@ public class Teacher {
     @JoinColumn(name = "personal_info", referencedColumnName = "id")
     private Individual personalInfo;
 
+    private String jobTitle;
+
     private LocalDate hireDate;
+
+    private String contractType;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable(

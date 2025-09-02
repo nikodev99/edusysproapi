@@ -3,6 +3,8 @@ package com.edusyspro.api.dto;
 import com.edusyspro.api.model.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +24,13 @@ import java.util.UUID;
 public class TeacherDTO {
     private UUID id;
     private Individual personalInfo;
+
+    @NotBlank
+    @Size(min = 3, max = 100, message = "Job Title should not exceed 100 characters")
+    private String jobTitle = "Enseignant";
+
     private LocalDate hireDate;
+    private String contractType;
 
     @JsonProperty("classes")
     private List<ClasseDTO> aClasses;
