@@ -26,6 +26,7 @@ public record EmployeeIndividual(
         return EmployeeDTO.builder()
                 .id(employeeId)
                 .personalInfo(Individual.builder()
+                        .id(personalInfoId)
                         .firstName(firstName)
                         .lastName(lastName)
                         .gender(gender)
