@@ -28,6 +28,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
     @Query("select new com.edusyspro.api.dto.custom.DepartmentBasicValue(d.id, d.name, d.code) from Department d where d.code = ?1 and d.school.id = ?2")
     Optional<DepartmentBasicValue> findDepartmentByCodeAndSchoolId(String code, UUID schoolId);
 
-    @Query("select count(d.id) from Department d where d.name = ?1 or d.code = ?2")
-    Optional<Long> departmentExistsByNameOrCode(String name, String code);
+    @Query("select count(d.id) from Department d where d.school.id = ?1 and d.name = ?2 and d.code = ?3")
+    Long departmentExistsByNameOrCode(UUID schoolId, String name, String code);
 }

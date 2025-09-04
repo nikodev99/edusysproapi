@@ -29,13 +29,13 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDTO save(DepartmentDTO entity) {
-        Optional<Long> itExist = departmentRepository.departmentExistsByNameOrCode(
-                entity.getName(), entity.getCode()
+        Long countOccurrence = departmentRepository.departmentExistsByNameOrCode(
+                entity.getSchool().getId(), entity.getName(), entity.getCode()
         );
 
-        if (itExist.isPresent()) {
+        if (countOccurrence > 0) {
             throw new AlreadyExistException(String.format(
-                    "Le département %s avec le code %s existe déjà", entity.getName(), entity.getCode()));
+                    "Le département  \"%s\" avec le code \"%s\" existe déjà", entity.getName(), entity.getCode()));
         }
 
         var addedDepartment = departmentRepository.save(DepartmentDTO.toEntity(entity));

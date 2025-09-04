@@ -45,8 +45,18 @@ public class DepartmentDTO {
                 .code(dto.getCode())
                 .purpose(dto.getPurpose())
                 .school(dto.getSchool())
-                .createdAt(dto.getCreatedAt())
-                .modifyAt(dto.getModifyAt())
+                .build();
+    }
+
+    public static Department toEntityWithBoss(DepartmentDTO dto) {
+        if(dto == null) return null;
+        return Department.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .boss(dto.getBoss())
+                .code(dto.getCode())
+                .purpose(dto.getPurpose())
+                .school(dto.getSchool())
                 .build();
     }
 }
