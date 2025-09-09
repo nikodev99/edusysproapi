@@ -76,15 +76,17 @@ public class CourseProgramImpl implements CourseProgramService {
 
     @Override
     public List<CourseProgramDTO> fetchAllByOtherEntityId(String otherEntityId) {
-        return courseProgramRepository
-                .findBasicTeacherCoursePrograms(UUID.fromString(otherEntityId)).stream()
-                .map(CourseProgramBasic::toDTO)
-                .toList();
+        return List.of();
     }
 
     @Override
     public List<CourseProgramDTO> fetchAllByOtherEntityId(Object... arg) {
-        return List.of();
+        var teacherId = UUID.fromString(arg[0].toString());
+        var schoolId = UUID.fromString(arg[1].toString());
+        return courseProgramRepository
+                .findBasicTeacherCoursePrograms(teacherId, schoolId).stream()
+                .map(CourseProgramBasic::toDTO)
+                .toList();
     }
 
     @Override

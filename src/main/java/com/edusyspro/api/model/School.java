@@ -1,6 +1,7 @@
 package com.edusyspro.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(exclude = {"grades"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class School {
 
     @Id

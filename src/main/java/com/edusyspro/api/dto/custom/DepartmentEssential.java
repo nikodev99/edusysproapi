@@ -7,12 +7,12 @@ import com.edusyspro.api.model.Individual;
 import java.time.LocalDate;
 
 public record DepartmentEssential(
-        int id,
+        Integer id,
         String name,
         String code,
         String purpose,
-        long bossId,
-        boolean bossCurrent,
+        Long bossId,
+        Boolean bossCurrent,
         String firstName,
         String lastName,
         String image,

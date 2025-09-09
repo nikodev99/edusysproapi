@@ -15,17 +15,17 @@ import java.util.UUID;
 public interface DepartmentRepository extends JpaRepository<Department, Integer> {
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.DepartmentBasicValue(d.id, d.name, d.code) from Department d where d.school.id = ?1
+        select new com.edusyspro.api.dto.custom.DepartmentBasicValue(d.id, d.name, d.code, d.purpose) from Department d where d.school.id = ?1
     """)
     Optional<List<DepartmentBasicValue>> findBasicDepartmentBySchool(UUID schoolId);
 
     @Query("select new com.edusyspro.api.dto.custom.DepartmentEssential(" +
-            "d.id, d.name, d.code, d.purpose, d.boss.d_boss.id, d.boss.current, d.boss.d_boss.firstName, " +
-            "d.boss.d_boss.lastName, d.boss.d_boss.image, d.boss.startPeriod, d.boss.endPeriod)" +
-            "from Department d where d.code = ?1")
+            "d.id, d.name, d.code, d.purpose, i.id, b.current, i.firstName, " +
+            "i.lastName, i.image, b.startPeriod, b.endPeriod)" +
+            "from Department d left join d.boss b left join  b.d_boss i where d.school.id = ?1 and d.code = ?2")
     Optional<DepartmentEssential> findDepartmentByCode(UUID schoolId, String code);
 
-    @Query("select new com.edusyspro.api.dto.custom.DepartmentBasicValue(d.id, d.name, d.code) from Department d where d.code = ?1 and d.school.id = ?2")
+    @Query("select new com.edusyspro.api.dto.custom.DepartmentBasicValue(d.id, d.name, d.code, d.purpose) from Department d where d.code = ?1 and d.school.id = ?2")
     Optional<DepartmentBasicValue> findDepartmentByCodeAndSchoolId(String code, UUID schoolId);
 
     @Query("select count(d.id) from Department d where d.school.id = ?1 and d.name = ?2 and d.code = ?3")

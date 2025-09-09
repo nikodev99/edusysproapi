@@ -25,29 +25,29 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseEssential(
-            c.id, c.course, c.abbr, c.department.id, c.department.name, c.department.code, c.department.purpose,
-            c.department.boss.d_boss.id, c.department.boss.current, c.department.boss.d_boss.firstName,
-            c.department.boss.d_boss.lastName, c.department.boss.startPeriod, c.department.boss.endPeriod, c.createdAt
-        ) from Course c where c.department.school.id = ?1 and c.department.boss.current = true
+            c.id, c.course, c.abbr, d.id, d.name, d.code, d.purpose, i.id, b.current, i.firstName,
+            i.lastName, b.startPeriod, b.endPeriod, c.createdAt
+        ) from Course c left join c.department d left join d.boss b left join b.d_boss i
+        where d.school.id = ?1 and (b is null or b.current = true)
     """)
     Page<CourseEssential> findAllCoursesBySchoolId(UUID schoolId, Pageable pageable);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseEssential(
-            c.id, c.course, c.abbr, c.department.id, c.department.name, c.department.code, c.department.purpose,
-            c.department.boss.d_boss.id, c.department.boss.current, c.department.boss.d_boss.firstName,
-            c.department.boss.d_boss.lastName, c.department.boss.startPeriod, c.department.boss.endPeriod, c.createdAt
-        ) from Course c where c.department.school.id = ?1 and c.department.boss.current = true and (lower(c.course) like lower(?2)
-        or lower(c.abbr) like lower(?2) or lower(c.department.code) like lower(?2))
+            c.id, c.course, c.abbr, d.id, d.name, d.code, d.purpose, i.id, b.current, i.firstName,
+            i.lastName, b.startPeriod, b.endPeriod, c.createdAt
+        ) from Course c left join c.department d left join d.boss b left join b.d_boss i
+        where d.school.id = ?1 and (b is null or b.current = true) and (lower(c.course) like lower(?2)
+        or lower(c.abbr) like lower(?2) or lower(d.code) like lower(?2))
     """)
     List<CourseEssential> findAllCoursesBySchoolId(UUID schoolId, String courseName);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseEssential(
-            c.id, c.course, c.abbr, c.department.id, c.department.name, c.department.code, c.department.purpose,
-            c.department.boss.d_boss.id, c.department.boss.current, c.department.boss.d_boss.firstName,
-            c.department.boss.d_boss.lastName, c.department.boss.startPeriod, c.department.boss.endPeriod, c.createdAt
-        ) from Course c where c.id = ?1 and c.department.boss.current = true
+            c.id, c.course, c.abbr, d.id, d.name, d.code, d.purpose, i.id, b.current, i.firstName,
+            i.lastName, b.startPeriod, b.endPeriod, c.createdAt
+        ) from Course c left join c.department d left join d.boss b left join b.d_boss i
+        where c.id = ?1 and (b is null or b.current = true)
     """)
     CourseEssential findCourseById(Integer id);
 

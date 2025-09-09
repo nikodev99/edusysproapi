@@ -35,6 +35,10 @@ public class Department {
     @JsonIgnore
     private DepartmentBoss boss;
 
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
+    @JoinColumn(name = "grade_id", referencedColumnName = "id")
+    private Grade grade;
+
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     @JsonIgnore

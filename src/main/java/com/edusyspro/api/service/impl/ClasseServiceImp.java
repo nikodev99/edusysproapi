@@ -104,7 +104,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
     public ClasseDTO fetchOneById(Integer id, String schoolId) {
         ClasseDTO classe = classeRepository.findClasseById(id).convertToDTO();
         if (classe != null && classe.getId() > 0) {
-            GradeDTO grade = classeRepository.findGradeClasseId(classe.getId()).convertToDTO();
+            GradeDTO grade = classeRepository.findGradeByClasseId(classe.getId()).convertToDTO();
             List<PlanningEssential> plannings = gradeRepository.findPlanningsByGrade(grade.getId(), UUID.fromString(schoolId));
             List<ScheduleDTO> schedules = scheduleService.getAllClasseSchedule(classe.getId(), grade.getSection());
             TeacherBossDTO teacherBoss = classeTeacherBossService.fetchTeacherBoss(classe.getId());

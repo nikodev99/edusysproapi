@@ -22,6 +22,7 @@ public class ClasseDTO {
     private String name;
     private String category;
     private GradeDTO grade;
+    private DepartmentDTO department;
     private List<ScheduleDTO> schedule;
     private Integer roomNumber;
     private TeacherBossDTO principalTeacher;
@@ -40,6 +41,7 @@ public class ClasseDTO {
                 .name(classe.getName())
                 .category(classe.getCategory())
                 .grade(GradeDTO.fromEntity(classe.getGrade()))
+                .department(DepartmentDTO.fromEntity(classe.getDepartment()))
                 .schedule(classe.getSchedule().stream().map(ScheduleDTO::fromEntity).toList())
                 .roomNumber(classe.getRoomNumber())
                 .principalTeacher(TeacherBossDTO.fromEntity(classe.getPrincipalTeacher()))
@@ -59,6 +61,7 @@ public class ClasseDTO {
                .name(classe.getName())
                .category(classe.getCategory())
                .grade(classe.getGrade().toEntity())
+               .department(DepartmentDTO.toEntity(classe.getDepartment()))
                .roomNumber(classe.getRoomNumber())
                .monthCost(classe.getMonthCost())
                .createdAt(classe.getCreatedAt())

@@ -20,26 +20,30 @@ import java.util.UUID;
 public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ClassBasicValue(c.id, c.name, c.category, c.grade.section) from ClasseEntity c where c.grade.school.id = ?1
+        select new com.edusyspro.api.dto.custom.ClassBasicValue(c.id, c.name, c.category, g.section, d.name, d.code)
+        from ClasseEntity c left join c.grade g left join c.department d where g.school.id = ?1 or d.school.id = ?1
     """)
     List<ClassBasicValue> findAllBasicValue(UUID schoolID);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, c.grade.section, c.grade.subSection,
-        c.roomNumber, c.monthCost, c.createdAt) from ClasseEntity c where c.grade.school.id = ?1
+        select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection,
+        c.roomNumber, d.name, d.code, c.monthCost, c.createdAt) from ClasseEntity c left join c.grade g left join c.department d
+        where (g is null or g.school.id = ?1) or (d is null or d.school.id = ?1)
     """)
     Page<ClasseEssential> findAllCLassesBySchool(UUID schoolID, Pageable pageable);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, c.grade.section, c.grade.subSection,
-        c.roomNumber, c.monthCost, c.createdAt) from ClasseEntity c where c.grade.school.id = ?1 and (lower(c.name) like lower(?2) or
-        lower(c.category) like lower(?2) or lower(c.grade.section) like lower(?2)) order by c.createdAt desc
+        select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection,
+        c.roomNumber, d.name, d.code, c.monthCost, c.createdAt) from ClasseEntity c left join c.grade g left join c.department d
+        where ((g is null or g.school.id = ?1) or (d is null or d.school.id = ?1)) and (lower(c.name) like lower(?2) or
+        lower(c.category) like lower(?2) or lower(g.section) like lower(?2)) order by c.createdAt desc
     """)
     List<ClasseEssential> findAllCLassesBySchool(UUID schoolID, String classeName);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, c.grade.section, c.grade.subSection,
-        c.roomNumber, c.monthCost, c.createdAt) from ClasseEntity c where c.id = ?1
+        c.roomNumber, c.department.name, c.department.code, c.monthCost, c.createdAt) from ClasseEntity c left join c.department
+        where c.id = ?1
     """)
     ClasseEssential findClasseById(int id);
 
@@ -56,7 +60,7 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
         select new com.edusyspro.api.dto.custom.GradeBasicValue(c.grade.id, c.grade.section, c.grade.subSection,
         c.grade.createdAt, c.grade.modifyAt) from ClasseEntity c where c.id = ?1
     """)
-    GradeBasicValue findGradeClasseId(int classeId);
+    GradeBasicValue findGradeByClasseId(int classeId);
 
     @Modifying
     @Transactional

@@ -135,8 +135,6 @@ public class AssignmentServiceImpl implements AssignmentService {
         if (assignment != null && assignment.getId() > 0) {
             PlanningDTO planning = planningService.findBasicPlanningById(assignment.getSemester().getId());
             ClasseDTO classe = classeService.getClasseById(assignment.getClasse().getId());
-
-            System.out.println("Planning: " + planning);
             
             assignment.setSemester(planning);
             assignment.setClasse(classe);

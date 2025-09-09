@@ -33,6 +33,10 @@ public class ClasseEntity {
     @JoinColumn(name = "grade_id", referencedColumnName = "id")
     private Grade grade;
 
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "department_id", referencedColumnName = "id")
+    private Department department;
+
     @OneToMany(mappedBy = "classeEntity", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private List<Schedule> schedule;
 

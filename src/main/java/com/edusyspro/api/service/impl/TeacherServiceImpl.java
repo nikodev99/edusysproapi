@@ -135,8 +135,13 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
                         .orElseThrow(() -> new NotFountException("Teacher was not found"))
                         .toTeacher();
         List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(dto.getId(), UUID.fromString(schoolId));
-        List<CourseEssential> courses = teacherRepository.findTeacherEssentialCourses(dto.getId());
-        List<CourseProgramDTO> programs = courseProgramService.fetchAllByOtherEntityId(String.valueOf(dto.getId()));
+        List<CourseEssential> courses = teacherRepository.findTeacherEssentialCourses(dto.getId(), UUID.fromString(schoolId));
+        List<CourseProgramDTO> programs = courseProgramService.fetchAllByOtherEntityId(String.valueOf(dto.getId()), schoolId);
+
+        System.out.println("--------------------------------------------------------");
+        System.out.println("DONNEE DE MATIERE: " + courses);
+        System.out.println("--------------------------------------------------------");
+
         dto.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
         dto.setCourses(courses.stream().map(CourseEssential::toCourse).toList());
         dto.setCourseProgram(programs);

@@ -9,15 +9,15 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 public record CourseEssential(
-        int id,
+        Integer id,
         String course,
         String abbr,
-        int departmentId,
+        Integer departmentId,
         String name,
         String code,
         String purpose,
-        long bossId,
-        boolean bossCurrent,
+        Long bossId,
+        Boolean bossCurrent,
         String firstName,
         String lastName,
         LocalDate startPeriod,

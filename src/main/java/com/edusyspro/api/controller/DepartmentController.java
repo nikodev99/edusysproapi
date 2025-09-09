@@ -43,10 +43,13 @@ public class DepartmentController {
 
     @GetMapping("/{schoolId}")
     ResponseEntity<DepartmentDTO> getDepartmentByCode(
-            @PathVariable String schoolId,
-            @RequestParam String departmentCode
+            @RequestParam String departmentCode,
+            @PathVariable String schoolId
     ) {
-        return ResponseEntity.ok(departmentService.fetchOneByCustomColumn(schoolId, departmentCode));
+        System.out.println("-----------------------------------------------------------------");
+        System.out.println("SCHOOL_ID: " + schoolId + " CODE: " + departmentCode);
+        System.out.println("-----------------------------------------------------------------");
+        return ResponseEntity.ok(departmentService.fetchOneByCustomColumn(departmentCode, schoolId));
     }
 
     @GetMapping("/basics/{schoolId}")

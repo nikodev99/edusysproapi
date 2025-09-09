@@ -25,21 +25,22 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     """)
     Page<TeacherEssential> findAllBySchoolId(UUID schoolId, Pageable pageable);
 
-    @Query("select new com.edusyspro.api.dto.custom.ClassBasicValue(c.id, c.name, c.category, c.grade.section) from Teacher t " +
-            "join t.aClasses c join t.school s where t.id = ?1 and s.id = ?2")
+    @Query("select new com.edusyspro.api.dto.custom.ClassBasicValue(c.id, c.name, c.category, g.section, d.name, d.code) from Teacher t " +
+            "join t.aClasses c left join c.grade g left join c.department d where t.id = ?1 and ((g is null or g.school.id = ?2) or (d is null or d.school.id = ?2))")
     List<ClassBasicValue> findTeacherClasses(UUID teacherId, UUID schoolId);
 
-    @Query("select new com.edusyspro.api.dto.custom.CourseBasicValue(c.id, c.course, c.abbr) from Teacher t join t.courses c join t.school s where t.id = ?1 and s.id = ?2")
+    @Query("select new com.edusyspro.api.dto.custom.CourseBasicValue(c.id, c.course, c.abbr) " +
+            "from Teacher t join t.courses c left join c.department d where t.id = ?1 and d.school.id = ?2")
     List<CourseBasicValue> findTeacherCourses(UUID teacherId, UUID schoolId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseEssential(
-            c.id, c.course, c.abbr, c.department.id, c.department.name, c.department.code, c.department.purpose,
-            c.department.boss.d_boss.id, c.department.boss.current, c.department.boss.d_boss.firstName,
-            c.department.boss.d_boss.lastName, c.department.boss.startPeriod, c.department.boss.endPeriod, c.createdAt
-        ) from Teacher t join t.courses c where t.id = ?1
+            c.id, c.course, c.abbr, d.id, d.name, d.code, d.purpose, b.d_boss.id, b.current, i.firstName,
+            i.lastName, b.startPeriod, b.endPeriod, c.createdAt
+        ) from Teacher t join t.courses c left join c.department d left join d.boss b left join b.d_boss i
+        where t.id = ?1 and d.school.id = ?2
     """)
-    List<CourseEssential> findTeacherEssentialCourses(UUID teacherId);
+    List<CourseEssential> findTeacherEssentialCourses(UUID teacherId, UUID schoolId);
 
     @Query("select new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, t.hireDate, t.salaryByHour, " +
         "s.id, s.name, t.createdAt, t.modifyAt) from Teacher t join t.school s where s.id = ?1 " +

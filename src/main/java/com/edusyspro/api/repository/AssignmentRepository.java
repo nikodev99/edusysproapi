@@ -108,9 +108,9 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentExhaustif(a.id, a.semester.id, a.exam.id, a.exam.examType, a.exam.startDate,
-        a.exam.endDate, a.preparedBy.id, a.classeEntity.id, a.subject.id, a.subject.course, a.subject.abbr, a.subject.department.code,
-        a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.coefficient, a.addedDate, a.updatedDate)
-        from Assignment a where a.id = ?1
+        a.exam.endDate, a.preparedBy.id, c.id, s.id, s.course, s.abbr, d.code, a.examName, a.examDate, a.startTime, a.endTime,
+        a.type, a.passed, a.coefficient, a.addedDate, a.updatedDate) from Assignment a left join a.classeEntity c left join a.subject s
+        left join s.department d where a.id = ?1
     """)
     Optional<AssignmentExhaustif> findAssignmentById(Long assignmentId);
 

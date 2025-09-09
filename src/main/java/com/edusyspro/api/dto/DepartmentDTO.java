@@ -20,6 +20,7 @@ public class DepartmentDTO {
     private String code;
     private String purpose;
     private DepartmentBoss boss;
+    private GradeDTO grade;
     private School school;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
@@ -54,6 +55,7 @@ public class DepartmentDTO {
                 .id(dto.getId())
                 .name(dto.getName())
                 .boss(dto.getBoss())
+                .grade(dto.grade.toEntity())
                 .code(dto.getCode())
                 .purpose(dto.getPurpose())
                 .school(dto.getSchool())

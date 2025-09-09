@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,7 +37,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     "Le département  \"%s\" avec le code \"%s\" existe déjà", entity.getName(), entity.getCode()));
         }
 
-        var addedDepartment = departmentRepository.save(DepartmentDTO.toEntity(entity));
+        var addedDepartment = departmentRepository.save(DepartmentDTO.toEntityWithBoss(entity));
 
         return DepartmentDTO.fromEntity(addedDepartment);
     }
@@ -117,10 +116,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDTO fetchOneByCustomColumn(String columnValue, String schoolId) {
-        DepartmentEssential basicDTO = departmentRepository.findDepartmentByCode(
+        return departmentRepository.findDepartmentByCode(
                 UUID.fromString(schoolId), columnValue
-        ).orElseThrow();
-        return basicDTO.toDepartmentDTO();
+        ).map(DepartmentEssential::toDepartmentDTO).orElse(null);
     }
 
     @Override
