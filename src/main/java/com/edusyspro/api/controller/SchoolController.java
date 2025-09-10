@@ -21,6 +21,11 @@ public class SchoolController {
         return ResponseEntity.ok(schoolService.getSchool(schoolId));
     }
 
+    @GetMapping("/section/{schoolId}")
+    ResponseEntity<?> fetchSchoolSections(@PathVariable String schoolId) {
+        return ResponseEntity.ok(schoolService.getSections(schoolId));
+    }
+
     @PatchMapping("/{schoolId}")
     ResponseEntity<?> updateSchoolField(@PathVariable String schoolId, @RequestBody UpdateField fields) {
         try {
