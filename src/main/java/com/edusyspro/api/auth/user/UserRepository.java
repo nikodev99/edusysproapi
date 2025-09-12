@@ -2,6 +2,8 @@ package com.edusyspro.api.auth.user;
 
 import com.edusyspro.api.auth.request.UserInfoResponse;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,11 +29,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByPhoneNumber(String phoneNumber);
 
     @Query("""
-        SELECT new com.edusyspro.api.auth.request.UserInfoResponse(u.id, u.username, u.email, s.roles, u.phoneNumber,
+        SELECT new com.edusyspro.api.auth.request.UserInfoResponse(u.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
         u.enabled, u.accountNonLocked, u.failedLoginAttempts, u.lastLogin, u.userType, u.createdAt, u.updatedAt)
-        FROM User u JOIN u.schoolAffiliations s WHERE s.schoolId = ?1
+        FROM User u JOIN Individual i ON i.id = u.personalInfoId JOIN u.schoolAffiliations s WHERE s.schoolId = ?1
     """)
-    List<UserInfoResponse> findAllUsers(UUID schoolId);
+    Page<UserInfoResponse> findAllUsers(UUID schoolId, Pageable pageable);
+
+    @Query("""
+        SELECT new com.edusyspro.api.auth.request.UserInfoResponse(u.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
+        u.enabled, u.accountNonLocked, u.failedLoginAttempts, u.lastLogin, u.userType, u.createdAt, u.updatedAt)
+        FROM User u JOIN Individual i ON i.id = u.personalInfoId JOIN u.schoolAffiliations s WHERE s.schoolId = ?1
+        AND (lower(i.lastName) like lower(?2) or lower(i.firstName) like lower(?2))
+    """)
+    List<UserInfoResponse> findSearchedUsers(UUID schoolId, String searchInput);
 
     Boolean existsByUsername(String username);
 

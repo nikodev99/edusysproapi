@@ -7,6 +7,8 @@ import com.edusyspro.api.utils.Datetime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -72,9 +74,15 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public List<UserInfoResponse> getAllUsers(String schoolId) {
-        return userRepository.findAllUsers(UUID.fromString(schoolId));
+    public Page<UserInfoResponse> getAllUsers(String schoolId, Pageable pageable) {
+        return userRepository.findAllUsers(UUID.fromString(schoolId), pageable);
     }
+
+    @Transactional
+    public List<UserInfoResponse> getAllSearchedUsers(String schoolId, String searchInput) {
+        return userRepository.findSearchedUsers(UUID.fromString(schoolId), searchInput);
+    }
+
 
     @Transactional
     public Boolean existsByUsername(String username) {

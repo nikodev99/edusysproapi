@@ -1,11 +1,10 @@
 package com.edusyspro.api.auth.controller;
 
 import com.edusyspro.api.auth.user.UserService;
+import com.edusyspro.api.controller.utils.ControllerUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -17,8 +16,22 @@ public class UserController {
     }
 
     @RequestMapping("/{schoolId}")
-    ResponseEntity<?> getAllUser(@PathVariable String schoolId) {
-        return ResponseEntity.ok(userService.getAllUsers(schoolId));
+    ResponseEntity<?> getAllUser(
+            @PathVariable String schoolId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String sortCriteria
+    ) {
+        Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
+        return ResponseEntity.ok(userService.getAllUsers(schoolId, pageable));
+    }
+
+    @RequestMapping("/{schoolId}/")
+    ResponseEntity<?> getAllUser(
+            @PathVariable String schoolId,
+            @RequestParam String query
+    ) {
+        return ResponseEntity.ok(userService.getAllSearchedUsers(schoolId, query));
     }
 
     @GetMapping("/count_{schoolId}")
