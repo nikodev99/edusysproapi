@@ -8,6 +8,7 @@ import com.edusyspro.api.model.Employee;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Gender;
+import com.edusyspro.api.model.enums.Status;
 import com.edusyspro.api.service.interfaces.EmployeeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +32,15 @@ public class EmployeeRepositoryTest {
     @Test
     public void testSaveEmployee() {
         var personalInfo = Individual.builder()
-                .firstName("Jane")
-                .lastName("Doe")
+                .firstName("joe")
+                .lastName("mbaki")
                 .gender(Gender.FEMME)
                 .birthDate(LocalDate.of(1990, 1, 1))
                 .birthCity("Paris")
                 .nationality("France")
                 .telephone("058412563")
+                .reference("123456789")
+                .status(Status.CONCUBIN)
                 .address(Address.builder()
                         .number(2)
                         .street("Rue du Rivarole")
@@ -50,7 +53,7 @@ public class EmployeeRepositoryTest {
 
         Employee employee = Employee.builder()
                 .school(School.builder()
-                        .id(UUID.fromString("54e7731a-f2a8-4fc2-a29a-e24f0a01ae39"))
+                        .id(UUID.fromString("621286d1-01a7-4f00-9e57-9e135c1fe94f"))
                         .build())
                 .jobTitle("Informaticienne")
                 .contractType("CDI")

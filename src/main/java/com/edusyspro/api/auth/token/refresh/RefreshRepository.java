@@ -43,6 +43,12 @@ public interface RefreshRepository extends JpaRepository<RefreshEntity, Long> {
     @Query("SELECT re FROM RefreshEntity re WHERE re.userId = :userId AND re.isActive = true")
     List<RefreshEntity> findByUserIdAndIsActiveTrue(@Param("userId") Long userId);
 
+    @Query("""
+        SELECT new com.edusyspro.api.auth.token.refresh.UserLoginResponse(re.id, re.clientIp, re.createdAt, re.deviceFingerprint,
+        re.clientType) FROM RefreshEntity re WHERE re.userId = :userId AND re.isActive = true
+    """)
+    List<UserLoginResponse> findAllActiveTokensByUserId(@Param("userId") Long userId);
+
     /**
      * Deletes a refresh token entity based on the provided user ID, user agent, and client IP address.
      *

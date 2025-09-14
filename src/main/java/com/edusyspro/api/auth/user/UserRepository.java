@@ -24,6 +24,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.id = ?1")
     Optional<User> findUserById(Long id);
 
+    @Query("""
+        SELECT new com.edusyspro.api.auth.request.UserInfoResponse(u.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
+        u.enabled, u.accountNonLocked, u.failedLoginAttempts, u.lastLogin, u.userType, u.createdAt, u.updatedAt)
+        FROM User u JOIN Individual i ON i.id = u.personalInfoId JOIN u.schoolAffiliations s WHERE u.id = ?1 AND s.schoolId = ?2
+    """)
+    Optional<UserInfoResponse> findUserById(@Param("id") Long id, @Param("schoolId") UUID schoolId);
+
     Optional<User> findByEmail(String email);
 
     Optional<User> findByPhoneNumber(String phoneNumber);

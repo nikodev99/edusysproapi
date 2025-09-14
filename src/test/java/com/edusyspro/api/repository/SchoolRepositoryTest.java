@@ -19,6 +19,34 @@ class SchoolRepositoryTest {
     private SchoolRepository schoolRepository;
 
     @Test
+    public void saveUniversitySchool() {
+        Address address = Address.builder()
+                .borough("Cité des 17")
+                .city("Brazzaville")
+                .country("Congo")
+                .neighborhood("Moukondo")
+                .secondStreet(null)
+                .street("Rue Voungouti")
+                .number(10)
+                .zipCode("7858")
+                .build();
+
+        School school = School.builder()
+                .name("Institut Superieur de Technologie")
+                .accreditationNumber(Generator.generateDigitsAndLetters())
+                .abbr("IST")
+                .accreditationCode("BGC")
+                .contactEmail("contact@ist.cg")
+                .foundedDate(LocalDate.of(2003, 3, 15))
+                .phoneNumber("+242063786598")
+                .address(address)
+                .websiteURL("www.ist.cg")
+                .build();
+
+        schoolRepository.save(school);
+    }
+
+    @Test
     public void saveSchool() {
         Address address = Address.builder()
                 .borough("M'Mfilou")

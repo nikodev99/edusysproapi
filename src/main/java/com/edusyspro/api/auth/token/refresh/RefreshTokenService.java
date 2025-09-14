@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -71,6 +72,10 @@ public class RefreshTokenService {
         token.setLastUsedAt(Instant.now());
 
         return refreshRepository.save(token);
+    }
+
+    public List<UserLoginResponse> findUserActiveLogins(long userId) {
+        return refreshRepository.findAllActiveTokensByUserId(userId);
     }
 
     public String rotateRefreshToken(String oldRefreshToken, String newRefreshToken) {

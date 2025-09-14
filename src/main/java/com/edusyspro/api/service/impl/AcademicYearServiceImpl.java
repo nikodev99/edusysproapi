@@ -53,9 +53,11 @@ public class AcademicYearServiceImpl implements AcademicYearService {
 
         AcademicYear insertedAcademicYear = academicYearRepository.save(entity);
 
-        boolean statusChange = false;
-        if (insertedAcademicYear.getId() != null) {
+        boolean statusChange;
+        if (currentAcademicYear != null && insertedAcademicYear.getId() != null) {
             statusChange = changeAcademicYearStatus(currentAcademicYear);
+        }else {
+            statusChange = true;
         }
 
         return statusChange;

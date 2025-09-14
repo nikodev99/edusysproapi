@@ -83,6 +83,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findSearchedUsers(UUID.fromString(schoolId), searchInput);
     }
 
+    @Transactional
+    public UserInfoResponse getUserById(Long userId, String schoolId) {
+        return userRepository.findUserById(userId, UUID.fromString(schoolId))
+                .orElseThrow();
+    }
 
     @Transactional
     public Boolean existsByUsername(String username) {
