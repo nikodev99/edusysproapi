@@ -1,7 +1,7 @@
 package com.edusyspro.api.auth.user;
 
 import com.edusyspro.api.auth.request.UserInfoResponse;
-import jakarta.transaction.Transactional;
+import com.edusyspro.api.model.enums.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -72,6 +73,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User u SET u.accountNonLocked = :locked WHERE u.id = :userId")
     void setAccountLocked(@Param("userId") Long userId, @Param("locked") Boolean locked);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE User u SET u.enabled = :enabled WHERE u.id = :userId")
+    void setAccountEnabled(@Param("userId") Long userId, @Param("enabled") Boolean locked);
 
     @Query("SELECT COUNT(u.id) FROM User u JOIN u.schoolAffiliations s WHERE s.schoolId = :schoolId")
     Optional<Long> countAllUsersBySchoolId(@Param("schoolId") UUID schoolId);

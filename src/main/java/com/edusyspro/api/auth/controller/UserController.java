@@ -51,4 +51,14 @@ public class UserController {
     ResponseEntity<?> countAll(@PathVariable String schoolId) {
         return ResponseEntity.ok(userService.countUsers(schoolId));
     }
+
+    @PatchMapping("/enable/{userId}")
+    ResponseEntity<?> enableAccount (@PathVariable Long userId, @RequestBody boolean enabled) {
+        return ResponseEntity.ok(userService.enabledAccount(userId, enabled));
+    }
+
+    @PatchMapping("/lock/{userId}")
+    ResponseEntity<?> lockAccount (@PathVariable Long userId, @RequestBody boolean locked) {
+        return ResponseEntity.ok(userService.lockedAccount(userId, locked));
+    }
 }

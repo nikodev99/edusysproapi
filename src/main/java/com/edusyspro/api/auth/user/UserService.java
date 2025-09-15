@@ -3,6 +3,7 @@ package com.edusyspro.api.auth.user;
 import com.edusyspro.api.auth.request.UserInfoResponse;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.auth.request.SignupRequest;
+import com.edusyspro.api.model.enums.Role;
 import com.edusyspro.api.utils.Datetime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,5 +158,28 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
         passwordResetService.invalidatePasswordResetToken(token);
         return true;
+    }
+
+    public boolean enabledAccount(Long userId, Boolean enabled) {
+        boolean isEnabled = false;
+        try {
+            userRepository.findUserById(userId).ifPresent(user
+                    -> userRepository.setAccountEnabled(userId, enabled)
+            );
+            isEnabled = true;
+        }catch (Exception ignored) {
+        }
+        return isEnabled;
+    }
+    public boolean lockedAccount(Long userId, Boolean enabled) {
+        boolean isEnabled = false;
+        try {
+            userRepository.findUserById(userId).ifPresent(user
+                    -> userRepository.setAccountEnabled(userId, enabled)
+            );
+            isEnabled = true;
+        }catch (Exception ignored) {
+        }
+        return isEnabled;
     }
 }
