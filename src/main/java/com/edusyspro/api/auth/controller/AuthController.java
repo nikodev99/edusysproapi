@@ -93,26 +93,38 @@ public class AuthController {
                 return handleSingleSchoolLogin(userPrincipal, schoolAffiliations.get(0), request);
             }
 
-            return handleMultiSchoolLogin(userPrincipal, schoolAffiliations, request);
+            return handleMultiSchoolLogin(userPrincipal, schoolAffiliations);
 
         }catch (BadCredentialsException e) {
             logger.warn("Failed login attempt for user: {} from IP: {}",
                     loginRequest.getUsername(), authenticationEntryPoint.getClientIpAddress(request));
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(MessageResponse.builder().message("Invalid username or password").build());
+                    .body(MessageResponse.builder()
+                            .message("Invalid username or password")
+                            .timestamp(Instant.now().toString())
+                            .build());
 
         } catch (DisabledException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(MessageResponse.builder().message("Account is disabled").build());
+                    .body(MessageResponse.builder()
+                            .message("Account is disabled")
+                            .timestamp(Instant.now().toString())
+                            .build());
 
         } catch (LockedException e) {
             return ResponseEntity.status(HttpStatus.LOCKED)
-                    .body(MessageResponse.builder().message("Account is locked").build());
+                    .body(MessageResponse.builder()
+                            .message("Account is locked")
+                            .timestamp(Instant.now().toString())
+                            .build());
 
         } catch (Exception e) {
             logger.error("Authentication error", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(MessageResponse.builder().message("Authentication failed").build());
+                    .body(MessageResponse.builder()
+                            .message("Authentication failed")
+                            .timestamp(Instant.now().toString())
+                            .build());
         }
     }
 
@@ -135,9 +147,44 @@ public class AuthController {
                             .build());
         }
         Long userId = jwtUtils.getUserIdFromToken(token);
-        CustomUserDetails userPrincipal = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserSchoolRole userSchoolRole = userSchoolRoleService.getUserSchoolRole(userId, selection.getSchoolId());
-        return handleSingleSchoolLogin(userPrincipal, userSchoolRole, request);
+        String username = jwtUtils.getUsernameFromToken(token);
+
+        try {
+            CustomUserDetails userPrincipal = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserSchoolRole userSchoolRole = userSchoolRoleService.getUserSchoolRole(userId, selection.getSchoolId());
+            return handleSingleSchoolLogin(userPrincipal, userSchoolRole, request);
+        }catch (BadCredentialsException e) {
+            logger.warn("Failed login for user: {} from IP: {}",
+                    username, authenticationEntryPoint.getClientIpAddress(request));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(MessageResponse.builder()
+                            .message("Invalid username or password")
+                            .timestamp(Instant.now().toString())
+                            .build());
+
+        } catch (DisabledException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(MessageResponse.builder()
+                            .message("Account is disabled")
+                            .timestamp(Instant.now().toString())
+                            .build());
+
+        } catch (LockedException e) {
+            return ResponseEntity.status(HttpStatus.LOCKED)
+                    .body(MessageResponse.builder()
+                            .message("Account is locked")
+                            .timestamp(Instant.now().toString())
+                            .build());
+
+        } catch (Exception e) {
+            logger.error("Authentication error", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(MessageResponse.builder()
+                            .message("Authentication failed")
+                            .timestamp(Instant.now().toString())
+                            .build());
+        }
+
     }
 
     @PostMapping("/register")
@@ -267,7 +314,7 @@ public class AuthController {
                 refreshToken = refreshEntity.getRefreshToken();
             }
 
-            userService.updateLastLogin(userPrincipal.getId());
+            userSchoolRoleService.updateLastLogin(userPrincipal.getId(), schoolAffiliation.getSchoolId());
             IndividualUser user = individualService.getLoginUser(
                     userPrincipal.getPersonalInfoId(),
                     userPrincipal.getUserType()
@@ -280,6 +327,8 @@ public class AuthController {
                     .email(userPrincipal.getEmail())
                     .username(userPrincipal.getUsername())
                     .tokenType("Bearer")
+                    .enabled(schoolAffiliation.getEnabled())
+                    .accountNonLocked(schoolAffiliation.getAccountNonLocked())
                     .id(userPrincipal.getPersonalInfoId())
                     .roles(userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
                     .user(user)
@@ -303,7 +352,7 @@ public class AuthController {
         }
     }
 
-    private ResponseEntity<?> handleMultiSchoolLogin(CustomUserDetails userPrincipal, List<UserSchoolRole> schoolAffiliations, HttpServletRequest request) {
+    private ResponseEntity<?> handleMultiSchoolLogin(CustomUserDetails userPrincipal, List<UserSchoolRole> schoolAffiliations) {
         try {
             if (schoolAffiliations.size() > 1) {
                 String accessToken = jwtUtils.generateToken(userPrincipal);

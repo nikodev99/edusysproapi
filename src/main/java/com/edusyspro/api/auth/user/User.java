@@ -41,12 +41,6 @@ public class User {
     @Column(nullable = false, length = 120)
     private String password;
 
-    private Boolean enabled = true;
-    private Boolean accountNonLocked = true;
-    private Integer failedLoginAttempts = 0;
-
-    private ZonedDateTime lastLogin;
-
     private Long personalInfoId;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -60,9 +54,6 @@ public class User {
 
     @PrePersist
     public void prePersist() {
-        enabled = true;
-        accountNonLocked = true;
-        failedLoginAttempts = 0;
         createdAt = Datetime.brazzavilleDatetime();
         updatedAt = Datetime.brazzavilleDatetime();
     }

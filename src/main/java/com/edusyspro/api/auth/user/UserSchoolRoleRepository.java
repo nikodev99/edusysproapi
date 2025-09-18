@@ -8,7 +8,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -21,6 +23,29 @@ public interface UserSchoolRoleRepository extends JpaRepository<UserSchoolRole, 
 
     @Query("SELECT usr FROM UserSchoolRole usr JOIN usr.roles r WHERE usr.userId = :userId AND r = :role AND usr.isActive = true")
     List<UserSchoolRole> findByUserIdAndRole(@Param("userId") Long userId, @Param("role") Role role);
+
+    @Query("SELECT DISTINCT usr FROM UserSchoolRole usr WHERE usr.userId = ?1 AND usr.schoolId = ?2")
+    Optional<UserSchoolRole> findByUserIdAndSchoolId(Long userId, UUID schoolId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserSchoolRole s SET s.lastLogin = :lastLogin WHERE s.userId = :userId AND s.schoolId = :schoolId")
+    void updateLastLogin(@Param("userId") Long userId, @Param("schoolId") UUID schoolId, @Param("lastLogin") ZonedDateTime lastLogin);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserSchoolRole s SET s.failedLoginAttempts = :attempts WHERE s.userId = :userId AND s.schoolId = :schoolId")
+    void updateFailedLoginAttempts(@Param("userId") Long userId, @Param("schoolId") UUID schoolId, @Param("attempts") Integer attempts);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE UserSchoolRole s SET s.accountNonLocked = :locked WHERE s.userId = :userId AND s.schoolId = :schoolId")
+    void setAccountLocked(@Param("userId") Long userId, @Param("schoolId") UUID schoolId, @Param("locked") Boolean locked);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE UserSchoolRole s SET s.enabled = :enabled WHERE s.userId = :userId AND s.schoolId = :schoolId")
+    void setAccountEnabled(@Param("userId") Long userId, @Param("schoolId") UUID schoolId, @Param("enabled") Boolean locked);
 
     @Modifying
     @Transactional

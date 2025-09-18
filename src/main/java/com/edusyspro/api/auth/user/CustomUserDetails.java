@@ -7,10 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails {
@@ -24,8 +21,6 @@ public class CustomUserDetails implements UserDetails {
     @Getter
     private final String phoneNumber;
     private final String password;
-    private final boolean enabled;
-    private final boolean accountNonLocked;
 
     @Getter
     private final Long personalInfoId;
@@ -41,8 +36,8 @@ public class CustomUserDetails implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
 
     protected CustomUserDetails (
-            Long id, String username, String email, String phoneNumber, String password, boolean enabled, boolean accountNonLocked,
-            Long personalInfoId, UserType userType, List<UserSchoolRole> schoolAffiliations, Collection<? extends GrantedAuthority> authorities
+            Long id, String username, String email, String phoneNumber, String password, Long personalInfoId,
+            UserType userType, List<UserSchoolRole> schoolAffiliations, Collection<? extends GrantedAuthority> authorities
     ) {
         this.id = id;
         this.personalInfoId = personalInfoId;
@@ -51,8 +46,6 @@ public class CustomUserDetails implements UserDetails {
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.userType = userType;
-        this.enabled = enabled;
-        this.accountNonLocked = accountNonLocked;
         this.schoolAffiliations = schoolAffiliations != null ? schoolAffiliations : new ArrayList<>();
         this.authorities = authorities;
     }
@@ -71,8 +64,6 @@ public class CustomUserDetails implements UserDetails {
                 user.getEmail(),
                 user.getPhoneNumber(),
                 user.getPassword(),
-                Boolean.TRUE.equals(user.getEnabled()),
-                Boolean.TRUE.equals(user.getAccountNonLocked()),
                 user.getPersonalInfoId(),
                 user.getUserType(),
                 user.getSchoolAffiliations(),
@@ -133,7 +124,10 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return accountNonLocked;
+        return Optional.ofNullable(schoolAffiliations)
+                .orElse(Collections.emptyList())
+                .stream()
+                .anyMatch(UserSchoolRole::getAccountNonLocked);
     }
 
     @Override
@@ -143,6 +137,11 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return Optional.ofNullable(schoolAffiliations)
+                .orElse(Collections.emptyList())
+                .stream()
+                .anyMatch(UserSchoolRole::getEnabled);
     }
+
+
 }

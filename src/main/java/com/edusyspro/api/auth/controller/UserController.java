@@ -1,8 +1,10 @@
 package com.edusyspro.api.auth.controller;
 
 import com.edusyspro.api.auth.token.refresh.RefreshTokenService;
+import com.edusyspro.api.auth.user.UserSchoolRoleService;
 import com.edusyspro.api.auth.user.UserService;
 import com.edusyspro.api.controller.utils.ControllerUtils;
+import com.edusyspro.api.dto.custom.UpdateField;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +14,15 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
+    private final UserSchoolRoleService userAccount;
 
-    public UserController(UserService userService, RefreshTokenService refreshTokenService) {
+    public UserController(
+            UserService userService, RefreshTokenService refreshTokenService,
+            UserSchoolRoleService userSchoolRoleService
+    ) {
         this.userService = userService;
         this.refreshTokenService = refreshTokenService;
+        this.userAccount = userSchoolRoleService;
     }
 
     @RequestMapping("/{schoolId}")
@@ -52,13 +59,13 @@ public class UserController {
         return ResponseEntity.ok(userService.countUsers(schoolId));
     }
 
-    @PatchMapping("/enable/{userId}")
-    ResponseEntity<?> enableAccount (@PathVariable Long userId, @RequestBody boolean enabled) {
-        return ResponseEntity.ok(userService.enabledAccount(userId, enabled));
+    @PatchMapping("/enable/{accountId}")
+    ResponseEntity<?> enableAccount (@PathVariable Long accountId, @RequestBody UpdateField field) {
+        return ResponseEntity.ok(userAccount.updateAccount(accountId, field));
     }
 
-    @PatchMapping("/lock/{userId}")
-    ResponseEntity<?> lockAccount (@PathVariable Long userId, @RequestBody boolean locked) {
-        return ResponseEntity.ok(userService.lockedAccount(userId, locked));
+    @PatchMapping("/lock/{accountId}")
+    ResponseEntity<?> lockAccount (@PathVariable Long accountId, @RequestBody UpdateField field) {
+        return ResponseEntity.ok(userAccount.updateAccount(accountId, field));
     }
 }

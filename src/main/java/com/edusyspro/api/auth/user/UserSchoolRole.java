@@ -44,12 +44,20 @@ public class UserSchoolRole {
     private List<Role> roles;
 
     private Boolean isActive = true;
+    private Boolean enabled = true;
+    private Boolean accountNonLocked = true;
+    private Integer failedLoginAttempts = 0;
+
+    private ZonedDateTime lastLogin;
 
     private ZonedDateTime assignedAt;
     private ZonedDateTime lastModifyAt;
 
     @PrePersist
     public void prePersist() {
+        enabled = true;
+        accountNonLocked = true;
+        failedLoginAttempts = 0;
         isActive = true;
         assignedAt = Datetime.brazzavilleDatetime();
 

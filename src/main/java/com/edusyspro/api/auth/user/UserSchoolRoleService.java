@@ -1,25 +1,27 @@
 package com.edusyspro.api.auth.user;
 
-import com.edusyspro.api.auth.request.UserRoleUpdateResponse;
-import com.edusyspro.api.exception.sql.NotFountException;
-import com.edusyspro.api.helper.log.L;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Role;
+import com.edusyspro.api.utils.Datetime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @Transactional
 public class UserSchoolRoleService {
     private final UserSchoolRoleRepository userSchoolRoleRepository;
+    private final UserAccountUpdate userAccountUpdate;
 
-    public UserSchoolRoleService(UserSchoolRoleRepository userSchoolRoleRepository) {
+    public UserSchoolRoleService(
+            UserSchoolRoleRepository userSchoolRoleRepository,
+            UserAccountUpdate userAccountUpdate
+    ) {
         this.userSchoolRoleRepository = userSchoolRoleRepository;
+        this.userAccountUpdate = userAccountUpdate;
     }
 
     public List<UserSchoolRole> getActiveSchoolsForUser(Long userId) {
@@ -28,6 +30,19 @@ public class UserSchoolRoleService {
 
     public UserSchoolRole getUserSchoolRole(Long userId, String schoolId) {
         return userSchoolRoleRepository.findByUserIdAndSchoolIdAndIsActiveTrue(userId, UUID.fromString(schoolId));
+    }
+
+    @Transactional
+    public void updateLastLogin(Long userId, UUID schoolId) {
+        userSchoolRoleRepository.findByUserIdAndSchoolId(userId, schoolId)
+                .ifPresent(
+                        user -> userSchoolRoleRepository.updateLastLogin(user.getId(), user.getSchoolId(), Datetime.brazzavilleDatetime())
+                );
+    }
+
+    public boolean updateAccount(long accountId, UpdateField field) {
+        int updated = userAccountUpdate.updateUserAccountField(field.field(),  field.value(), accountId);
+        return updated > 0;
     }
 
     public void assignUserToSchool(Long userId, String schoolId, List<Role> roles) {
@@ -42,64 +57,5 @@ public class UserSchoolRoleService {
                 .isActive(true)
                 .build();
         userSchoolRoleRepository.save(affiliation);
-    }
-
-    // ... existing code ...
-
-    @Transactional
-    public UserRoleUpdateResponse updateUserRolesWithDetails(Long userId, String schoolId, List<Role> newRoles) {
-        try {
-            UUID schoolUuid = UUID.fromString(schoolId);
-
-            // Validate user exists
-            User user = userRepository.findUserById(userId)
-                    .orElseThrow(() -> new NotFountException("User not found with id: " + userId));
-
-            // Check if user has affiliation with the school
-            Optional<UserSchoolRole> userSchoolRoleOpt = userSchoolRoleRepository
-                    .findByUserIdAndSchoolId(userId, schoolUuid);
-
-            if (userSchoolRoleOpt.isEmpty()) {
-                L.warn("User {} has no affiliation with school {}", userId, schoolId);
-                return UserRoleUpdateResponse.failure(userId, schoolId,
-                        "User has no affiliation with the specified school");
-            }
-
-            UserSchoolRole userSchoolRole = userSchoolRoleOpt.get();
-            List<Role> oldRoles = new ArrayList<>(userSchoolRole.getRoles());
-
-            // If the affiliation is inactive, activate it
-            if (!userSchoolRole.getIsActive()) {
-                userSchoolRole.setIsActive(true);
-                userSchoolRoleRepository.save(userSchoolRole);
-            }
-
-            // Update roles
-            int updatedRows = userSchoolRoleRepository.updateUserRole(userId, schoolUuid, newRoles);
-
-            if (updatedRows > 0) {
-                L.info("Successfully updated roles for user {} in school {} from {} to {}",
-                        userId, schoolId, oldRoles, newRoles);
-                return UserRoleUpdateResponse.success(userId, schoolId, oldRoles, newRoles);
-            } else {
-                L.warn("No rows updated when changing roles for user {} in school {}",
-                        userId, schoolId);
-                return UserRoleUpdateResponse.failure(userId, schoolId,
-                        "No changes were made to user roles");
-            }
-
-        } catch (IllegalArgumentException e) {
-            L.error("Invalid school ID format: {}", schoolId, e);
-            return UserRoleUpdateResponse.failure(userId, schoolId,
-                    "Invalid school ID format");
-        } catch (NotFountException e) {
-            L.error("User not found: {}", e.getMessage());
-            return UserRoleUpdateResponse.failure(userId, schoolId, e.getMessage());
-        } catch (Exception e) {
-            L.error("Error updating user roles for user {} in school {}: {}",
-                    userId, schoolId, e.getMessage(), e);
-            return UserRoleUpdateResponse.failure(userId, schoolId,
-                    "An unexpected error occurred while updating user roles");
-        }
     }
 }

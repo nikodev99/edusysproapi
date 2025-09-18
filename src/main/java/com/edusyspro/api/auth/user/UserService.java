@@ -44,7 +44,8 @@ public class UserService implements UserDetailsService {
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            PasswordResetService passwordResetService
+            PasswordResetService passwordResetService,
+            UserSchoolRoleService userSchoolRoleService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -111,31 +112,23 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateLastLogin(Long userId) {
-        userRepository.findUserById(userId)
-                .ifPresent(
-                        user -> userRepository.updateLastLogin(user.getId(), Datetime.brazzavilleDatetime())
-                );
-    }
-
-    @Transactional
     public Long countUsers(String schoolId) {
         return userRepository.countAllUsersBySchoolId(UUID.fromString(schoolId)).orElseThrow();
     }
 
-    public void updateFailedLoginAttempts(Long userId) {
+    /*public void updateFailedLoginAttempts(Long userId) {
         userRepository.findUserById(userId).ifPresent(user -> {
             int attempts = user.getFailedLoginAttempts() + 1;
             userRepository.updateFailedLoginAttempts(user.getId(), attempts);
 
-            if (attempts >= MAW_FAILED_LOGIN_ATTEMPTS) {
+            if (attempTts >= MAW_FAILED_LOGIN_ATTEMPS) {
                 userRepository.setAccountLocked(user.getId(), false);
                 logger.warn("Account Locked for user {} due to too {} failed login attempts", user.getUsername(), attempts);
 
                 //TODO Send email and phone message
             }
         });
-    }
+    }*/
 
     public String initiatePasswordReset(String email, String phoneNumber) {
         Optional<User> fetchedUser = email != null
@@ -158,28 +151,5 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
         passwordResetService.invalidatePasswordResetToken(token);
         return true;
-    }
-
-    public boolean enabledAccount(Long userId, Boolean enabled) {
-        boolean isEnabled = false;
-        try {
-            userRepository.findUserById(userId).ifPresent(user
-                    -> userRepository.setAccountEnabled(userId, enabled)
-            );
-            isEnabled = true;
-        }catch (Exception ignored) {
-        }
-        return isEnabled;
-    }
-    public boolean lockedAccount(Long userId, Boolean enabled) {
-        boolean isEnabled = false;
-        try {
-            userRepository.findUserById(userId).ifPresent(user
-                    -> userRepository.setAccountEnabled(userId, enabled)
-            );
-            isEnabled = true;
-        }catch (Exception ignored) {
-        }
-        return isEnabled;
     }
 }

@@ -54,9 +54,6 @@ public class SignupRequest {
                 .phoneNumber(phoneNumber)
                 .personalInfoId(personalInfoId)
                 .userType(userType)
-                .enabled(true)
-                .accountNonLocked(true)
-                .failedLoginAttempts(0)
                 .schoolAffiliations(new ArrayList<>())
                 .build();
     }
@@ -66,6 +63,9 @@ public class SignupRequest {
                 .userId(userId)
                 .schoolId(roles.getSchoolId())
                 .roles(roles.getRoles())
+                .enabled(true)
+                .accountNonLocked(true)
+                .failedLoginAttempts(0)
                 .build();
 
         return new ArrayList<>(List.of(userRoles));
