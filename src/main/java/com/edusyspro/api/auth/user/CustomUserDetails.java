@@ -132,7 +132,10 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return Optional.ofNullable(schoolAffiliations)
+                .orElse(Collections.emptyList())
+                .stream()
+                .anyMatch(UserSchoolRole::getIsActive);
     }
 
     @Override

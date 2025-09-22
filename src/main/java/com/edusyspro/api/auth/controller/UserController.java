@@ -68,4 +68,16 @@ public class UserController {
     ResponseEntity<?> lockAccount (@PathVariable Long accountId, @RequestBody UpdateField field) {
         return ResponseEntity.ok(userAccount.updateAccount(accountId, field));
     }
+
+    @PatchMapping("/role/{accountId}")
+    ResponseEntity<?> accountRoles (@PathVariable Long accountId, @RequestBody UpdateField field) {
+        var roles = ControllerUtils.normalizeRoles(field);
+        var data = new UpdateField(field.field(), roles);
+        return ResponseEntity.ok(userAccount.updateAccount(accountId, data));
+    }
+
+    @PatchMapping("/remove/{accountId}")
+    ResponseEntity<?> removeAccount (@PathVariable Long accountId, @RequestBody UpdateField field) {
+        return ResponseEntity.ok(userAccount.updateAccount(accountId, field));
+    }
 }

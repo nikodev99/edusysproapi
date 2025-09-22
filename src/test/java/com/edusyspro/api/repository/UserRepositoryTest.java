@@ -1,24 +1,27 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.auth.user.User;
-import com.edusyspro.api.auth.user.UserRepository;
-import com.edusyspro.api.auth.user.UserSchoolRole;
-import com.edusyspro.api.auth.user.UserType;
-import com.edusyspro.api.model.School;
+import com.edusyspro.api.auth.request.UserInfoResponse;
+import com.edusyspro.api.auth.user.*;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.model.enums.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserSchoolRoleService userSchoolRoleService;
 
     @Test
     public void createUserTest() {
@@ -40,6 +43,21 @@ public class UserRepositoryTest {
         userSchoolRole.setUser(user);
 
         userRepository.save(user);
+    }
+
+    @Test
+    public void updateUserRolesTest() {
+        boolean updated = userSchoolRoleService.updateAccount(
+                4L,
+                new UpdateField("roles", List.of(Role.USER))
+        );
+        assertTrue(updated);
+    }
+
+    @Test
+    public void fetchAccountTest() {
+        Optional<UserInfoResponse> user = userRepository.findUserById(3L);
+        user.ifPresent(System.out::println);
     }
 
     @Test
