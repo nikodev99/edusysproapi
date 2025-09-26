@@ -23,6 +23,8 @@ public class RefreshEntity {
 
     private Long userId;
 
+    private Long accountId;
+
     private String refreshToken;
 
     private String userAgent;

@@ -1,7 +1,7 @@
 package com.edusyspro.api.auth.token.jwt;
 
+import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ public class JwtAuthentificationEntryPoint implements AuthenticationEntryPoint {
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthentificationEntryPoint.class);
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         String clientIp = getClientIpAddress(request);
         String userAgent = request.getHeader("User-Agent");
         String requestUri = request.getRequestURI();
@@ -51,18 +51,6 @@ public class JwtAuthentificationEntryPoint implements AuthenticationEntryPoint {
     }
 
     public String getClientIpAddress(HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-
-        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
-            return xForwardedFor.split(",")[0].trim();
-        }
-
-        String xRealIp = request.getHeader("X-Real-IP");
-
-        if (xRealIp != null && !xRealIp.isEmpty()) {
-            return xRealIp.trim();
-        }
-
-        return request.getRemoteAddr();
+        return ControllerUtils.getClientIpAddress(request);
     }
 }

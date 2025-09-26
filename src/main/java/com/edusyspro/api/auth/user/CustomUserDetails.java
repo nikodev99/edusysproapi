@@ -28,7 +28,8 @@ public class CustomUserDetails implements UserDetails {
     @Getter
     private final UserType userType;
 
-    List<UserSchoolRole> schoolAffiliations;
+    @Getter
+    private final List<UserSchoolRole> schoolAffiliations;
 
     private UUID currentSchoolId;
     private List<Role> currentSchoolRoles;

@@ -1,9 +1,13 @@
 package com.edusyspro.api.auth.token.refresh;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -44,10 +48,33 @@ public interface RefreshRepository extends JpaRepository<RefreshEntity, Long> {
     List<RefreshEntity> findByUserIdAndIsActiveTrue(@Param("userId") Long userId);
 
     @Query("""
-        SELECT new com.edusyspro.api.auth.token.refresh.UserLoginResponse(re.id, re.clientIp, re.createdAt, re.deviceFingerprint,
-        re.clientType) FROM RefreshEntity re WHERE re.userId = :userId AND re.isActive = true
+        SELECT DISTINCT new com.edusyspro.api.auth.token.refresh.UserLoginResponse(re.id, re.accountId, re.clientIp, re.createdAt, re.lastUsedAt,
+        re.expiryDate, re.deviceFingerprint, re.clientType) FROM RefreshEntity re WHERE re.accountId = :accountId AND re.isActive = true
+        ORDER BY re.createdAt DESC, re.lastUsedAt DESC
     """)
-    List<UserLoginResponse> findAllActiveTokensByUserId(@Param("userId") Long userId);
+    Page<UserLoginResponse> findActiveTokensByUserId(@Param("accountId") Long accountId, Pageable pageable);
+
+    @Query("""
+        SELECT new com.edusyspro.api.auth.token.refresh.UserLoginResponse(re.id, re.accountId, re.clientIp, re.createdAt, re.lastUsedAt,
+        re.expiryDate, re.deviceFingerprint, re.clientType) FROM RefreshEntity re WHERE re.accountId = :accountId AND re.isActive = true
+        ORDER BY re.createdAt DESC
+    """)
+    List<UserLoginResponse> findAllActiveTokenByAccountId(Long accountId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE RefreshEntity re SET re.lastUsedAt = ?2 WHERE re.id = ?1")
+    void updateLastUsedAt(Long refreshId, Instant lastUsedAt);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE RefreshEntity re SET re.refreshCount = ?2 WHERE re.id = ?1")
+    void updateRefreshCount(Long refreshId, Long refreshCount);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE RefreshEntity re SET re.revokedAt = ?2 WHERE re.id = ?1")
+    void updateRevoked(Long refreshId, Instant revokedAt);
 
     /**
      * Deletes a refresh token entity based on the provided user ID, user agent, and client IP address.

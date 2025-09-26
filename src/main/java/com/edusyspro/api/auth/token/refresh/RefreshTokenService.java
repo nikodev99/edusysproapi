@@ -2,6 +2,7 @@ package com.edusyspro.api.auth.token.refresh;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +52,7 @@ public class RefreshTokenService {
         }
 
         token.setLastUsedAt(Instant.now());
+        token.setRefreshCount(token.getRefreshCount() + 1);
 
         return refreshRepository.save(token);
     }
@@ -74,8 +76,15 @@ public class RefreshTokenService {
         return refreshRepository.save(token);
     }
 
-    public List<UserLoginResponse> findUserActiveLogins(long userId) {
-        return refreshRepository.findAllActiveTokensByUserId(userId);
+    public UserLoginResponse findUserActiveLogin(long accountId) {
+        return refreshRepository.findActiveTokensByUserId(accountId, PageRequest.of(0, 1))
+                .stream()
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<UserLoginResponse> findAccountActiveLogins(long accountId) {
+        return refreshRepository.findAllActiveTokenByAccountId(accountId);
     }
 
     public String rotateRefreshToken(String oldRefreshToken, String newRefreshToken) {

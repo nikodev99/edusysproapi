@@ -1,13 +1,18 @@
 package com.edusyspro.api.auth.controller;
 
+import com.edusyspro.api.auth.request.UserActivityRequest;
 import com.edusyspro.api.auth.token.refresh.RefreshTokenService;
-import com.edusyspro.api.auth.user.UserSchoolRoleService;
-import com.edusyspro.api.auth.user.UserService;
+import com.edusyspro.api.auth.token.refresh.UserLoginResponse;
+import com.edusyspro.api.auth.user.*;
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.custom.UpdateField;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -15,14 +20,18 @@ public class UserController {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
     private final UserSchoolRoleService userAccount;
+    private final UserActivityService userActivityService;
 
     public UserController(
-            UserService userService, RefreshTokenService refreshTokenService,
-            UserSchoolRoleService userSchoolRoleService
+            UserService userService,
+            RefreshTokenService refreshTokenService,
+            UserSchoolRoleService userSchoolRoleService,
+            UserActivityService userActivityService
     ) {
         this.userService = userService;
         this.refreshTokenService = refreshTokenService;
         this.userAccount = userSchoolRoleService;
+        this.userActivityService = userActivityService;
     }
 
     @RequestMapping("/{schoolId}")
@@ -49,14 +58,36 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(userId, schoolId));
     }
 
-    @GetMapping("/logins/{userId}")
-    ResponseEntity<?> getUserLogins(@PathVariable Long userId) {
-        return ResponseEntity.ok(refreshTokenService.findUserActiveLogins(userId));
+    @GetMapping("/login/{accountId}")
+    ResponseEntity<?> getUserLogin(@PathVariable Long accountId) {
+        return ResponseEntity.ok(refreshTokenService.findUserActiveLogin(accountId));
+    }
+
+    @GetMapping("/all_logins/{accountId}")
+    ResponseEntity<List<UserLoginResponse>> getAllUserLogins(@PathVariable Long accountId) {
+        return ResponseEntity.ok(refreshTokenService.findAccountActiveLogins(accountId));
     }
 
     @GetMapping("/count_{schoolId}")
     ResponseEntity<?> countAll(@PathVariable String schoolId) {
         return ResponseEntity.ok(userService.countUsers(schoolId));
+    }
+
+    @PostMapping("/activity")
+    ResponseEntity<?> SaveUserActivity(@RequestBody @Valid UserActivityRequest activityData, HttpServletRequest request) {
+        UserActivity userActivity = UserActivity.builder()
+                .action(activityData.getAction())
+                .description(activityData.getDescription())
+                .ipAddress(ControllerUtils.getClientIpAddress(request))
+                .accountId(activityData.getAccountId())
+                .build();
+
+        return ResponseEntity.ok(userActivityService.saveUserActivity(userActivity));
+    }
+
+    @GetMapping("/activity/{accountId}")
+    ResponseEntity<?> getUserActivities(@PathVariable Long accountId) {
+        return ResponseEntity.ok(userActivityService.getAllActivities(accountId));
     }
 
     @PatchMapping("/enable/{accountId}")

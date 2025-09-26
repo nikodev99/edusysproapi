@@ -1,6 +1,8 @@
 package com.edusyspro.api.auth.controller;
 
 import com.edusyspro.api.auth.request.*;
+import com.edusyspro.api.auth.response.LoginResponse;
+import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.auth.token.refresh.RefreshEntity;
 import com.edusyspro.api.auth.token.refresh.RefreshTokenRequest;
 import com.edusyspro.api.auth.token.jwt.JWTUtils;
@@ -242,6 +244,7 @@ public class AuthController {
                     .tokenType("Bearer")
                     .id(userDetails.getPersonalInfoId())
                     .roles(userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                    .accountId(userDetails.getSchoolAffiliations().get(0).getId())
                     .user(user)
                     .userType(userDetails.getUserType())
                     .build();
@@ -301,6 +304,7 @@ public class AuthController {
                         .refreshToken(refreshToken)
                         .userAgent(userAgent)
                         .clientType(clientType)
+                        .accountId(schoolAffiliation.getId())
                         .clientIp(clientIp)
                         .expiryDate(expiryDate.toInstant())
                         .createdAt(Instant.now())
@@ -331,6 +335,7 @@ public class AuthController {
                     .accountNonLocked(schoolAffiliation.getAccountNonLocked())
                     .id(userPrincipal.getPersonalInfoId())
                     .roles(userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                    .accountId(schoolAffiliation.getId())
                     .user(user)
                     .userType(userPrincipal.getUserType())
                     .build();

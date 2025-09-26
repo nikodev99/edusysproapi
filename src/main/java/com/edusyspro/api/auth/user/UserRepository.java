@@ -1,6 +1,6 @@
 package com.edusyspro.api.auth.user;
 
-import com.edusyspro.api.auth.request.UserInfoResponse;
+import com.edusyspro.api.auth.response.UserInfoResponse;
 import com.edusyspro.api.model.enums.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,14 +22,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(@Param("username") String username);
 
     @Query("""
-        SELECT new com.edusyspro.api.auth.request.UserInfoResponse(u.id, s.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
+        SELECT new com.edusyspro.api.auth.response.UserInfoResponse(u.id, s.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
         s.enabled, s.accountNonLocked, s.failedLoginAttempts, s.lastLogin, u.userType, u.createdAt, u.updatedAt)
         FROM User u JOIN Individual i ON i.id = u.personalInfoId JOIN u.schoolAffiliations s WHERE u.id = ?1 AND s.schoolId = ?2
     """)
     Optional<UserInfoResponse> findUserById(@Param("id") Long id, @Param("schoolId") UUID schoolId);
 
     @Query("""
-        SELECT new com.edusyspro.api.auth.request.UserInfoResponse(u.id, s.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
+        SELECT new com.edusyspro.api.auth.response.UserInfoResponse(u.id, s.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
         s.enabled, s.accountNonLocked, s.failedLoginAttempts, s.lastLogin, u.userType, u.createdAt, u.updatedAt)
         FROM User u JOIN Individual i ON i.id = u.personalInfoId JOIN u.schoolAffiliations s WHERE s.id = ?1
     """)
@@ -40,14 +40,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByPhoneNumber(String phoneNumber);
 
     @Query("""
-        SELECT new com.edusyspro.api.auth.request.UserInfoResponse(u.id, s.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
+        SELECT new com.edusyspro.api.auth.response.UserInfoResponse(u.id, s.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
         s.enabled, s.accountNonLocked, s.failedLoginAttempts, s.lastLogin, u.userType, u.createdAt, u.updatedAt)
         FROM User u JOIN Individual i ON i.id = u.personalInfoId JOIN u.schoolAffiliations s WHERE s.schoolId = ?1 AND s.isActive = true
     """)
     Page<UserInfoResponse> findAllUsers(UUID schoolId, Pageable pageable);
 
     @Query("""
-        SELECT new com.edusyspro.api.auth.request.UserInfoResponse(u.id, s.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
+        SELECT new com.edusyspro.api.auth.response.UserInfoResponse(u.id, s.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
         s.enabled, s.accountNonLocked, s.failedLoginAttempts, s.lastLogin, u.userType, u.createdAt, u.updatedAt)
         FROM User u JOIN Individual i ON i.id = u.personalInfoId JOIN u.schoolAffiliations s WHERE s.schoolId = ?1
         AND (lower(i.lastName) like lower(?2) or lower(i.firstName) like lower(?2)) AND s.isActive = true

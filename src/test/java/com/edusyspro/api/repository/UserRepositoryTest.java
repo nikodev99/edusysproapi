@@ -1,6 +1,6 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.auth.request.UserInfoResponse;
+import com.edusyspro.api.auth.response.UserInfoResponse;
 import com.edusyspro.api.auth.user.*;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.model.enums.Role;

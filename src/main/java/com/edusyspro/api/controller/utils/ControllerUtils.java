@@ -3,6 +3,7 @@ package com.edusyspro.api.controller.utils;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.model.enums.Role;
 import com.edusyspro.api.utils.Datetime;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -66,4 +67,19 @@ public class ControllerUtils {
         return roles;
     }
 
+    public static String getClientIpAddress(HttpServletRequest request) {
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+
+        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+            return xForwardedFor.split(",")[0].trim();
+        }
+
+        String xRealIp = request.getHeader("X-Real-IP");
+
+        if (xRealIp != null && !xRealIp.isEmpty()) {
+            return xRealIp.trim();
+        }
+
+        return request.getRemoteAddr();
+    }
 }

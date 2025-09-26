@@ -1,10 +1,8 @@
 package com.edusyspro.api.auth.user;
 
-import com.edusyspro.api.auth.request.UserInfoResponse;
+import com.edusyspro.api.auth.response.UserInfoResponse;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.auth.request.SignupRequest;
-import com.edusyspro.api.model.enums.Role;
-import com.edusyspro.api.utils.Datetime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

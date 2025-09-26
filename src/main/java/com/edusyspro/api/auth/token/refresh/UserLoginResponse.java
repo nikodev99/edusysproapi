@@ -13,8 +13,11 @@ import java.time.Instant;
 @Builder
 public class UserLoginResponse {
     private Long loginId;
+    private Long accountId;
     private String clientIp;
     private Instant createdAt;
+    private Instant lastUsedAt;
+    private Instant expiryAt;
     private String device;
     private String browser;
 }
