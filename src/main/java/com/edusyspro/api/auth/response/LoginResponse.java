@@ -1,4 +1,4 @@
-package com.edusyspro.api.auth.request;
+package com.edusyspro.api.auth.response;
 
 import com.edusyspro.api.auth.user.UserType;
 import com.edusyspro.api.dto.IndividualUser;
@@ -24,6 +24,7 @@ public class LoginResponse {
     private boolean enabled;
     private boolean accountNonLocked;
     private List<String> roles;
+    private Long accountId;
     private IndividualUser user;
     private UserType userType;
 }

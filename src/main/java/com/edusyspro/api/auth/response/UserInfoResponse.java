@@ -1,4 +1,4 @@
-package com.edusyspro.api.auth.request;
+package com.edusyspro.api.auth.response;
 
 import com.edusyspro.api.auth.user.UserType;
 import com.edusyspro.api.model.enums.Role;

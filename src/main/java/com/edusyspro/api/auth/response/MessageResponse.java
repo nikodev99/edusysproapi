@@ -1,4 +1,4 @@
-package com.edusyspro.api.auth.request;
+package com.edusyspro.api.auth.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
