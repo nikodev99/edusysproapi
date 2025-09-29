@@ -9,7 +9,7 @@ spring:
     name: edusysproapi
 
   profiles:
-    active: [mysql, flyway]
+    active: [mysql, flyway, GMail, RabbitMQ]
 
   #REST config
   data:
@@ -87,5 +87,72 @@ jwt:
   refresh:
     expiration: 604800000
 
+#GMAIL Setting
+---
+spring:
+  config:
+    activate:
+      on-profile: GMail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tt9999.tt123@gmail.com
+    password: 'vzcj rtse mskr czyj'
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 10000
+          timeout: 15000
+          writetimeout: 15000
+        debug: true
+
+#Prod MAIL Setting
+---
+spring:
+  config:
+    activate:
+      on-profile: prodMail
+  mail:
+    host: ${HOST}
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      email:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 10000
+          timeout: 15000
+          writetimeout: 15000
+
+#RabbitMQ
+---
+spring:
+  config:
+    activate:
+      on-profile: RabbitMQ
+  rabbitmq:
+    host: seal.lmq.cloudamqp.com
+    port: 5672
+    username: ceuftess
+    password: 1gLnGKtzJ8LmF3UkChkOhD3WthLE0QN2
+    virtual-host: ceuftess
+
+app:
+  mail:
+    from: "Edusyspro"
+    queue:
+      exchange: mail.exchange
+      queue: mail.queue
+      routing-key: mail.send
 ui:
   url: http://localhost:3000;http://localhost:5173
