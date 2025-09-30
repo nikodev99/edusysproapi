@@ -94,10 +94,10 @@ spring:
     activate:
       on-profile: GMail
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: tt9999.tt123@gmail.com
-    password: 'vzcj rtse mskr czyj'
+    host: ${GMAIL_HOST}
+    port: ${GMAIl8PORT}
+    username: ${GMAIL_USERNAME}
+    password: ${GMAIL_PASSWORD}
     properties:
       mail:
         transport:
@@ -120,7 +120,7 @@ spring:
       on-profile: prodMail
   mail:
     host: ${HOST}
-    port: 587
+    port: ${PORT}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     properties:
@@ -141,11 +141,11 @@ spring:
     activate:
       on-profile: RabbitMQ
   rabbitmq:
-    host: seal.lmq.cloudamqp.com
-    port: 5672
-    username: ceuftess
-    password: 1gLnGKtzJ8LmF3UkChkOhD3WthLE0QN2
-    virtual-host: ceuftess
+    host: ${AMQ_HOST}
+    port: ${AMQ_PORT}
+    username: ${AMQ_USERNAME}
+    password: ${AMQ_PASSWORD}
+    virtual-host: ${AMQ_VH}
 
 app:
   mail:
