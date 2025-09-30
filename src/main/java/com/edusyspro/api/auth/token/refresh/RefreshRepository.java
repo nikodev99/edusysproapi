@@ -49,14 +49,14 @@ public interface RefreshRepository extends JpaRepository<RefreshEntity, Long> {
 
     @Query("""
         SELECT DISTINCT new com.edusyspro.api.auth.token.refresh.UserLoginResponse(re.id, re.accountId, re.clientIp, re.createdAt, re.lastUsedAt,
-        re.expiryDate, re.deviceFingerprint, re.clientType) FROM RefreshEntity re WHERE re.accountId = :accountId AND re.isActive = true
+        re.expiryDate, re.deviceFingerprint, re.clientType, re.refreshToken) FROM RefreshEntity re WHERE re.accountId = :accountId AND re.isActive = true
         ORDER BY re.createdAt DESC, re.lastUsedAt DESC
     """)
     Page<UserLoginResponse> findActiveTokensByUserId(@Param("accountId") Long accountId, Pageable pageable);
 
     @Query("""
         SELECT new com.edusyspro.api.auth.token.refresh.UserLoginResponse(re.id, re.accountId, re.clientIp, re.createdAt, re.lastUsedAt,
-        re.expiryDate, re.deviceFingerprint, re.clientType) FROM RefreshEntity re WHERE re.accountId = :accountId AND re.isActive = true
+        re.expiryDate, re.deviceFingerprint, re.clientType, re.refreshToken) FROM RefreshEntity re WHERE re.accountId = :accountId AND re.isActive = true
         ORDER BY re.createdAt DESC
     """)
     List<UserLoginResponse> findAllActiveTokenByAccountId(Long accountId);

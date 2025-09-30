@@ -83,6 +83,13 @@ public class RefreshTokenService {
                 .orElse(null);
     }
 
+    public void logoutActiveLogin(Long loginId) {
+        if (loginId == null)
+            throw new RuntimeException("Invalid login id");
+
+        refreshRepository.deleteById(loginId);
+    }
+
     public List<UserLoginResponse> findAccountActiveLogins(long accountId) {
         return refreshRepository.findAllActiveTokenByAccountId(accountId);
     }

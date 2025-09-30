@@ -20,4 +20,5 @@ public class UserLoginResponse {
     private Instant expiryAt;
     private String device;
     private String browser;
+    private String token;
 }

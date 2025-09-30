@@ -144,9 +144,9 @@ public class UserService implements UserDetailsService {
                     .from("no-reply@edusyspro.com")
                     .to(List.of("gu.edusyspro@gmail.com" /*user.getEmail()*/))
                     .subject("Password Reset")
-                    .htmlBody("<div>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe<br>"+
+                    .htmlBody("<div>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe.<br>"+
                             getEmailBodyUrl(token, user.getEmail())+
-                            "<br>Le lien sera expiré dans une heure</div>")
+                            "<br>Le lien sera expiré dans une heure.</div>")
                     .build();
 
             try {
@@ -167,9 +167,9 @@ public class UserService implements UserDetailsService {
                         .from("no-reply@edusyspro.com")
                         .to(List.of("gu.edusyspro@gmail.com" /*user.getEmail()*/))
                         .subject("Password Reset")
-                        .htmlBody("<div>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe<br>"+
+                        .htmlBody("<div>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe.<br>"+
                                 getEmailBodyUrl(token, user.getId().toString())+
-                                "<br>Le lien sera expiré dans une heure</div>")
+                                "<br>Le lien sera expiré dans une heure.</div>")
                         .build();
 
                 try {

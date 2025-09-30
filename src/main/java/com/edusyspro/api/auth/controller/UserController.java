@@ -1,6 +1,7 @@
 package com.edusyspro.api.auth.controller;
 
 import com.edusyspro.api.auth.request.UserActivityRequest;
+import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.auth.token.refresh.RefreshTokenService;
 import com.edusyspro.api.auth.token.refresh.UserLoginResponse;
 import com.edusyspro.api.auth.user.*;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -66,6 +68,26 @@ public class UserController {
     @GetMapping("/all_logins/{accountId}")
     ResponseEntity<List<UserLoginResponse>> getAllUserLogins(@PathVariable Long accountId) {
         return ResponseEntity.ok(refreshTokenService.findAccountActiveLogins(accountId));
+    }
+
+    @PostMapping("/logout/{sessionId}")
+    ResponseEntity<?> logoutActiveLogin(@PathVariable Long sessionId) {
+        try {
+            refreshTokenService.logoutActiveLogin(sessionId);
+            return ResponseEntity.ok((MessageResponse.builder()
+                    .message("Déconnexion à la session exécuté avec succès.")
+                    .timestamp(Instant.now().toString())
+                    .build()
+            ));
+
+        }catch (Exception ex){
+            return ResponseEntity.badRequest().body(MessageResponse.builder()
+                    .message("Impossible de logout de cette session: " + ex.getMessage())
+                    .timestamp(Instant.now().toString())
+                    .isError(true)
+                    .build()
+            );
+        }
     }
 
     @GetMapping("/count_{schoolId}")

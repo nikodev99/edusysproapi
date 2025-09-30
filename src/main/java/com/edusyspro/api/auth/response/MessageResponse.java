@@ -14,4 +14,5 @@ import java.time.Instant;
 public class MessageResponse {
     private String message;
     private String timestamp = Instant.now().toString();
+    private Boolean isError = false;
 }

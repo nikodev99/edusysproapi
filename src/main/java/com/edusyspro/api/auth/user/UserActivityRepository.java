@@ -11,7 +11,7 @@ import java.util.List;
 public interface UserActivityRepository extends JpaRepository<UserActivity, Long> {
     @Query("""
         SELECT new com.edusyspro.api.auth.response.UserActivityResponse(ua.id, ua.action, ua.actionDate, ua.ipAddress, ua.description)
-        FROM UserActivity ua WHERE ua.accountId = ?1
+        FROM UserActivity ua WHERE ua.accountId = ?1 ORDER BY ua.actionDate DESC
     """)
     List<UserActivityResponse> findAllByAccountId(long accountId);
 }
