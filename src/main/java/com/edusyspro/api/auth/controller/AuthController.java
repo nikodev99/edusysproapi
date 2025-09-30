@@ -279,6 +279,78 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/password-forgot")
+    ResponseEntity<?> forgetPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        try {
+            userService.initiatePasswordReset(request.getEmail(), request.getPhoneNumber());
+            return ResponseEntity.ok(MessageResponse.builder()
+                    .message("Mail pour réinitialiser votre mot de pass à été envoyé avec succès. vérifier votre compte email")
+                    .timestamp(Instant.now().toString())
+                    .build()
+            );
+        }catch (Exception e) {
+            logger.error("Error processing password reset request", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(MessageResponse.builder()
+                            .message("Mail could not be send to " + request.getEmail())
+                            .timestamp(Instant.now().toString())
+                            .build()
+                    );
+        }
+    }
+
+    @PostMapping("/password-reset/{userId}")
+    ResponseEntity<?> resetPassword(@PathVariable Long userId) {
+        try {
+            userService.initiatePasswordReset(userId);
+            return ResponseEntity.ok(MessageResponse.builder()
+                    .message("Mail pour réinitialiser votre mot de pass à été envoyé avec succès. vérifier votre compte email")
+                    .timestamp(Instant.now().toString())
+                    .build()
+            );
+        }catch (Exception e) {
+            logger.error("Error processing password reset request", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(MessageResponse.builder()
+                            .message("Mail could not be send to " + e.getMessage())
+                            .timestamp(Instant.now().toString())
+                            .build()
+                    );
+        }
+    }
+
+    @GetMapping("/validate-token")
+    ResponseEntity<?> validateToken(@RequestParam String token) {
+        return ResponseEntity.ok(userService.validatePasswordResetToken(token));
+    }
+
+    @PostMapping("/reset")
+    ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        try {
+            boolean success = userService.resetPassword(request.getToken(), request.getNewPassword());
+            if (success) {
+                return ResponseEntity.ok(MessageResponse.builder()
+                        .message("Mot de passe modifié avec succès")
+                        .timestamp(Instant.now().toString())
+                        .build()
+                );
+            }else {
+                return ResponseEntity.badRequest()
+                        .body(MessageResponse.builder()
+                            .message("Token invalide ou expiré. Merci de procéder à nouveau à réinitialiser votre mot de passe.")
+                            .timestamp(Instant.now().toString())
+                );
+            }
+        }catch (Exception e) {
+            logger.error("Error processing password reset request", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(MessageResponse.builder()
+                            .message("Error processing password reset request. Error: " + e.getMessage())
+                            .timestamp(Instant.now().toString())
+                    );
+        }
+    }
+
     @GetMapping("/user/{personalInfoId}")
     ResponseEntity<Boolean> findUserExists(@PathVariable Long personalInfoId) {
         return ResponseEntity.ok(userService.existsByPersonalInfoId(personalInfoId));

@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ForgotPasswordRequest {
-    @Email(message = "Please provide a valid email address")
     private String email;
-
-    @Pattern(regexp = "^[+]?[0-9]{10,15}$", message = "Please provide a valid phone number")
     private String phoneNumber;
 }

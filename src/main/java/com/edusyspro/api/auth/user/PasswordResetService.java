@@ -27,12 +27,12 @@ public class PasswordResetService {
             passwordResetTokenRepository.deleteByUserId(userId);
         }
 
-        String token = generateSecureToken();
+        String hashedToken = hashToken();
         //Expiry 1 hour after generation
         Instant expiry = Instant.now().plus(1, ChronoUnit.HOURS);
 
         PasswordResetToken resetToken = PasswordResetToken.builder()
-                .token(token)
+                .token(hashedToken)
                 .expiryDate(expiry)
                 .user(User.builder()
                         .id(userId)
@@ -41,7 +41,7 @@ public class PasswordResetService {
 
         passwordResetTokenRepository.save(resetToken);
 
-        return token;
+        return hashedToken;
     }
 
     public User validatePasswordResetToken(String token) {
