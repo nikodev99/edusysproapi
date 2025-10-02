@@ -9,7 +9,7 @@ spring:
     name: edusysproapi
 
   profiles:
-    active: [mysql, flyway, GMail, RabbitMQ]
+    active: [postgres, flyway, GMail, RabbitMQ]
 
   #REST config
   data:
@@ -94,10 +94,10 @@ spring:
     activate:
       on-profile: GMail
   mail:
-    host: ${GMAIL_HOST}
-    port: ${GMAIl8PORT}
-    username: ${GMAIL_USERNAME}
-    password: ${GMAIL_PASSWORD}
+    host: smtp.gmail.com
+    port: 587
+    username: tt9999.tt123@gmail.com
+    password: 'vzcj rtse mskr czyj'
     properties:
       mail:
         transport:
@@ -124,7 +124,9 @@ spring:
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     properties:
-      email:
+      mail:
+        transport:
+          protocol: smtp
         smtp:
           auth: true
           starttls:
@@ -133,6 +135,7 @@ spring:
           connectiontimeout: 10000
           timeout: 15000
           writetimeout: 15000
+        debug: false
 
 #RabbitMQ
 ---
@@ -141,11 +144,11 @@ spring:
     activate:
       on-profile: RabbitMQ
   rabbitmq:
-    host: ${AMQ_HOST}
-    port: ${AMQ_PORT}
-    username: ${AMQ_USERNAME}
-    password: ${AMQ_PASSWORD}
-    virtual-host: ${AMQ_VH}
+    host: seal.lmq.cloudamqp.com
+    port: 5672
+    username: ceuftess
+    password: 1gLnGKtzJ8LmF3UkChkOhD3WthLE0QN2
+    virtual-host: ceuftess
 
 app:
   mail:
