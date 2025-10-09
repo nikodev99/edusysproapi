@@ -280,11 +280,17 @@ public class AuthController {
     }
 
     @PostMapping("/password-forgot")
-    ResponseEntity<?> forgetPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+    ResponseEntity<?> forgetPassword(@Valid @RequestBody ForgotPasswordRequest request, HttpServletRequest httpRequest) {
         try {
-            userService.initiatePasswordReset(request.getEmail(), request.getPhoneNumber());
+            List<String> res = userService.initiatePasswordReset(request.getEmail(), request.getPhoneNumber());
+            var ip = authenticationEntryPoint.getClientIpAddress(httpRequest);
             return ResponseEntity.ok(MessageResponse.builder()
-                    .message("Mail pour réinitialiser votre mot de pass à été envoyé avec succès. vérifier votre compte email")
+                    .message("Mail pour réinitialiser votre mot de passe à été envoyé avec succès. vérifier votre compte email")
+                    .description(
+                            String.format(
+                                    "Réinitialisation du mot de passe pour l'email=[%s] par IP=[%s]. Token généré: [%s], expiré le: [%s]. Status: [ENVOYÉ].",
+                                    res.get(0), ip, res.get(1), res.get(2)
+                            ))
                     .timestamp(Instant.now().toString())
                     .build()
             );
@@ -300,11 +306,17 @@ public class AuthController {
     }
 
     @PostMapping("/password-reset/{userId}")
-    ResponseEntity<?> resetPassword(@PathVariable Long userId) {
+    ResponseEntity<?> resetPassword(@PathVariable Long userId, HttpServletRequest request) {
         try {
-            userService.initiatePasswordReset(userId);
+            List<String> res = userService.initiatePasswordReset(userId);
+            var ip = authenticationEntryPoint.getClientIpAddress(request);
             return ResponseEntity.ok(MessageResponse.builder()
-                    .message("Mail pour réinitialiser votre mot de pass à été envoyé avec succès. vérifier votre compte email")
+                    .message("Mail pour réinitialiser le mot de passe de l'utilisateur à été envoyé avec succès. Notification pour vérifier le mail générer")
+                    .description(
+                            String.format(
+                                    "Réinitialisation du mot de passe pour l'email=[%s] par IP=[%s]. Token généré: [%s], expiré le: [%s]. Status: [ENVOYÉ].",
+                                    res.get(0), ip, res.get(1), res.get(2)
+                    ))
                     .timestamp(Instant.now().toString())
                     .build()
             );
@@ -321,7 +333,17 @@ public class AuthController {
 
     @GetMapping("/validate-token")
     ResponseEntity<?> validateToken(@RequestParam String token) {
-        return ResponseEntity.ok(userService.validatePasswordResetToken(token));
+        try {
+            return ResponseEntity.ok(userService.validatePasswordResetToken(token));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    MessageResponse.builder()
+                            .message("Validation failed: " + e.getMessage())
+                            .timestamp(Instant.now().toString())
+                            .isError(true)
+                            .build()
+            );
+        }
     }
 
     @PostMapping("/reset")
@@ -339,6 +361,8 @@ public class AuthController {
                         .body(MessageResponse.builder()
                             .message("Token invalide ou expiré. Merci de procéder à nouveau à réinitialiser votre mot de passe.")
                             .timestamp(Instant.now().toString())
+                            .isError(true)
+                            .build()
                 );
             }
         }catch (Exception e) {
@@ -347,6 +371,8 @@ public class AuthController {
                     .body(MessageResponse.builder()
                             .message("Error processing password reset request. Error: " + e.getMessage())
                             .timestamp(Instant.now().toString())
+                            .isError(true)
+                            .build()
                     );
         }
     }

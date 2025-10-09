@@ -133,21 +133,24 @@ public class UserService implements UserDetailsService {
         });
     }*/
 
-    public void initiatePasswordReset(String email, String phoneNumber) {
+    public List<String> initiatePasswordReset(String email, String phoneNumber) {
         Optional<User> fetchedUser = email != null
                 ? userRepository.findByEmail(email)
                 : userRepository.findByPhoneNumber(phoneNumber);
 
+        List<String> result = new ArrayList<>();
+
         fetchedUser.ifPresent(user -> {
-            String token = passwordResetService.generatePasswordResetToken(user.getId());
+            PasswordResetToken pass = passwordResetService.generatePasswordResetToken(user.getId());
             EmailRequest request = EmailRequest.builder()
                     .from("no-reply@edusyspro.com")
                     .to(List.of("gu.edusyspro@gmail.com" /*user.getEmail()*/))
                     .subject("Password Reset")
                     .htmlBody("<div>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe.<br>"+
-                            getEmailBodyUrl(token, user.getEmail())+
+                            getEmailBodyUrl(pass.getToken(), user.getEmail())+
                             "<br>Le lien sera expiré dans une heure.</div>")
                     .build();
+            result.addAll(Arrays.asList(user.getEmail(), pass.getToken(), pass.getExpiryDate().toString()));
 
             try {
                 emailService.send(request);
@@ -157,38 +160,39 @@ public class UserService implements UserDetailsService {
         });
 
         //TODO phone message to user with reset link (instead of returning the token)
+        return result;
     }
 
-    public void initiatePasswordReset(Long userId) {
+    public List<String> initiatePasswordReset(Long userId) {
+        List<String> result = new ArrayList<>();
         userRepository.findById(userId)
             .ifPresent(user -> {
-                String token = passwordResetService.generatePasswordResetToken(user.getId());
+                PasswordResetToken pass = passwordResetService.generatePasswordResetToken(user.getId());
                 EmailRequest request = EmailRequest.builder()
                         .from("no-reply@edusyspro.com")
                         .to(List.of("gu.edusyspro@gmail.com" /*user.getEmail()*/))
                         .subject("Password Reset")
                         .htmlBody("<div>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe.<br>"+
-                                getEmailBodyUrl(token, user.getId().toString())+
+                                getEmailBodyUrl(pass.getToken(), user.getId().toString())+
                                 "<br>Le lien sera expiré dans une heure.</div>")
                         .build();
-
+                result.addAll(Arrays.asList(user.getEmail(), pass.getToken(), pass.getExpiryDate().toString()));
                 try {
                     emailService.send(request);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             });
+        return result;
     }
 
-    public User validatePasswordResetToken(String token) {
-       return passwordResetService.validatePasswordResetToken(token);
+    public UserInfoResponse validatePasswordResetToken(String token) {
+       User user = passwordResetService.validatePasswordResetToken(token);
+       return UserInfoResponse.fromUser(user);
     }
 
     public boolean resetPassword(String token, String newPassword) {
         User user = passwordResetService.validatePasswordResetToken(token);
-        if (user == null) {
-            return false;
-        }
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         passwordResetService.invalidatePasswordResetToken(token);

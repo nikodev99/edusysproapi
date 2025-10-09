@@ -1,5 +1,6 @@
 package com.edusyspro.api.auth.user;
 
+import com.edusyspro.api.auth.response.UserInfoResponse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

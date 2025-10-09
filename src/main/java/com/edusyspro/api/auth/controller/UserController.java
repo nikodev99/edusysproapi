@@ -1,5 +1,6 @@
 package com.edusyspro.api.auth.controller;
 
+import com.edusyspro.api.auth.request.ChangePassword;
 import com.edusyspro.api.auth.request.UserActivityRequest;
 import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.auth.token.refresh.RefreshTokenService;
@@ -7,9 +8,11 @@ import com.edusyspro.api.auth.token.refresh.UserLoginResponse;
 import com.edusyspro.api.auth.user.*;
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.helper.log.L;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -132,5 +135,26 @@ public class UserController {
     @PatchMapping("/remove/{accountId}")
     ResponseEntity<?> removeAccount (@PathVariable Long accountId, @RequestBody UpdateField field) {
         return ResponseEntity.ok(userAccount.updateAccount(accountId, field));
+    }
+
+    @PostMapping("/change-password")
+    ResponseEntity<?> changePassword(@Valid @RequestBody ChangePassword request) {
+        try {
+            userService.changePassword(request.userId(), request.oldPassword(), request.newPassword());
+            return ResponseEntity.ok(MessageResponse.builder()
+                    .message("Mot de passe changé avec succès. Veuillez vous reconnecter pour la sécurité")
+                    .timestamp(Instant.now().toString())
+                    .build()
+            );
+        }catch (Exception e) {
+            L.error("Error processing password reset request", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(MessageResponse.builder()
+                            .message("Error processing password reset request. Error: " + e.getMessage())
+                            .timestamp(Instant.now().toString())
+                            .isError(true)
+                            .build()
+                    );
+        }
     }
 }

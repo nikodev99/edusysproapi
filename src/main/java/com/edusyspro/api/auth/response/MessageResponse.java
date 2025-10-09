@@ -13,6 +13,7 @@ import java.time.Instant;
 @Builder
 public class MessageResponse {
     private String message;
+    private String description;
     private String timestamp = Instant.now().toString();
     private Boolean isError = false;
 }

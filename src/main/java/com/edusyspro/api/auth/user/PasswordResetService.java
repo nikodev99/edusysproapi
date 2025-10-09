@@ -1,5 +1,10 @@
 package com.edusyspro.api.auth.user;
 
+import com.edusyspro.api.auth.exception.TokenExpiredException;
+import com.edusyspro.api.auth.exception.TokenNotFoundException;
+import com.edusyspro.api.auth.exception.TokenUsedException;
+import com.edusyspro.api.auth.response.UserInfoResponse;
+import com.edusyspro.api.utils.Datetime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +26,7 @@ public class PasswordResetService {
         this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
-    public String generatePasswordResetToken(Long userId) {
+    public PasswordResetToken generatePasswordResetToken(Long userId) {
         boolean tokenExists = passwordResetTokenRepository.existsByUserId(userId);
         if (tokenExists) {
             passwordResetTokenRepository.deleteByUserId(userId);
@@ -39,17 +44,22 @@ public class PasswordResetService {
                         .build())
                 .build();
 
-        passwordResetTokenRepository.save(resetToken);
-
-        return hashedToken;
+        return passwordResetTokenRepository.save(resetToken);
     }
 
     public User validatePasswordResetToken(String token) {
-        return passwordResetTokenRepository.findByToken(token)
-                .filter(prt -> !prt.isUsed())
-                .filter(prt -> Instant.now().isBefore(prt.getExpiryDate()))
-                .map(PasswordResetToken::getUser)
-                .orElse(null);
+        PasswordResetToken prt = passwordResetTokenRepository.findByToken(token)
+                .orElseThrow(() -> new TokenNotFoundException("Invalid password reset token"));
+
+        if (prt.isUsed()) {
+            throw new TokenUsedException("Token déjà utiliser");
+        }
+
+        if (Instant.now().isAfter(prt.getExpiryDate())) {
+            throw new TokenExpiredException("Token périmé le " + Datetime.instantToFormat(prt.getExpiryDate()));
+        }
+
+        return prt.getUser();
     }
 
     public void invalidatePasswordResetToken(String token) {

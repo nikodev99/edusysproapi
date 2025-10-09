@@ -1,5 +1,6 @@
 package com.edusyspro.api.auth.response;
 
+import com.edusyspro.api.auth.user.User;
 import com.edusyspro.api.auth.user.UserType;
 import com.edusyspro.api.model.enums.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,4 +33,13 @@ public class UserInfoResponse {
     private UserType userType;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
+
+    public static UserInfoResponse fromUser(User user) {
+        return UserInfoResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .build();
+    }
 }
