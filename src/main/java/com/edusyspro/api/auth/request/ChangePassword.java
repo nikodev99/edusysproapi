@@ -14,7 +14,7 @@ public record ChangePassword(
         @NotBlank(message = "old password is required")
         @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
         @Pattern(
-                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,100}$",
+                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()-_=+{}|;:,.<>?/])[A-Za-z\\d!@#$%^&*()-_=+{}|;:,.<>?/]{6,100}$",
                 message = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
         )
         String oldPassword,
@@ -22,7 +22,7 @@ public record ChangePassword(
         @NotBlank(message = "New password is required")
         @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
         @Pattern(
-                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,100}$",
+                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()-_=+{}|;:,.<>?/])[A-Za-z\\d!@#$%^&*()-_=+{}|;:,.<>?/]{6,100}$",
                 message = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
         )
         String newPassword

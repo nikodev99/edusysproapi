@@ -49,7 +49,7 @@ public class PasswordResetService {
 
     public User validatePasswordResetToken(String token) {
         PasswordResetToken prt = passwordResetTokenRepository.findByToken(token)
-                .orElseThrow(() -> new TokenNotFoundException("Invalid password reset token"));
+                .orElseThrow(() -> new TokenNotFoundException("Token du mot de passe invalide"));
 
         if (prt.isUsed()) {
             throw new TokenUsedException("Token déjà utiliser");
