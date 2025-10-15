@@ -79,6 +79,19 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
+    public User createNewAccount(SignupRequest request) {
+        User user = request.toEntity();
+
+        //TODO Send email and phone message to user
+        User addedUser = userRepository.save(user);
+        if (addedUser.getId() != null) {
+            addedUser.setSchoolAffiliations(request.toUserSchoolRole(addedUser.getId()));
+        }
+
+        return userRepository.save(addedUser);
+    }
+
+    @Transactional
     public Page<UserInfoResponse> getAllUsers(String schoolId, Pageable pageable) {
         return userRepository.findAllUsers(UUID.fromString(schoolId), pageable);
     }
@@ -91,6 +104,12 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserInfoResponse getUserById(Long userId, String schoolId) {
         return userRepository.findUserById(userId, UUID.fromString(schoolId))
+                .orElseThrow();
+    }
+
+    @Transactional
+    public UserInfoResponse getUserByPersonalInfo(Long personalInfoId) {
+        return userRepository.findUserByPersonalInfoId(personalInfoId)
                 .orElseThrow();
     }
 

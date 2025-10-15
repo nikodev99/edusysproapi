@@ -9,6 +9,7 @@ import com.edusyspro.api.auth.user.*;
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.helper.log.L;
+import com.edusyspro.api.service.interfaces.IndividualService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -26,17 +27,20 @@ public class UserController {
     private final RefreshTokenService refreshTokenService;
     private final UserSchoolRoleService userAccount;
     private final UserActivityService userActivityService;
+    private final IndividualService individualService;
 
     public UserController(
             UserService userService,
             RefreshTokenService refreshTokenService,
             UserSchoolRoleService userSchoolRoleService,
-            UserActivityService userActivityService
+            UserActivityService userActivityService,
+            IndividualService individualService
     ) {
         this.userService = userService;
         this.refreshTokenService = refreshTokenService;
         this.userAccount = userSchoolRoleService;
         this.userActivityService = userActivityService;
+        this.individualService = individualService;
     }
 
     @RequestMapping("/{schoolId}")
@@ -135,6 +139,16 @@ public class UserController {
     @PatchMapping("/remove/{accountId}")
     ResponseEntity<?> removeAccount (@PathVariable Long accountId, @RequestBody UpdateField field) {
         return ResponseEntity.ok(userAccount.updateAccount(accountId, field));
+    }
+
+    @GetMapping("/ind")
+    ResponseEntity<?> findUserPersonalInfo(@RequestParam String search) {
+        return ResponseEntity.ok(individualService.getSearchedUserPersonalInfo(search));
+    }
+
+    @GetMapping("/personal/{personalInfoId}")
+    ResponseEntity<?> findUserByPersonalInfo(@PathVariable Long personalInfoId) {
+        return ResponseEntity.ok(userService.getUserByPersonalInfo(personalInfoId));
     }
 
     @PostMapping("/change-password")

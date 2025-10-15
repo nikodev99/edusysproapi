@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.auth.request.AssignToUserRequest;
 import com.edusyspro.api.auth.response.UserInfoResponse;
 import com.edusyspro.api.auth.user.*;
 import com.edusyspro.api.dto.custom.UpdateField;
@@ -58,6 +59,16 @@ public class UserRepositoryTest {
     public void fetchAccountTest() {
         Optional<UserInfoResponse> user = userRepository.findUserById(3L);
         user.ifPresent(System.out::println);
+    }
+
+    @Test
+    public void userSchoolRoleExistsTest() {
+        AssignToUserRequest assign = new AssignToUserRequest(
+                1L, "621286d1-01a7-4f00-9e57-9e135c1fe94f", List.of(Role.ADMIN, Role.TOP_ADMIN));
+
+        boolean exists = userSchoolRoleService.isUserSchoolRoleExist(assign.userId(), assign.schoolId());
+
+        assertTrue(exists);
     }
 
     @Test

@@ -215,6 +215,39 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/register-new-school")
+    public ResponseEntity<?> registerNewSchool(@Valid @RequestBody AssignToUserRequest signupRequest) {
+        try {
+            boolean isUserExist = userSchoolRoleService.isUserSchoolRoleExist(
+                    signupRequest.userId(),
+                    signupRequest.schoolId()
+            );
+
+            if(isUserExist) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                        MessageResponse.builder()
+                                .message("L'utilisateur à déjà une affiliation avec cette école")
+                                .isError(true)
+                                .timestamp(Instant.now().toString())
+                                .build()
+                );
+            }
+            userSchoolRoleService.assignUserToSchool(signupRequest);
+
+            logger.info("New school affiliation registered for user: {}", signupRequest.userId());
+
+            return ResponseEntity.ok(MessageResponse.builder()
+                    .message("Affiliation à une nouvelle école enregistré avec succès.")
+                            .timestamp(Instant.now().toString())
+                    .build()
+            );
+        }catch (Exception e) {
+            logger.error("Registration error", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(MessageResponse.builder().message("Registration failed").build());
+        }
+    }
+
     @PostMapping("/refresh")
     ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         try {

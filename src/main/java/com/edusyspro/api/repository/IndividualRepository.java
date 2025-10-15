@@ -1,6 +1,7 @@
 package com.edusyspro.api.repository;
 
 import com.edusyspro.api.dto.custom.EmployeeIndividual;
+import com.edusyspro.api.dto.custom.IndividualBasic;
 import com.edusyspro.api.model.Individual;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -54,4 +55,10 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
         FROM Teacher t LEFT JOIN t.school s WHERE t.personalInfo.id = ?1
     """)
     List<Object[]> findTeacherIdByPersonalInfoId(long personalInfo);
+
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.IndividualBasic(i.id, i.firstName, i.lastName, CONCAT("[", i.emailId, ",", i.telephone, ",", i.individualType, "]"))
+        FROM Individual i WHERE lower(i.firstName) LIKE lower(?1) OR lower(i.lastName) LIKE lower(?1)
+    """)
+    List<IndividualBasic> findPotentialUserPersonalInfo(String name);
 }

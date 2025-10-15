@@ -1,6 +1,7 @@
 package com.edusyspro.api.model;
 
 import com.edusyspro.api.model.enums.Gender;
+import com.edusyspro.api.model.enums.IndividualType;
 import com.edusyspro.api.model.enums.Status;
 import com.edusyspro.api.utils.JpaConverter;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -67,6 +68,9 @@ public class Individual {
 
     @Convert(converter = JpaConverter.class)
     private List<String> attachments;
+
+    @Enumerated
+    private IndividualType individualType;
 
     @PrePersist
     @PreUpdate
