@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -115,8 +116,20 @@ public class UserController {
     }
 
     @GetMapping("/activity/{accountId}")
-    ResponseEntity<?> getUserActivities(@PathVariable Long accountId) {
-        return ResponseEntity.ok(userActivityService.getAllActivities(accountId));
+    ResponseEntity<?> getUserActivities(
+            @PathVariable Long accountId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String sortCriteria,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
+    ) {
+        LocalDate start = startDate == null ? LocalDate.now().minusMonths(1) : ControllerUtils.parseDate(startDate);
+        LocalDate end = endDate == null ? LocalDate.now() : ControllerUtils.parseDate(endDate);
+
+        Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
+
+        return ResponseEntity.ok(userActivityService.getAllActivities(accountId, start, end, pageable));
     }
 
     @PatchMapping("/enable/{accountId}")

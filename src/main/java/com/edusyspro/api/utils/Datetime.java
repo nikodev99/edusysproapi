@@ -8,8 +8,10 @@ import java.time.format.DateTimeParseException;
 
 public class Datetime {
 
+    public static ZoneId BRAZZA_TIME = ZoneId.of("Africa/Brazzaville");
+
     public static ZonedDateTime brazzavilleDatetime() {
-        return ZonedDateTime.now(ZoneId.of("Africa/Brazzaville"));
+        return ZonedDateTime.now(BRAZZA_TIME);
     }
 
     public static ZonedDateTime systemDatetime() {
