@@ -50,7 +50,7 @@ public class UserRepositoryTest {
     public void updateUserRolesTest() {
         boolean updated = userSchoolRoleService.updateAccount(
                 4L,
-                new UpdateField("roles", List.of(Role.USER))
+                new UpdateField("roles", List.of(Role.SECRETARY))
         );
         assertTrue(updated);
     }
