@@ -12,6 +12,7 @@ import com.edusyspro.api.service.interfaces.GradeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,7 @@ public class GradeServiceImpl implements GradeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<GradeDTO> fetchAll(Object... args) {
         var schoolId = (String) args[0];
         var academicYearId = (String) args[1];
@@ -123,17 +125,7 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public GradeDTO fetchOneById(Integer id) {
-        GradeDTO grade = gradeRepository.findGradeById(id).map(GradeBasicValue::convertToDTO).orElse(null);
-        if (grade != null) {
-            List<PlanningDTO> plannings = gradeRepository.findPlanningsByGradeId(grade.getId())
-                    .stream()
-                    .map(PlanningEssential::toDto)
-                    .toList();
-
-            if (!plannings.isEmpty())
-                grade.setPlanning(plannings);
-        }
-        return grade;
+        return null;
     }
 
     @Override
@@ -143,7 +135,18 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     public GradeDTO fetchOneById(Integer id, Object... args) {
-        return null;
+        boolean hasPlannings = args[0] != null && Boolean.parseBoolean(args[0].toString());
+        GradeDTO grade = gradeRepository.findGradeById(id).map(GradeBasicValue::convertToDTO).orElse(null);
+        if (hasPlannings && grade != null) {
+            List<PlanningDTO> plannings = gradeRepository.findPlanningsByGradeId(grade.getId())
+                    .stream()
+                    .map(PlanningEssential::toDto)
+                    .toList();
+
+            if (!plannings.isEmpty())
+                grade.setPlanning(plannings);
+        }
+        return grade;
     }
 
     @Override

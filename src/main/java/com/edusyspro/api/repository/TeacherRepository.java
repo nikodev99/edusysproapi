@@ -29,13 +29,13 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
             "join t.aClasses c left join c.grade g left join c.department d where t.id = ?1 and ((g is null or g.school.id = ?2) or (d is null or d.school.id = ?2))")
     List<ClassBasicValue> findTeacherClasses(UUID teacherId, UUID schoolId);
 
-    @Query("select new com.edusyspro.api.dto.custom.CourseBasicValue(c.id, c.course, c.abbr) " +
+    @Query("select new com.edusyspro.api.dto.custom.CourseBasicValue(c.id, c.course, c.abbr, c.discipline) " +
             "from Teacher t join t.courses c left join c.department d where t.id = ?1 and d.school.id = ?2")
     List<CourseBasicValue> findTeacherCourses(UUID teacherId, UUID schoolId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseEssential(
-            c.id, c.course, c.abbr, d.id, d.name, d.code, d.purpose, b.d_boss.id, b.current, i.firstName,
+            c.id, c.course, c.abbr, c.discipline, d.id, d.name, d.code, d.purpose, b.d_boss.id, b.current, i.firstName,
             i.lastName, b.startPeriod, b.endPeriod, c.createdAt
         ) from Teacher t join t.courses c left join c.department d left join d.boss b left join b.d_boss i
         where t.id = ?1 and d.school.id = ?2

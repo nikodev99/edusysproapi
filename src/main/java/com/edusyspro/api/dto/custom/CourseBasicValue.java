@@ -5,7 +5,8 @@ import com.edusyspro.api.dto.CourseDTO;
 public record CourseBasicValue(
         Integer id,
         String course,
-        String abbr
+        String abbr,
+        String discipline
 ) {
     public CourseDTO toCourse(){
         if (id == null) return null;
@@ -13,6 +14,7 @@ public record CourseBasicValue(
                 .id(id)
                 .course(course)
                 .abbr(abbr)
+                .discipline(discipline)
                 .build();
     }
 }

@@ -19,7 +19,8 @@ public class SemesterTemplate {
     private Integer id;
     private String semesterName;
     private int displayOrder;
-    @Lob
+
+    @Column(length = 2000)
     private String description;
 
     @ManyToOne(cascade = {CascadeType.DETACH}, fetch = FetchType.LAZY)

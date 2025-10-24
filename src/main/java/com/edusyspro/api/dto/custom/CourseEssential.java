@@ -12,6 +12,7 @@ public record CourseEssential(
         Integer id,
         String course,
         String abbr,
+        String discipline,
         Integer departmentId,
         String name,
         String code,
@@ -29,6 +30,7 @@ public record CourseEssential(
                 .id(id)
                 .course(course)
                 .abbr(abbr)
+                .discipline(discipline)
                 .department(DepartmentDTO.builder()
                         .id(departmentId)
                         .name(name)

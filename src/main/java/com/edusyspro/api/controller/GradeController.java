@@ -54,7 +54,10 @@ public class GradeController {
     }
 
     @GetMapping()
-    ResponseEntity<?> getGradeById(@RequestParam int gradeId) {
-        return ResponseEntity.ok(gradeService.fetchOneById(gradeId));
+    ResponseEntity<?> getGradeWithPlanningById(
+            @RequestParam Integer gradeId,
+            @RequestParam(required = false, defaultValue = "true") Boolean hasPlannings
+    ) {
+        return ResponseEntity.ok(gradeService.fetchOneById(gradeId, hasPlannings));
     }
 }
