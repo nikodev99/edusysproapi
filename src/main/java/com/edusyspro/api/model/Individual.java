@@ -63,7 +63,7 @@ public class Individual {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
-    @Column(length = 100)
+    @Column(length = 300)
     private String image;
 
     @Convert(converter = JpaConverter.class)

@@ -87,8 +87,8 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public int updateStudentHealth(String field, Object value, String studentId) {
         HealthCondition healthCondition = getStudentHealthCondition(studentId);
-        if (healthCondition != null) {
-            return studentUpdateContext.updateHealthByField(field, value, UUID.fromString(studentId));
+        if (healthCondition != null && healthCondition.getId() != null) {
+            return updateContext.updateHealthCondition(field, value, healthCondition.getId());
         }else {
             return pullAndSaveHealthCondition(field, value, studentId);
         }

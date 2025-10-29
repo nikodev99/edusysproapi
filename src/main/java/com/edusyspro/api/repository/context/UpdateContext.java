@@ -34,6 +34,12 @@ public class UpdateContext {
 
     @Modifying
     @Transactional
+    public int updateHealthCondition(String field, Object value, long id) {
+        return updateEntityField(HealthCondition.class, field, value, id);
+    }
+
+    @Modifying
+    @Transactional
     public int updateTeacherField(String field, Object value, UUID teacherId) {
         value = adjustDate("hireDate", field, value);
         return updateEntityField(Teacher.class, field, value, teacherId, "modifyAt");

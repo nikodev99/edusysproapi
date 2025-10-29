@@ -6,6 +6,7 @@ import com.edusyspro.api.dto.custom.GenderCount;
 import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.model.*;
 import com.edusyspro.api.dto.custom.EnrolledStudent;
+import com.edusyspro.api.model.enums.IndividualType;
 import com.edusyspro.api.repository.EnrollmentRepository;
 import com.edusyspro.api.repository.context.RepositoryContext;
 import com.edusyspro.api.service.CustomMethod;
@@ -32,6 +33,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
     private final ScheduleService scheduleService;
 
     private final GuardianService guardianService;
+    private final IndividualReferenceService individualReferenceService;
 
     @Autowired
     public EnrollmentServiceImp(
@@ -41,8 +43,9 @@ public class EnrollmentServiceImp implements EnrollmentService {
             AttendanceService attendanceService,
             StudentService studentService,
             ScheduleService scheduleService,
-            GuardianService guardianService)
-    {
+            GuardianService guardianService,
+            IndividualReferenceService individualReferenceService
+    ) {
         this.enrollmentRepository = enrollmentRepository;
         this.enrollmentRepositoryContext = enrollmentRepositoryContext;
         this.scoreService = scoreService;
@@ -50,6 +53,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
         this.studentService = studentService;
         this.scheduleService = scheduleService;
         this.guardianService = guardianService;
+        this.individualReferenceService = individualReferenceService;
     }
 
     @Override
@@ -57,14 +61,23 @@ public class EnrollmentServiceImp implements EnrollmentService {
     public EnrollmentDTO enrollStudent(EnrollmentDTO enrollmentDTO) {
         EnrollmentEntity enrollmentEntity = EnrollmentDTO.toEntity(enrollmentDTO);
 
+        Individual studentInd = enrollmentEntity.getStudent().getPersonalInfo();
+        School school = enrollmentEntity.getAcademicYear().getSchool();
+        if (studentInd != null) {
+            String reference = individualReferenceService.generateReference(IndividualType.STUDENT, school.getId());
+            studentInd.setReference(reference);
+        }
+
         GuardianEntity guardianEntity = enrollmentEntity.getStudent().getGuardian();
         if (guardianEntity != null) {
-            GuardianEntity guardian = guardianService.saveOrUpdateGuardian(guardianEntity);
+            String guardianReference = individualReferenceService.generateReference(IndividualType.GUARDIAN);
+            GuardianEntity guardian = guardianService.saveOrUpdateGuardian(guardianEntity, guardianReference);
             enrollmentEntity.getStudent().setGuardian(guardian);
         }
 
-        enrollmentRepository.save(enrollmentEntity);
-        return enrollmentDTO;
+        EnrollmentEntity saved = enrollmentRepository.save(enrollmentEntity);
+
+        return EnrollmentDTO.fromEntity(saved);
     }
 
     @Override

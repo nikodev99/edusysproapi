@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public interface GuardianService {
 
-    GuardianEntity saveOrUpdateGuardian(GuardianEntity guardian);
+    GuardianEntity saveOrUpdateGuardian(GuardianEntity guardian, String reference);
 
     GuardianDTO findGuardianById(String id);
 

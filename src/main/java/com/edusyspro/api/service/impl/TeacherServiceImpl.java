@@ -4,11 +4,15 @@ import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
+import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.model.Teacher;
+import com.edusyspro.api.model.enums.IndividualType;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.CustomMethod;
 import com.edusyspro.api.service.interfaces.CourseProgramService;
+import com.edusyspro.api.service.interfaces.IndividualReferenceService;
 import com.edusyspro.api.service.interfaces.ScheduleService;
 import com.edusyspro.api.service.interfaces.TeacherServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +27,21 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     private final ScheduleService scheduleService;
     private final UpdateContext updateContext;
     private final CourseProgramService courseProgramService;
+    private final IndividualReferenceService individualReferenceService;
 
     @Autowired
     public TeacherServiceImpl(
             TeacherRepository teacherRepository,
             ScheduleService scheduleService,
             UpdateContext updateContext,
-            CourseProgramService courseProgramService
+            CourseProgramService courseProgramService,
+            IndividualReferenceService individualReferenceService
     ) {
         this.teacherRepository = teacherRepository;
         this.scheduleService = scheduleService;
         this.updateContext = updateContext;
         this.courseProgramService = courseProgramService;
+        this.individualReferenceService = individualReferenceService;
     }
 
     @Override
@@ -42,8 +49,14 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
         if (teacherEmailExists(entity)) {
             throw new AlreadyExistException("L'adresse e-mail est déjà utilisée. Veuillez en fournir une autre.");
         }else {
-            com.edusyspro.api.model.Teacher teacherEntity = TeacherDTO.toEntity(entity);
-            com.edusyspro.api.model.Teacher insertedTeacher = teacherRepository.save(teacherEntity);
+            Teacher teacherEntity = TeacherDTO.toEntity(entity);
+            Individual teacherPersonalInfo = entity.getPersonalInfo();
+            if (teacherPersonalInfo != null) {
+                String reference = individualReferenceService.generateReference(IndividualType.TEACHER);
+                teacherPersonalInfo.setReference(reference);
+            }
+
+            Teacher insertedTeacher = teacherRepository.save(teacherEntity);
             if (insertedTeacher.getId() != null) {
                 entity = TeacherDTO.fromEntity(insertedTeacher);
             }
@@ -137,10 +150,6 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
         List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(dto.getId(), UUID.fromString(schoolId));
         List<CourseEssential> courses = teacherRepository.findTeacherEssentialCourses(dto.getId(), UUID.fromString(schoolId));
         List<CourseProgramDTO> programs = courseProgramService.fetchAllByOtherEntityId(String.valueOf(dto.getId()), schoolId);
-
-        System.out.println("--------------------------------------------------------");
-        System.out.println("DONNEE DE MATIERE: " + courses);
-        System.out.println("--------------------------------------------------------");
 
         dto.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
         dto.setCourses(courses.stream().map(CourseEssential::toCourse).toList());

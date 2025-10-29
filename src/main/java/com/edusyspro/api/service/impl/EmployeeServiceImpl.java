@@ -6,10 +6,13 @@ import com.edusyspro.api.dto.custom.EmployeeIndividual;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.Employee;
+import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.model.enums.IndividualType;
 import com.edusyspro.api.repository.EmployeeRepository;
 import com.edusyspro.api.repository.IndividualRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.EmployeeService;
+import com.edusyspro.api.service.interfaces.IndividualReferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,13 +26,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final UpdateContext updateContext;
 
+    private final IndividualReferenceService individualReferenceService;
+
     @Autowired
     public EmployeeServiceImpl(
             EmployeeRepository employeeRepository,
-            UpdateContext updateContext
+            UpdateContext updateContext,
+            IndividualReferenceService individualReferenceService
     ) {
         this.employeeRepository = employeeRepository;
         this.updateContext = updateContext;
+        this.individualReferenceService = individualReferenceService;
     }
 
     @Override
@@ -38,6 +45,14 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employee.getPersonalInfo().getEmailId(),
                 employee.getSchool().getId()
         )) {
+            Individual employeePersonalInfo = employee.getPersonalInfo();
+            if (employeePersonalInfo != null) {
+                String reference = individualReferenceService.generateReference(
+                        IndividualType.EMPLOYEE,
+                        employee.getSchool().getId()
+                );
+                employeePersonalInfo.setReference(reference);
+            }
             return employeeRepository.save(employee);
         }
         return null;

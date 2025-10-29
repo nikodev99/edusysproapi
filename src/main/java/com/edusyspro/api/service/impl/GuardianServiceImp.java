@@ -4,6 +4,7 @@ import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.StudentDTO;
 import com.edusyspro.api.model.GuardianEntity;
 import com.edusyspro.api.dto.custom.GuardianEssential;
+import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.repository.GuardianRepository;
 import com.edusyspro.api.service.interfaces.GuardianService;
 import com.edusyspro.api.service.interfaces.StudentService;
@@ -34,8 +35,12 @@ public class GuardianServiceImp implements GuardianService {
     }
 
     @Transactional
-    public GuardianEntity saveOrUpdateGuardian(GuardianEntity guardianEntity) {
+    public GuardianEntity saveOrUpdateGuardian(GuardianEntity guardianEntity, String reference) {
         if (guardianEntity.getId() == null) {
+            if (reference != null) {
+                Individual guardianPersonalInfo = guardianEntity.getPersonalInfo();
+                guardianPersonalInfo.setReference(reference);
+            }
             return guardianRepository.save(guardianEntity);
         }else {
             return entityManager.merge(guardianEntity);

@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 @Builder
 public class EnrollmentDTO {
     private Long id;
-    private AcademicYear academicYear;
+    private AcademicYearDTO academicYear;
     @JsonProperty("student")
     private StudentDTO student;
     @JsonProperty("classe")
@@ -24,7 +24,7 @@ public class EnrollmentDTO {
     public static EnrollmentDTO fromEntity(EnrollmentEntity dto) {
         return EnrollmentDTO.builder()
                 .id(dto.getId())
-                .academicYear(dto.getAcademicYear())
+                .academicYear(AcademicYearDTO.toDto(dto.getAcademicYear()))
                 .student(StudentDTO.fromEntity(dto.getStudent()))
                 .classe(ClasseDTO.fromEntity(dto.getClasse()))
                 .enrollmentDate(dto.getEnrollmentDate())
@@ -35,7 +35,7 @@ public class EnrollmentDTO {
     public static EnrollmentEntity toEntity(EnrollmentDTO dto) {
         return EnrollmentEntity.builder()
                 .id(dto.getId())
-                .academicYear(dto.getAcademicYear())
+                .academicYear(dto.getAcademicYear().toEntity())
                 .student(StudentDTO.toEntity(dto.getStudent()))
                 .classe(ClasseDTO.toEntity(dto.getClasse()))
                 .enrollmentDate(dto.getEnrollmentDate())

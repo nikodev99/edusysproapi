@@ -27,6 +27,18 @@ public class AcademicYearDTO {
     private List<Semester> semesters;
     private School school;
 
+    public static AcademicYearDTO toDto(AcademicYear academicYear) {
+        return AcademicYearDTO.builder()
+                .id(academicYear.getId())
+                .startDate(academicYear.getStartDate())
+                .endDate(academicYear.getEndDate())
+                .current(academicYear.getCurrent())
+                .years(academicYear.getYears())
+                //.semesters(academicYear.getSemesters() != null ? academicYear.getSemesters() : List.of())
+                //.school(academicYear.getSchool() != null ? academicYear.getSchool() : School.builder().build())
+                .build();
+    }
+
     public AcademicYear toEntity() {
         return AcademicYear.builder()
                 .id(id)

@@ -1,5 +1,6 @@
 package com.edusyspro.api.controller;
 
+import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.EnrollmentDTO;
@@ -9,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,8 +30,18 @@ public class EnrollmentController {
     }
 
     @PostMapping
-    ResponseEntity<EnrollmentDTO> save(@RequestBody EnrollmentDTO enrollmentDTO) {
-        return ResponseEntity.ok(enrollmentService.enrollStudent(enrollmentDTO));
+    ResponseEntity<?> save(@RequestBody EnrollmentDTO enrollmentDTO) {
+        try {
+            EnrollmentDTO saved = enrollmentService.enrollStudent(enrollmentDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
+                    MessageResponse.builder()
+                            .message(e.getMessage())
+                            .timestamp(Instant.now().toString())
+                            .build()
+            );
+        }
     }
 
     /**

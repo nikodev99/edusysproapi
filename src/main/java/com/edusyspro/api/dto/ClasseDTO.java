@@ -40,15 +40,47 @@ public class ClasseDTO {
                 .id(classe.getId())
                 .name(classe.getName())
                 .category(classe.getCategory())
-                .grade(GradeDTO.fromEntity(classe.getGrade()))
-                .department(DepartmentDTO.fromEntity(classe.getDepartment()))
-                .schedule(classe.getSchedule().stream().map(ScheduleDTO::fromEntity).toList())
+                .grade(
+                        classe.getGrade() != null
+                                ? GradeDTO.fromEntity(classe.getGrade())
+                                : null
+                )
+                .department(
+                        classe.getDepartment() != null
+                                ? DepartmentDTO.fromEntity(classe.getDepartment())
+                                : null
+                )
+                .schedule(
+                        classe.getSchedule() != null
+                                ? classe.getSchedule().stream().map(ScheduleDTO::fromEntity).toList()
+                                : List.of()
+                )
                 .roomNumber(classe.getRoomNumber())
-                .principalTeacher(TeacherBossDTO.fromEntity(classe.getPrincipalTeacher()))
-                .principalStudent(StudentBossDTO.fromEntity(classe.getPrincipalStudent()))
-                .principalCourse(CourseDTO.fromEntity(classe.getPrincipalCourse()))
-                .students(classe.getStudents().stream().map(EnrollmentDTO::fromEntity).toList())
-                .classTeacherCourses(classe.getClassTeacherCourses().stream().map(TeacherDTO::fromEntity).toList())
+                .principalTeacher(
+                        classe.getPrincipalTeacher() != null
+                                ? TeacherBossDTO.fromEntity(classe.getPrincipalTeacher())
+                                : null
+                )
+                .principalStudent(
+                        classe.getPrincipalStudent() != null
+                                ? StudentBossDTO.fromEntity(classe.getPrincipalStudent())
+                                : null
+                )
+                .principalCourse(
+                        classe.getPrincipalCourse() != null
+                                ? CourseDTO.fromEntity(classe.getPrincipalCourse())
+                                : null
+                )
+                .students(
+                        classe.getStudents() != null
+                                ? classe.getStudents().stream().map(EnrollmentDTO::fromEntity).toList()
+                                : List.of()
+                )
+                .classTeacherCourses(
+                        classe.getClassTeacherCourses() != null
+                                ? classe.getClassTeacherCourses().stream().map(TeacherDTO::fromEntity).toList()
+                                : List.of()
+                )
                 .monthCost(classe.getMonthCost())
                 .createdAt(classe.getCreatedAt())
                 .modifyAt(classe.getModifyAt())
@@ -60,8 +92,16 @@ public class ClasseDTO {
                .id(classe.getId())
                .name(classe.getName())
                .category(classe.getCategory())
-               .grade(classe.getGrade().toEntity())
-               .department(DepartmentDTO.toEntity(classe.getDepartment()))
+               .grade(
+                       classe.getGrade() != null
+                               ? classe.getGrade().mergeGrade()
+                               : null
+               )
+               .department(
+                       classe.getDepartment() != null
+                               ? DepartmentDTO.toEntity(classe.getDepartment())
+                               : null
+               )
                .roomNumber(classe.getRoomNumber())
                .monthCost(classe.getMonthCost())
                .createdAt(classe.getCreatedAt())

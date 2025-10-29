@@ -1,9 +1,6 @@
 package com.edusyspro.api.dto.custom;
 
-import com.edusyspro.api.dto.ClasseDTO;
-import com.edusyspro.api.dto.EnrollmentDTO;
-import com.edusyspro.api.dto.GradeDTO;
-import com.edusyspro.api.dto.StudentDTO;
+import com.edusyspro.api.dto.*;
 import com.edusyspro.api.model.*;
 import com.edusyspro.api.model.enums.Section;
 import lombok.Builder;
@@ -31,7 +28,12 @@ public record EnrolledStudent(
     public EnrollmentDTO populateStudent() {
         return EnrollmentDTO.builder()
                 .id(enrollmentId())
-                .academicYear(academicYear)
+                .academicYear(AcademicYearDTO.builder()
+                        .id(academicYear.getId())
+                        .startDate(academicYear.getStartDate())
+                        .endDate(academicYear.getEndDate())
+                        .current(academicYear.getCurrent())
+                        .build())
                 .student(StudentDTO.builder()
                         .id(id)
                         .personalInfo(personalInfo)

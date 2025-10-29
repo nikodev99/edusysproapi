@@ -53,6 +53,12 @@ public class GradeDTO {
                 .build();
     }
 
+    public Grade mergeGrade() {
+        return Grade.builder()
+                .id(id)
+                .build();
+    }
+
     public Grade toEntityWithPlannings() {
         Grade grade = toEntity();
         grade.setPlanning(planning != null

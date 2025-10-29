@@ -73,13 +73,16 @@ public class StudentController {
     public ResponseEntity<String> updateStudentHealthByField(@PathVariable String id, @RequestBody UpdateField student) {
         try {
             int updated = studentService.updateStudentHealth(student.field(), student.value(), id);
+            System.out.println("Updated: " + updated);
             if (updated > 0) {
                 return ResponseEntity.ok("Modification effective");
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Health Condition not found or update failed");
         }catch (IllegalArgumentException e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
