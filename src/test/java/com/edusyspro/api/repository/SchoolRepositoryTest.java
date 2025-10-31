@@ -132,7 +132,7 @@ class SchoolRepositoryTest {
 
     @Test
     public void printASchool() {
-        System.out.println("School retrieved=" + MockUtils.SCHOOL_MOCK);
+        System.out.println("School retrieved=");
     }
 
     @Test

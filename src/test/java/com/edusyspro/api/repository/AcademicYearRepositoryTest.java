@@ -32,12 +32,13 @@ class AcademicYearRepositoryTest {
     @Test
     public void saveAcademicYear() {
         AcademicYear academicYear = AcademicYear.builder()
-                .startDate(LocalDate.of(2025, 10, 2))
-                .endDate(LocalDate.of(2026, 6, 28))
-                .current(true)
+                .startDate(LocalDate.of(2024, 10, 1))
+                .endDate(LocalDate.of(2025, 6, 20))
+                .current(false)
                 .school(School.builder()
-                        .id(UUID.fromString(ConstantUtils.SECOND_SCHOOL))
-                        .build())
+                        .id(UUID.fromString("621286d1-01a7-4f00-9e57-9e135c1fe94f"))
+                        .build()
+                )
                 .build();
         academicYearRepository.save(academicYear);
     }
@@ -50,7 +51,7 @@ class AcademicYearRepositoryTest {
 
     @Test
     public void testCurrentAcademicYear() {
-        Optional<Tuple> year = academicYearRepository.findBySchool(MockUtils.SCHOOL_MOCK.getId());
+        Optional<Tuple> year = academicYearRepository.findBySchool(UUID.fromString(ConstantUtils.SCHOOL_ID));
         Tuple t = year.orElseThrow();
         System.out.println("retrieved data=" + t);
         System.out.println("Current academic year=" + t.get(0) + "-" + t.get(1));

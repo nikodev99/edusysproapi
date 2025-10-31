@@ -1,8 +1,10 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.custom.GradeBasicValue;
 import com.edusyspro.api.model.Grade;
 import com.edusyspro.api.model.Planning;
+import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.utils.MockUtils;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,7 +30,9 @@ class GradeRepositoryTest {
     public void saveGradesAndPlanning() {
         Grade grade = Grade.builder()
                 .section(Section.PRIMAIRE)
-                .school(MockUtils.SCHOOL_MOCK)
+                .school(School.builder()
+                        .id(UUID.fromString(ConstantUtils.CSP_SCHOOL))
+                        .build())
                 .build();
         grade.setPlanning(plannings(grade));
         gradeRepository.save(grade);
@@ -37,7 +42,9 @@ class GradeRepositoryTest {
     public void saveAnotherGradesAndPlanning() {
         Grade grade = Grade.builder()
                 .section(Section.COLLEGE)
-                .school(MockUtils.SCHOOL_MOCK)
+                .school(School.builder()
+                        .id(UUID.fromString(ConstantUtils.CSP_SCHOOL))
+                        .build())
                 .build();
         grade.setPlanning(plannings2(grade));
         gradeRepository.save(grade);
@@ -47,7 +54,9 @@ class GradeRepositoryTest {
     public void saveThirdGradesAndPlanning() {
         Grade grade = Grade.builder()
                 .section(Section.LYCEE)
-                .school(MockUtils.SCHOOL_MOCK)
+                .school(School.builder()
+                        .id(UUID.fromString(ConstantUtils.CSP_SCHOOL))
+                        .build())
                 .build();
         grade.setPlanning(plannings2(grade));
         gradeRepository.save(grade);

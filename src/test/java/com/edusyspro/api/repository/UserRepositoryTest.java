@@ -3,6 +3,7 @@ package com.edusyspro.api.repository;
 import com.edusyspro.api.auth.request.AssignToUserRequest;
 import com.edusyspro.api.auth.response.UserInfoResponse;
 import com.edusyspro.api.auth.user.*;
+import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.model.enums.Role;
 import org.junit.jupiter.api.Test;
@@ -27,16 +28,16 @@ public class UserRepositoryTest {
     @Test
     public void createUserTest() {
         var userSchoolRole = UserSchoolRole.builder()
-                .schoolId(UUID.fromString("81148a1b-bdb9-4be1-9efd-fdf4106341d6"))
-                .roles(List.of(Role.ADMIN))
+                .schoolId(UUID.fromString(ConstantUtils.CS2_SCHOOL))
+                .roles(List.of(Role.ADMIN, Role.TOP_ADMIN))
                 .build();
 
         var user = User.builder()
-                .username("johndoe")
-                .password("@John1234")
+                .username("janedoe")
+                .password("@Jane1234")
                 .phoneNumber("012345678")
-                .email("john@gmail.com")
-                .personalInfoId(419L)
+                .email("jane@gmail.com")
+                .personalInfoId(23L)
                 .schoolAffiliations(List.of(userSchoolRole))
                 .userType(UserType.EMPLOYEE)
                 .build();

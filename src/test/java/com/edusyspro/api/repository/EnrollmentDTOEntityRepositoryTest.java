@@ -31,7 +31,11 @@ class EnrollmentDTOEntityRepositoryTest {
 
     @Test
     public void saveEnrolledStudents() {
-        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(10, MockUtils.ACADEMIC_YEAR_MOCK.toEntity(), MockUtils.SCHOOL_MOCK, getClasse(1));
+        List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(
+                10,
+                MockUtils.ACADEMIC_YEAR_MOCK.toEntity(),
+                MockUtils.SCHOOL_MOCK, getClasse(1)
+        );
         enrollmentRepository.saveAll(enrollmentEntities);
     }
 
