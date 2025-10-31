@@ -9,9 +9,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,10 +59,20 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
             select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,
             e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true
-            and e.isArchived = false and (lower(e.student.personalInfo.lastName) like lower(?2) or lower(e.student.personalInfo.firstName) like lower(?2))
+            and e.isArchived = false and (lower(e.student.personalInfo.lastName) like lower(?2) or lower(e.student.personalInfo.firstName) like lower(?2)
+            or lower(e.student.personalInfo.reference) like lower(?2))
             order by e.student.personalInfo.lastName asc
     """)
     List<EnrolledStudent> findEnrolledStudent(UUID schoolId, String lastname);
+
+    @Query(value = """
+            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
+            e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.classe.monthCost,
+            e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id = ?1 and (lower(e.student.personalInfo.lastName)
+            like lower(?2) or lower(e.student.personalInfo.firstName) like lower(?2) or lower(e.student.personalInfo.reference) like lower(?2))
+            order by e.student.personalInfo.lastName asc
+    """)
+    List<EnrolledStudent> findUnenrolledStudent(UUID schoolId, String lastname);
 
     /**
      * Finds the enrollment details for a student by their unique identifier.
@@ -237,4 +249,9 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
      */
     @Query("select e.student.personalInfo.gender, e.student.personalInfo.birthDate from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true")
     List<Object[]> countAllStudents(UUID schoolId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE EnrollmentEntity e SET e.isArchived = true WHERE e.isArchived = false and e.academicYear.endDate <= :now")
+    int archiveByAcademicYearEnd(@Param("now")LocalDate now);
 }

@@ -42,6 +42,14 @@ public interface EnrollmentService {
     List<EnrollmentDTO> getEnrolledStudents(String schoolId, String lastname);
 
     /**
+     * Get the searched student of the previous academic year in a school
+     * @param schoolId The school id.
+     * @param lastname The last name letter of the searched student
+     * @return List<EnrolledStudent>
+     */
+    List<EnrollmentDTO> getUnenrolledStudents(String schoolId, String lastname);
+
+    /**
      * Get an enrolled student with its address, guardian, its health status,
      * 5 marks, 5 histories, 5 attendances and 5 classe schedules
      * @param studentId The student id

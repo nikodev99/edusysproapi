@@ -94,6 +94,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
+    public List<EnrollmentDTO> getUnenrolledStudents(String schoolId, String lastname) {
+        return enrollmentRepository.findUnenrolledStudent(UUID.fromString(schoolId), "%" + lastname + "%").stream()
+                .map(EnrolledStudent::populateStudent)
+                .toList();
+    }
+
+    @Override
     public EnrollmentDTO getEnrolledStudent(String studentId) {
         EnrollmentDTO student = enrollmentRepository.findEnrollmentById(UUID.fromString(studentId))
                 .populateStudent();
