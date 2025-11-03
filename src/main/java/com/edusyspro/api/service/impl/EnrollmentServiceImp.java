@@ -6,11 +6,13 @@ import com.edusyspro.api.dto.custom.GenderCount;
 import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.model.*;
 import com.edusyspro.api.dto.custom.EnrolledStudent;
+import com.edusyspro.api.model.enums.ArchivedStatus;
 import com.edusyspro.api.model.enums.IndividualType;
 import com.edusyspro.api.repository.EnrollmentRepository;
 import com.edusyspro.api.repository.context.RepositoryContext;
 import com.edusyspro.api.service.CustomMethod;
 import com.edusyspro.api.service.interfaces.*;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,8 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class EnrollmentServiceImp implements EnrollmentService {
@@ -35,6 +38,8 @@ public class EnrollmentServiceImp implements EnrollmentService {
     private final GuardianService guardianService;
     private final IndividualReferenceService individualReferenceService;
 
+    private final EntityManager entityManager;
+
     @Autowired
     public EnrollmentServiceImp(
             EnrollmentRepository enrollmentRepository,
@@ -44,7 +49,8 @@ public class EnrollmentServiceImp implements EnrollmentService {
             StudentService studentService,
             ScheduleService scheduleService,
             GuardianService guardianService,
-            IndividualReferenceService individualReferenceService
+            IndividualReferenceService individualReferenceService,
+            EntityManager entityManager
     ) {
         this.enrollmentRepository = enrollmentRepository;
         this.enrollmentRepositoryContext = enrollmentRepositoryContext;
@@ -54,6 +60,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
         this.scheduleService = scheduleService;
         this.guardianService = guardianService;
         this.individualReferenceService = individualReferenceService;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -61,18 +68,30 @@ public class EnrollmentServiceImp implements EnrollmentService {
     public EnrollmentDTO enrollStudent(EnrollmentDTO enrollmentDTO) {
         EnrollmentEntity enrollmentEntity = EnrollmentDTO.toEntity(enrollmentDTO);
 
-        Individual studentInd = enrollmentEntity.getStudent().getPersonalInfo();
-        School school = enrollmentEntity.getAcademicYear().getSchool();
-        if (studentInd != null) {
-            String reference = individualReferenceService.generateReference(IndividualType.STUDENT, school.getId());
-            studentInd.setReference(reference);
-        }
+        if(enrollmentEntity.getStudent().getId() == null) {
+            Individual studentInd = enrollmentEntity.getStudent().getPersonalInfo();
+            School school = enrollmentEntity.getAcademicYear().getSchool();
+            if (studentInd != null) {
+                String reference = individualReferenceService.generateReference(IndividualType.STUDENT, school.getId());
+                studentInd.setReference(reference);
+            }
 
-        GuardianEntity guardianEntity = enrollmentEntity.getStudent().getGuardian();
-        if (guardianEntity != null) {
-            String guardianReference = individualReferenceService.generateReference(IndividualType.GUARDIAN);
-            GuardianEntity guardian = guardianService.saveOrUpdateGuardian(guardianEntity, guardianReference);
-            enrollmentEntity.getStudent().setGuardian(guardian);
+            GuardianEntity guardianEntity = enrollmentEntity.getStudent().getGuardian();
+            if (guardianEntity != null) {
+                String guardianReference = individualReferenceService.generateReference(IndividualType.GUARDIAN);
+                GuardianEntity guardian = guardianService.saveOrUpdateGuardian(guardianEntity, guardianReference);
+                enrollmentEntity.getStudent().setGuardian(guardian);
+            }
+        }else {
+            StudentEntity studentEntity = entityManager.getReference(StudentEntity.class, enrollmentEntity.getStudent().getId());
+            enrollmentEntity.setStudent(studentEntity);
+
+            getStudentSchoolHistory(enrollmentEntity.getStudent().getId().toString(), ArchivedStatus.NOT_ARCHIVED)
+                    .forEach(e -> enrollmentRepository.updateEnrollmentByStudentId(
+                            true,
+                            e.getStudent().getId(),
+                            e.getAcademicYear().getId()
+                    ));
         }
 
         EnrollmentEntity saved = enrollmentRepository.save(enrollmentEntity);
@@ -95,8 +114,25 @@ public class EnrollmentServiceImp implements EnrollmentService {
 
     @Override
     public List<EnrollmentDTO> getUnenrolledStudents(String schoolId, String lastname) {
-        return enrollmentRepository.findUnenrolledStudent(UUID.fromString(schoolId), "%" + lastname + "%").stream()
+
+        List<EnrollmentDTO> allUnrolledStudents = enrollmentRepository.findUnenrolledStudent(UUID.fromString(schoolId), "%" + lastname + "%").stream()
                 .map(EnrolledStudent::populateStudent)
+                .toList();
+
+        Comparator<EnrollmentDTO> byDateAndId = Comparator
+                .comparing(EnrollmentDTO::getEnrollmentDate, Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(EnrollmentDTO::getId, Comparator.nullsLast(Comparator.naturalOrder()));
+
+        return allUnrolledStudents.stream()
+                .filter(e -> e != null && e.getStudent() != null && e.getStudent().getId() != null)
+                .collect(Collectors.groupingBy(e -> e.getStudent().getId()))
+                .values().stream()
+                .filter(enrollmentDTOS -> enrollmentDTOS.stream()
+                        .noneMatch(enr -> Boolean.FALSE.equals(enr.getIsArchived())))
+                .map(enrollmentDTOS -> enrollmentDTOS.stream()
+                        .max(byDateAndId)
+                        .orElse(null))
+                .filter(Objects::nonNull)
                 .toList();
     }
 
@@ -108,9 +144,11 @@ public class EnrollmentServiceImp implements EnrollmentService {
         if (student != null) {
             Pageable pageable = PageRequest.of(0, 5);
             Page<ScoreDTO> scores = scoreService.getLastScoresByStudent(studentId, pageable);
-            Page<EnrolledStudent> enrollments = enrollmentRepository.findStudentEnrollments(
-                    UUID.fromString(studentId), pageable
-            );
+
+            List<EnrollmentDTO> enrollments = getStudentSchoolHistory(studentId, ArchivedStatus.ARCHIVED)
+                    .limit(5)
+                    .toList();
+
             Page<AttendanceDTO> attendances = attendanceService.getLastStudentAttendances(
                     student.getStudent().getPersonalInfo().getId(),
                     pageable
@@ -122,7 +160,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
             student.getStudent().setGuardian(studentService.getStudentGuardian(studentId));
             student.getStudent().setHealthCondition(studentService.getStudentHealthCondition(studentId));
             student.getStudent().setMarks(scores.getContent());
-            student.getStudent().setEnrollmentEntities(enrollments.getContent().stream().map(EnrolledStudent::populateStudent).toList());
+            student.getStudent().setEnrollmentEntities(enrollments);
             student.getStudent().setAttendances(attendances.getContent());
             student.getClasse().setSchedule(schedules);
         }
@@ -210,5 +248,27 @@ public class EnrollmentServiceImp implements EnrollmentService {
     public GenderCount countStudents(String schoolId) {
         List<Object[]> results = enrollmentRepository.countAllStudents(UUID.fromString(schoolId));
         return CustomMethod.genderCountInClasse(results);
+    }
+
+    public Stream<EnrollmentDTO> getStudentSchoolHistory(String studentId, ArchivedStatus status) {
+        Stream<EnrollmentDTO> enrollments = enrollmentRepository.findStudentEnrollments(UUID.fromString(studentId)).stream()
+                .map(EnrolledStudentBasic::toDTO);
+
+        switch (status) {
+            case ALL -> {
+                return enrollments;
+            }
+            case ARCHIVED -> {
+                return enrollments
+                        .filter(e -> e.getIsArchived() == true);
+            }
+            case NOT_ARCHIVED -> {
+                return enrollments
+                        .filter(e -> e.getIsArchived() == false);
+            }
+            default -> {
+                return Stream.empty();
+            }
+        }
     }
 }

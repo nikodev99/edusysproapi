@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.EnrollmentEntity;
@@ -33,8 +34,9 @@ class EnrollmentDTOEntityRepositoryTest {
     public void saveEnrolledStudents() {
         List<EnrollmentEntity> enrollmentEntities = Fake.studentToEnroll(
                 10,
-                MockUtils.ACADEMIC_YEAR_MOCK.toEntity(),
-                MockUtils.SCHOOL_MOCK, getClasse(1)
+                AcademicYear.builder().id(UUID.fromString("a6a47195-e3b4-4544-9c35-59fd2e454f5e")).build(),
+                School.builder().id(ConstantUtils.IST_SCHOOL).build(),
+                getClasse(1)
         );
         enrollmentRepository.saveAll(enrollmentEntities);
     }
@@ -100,7 +102,7 @@ class EnrollmentDTOEntityRepositoryTest {
     public void saveEnrollAgain() {
         final AcademicYear ACADEMIC_YEAR = MockUtils.ACADEMIC_YEAR_MOCK.toEntity();
         EnrollmentEntity e = enrollmentRepository.findById(105L).orElseThrow();
-        int updated = enrollmentRepository.updateEnrollmentByStudentId(true, e.getStudent().getId());
+        int updated = enrollmentRepository.updateEnrollmentByStudentId(true, e.getStudent().getId(), ACADEMIC_YEAR.getId());
         EnrollmentEntity enrollmentEntity = EnrollmentEntity.builder()
                 .academicYear(ACADEMIC_YEAR)
                 .student(e.getStudent())

@@ -20,6 +20,7 @@ public record EnrolledStudent(
         String classe,
         String classeCategory,
         Section grade,
+        Boolean isArchived,
         BigDecimal monthCost,
         String dadName,
         String momName
@@ -50,6 +51,7 @@ public record EnrolledStudent(
                                 .build())
                         .monthCost(monthCost)
                         .build())
+                .isArchived(isArchived)
                 .build();
     }
 }
