@@ -16,7 +16,9 @@ import java.time.LocalDate;
 @Builder
 public class ReprimandDTO {
     private Long id;
-    private EnrollmentDTO student;
+    private AcademicYearDTO academicYear;
+    private StudentDTO student;
+    private ClasseDTO classe;
     private LocalDate reprimandDate;
     private ReprimandType type;
     private String description;

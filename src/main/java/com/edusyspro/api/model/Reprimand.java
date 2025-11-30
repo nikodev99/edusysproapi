@@ -19,15 +19,23 @@ public class Reprimand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.DETACH})
+    @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
+    private AcademicYear academicYear;
+
+    @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.DETACH})
     @JoinColumn(name = "student_id", referencedColumnName = "id")
-    private EnrollmentEntity student;
+    private StudentEntity student;
+
+    @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.DETACH})
+    @JoinColumn(name = "classe_id", referencedColumnName = "id")
+    private ClasseEntity classe;
 
     private LocalDate reprimandDate;
     private ReprimandType type;
     private String description;
 
-    @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.DETACH})
     @JoinColumn(name = "issuer_id", referencedColumnName = "id")
     private Individual issuedBy;
 

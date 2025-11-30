@@ -11,35 +11,60 @@ import java.util.UUID;
 
 public record ReprimandEssential(
         Long id,
+        UUID academicYearId,
+        String academicYear,
         UUID studentId,
-        Individual student,
+        String studentLastName,
+        String studentFirstName,
+        String studentImage,
+        String studentReference,
+        Integer classeId,
         String studentClasse,
         Section studentSection,
         LocalDate reprimandDate,
         ReprimandType type,
         String description,
-        Individual issueBy,
+        Long issuerId,
+        String issuerFirstName,
+        String issuerLastName,
+        String issuerImage,
+        String reference,
         Punishment punishment
 ) {
     public ReprimandDTO toDTO() {
         return ReprimandDTO.builder()
                 .id(id)
-                .student(EnrollmentDTO.builder()
-                        .classe(ClasseDTO.builder()
-                                .name(studentClasse)
-                                .grade(GradeDTO.builder()
-                                        .section(studentSection)
-                                        .build())
-                                .build()
-                        )
-                        .student(StudentDTO.builder()
-                                .id(studentId)
-                                .personalInfo(student)
+                .academicYear(AcademicYearDTO.builder()
+                        .id(academicYearId)
+                        .years(academicYear)
+                        .build())
+                .student(StudentDTO.builder()
+                        .id(studentId)
+                        .personalInfo(Individual.builder()
+                                .firstName(studentFirstName)
+                                .lastName(studentLastName)
+                                .image(studentImage)
+                                .reference(studentReference)
                                 .build())
                         .build())
+                .classe(ClasseDTO.builder()
+                        .id(classeId)
+                        .name(studentClasse)
+                        .grade(GradeDTO.builder()
+                                .section(studentSection)
+                                .build())
+                        .build()
+                )
+                .reprimandDate(reprimandDate)
                 .type(type)
                 .description(description)
-                .issuedBy(issueBy)
+                .issuedBy(Individual.builder()
+                        .id(issuerId)
+                        .firstName(issuerFirstName)
+                        .lastName(issuerLastName)
+                        .image(issuerImage)
+                        .reference(reference)
+                        .build())
                 .punishment(punishment)
                 .build();
     }
