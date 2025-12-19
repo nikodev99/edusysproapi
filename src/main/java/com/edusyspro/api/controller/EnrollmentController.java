@@ -79,6 +79,15 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getUnenrolledStudents(schoolId, query));
     }
 
+    @GetMapping("/searched-student/{schoolId}")
+    ResponseEntity<?> getSearchedEnroll(@PathVariable String schoolId, @RequestParam String query) {
+        String normalized = query
+                .replace("+", " ")
+                .trim()
+                .replaceAll("\\s+", " ");
+        return ResponseEntity.ok(enrollmentService.getSearchedStudent(schoolId, normalized));
+    }
+
     /**
      * Retrieves enrollment details for a specific student based on the provided student ID.
      *

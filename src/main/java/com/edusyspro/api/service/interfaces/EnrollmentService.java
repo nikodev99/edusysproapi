@@ -2,15 +2,11 @@ package com.edusyspro.api.service.interfaces;
 
 import com.edusyspro.api.dto.EnrollmentDTO;
 import com.edusyspro.api.dto.GuardianDTO;
-import com.edusyspro.api.dto.custom.EnrolledStudent;
 import com.edusyspro.api.dto.custom.GenderCount;
-import com.edusyspro.api.model.enums.Gender;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public interface EnrollmentService {
 
@@ -51,7 +47,7 @@ public interface EnrollmentService {
 
     /**
      * Get an enrolled student with its address, guardian, its health status,
-     * 5 marks, 5 histories, 5 attendances and 5 classe schedules
+     * 5 marks, 5 histories, 5 attendances, and 5 classes schedules
      * @param studentId The student id
      * @return EnrollmentDTO
      */
@@ -77,7 +73,7 @@ public interface EnrollmentService {
     /**
      * Get a certain number of students of a single class.
      * @param classeId the classe ID
-     * @param numberOfStudents the number of student to fetch
+     * @param numberOfStudents the number of students to fetch
      * @return List<EnrollmentDTO>
      */
     List<EnrollmentDTO> getClasseEnrolledStudents(int classeId, int numberOfStudents);
@@ -91,7 +87,7 @@ public interface EnrollmentService {
     List<EnrollmentDTO> getClasseEnrolledStudents(int classeId, String academicYear);
 
     /**
-     * Get a student current classe classmates
+     * Get a student current class classmates
      * @param schoolId The school id
      * @param studentId The student id
      * @param classeId The classe id
@@ -101,7 +97,7 @@ public interface EnrollmentService {
     List<EnrollmentDTO> getStudentClassmates(String schoolId, String studentId, int classeId, int classmateNumber);
 
     /***
-     * Get a student classmates from current and previous years
+     * Get a student classmate from current and previous years
      * @param studentId The student id
      * @param classeId The classe id
      * @param academicYear The academic year id
@@ -109,6 +105,8 @@ public interface EnrollmentService {
      * @return List<EnrollmentDTO>
      */
     Page<EnrollmentDTO> getAllStudentClassmates(String studentId, int classeId, String academicYear, Pageable pageable);
+
+    EnrollmentDTO getSearchedStudent(String schoolId, String query);
 
     /***
      * Get the all guardians of the enrolled studentDTOS
@@ -127,7 +125,7 @@ public interface EnrollmentService {
     List<GuardianDTO> getEnrolledStudentGuardians(String schoolId, String lastname);
 
     /**
-     * This counts the gender of students by classe and specific academic year
+     * This counts the gender of students by class and specific academic year
      * @param classeId The classe id.
      * @param academicYear the id or the academic year
      * @return List<GenderCount>
@@ -135,17 +133,16 @@ public interface EnrollmentService {
     GenderCount countClasseStudents(int classeId, String academicYear);
 
     /**
-     * Get the number of all student in multiple classes
+     * Get the number of all students in multiple classes
      * @param classeIds multiple classe ids.
      * @return List<GenderCount>
      */
     GenderCount countClasseStudents(List<Integer> classeIds, String academicYear);
 
     /**
-     * Get the number of all student by schoolID
+     * Get the number of all students by schoolID
      * @param schoolId The school id.
      * @return @return GenderCount
      */
     GenderCount countStudents(String schoolId);
-
 }

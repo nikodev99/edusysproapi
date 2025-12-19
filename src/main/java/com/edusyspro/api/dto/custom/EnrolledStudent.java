@@ -34,6 +34,7 @@ public record EnrolledStudent(
                         .startDate(academicYear.getStartDate())
                         .endDate(academicYear.getEndDate())
                         .current(academicYear.getCurrent())
+                        .years(academicYear.getYears())
                         .build())
                 .student(StudentDTO.builder()
                         .id(id)

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -20,19 +21,15 @@ public class Reprimand {
     private Long id;
 
     @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.DETACH})
-    @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
-    private AcademicYear academicYear;
-
-    @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.DETACH})
     @JoinColumn(name = "student_id", referencedColumnName = "id")
-    private StudentEntity student;
+    private EnrollmentEntity student;
 
-    @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.DETACH})
-    @JoinColumn(name = "classe_id", referencedColumnName = "id")
-    private ClasseEntity classe;
+    private ZonedDateTime reprimandDate;
 
-    private LocalDate reprimandDate;
+    @Enumerated(EnumType.ORDINAL)
     private ReprimandType type;
+
+    @Column(length = 2000)
     private String description;
 
     @ManyToOne(cascade = {CascadeType.MERGE , CascadeType.DETACH})

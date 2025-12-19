@@ -1,9 +1,6 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.model.EnrollmentEntity;
-import com.edusyspro.api.model.Individual;
-import com.edusyspro.api.model.Punishment;
-import com.edusyspro.api.model.Reprimand;
+import com.edusyspro.api.model.*;
 import com.edusyspro.api.model.enums.PunishmentStatus;
 import com.edusyspro.api.model.enums.PunishmentType;
 import com.edusyspro.api.model.enums.ReprimandType;

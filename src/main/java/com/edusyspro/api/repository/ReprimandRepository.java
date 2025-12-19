@@ -18,20 +18,20 @@ import java.util.UUID;
 public interface ReprimandRepository extends JpaRepository<Reprimand, Long> {
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ReprimandEssential(r.id, r.academicYear.id, r.academicYear.years, r.student.id,
-        r.student.personalInfo.lastName, r.student.personalInfo.firstName, r.student.personalInfo.image, r.student.personalInfo.reference,
-        r.classe.id, r.classe.name, r.classe.grade.section, r.reprimandDate, r.type,r.description, r.issuedBy.id, r.issuedBy.firstName,
-        r.issuedBy.lastName, r.issuedBy.image, r.issuedBy.reference, r.punishment) from Reprimand r
-        where r.student.id = ?1 and r.academicYear.id = ?2 order by r.reprimandDate desc
+        select new com.edusyspro.api.dto.custom.ReprimandEssential(r.id, s.academicYear.id, s.academicYear.years, s.student.id,
+        s.student.personalInfo.lastName, s.student.personalInfo.firstName, s.student.personalInfo.image, s.student.personalInfo.reference,
+        s.classe.id, s.classe.name, s.classe.grade.section, r.reprimandDate, r.type, r.description, r.issuedBy.id, r.issuedBy.firstName,
+        r.issuedBy.lastName, r.issuedBy.image, r.issuedBy.reference, r.punishment) from Reprimand r join r.student s
+        where r.student.id = ?1 and s.academicYear.id = ?2 order by r.reprimandDate desc
     """)
     Page<ReprimandEssential> findReprimandsByStudentId(UUID student_id, UUID academicYear_id, Pageable pageable);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ReprimandEssential(r.id, r.academicYear.id, r.academicYear.years, r.student.id,
-        r.student.personalInfo.lastName, r.student.personalInfo.firstName, r.student.personalInfo.image, r.student.personalInfo.reference,
-        r.classe.id, r.classe.name, r.classe.grade.section, r.reprimandDate, r.type,r.description, r.issuedBy.id, r.issuedBy.firstName,
-        r.issuedBy.lastName, r.issuedBy.image, r.issuedBy.reference, r.punishment) from Reprimand r
-        where r.issuedBy.id = :teacherId and r.academicYear.current = true and (:status is null or (:operator = 'EQUAL' and r.punishment.status = :status) or
+        select new com.edusyspro.api.dto.custom.ReprimandEssential(r.id, s.academicYear.id, s.academicYear.years, s.student.id,
+        s.student.personalInfo.lastName, s.student.personalInfo.firstName, s.student.personalInfo.image, s.student.personalInfo.reference,
+        s.classe.id, s.classe.name, s.classe.grade.section, r.reprimandDate, r.type, r.description, r.issuedBy.id, r.issuedBy.firstName,
+        r.issuedBy.lastName, r.issuedBy.image, r.issuedBy.reference, r.punishment) from Reprimand r join r.student s
+        where r.issuedBy.id = :teacherId and s.academicYear.current = true and (:status is null or (:operator = 'EQUAL' and r.punishment.status = :status) or
         (:operator = 'DIFF' and r.punishment.status != :status)) order by r.reprimandDate desc
     """)
     Page<ReprimandEssential> findStudentReprimandByTeacher(
@@ -42,11 +42,11 @@ public interface ReprimandRepository extends JpaRepository<Reprimand, Long> {
     );
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ReprimandEssential(r.id, r.academicYear.id, r.academicYear.years, r.student.id,
-        r.student.personalInfo.lastName, r.student.personalInfo.firstName, r.student.personalInfo.image, r.student.personalInfo.reference,
-        r.classe.id, r.classe.name, r.classe.grade.section, r.reprimandDate, r.type,r.description, r.issuedBy.id, r.issuedBy.firstName,
-        r.issuedBy.lastName, r.issuedBy.image, r.issuedBy.reference, r.punishment) from Reprimand r
-        where r.issuedBy.id = :teacherId and r.academicYear.id = :academicYear order by r.reprimandDate desc
+        select new com.edusyspro.api.dto.custom.ReprimandEssential(r.id, s.academicYear.id, s.academicYear.years, s.student.id,
+        s.student.personalInfo.lastName, s.student.personalInfo.firstName, s.student.personalInfo.image, s.student.personalInfo.reference,
+        s.classe.id, s.classe.name, s.classe.grade.section, r.reprimandDate, r.type, r.description, r.issuedBy.id, r.issuedBy.firstName,
+        r.issuedBy.lastName, r.issuedBy.image, r.issuedBy.reference, r.punishment) from Reprimand r join r.student s
+        where r.issuedBy.id = :teacherId and s.academicYear.id = :academicYear order by r.reprimandDate desc
     """)
     Page<ReprimandEssential> findStudentReprimandByTeacher(
             @Param("teacherId") long teacherId,

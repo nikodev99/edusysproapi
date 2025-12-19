@@ -52,7 +52,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     @Override
     public Page<ClasseDTO> fetchAll(String schoolId, Pageable pageable) {
-        return classeRepository.findAllCLassesBySchool(UUID.fromString(schoolId), pageable)
+        return classeRepository.findAllClassesBySchool(UUID.fromString(schoolId), pageable)
                 .map(ClasseEssential::convertToDTO);
     }
 
@@ -60,7 +60,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
     public List<ClasseDTO> fetchAll(Object... args) {
         var schoolId = UUID.fromString(String.valueOf(args[0]));
         var classeName = "%" + args[1].toString() + "%";
-        return classeRepository.findAllCLassesBySchool(schoolId, classeName).stream()
+        return classeRepository.findAllClassesBySchool(schoolId, classeName).stream()
                 .map(ClasseEssential::convertToDTO)
                 .toList();
     }

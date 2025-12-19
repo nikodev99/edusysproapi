@@ -4,6 +4,7 @@ import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.EnrolledStudentBasic;
 import com.edusyspro.api.dto.custom.GenderCount;
 import com.edusyspro.api.dto.custom.GuardianEssential;
+import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.*;
 import com.edusyspro.api.dto.custom.EnrolledStudent;
 import com.edusyspro.api.model.enums.ArchivedStatus;
@@ -216,6 +217,16 @@ public class EnrollmentServiceImp implements EnrollmentService {
                 pageable
         );
         return enrolledStudents.map(EnrolledStudent::populateStudent);
+    }
+
+    @Override
+    public EnrollmentDTO getSearchedStudent(String schoolId, String query) {
+        return enrollmentRepository.getSearchedStudent(UUID.fromString(schoolId), query, PageRequest.of(0, 1))
+                .getContent()
+                .stream()
+                .findFirst()
+                .map(EnrolledStudent::populateStudent)
+                .orElseThrow(() -> new NotFountException("Student not found"));
     }
 
     @Override

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Repository
 public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long> {
@@ -184,6 +185,16 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
       order by e.student.personalInfo.lastName asc
    """)
     List<EnrolledStudent> getEnrolledStudentsByClassIdSearch(int classeId, UUID academicYear, String searchName);
+
+    @Query(value = """
+        select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
+        e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.isArchived, e.classe.monthCost,
+        e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id <> ?1
+       and (lower(concat(e.student.personalInfo.lastName, ' ', e.student.personalInfo.firstName)) like lower(?2)
+       or lower(e.student.personalInfo.reference) like lower(?2))
+      order by e.enrollmentDate desc
+   """)
+    Page<EnrolledStudent> getSearchedStudent(UUID schoolId, String searchInput, Pageable pageable);
 
     /**
      * Finds a distinct list of guardians for students who are enrolled in the current academic year

@@ -31,16 +31,16 @@ public class ReprimandSpec {
         Root<Reprimand> reprimand = cq.from(Reprimand.class);
         cq.select(cb.construct(ReprimandEssential.class,
                 reprimand.get("id"),
-                reprimand.get("academicYear").get("id"),
-                reprimand.get("academicYear").get("years"),
-                reprimand.get("student").get("id"),
-                reprimand.get("student").get("personalInfo").get("lastName"),
-                reprimand.get("student").get("personalInfo").get("firstName"),
-                reprimand.get("student").get("personalInfo").get("image"),
-                reprimand.get("student").get("personalInfo").get("reference"),
-                reprimand.get("classe").get("id"),
-                reprimand.get("classe").get("name"),
-                reprimand.get("classe").get("grade").get("section"),
+                reprimand.get("student").get("academicYear").get("id"),
+                reprimand.get("student").get("academicYear").get("years"),
+                reprimand.get("student").get("student").get("id"),
+                reprimand.get("student").get("student").get("personalInfo").get("lastName"),
+                reprimand.get("student").get("student").get("personalInfo").get("firstName"),
+                reprimand.get("student").get("student").get("personalInfo").get("image"),
+                reprimand.get("student").get("student").get("personalInfo").get("reference"),
+                reprimand.get("student").get("classe").get("id"),
+                reprimand.get("student").get("classe").get("name"),
+                reprimand.get("student").get("classe").get("grade").get("section"),
                 reprimand.get("reprimandDate"),
                 reprimand.get("type"),
                 reprimand.get("description"),
@@ -76,11 +76,11 @@ public class ReprimandSpec {
     private List<Predicate> buildPredicates(ReprimandFilters filters, Root<Reprimand> reprimand, CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<>();
 
-        predicates.add(cb.equal(reprimand.get("student").get("id"), filters.studentId()));
-        predicates.add(cb.equal(reprimand.get("academicYear").get("id"), filters.academicYearId()));
+        predicates.add(cb.equal(reprimand.get("student").get("student").get("id"), filters.studentId()));
+        predicates.add(cb.equal(reprimand.get("student").get("academicYear").get("id"), filters.academicYearId()));
 
         if (filters.classeId() != null) {
-            predicates.add(cb.equal(reprimand.get("classe").get("id"), filters.classeId()));
+            predicates.add(cb.equal(reprimand.get("student").get("classe").get("id"), filters.classeId()));
         }
         if (filters.punishmentType() != null) {
             predicates.add(cb.equal(reprimand.get("punishment").get("type"), filters.punishmentType()));

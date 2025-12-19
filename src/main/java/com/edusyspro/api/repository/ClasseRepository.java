@@ -28,9 +28,9 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
     @Query("""
         select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection,
         c.roomNumber, d.name, d.code, c.monthCost, c.createdAt) from ClasseEntity c left join c.grade g left join c.department d
-        where (g is null or g.school.id = ?1) or (d is null or d.school.id = ?1)
+        where (g is null or g.school.id = ?1) and (d is null or d.school.id = ?1)
     """)
-    Page<ClasseEssential> findAllCLassesBySchool(UUID schoolID, Pageable pageable);
+    Page<ClasseEssential> findAllClassesBySchool(UUID schoolID, Pageable pageable);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection,
@@ -38,7 +38,7 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
         where ((g is null or g.school.id = ?1) or (d is null or d.school.id = ?1)) and (lower(c.name) like lower(?2) or
         lower(c.category) like lower(?2) or lower(g.section) like lower(?2)) order by c.createdAt desc
     """)
-    List<ClasseEssential> findAllCLassesBySchool(UUID schoolID, String classeName);
+    List<ClasseEssential> findAllClassesBySchool(UUID schoolID, String classeName);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, c.grade.section, c.grade.subSection,

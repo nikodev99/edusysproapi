@@ -48,6 +48,16 @@ public class UserRepositoryTest {
     }
 
     @Test
+    public void updateRolesTest() {
+        var user = userRepository.findByUsername("johndoe").orElseThrow();
+        var roles = List.of(Role.ADMIN, Role.TOP_ADMIN);
+
+        boolean updated = userSchoolRoleService.updateAccount(user.getId(), new UpdateField("roles", roles));
+
+        assertTrue(updated);
+    }
+
+    @Test
     public void updateUserRolesTest() {
         boolean updated = userSchoolRoleService.updateAccount(
                 4L,

@@ -23,7 +23,7 @@ public class PasswordResetToken {
     @Column(nullable = false, unique = true)
     private String token;
 
-    @OneToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")
     private User user;
 

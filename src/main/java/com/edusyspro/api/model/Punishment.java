@@ -2,10 +2,7 @@ package com.edusyspro.api.model;
 
 import com.edusyspro.api.model.enums.PunishmentStatus;
 import com.edusyspro.api.model.enums.PunishmentType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,12 +21,20 @@ public class Punishment {
     private Long id;
 
     private Boolean isRequire;
+
+    @Enumerated(EnumType.ORDINAL)
     private PunishmentType type;
+
+    @Column(length = 2000)
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
+
+    @Enumerated(EnumType.ORDINAL)
     private PunishmentStatus status;
     private String executedBy;
     private Boolean appealed;
+
+    @Column(length = 2000)
     private String appealedNote;
 }
