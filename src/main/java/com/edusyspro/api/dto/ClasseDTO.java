@@ -77,8 +77,8 @@ public class ClasseDTO {
                                 : List.of()
                 )
                 .classTeacherCourses(
-                        classe.getClassTeacherCourses() != null
-                                ? classe.getClassTeacherCourses().stream().map(TeacherDTO::fromEntity).toList()
+                        classe.getClassTeachers() != null
+                                ? classe.getClassTeachers().stream().map(TeacherDTO::fromEntity).toList()
                                 : List.of()
                 )
                 .monthCost(classe.getMonthCost())

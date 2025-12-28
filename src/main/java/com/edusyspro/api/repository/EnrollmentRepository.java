@@ -44,7 +44,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
             select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.isArchived, e.classe.monthCost,
             e.student.dadName, e.student.momName) from EnrollmentEntity e
-            where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false
+            where e.isArchived = false and e.academicYear.current = true and e.academicYear.school.id = ?1
     """)
     Page<EnrolledStudent> findEnrolledStudent(UUID schoolId, Pageable pageable);
 
@@ -59,12 +59,30 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     @Query(value = """
             select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.isArchived, e.classe.monthCost,
-            e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true
-            and e.isArchived = false and (lower(e.student.personalInfo.lastName) like lower(?2) or lower(e.student.personalInfo.firstName) like lower(?2)
+            e.student.dadName, e.student.momName) from EnrollmentEntity e where e.isArchived = false and e.academicYear.current = true
+            and e.academicYear.school.id = ?1 and (lower(e.student.personalInfo.lastName) like lower(?2) or lower(e.student.personalInfo.firstName) like lower(?2)
             or lower(e.student.personalInfo.reference) like lower(?2))
             order by e.student.personalInfo.lastName asc
     """)
     List<EnrolledStudent> findEnrolledStudent(UUID schoolId, String lastname);
+
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
+        e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.isArchived, e.classe.monthCost,
+        e.student.dadName, e.student.momName) from EnrollmentEntity e join e.classe c join c.classTeachers t
+        where e.isArchived = false and e.academicYear.current = true and e.academicYear.school.id = ?1 and t.id = ?2
+    """)
+    Page<EnrolledStudent> findAllStudentByTeacherByAcademicYearAndSchool(UUID schoolId, UUID teacherId, Pageable pageable);
+
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
+        e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.isArchived, e.classe.monthCost,
+        e.student.dadName, e.student.momName) from EnrollmentEntity e join e.classe c join c.classTeachers t
+        where e.isArchived = false and e.academicYear.current = true and e.academicYear.school.id = ?1 and t.id = ?2
+        and (lower(e.student.personalInfo.lastName) like lower(?3) or lower(e.student.personalInfo.firstName) like lower(?3)
+        or lower(e.student.personalInfo.reference) like lower(?3)) order by e.student.personalInfo.lastName asc
+    """)
+    List<EnrolledStudent> findAllStudentByTeacherByAcademicYearAndSchool(UUID teacherId, UUID schoolId, String lastName);
 
     @Query(value = """
             select distinct new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,

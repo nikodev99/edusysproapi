@@ -63,7 +63,7 @@ public class ClasseEntity {
 
     @ManyToMany(mappedBy = "aClasses", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JsonIgnore
-    private List<Teacher> classTeacherCourses;
+    private List<Teacher> classTeachers;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal monthCost;

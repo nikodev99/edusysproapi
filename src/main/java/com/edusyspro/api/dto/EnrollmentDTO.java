@@ -42,4 +42,10 @@ public class EnrollmentDTO {
                 .isArchived(dto.getIsArchived())
                 .build();
     }
+
+    public EnrollmentEntity toMerge() {
+        return EnrollmentEntity.builder()
+                .id(id)
+                .build();
+    }
 }
