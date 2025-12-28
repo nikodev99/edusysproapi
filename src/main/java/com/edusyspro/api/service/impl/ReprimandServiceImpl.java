@@ -1,8 +1,10 @@
 package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.ReprimandDTO;
+import com.edusyspro.api.dto.custom.ReprimandBasic;
 import com.edusyspro.api.dto.custom.ReprimandEssential;
 import com.edusyspro.api.dto.filters.ReprimandFilters;
+import com.edusyspro.api.model.Reprimand;
 import com.edusyspro.api.model.enums.PunishmentStatus;
 import com.edusyspro.api.repository.ReprimandRepository;
 import com.edusyspro.api.repository.spec.ReprimandSpec;
@@ -29,8 +31,27 @@ public class ReprimandServiceImpl implements ReprimandService {
     }
 
     @Override
-    public Page<ReprimandDTO> findStudentReprimand(ReprimandFilters filters, Pageable pageable) {
+    public Long createReprimand(ReprimandDTO reprimandDTO) {
+        Reprimand createdReprimand = reprimandRepository.save(reprimandDTO.toReprimand());
+        return createdReprimand.getId() > 0 ? createdReprimand.getId() : null;
+    }
+
+    @Override
+    public List<ReprimandDTO> findAllReprimandsByStudentId(String student_id) {
+        return reprimandRepository.findReprimandsByStudentId(UUID.fromString(student_id)).stream()
+                .map(ReprimandBasic::toDto)
+                .toList();
+    }
+
+    @Override
+    public Page<ReprimandDTO> findStudentReprimands(ReprimandFilters filters, Pageable pageable) {
         return reprimandSpecRepository.findReprimandsByStudentId(filters, pageable)
+                .map(ReprimandEssential::toDTO);
+    }
+
+    @Override
+    public Page<ReprimandDTO> findClasseReprimands(ReprimandFilters filters, Pageable pageable) {
+        return reprimandSpecRepository.findReprimandsByClasse(filters, pageable)
                 .map(ReprimandEssential::toDTO);
     }
 
@@ -47,5 +68,4 @@ public class ReprimandServiceImpl implements ReprimandService {
         return reprimandRepository.findStudentReprimandByTeacher(teacherId, UUID.fromString(academicYear), pageable)
                 .map(ReprimandEssential::toDTO);
     }
-
 }
