@@ -1,0 +1,89 @@
+server:
+  port: 8080
+
+  servlet:
+    context-path: /api/v1
+
+spring:
+  application:
+    name: edusysproapi
+
+  #profiles:
+    #active: [postgres, flyway, GMail, RabbitMQ]
+
+  #REST config
+  data:
+    rest:
+      base-path: /api/v1
+
+  #DB config
+  datasource:
+    driver-class-name: ${DB_DRIVER}
+    url: 'jdbc:${DB_DBMS}://${DB_SERVER}:${DB_PORT}/${DB_DATABASE_NAME}'
+    username: '${DB_USERNAME}'
+    password: '${DB_PASSWORD}'
+
+  #JPA config
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  #flyway config
+  flyway:
+    baseline-on-migrate: true
+    validate-on-migrate: true
+
+  #Mail config
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 10000
+          timeout: 15000
+          writetimeout: 15000
+        debug: true
+
+  #RabbitMQ config
+  rabbitmq:
+    host: ${AMQ_HOST}
+    port: ${AMQ_PORT}
+    username: ${AMQ_USERNAME}
+    password: ${AMQ_PASSWORD}
+    virtual-host: ${AMQ_VH}
+
+#JWT Settings
+---
+jwt:
+  secret: ${SECRET}
+  expiration: ${EXP}
+  refresh:
+    expiration: ${REF_EXP}
+
+app:
+  db-type: postgres
+  mail:
+    from: "Edusyspro"
+    queue:
+      exchange: ${MAIL_EXCHANGE}
+      queue: ${MAIL_QUEUE}
+      routing-key: ${MAIL_ROT_QUEUE}
+
+ui:
+  url: ${URL}
+  email-base-url: ${MAIL_URL}
