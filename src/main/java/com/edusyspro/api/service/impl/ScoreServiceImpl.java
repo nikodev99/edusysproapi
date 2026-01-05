@@ -125,6 +125,13 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
+    public List<ScoreDTO> getAssignmentScoresByStudent(List<Long> assignmentId, String studentId) {
+        return scoreRepository.findStudentScoresByAssignmentIds(assignmentId, UUID.fromString(studentId)).stream()
+                .map(ScoreBasic::toDTO)
+                .toList();
+    }
+
+    @Override
     public List<ScoreDTO> getBestStudentBySubjectScore(long teacherId, int subjectId) {
         return scoreRepository.findBestStudentByTeacherScores(teacherId, subjectId, PageRequest.of(0, 5))
                 .map(ScoreBasicValue::toDTO)

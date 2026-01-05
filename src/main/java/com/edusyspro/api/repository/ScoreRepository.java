@@ -78,6 +78,12 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     List<ScoreBasic> findScoresByAssignmentIds(List<Long> assignmentId);
 
     @Query("""
+        select new com.edusyspro.api.dto.custom.ScoreBasic(s.id, st.id, s.assignment.id, s.obtainedMark) from Score s join s.studentEntity st
+        where s.assignment.id in (?1) and s.studentEntity.id = ?2
+    """)
+    List<ScoreBasic> findStudentScoresByAssignmentIds(List<Long> assignmentId, UUID studentId);
+
+    @Query("""
         select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
         s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
         from Score s join s.studentEntity st join st.personalInfo i where s.assignment.preparedBy.id = ?1 and s.assignment.subject.id = ?2

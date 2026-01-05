@@ -1,5 +1,6 @@
 package com.edusyspro.api.dto;
 
+import com.edusyspro.api.dto.custom.ExamResult;
 import com.edusyspro.api.model.Exam;
 import com.edusyspro.api.model.ExamType;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,11 +18,11 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExamDTO {
-    long id;
-    ExamType examType;
-    List<AssignmentDTO> assignments;
-    LocalDate startDate;
-    LocalDate endDate;
+    private long id;
+    private ExamType examType;
+    private List<AssignmentDTO> assignments;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     public Exam toEntity() {
         return Exam.builder()
