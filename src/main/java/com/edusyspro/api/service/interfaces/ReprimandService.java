@@ -2,8 +2,6 @@ package com.edusyspro.api.service.interfaces;
 
 import com.edusyspro.api.dto.ReprimandDTO;
 import com.edusyspro.api.dto.filters.ReprimandFilters;
-import com.edusyspro.api.model.Reprimand;
-import com.edusyspro.api.model.enums.PunishmentStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,7 +9,13 @@ import java.util.List;
 
 public interface ReprimandService {
 
-    Page<ReprimandDTO> findStudentReprimand(ReprimandFilters filters, Pageable pageable);
+    Long createReprimand(ReprimandDTO reprimandDTO);
+
+    List<ReprimandDTO> findAllReprimandsByStudentId(String student_id);
+
+    Page<ReprimandDTO> findStudentReprimands(ReprimandFilters filters, Pageable pageable);
+
+    Page<ReprimandDTO> findClasseReprimands(ReprimandFilters filters, Pageable pageable);
 
     List<ReprimandDTO> fetchSomeStudentReprimandedByTeacher(long teacherId);
 

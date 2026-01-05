@@ -27,6 +27,8 @@ public interface ScoreService {
 
     List<ScoreDTO> getAllAssignmentScores(List<Long> assignmentId);
 
+    List<ScoreDTO> getAssignmentScoresByStudent(List<Long> assignmentId, String studentId);
+
     List<ScoreDTO> getBestStudentBySubjectScore(long teacherId, int subjectId);
 
     List<ScoreDTO> getBestStudentByScore(long teacherId);

@@ -1,5 +1,6 @@
 package com.edusyspro.api.controller;
 
+import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.ReprimandDTO;
 import com.edusyspro.api.dto.filters.ReprimandFilters;
@@ -10,9 +11,11 @@ import com.edusyspro.api.service.interfaces.ReprimandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -25,6 +28,25 @@ public class ReprimandController {
     @Autowired
     public ReprimandController(ReprimandService reprimandService) {
         this.reprimandService = reprimandService;
+    }
+
+    @PostMapping()
+    ResponseEntity<?> saveReprimand(@RequestBody ReprimandDTO reprimand) {
+        try {
+            var createdReprimand = reprimandService.createReprimand(reprimand);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdReprimand);
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(MessageResponse.builder()
+                            .message(e.getMessage())
+                            .timestamp(Instant.now().toString())
+                            .isError(true)
+                    .build());
+        }
+    }
+
+    @GetMapping("/all/{studentId}")
+    ResponseEntity<?> getAllStudentReprimand(@PathVariable String studentId) {
+        return ResponseEntity.ok(reprimandService.findAllReprimandsByStudentId(studentId));
     }
 
     @GetMapping("/{studentId}")
@@ -45,7 +67,27 @@ public class ReprimandController {
                 classeId, punishmentType, reprimandType, punishmentStatus,
                 reprimandBetween
         );
-        return ResponseEntity.ok(reprimandService.findStudentReprimand(filters, pageable));
+        return ResponseEntity.ok(reprimandService.findStudentReprimands(filters, pageable));
+    }
+
+    @GetMapping("/classe/{classeId}")
+    ResponseEntity<Page<ReprimandDTO>> getReprimands(
+            @PathVariable Integer classeId,
+            @RequestParam String academicYear,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) PunishmentType punishmentType,
+            @RequestParam(required = false) ReprimandType reprimandType,
+            @RequestParam(required = false) PunishmentStatus punishmentStatus,
+            @RequestParam(required = false) LocalDate[] reprimandBetween
+    ) {
+        Pageable pageable = ControllerUtils.setPage(page, size);
+        ReprimandFilters filters = new ReprimandFilters(
+                null, UUID.fromString(academicYear),
+                classeId, punishmentType, reprimandType, punishmentStatus,
+                reprimandBetween
+        );
+        return ResponseEntity.ok(reprimandService.findClasseReprimands(filters, pageable));
     }
 
     @GetMapping("/teacher_some/{teacherId}")

@@ -6,7 +6,7 @@ import com.edusyspro.api.model.Punishment;
 import com.edusyspro.api.model.enums.ReprimandType;
 import com.edusyspro.api.model.enums.Section;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public record ReprimandEssential(
@@ -21,7 +21,7 @@ public record ReprimandEssential(
         Integer classeId,
         String studentClasse,
         Section studentSection,
-        LocalDate reprimandDate,
+        ZonedDateTime reprimandDate,
         ReprimandType type,
         String description,
         Long issuerId,
@@ -34,27 +34,28 @@ public record ReprimandEssential(
     public ReprimandDTO toDTO() {
         return ReprimandDTO.builder()
                 .id(id)
-                .academicYear(AcademicYearDTO.builder()
-                        .id(academicYearId)
-                        .years(academicYear)
-                        .build())
-                .student(StudentDTO.builder()
-                        .id(studentId)
-                        .personalInfo(Individual.builder()
-                                .firstName(studentFirstName)
-                                .lastName(studentLastName)
-                                .image(studentImage)
-                                .reference(studentReference)
+                .student(EnrollmentDTO.builder()
+                        .academicYear(AcademicYearDTO.builder()
+                                .id(academicYearId)
+                                .years(academicYear)
+                                .build())
+                        .student(StudentDTO.builder()
+                                .id(studentId)
+                                .personalInfo(Individual.builder()
+                                        .firstName(studentFirstName)
+                                        .lastName(studentLastName)
+                                        .image(studentImage)
+                                        .reference(studentReference)
+                                        .build())
+                                .build())
+                        .classe(ClasseDTO.builder()
+                                .id(classeId)
+                                .name(studentClasse)
+                                .grade(GradeDTO.builder()
+                                        .section(studentSection)
+                                        .build())
                                 .build())
                         .build())
-                .classe(ClasseDTO.builder()
-                        .id(classeId)
-                        .name(studentClasse)
-                        .grade(GradeDTO.builder()
-                                .section(studentSection)
-                                .build())
-                        .build()
-                )
                 .reprimandDate(reprimandDate)
                 .type(type)
                 .description(description)
@@ -65,7 +66,7 @@ public record ReprimandEssential(
                         .image(issuerImage)
                         .reference(reference)
                         .build())
-                .punishment(punishment)
+                .punishment(PunishmentDTO.toDto(punishment))
                 .build();
     }
 }

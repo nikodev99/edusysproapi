@@ -43,23 +43,32 @@ public class ExamServiceImpl implements ExamService {
                .toDto();
 
        List<AssignmentDTO> assignments = assignmentService.findAllClasseExamAssignments(classeId, academicYear, examDTO.getId());
+       return getExamAssignments(examDTO, assignments, null);
+    }
 
-       if (!assignments.isEmpty()) {
-           List<Long> assignmentIds = assignments.stream().map(AssignmentDTO::getId).toList();
-           List<ScoreDTO> scores = scoreService.getAllAssignmentScores(assignmentIds);
+    @Override
+    public Map<String, Object> findClasseExamWithCalculations(Long examId, Integer classeId, String academicYear) {
+        ExamDTO exam = examRepository.findClasseExamsAssignments(examId, classeId, UUID.fromString(academicYear))
+                .orElseThrow(() -> new NotFountException("No Exam Found for ExamID: " + examId))
+                .toDto();
 
-           Map<Long, List<ScoreDTO>> scoresByAssignments = scores.stream()
-                   .filter(score -> score.getAssignment() != null )
-                   .collect(Collectors.groupingBy(score -> score.getAssignment().getId()));
+        //Get all assignments for this exam
+        List<AssignmentDTO> assignments = assignmentService.findAllClasseExamAssignments(classeId, academicYear, exam.getId());
+    }
 
-           assignments.parallelStream()
-                   .forEach(
-                           assignment -> assignment.setMarks(scoresByAssignments.getOrDefault(assignment.getId(), Collections.emptyList()))
-                   );
+    @Override
+    public ExamDTO findStudentExamsAssignments(Long examId, Integer classeId, String academicYear, String studentId) {
+        ExamDTO exam = examRepository.findClasseExamsAssignments(examId, classeId, UUID.fromString(academicYear))
+                .orElseThrow(() -> new NotFountException("No Exam Found for ExamID: " + examId))
+                .toDto();
 
-           examDTO.setAssignments(assignments);
-       }
-       return examDTO;
+        List<AssignmentDTO> assignments = assignmentService.findAllStudentAssignmentsByExam(exam.getId(), classeId, academicYear, studentId);
+        return getExamAssignments(exam, assignments, studentId);
+    }
+
+    @Override
+    public Map<String, Object> findStudentExamWithCalculations(Long examId, Integer classeId, String academicYear, String studentId) {
+        return Map.of();
     }
 
     @Override
@@ -77,5 +86,24 @@ public class ExamServiceImpl implements ExamService {
         ).stream().map(ExamEssential::toDto).toList();
     }
 
+    private ExamDTO getExamAssignments(ExamDTO exam, List<AssignmentDTO> assignments, String studentId) {
+        if (!assignments.isEmpty()) {
+            List<Long> assignmentIds = assignments.stream().map(AssignmentDTO::getId).toList();
+            List<ScoreDTO> scores = studentId != null
+                ? scoreService.getAssignmentScoresByStudent(assignmentIds, studentId)
+                : scoreService.getAllAssignmentScores(assignmentIds);
 
+            Map<Long, List<ScoreDTO>> scoresByAssignments = scores.stream()
+                    .filter(score -> score.getAssignment() != null )
+                    .collect(Collectors.groupingBy(score -> score.getAssignment().getId()));
+
+            assignments.parallelStream()
+                    .forEach(
+                            assignment -> assignment.setMarks(scoresByAssignments.getOrDefault(assignment.getId(), Collections.emptyList()))
+                    );
+
+            exam.setAssignments(assignments);
+        }
+        return exam;
+    }
 }

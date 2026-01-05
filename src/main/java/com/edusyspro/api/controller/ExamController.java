@@ -41,4 +41,18 @@ public class ExamController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(n.getMessage());
         }
     }
+
+    @GetMapping("/{examId}/{studentId}/{classeId}")
+    ResponseEntity<?> getStudentExam(
+            @PathVariable Long examId,
+            @PathVariable Integer classeId,
+            @PathVariable String studentId,
+            @RequestParam String academicYear
+    ){
+        try {
+            return ResponseEntity.ok(examService.findStudentExamsAssignments(examId, classeId, academicYear, studentId));
+        }catch (NotFountException n) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(n.getMessage());
+        }
+    }
 }

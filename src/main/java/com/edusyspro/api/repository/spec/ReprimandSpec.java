@@ -21,11 +21,23 @@ import java.util.List;
 public class ReprimandSpec {
     private final EntityManager entityManager;
 
+    enum FindPer {
+        STUDENT, CLASSE
+    }
+
     public ReprimandSpec(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     public Page<ReprimandEssential> findReprimandsByStudentId(ReprimandFilters filters, Pageable pageable) {
+        return findPaginatedReprimand(filters, pageable, FindPer.STUDENT);
+    }
+
+    public Page<ReprimandEssential> findReprimandsByClasse(ReprimandFilters filters, Pageable pageable) {
+        return findPaginatedReprimand(filters, pageable, FindPer.CLASSE);
+    }
+
+    private Page<ReprimandEssential> findPaginatedReprimand(ReprimandFilters filters, Pageable pageable, FindPer findPer) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ReprimandEssential> cq = cb.createQuery(ReprimandEssential.class);
         Root<Reprimand> reprimand = cq.from(Reprimand.class);
@@ -52,7 +64,7 @@ public class ReprimandSpec {
                 reprimand.get("punishment")
         ));
 
-        List<Predicate> predicates = buildPredicates(filters, reprimand, cb);
+        List<Predicate> predicates = buildPredicates(filters, reprimand, cb, findPer);
         cq.where(predicates.toArray(new Predicate[0]));
         cq.orderBy(cb.desc(reprimand.get("reprimandDate")));
 
@@ -65,7 +77,7 @@ public class ReprimandSpec {
 
         CriteriaQuery<Long> countCq = cb.createQuery(Long.class);
         Root<Reprimand> countRoot = countCq.from(Reprimand.class);
-        List<Predicate> countCriteria = buildPredicates(filters, countRoot, cb);
+        List<Predicate> countCriteria = buildPredicates(filters, countRoot, cb, findPer);
         countCq.select(cb.count(countRoot))
                 .where(countCriteria.toArray(new Predicate[0]));
         Long total = entityManager.createQuery(countCq).getSingleResult();
@@ -73,15 +85,21 @@ public class ReprimandSpec {
         return new PageImpl<>(reprimands, pageable, total);
     }
 
-    private List<Predicate> buildPredicates(ReprimandFilters filters, Root<Reprimand> reprimand, CriteriaBuilder cb) {
+    private List<Predicate> buildPredicates(ReprimandFilters filters, Root<Reprimand> reprimand, CriteriaBuilder cb, FindPer findPer) {
         List<Predicate> predicates = new ArrayList<>();
 
-        predicates.add(cb.equal(reprimand.get("student").get("student").get("id"), filters.studentId()));
+        switch (findPer) {
+            case STUDENT -> {
+                predicates.add(cb.equal(reprimand.get("student").get("student").get("id"), filters.studentId()));
+                if (filters.classeId() != null) {
+                    predicates.add(cb.equal(reprimand.get("student").get("classe").get("id"), filters.classeId()));
+                }
+            }
+            case CLASSE -> predicates.add(cb.equal(reprimand.get("student").get("classe").get("id"), filters.classeId()));
+        }
+
         predicates.add(cb.equal(reprimand.get("student").get("academicYear").get("id"), filters.academicYearId()));
 
-        if (filters.classeId() != null) {
-            predicates.add(cb.equal(reprimand.get("student").get("classe").get("id"), filters.classeId()));
-        }
         if (filters.punishmentType() != null) {
             predicates.add(cb.equal(reprimand.get("punishment").get("type"), filters.punishmentType()));
         }

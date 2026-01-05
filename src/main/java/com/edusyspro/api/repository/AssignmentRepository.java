@@ -50,6 +50,16 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     List<AssignmentToExam> findAllClasseAssignmentsByExam(Integer classeId, UUID academicYear, Long ExamId);
 
     @Query("""
+        select new com.edusyspro.api.dto.custom.AssignmentToExam(a.id, a.semester.semestre, a.semester.semestre.academicYear.id,
+        a.semester.id, a.semester.designation, a.exam.id, a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName,
+        a.preparedBy.image, a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
+        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.coefficient)
+        from Assignment a join a.marks m where a.exam.id = ?1 and a.classeEntity.id = ?2 and a.semester.semestre.academicYear.id = ?3
+        and m.studentEntity.id = ?4 and a.passed = true order by a.addedDate asc
+    """)
+    List<AssignmentToExam> findAllStudentAssignmentsByExam(Long ExamId, Integer classeId, UUID academicYear, UUID studentId);
+
+    @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester.semestre, a.semester.designation, a.exam.examType,
         a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
         a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,

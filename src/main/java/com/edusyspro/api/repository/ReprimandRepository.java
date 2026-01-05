@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.custom.ReprimandBasic;
 import com.edusyspro.api.dto.custom.ReprimandEssential;
 import com.edusyspro.api.model.Reprimand;
 import com.edusyspro.api.model.enums.PunishmentStatus;
@@ -11,20 +12,17 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface ReprimandRepository extends JpaRepository<Reprimand, Long> {
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ReprimandEssential(r.id, s.academicYear.id, s.academicYear.years, s.student.id,
-        s.student.personalInfo.lastName, s.student.personalInfo.firstName, s.student.personalInfo.image, s.student.personalInfo.reference,
-        s.classe.id, s.classe.name, s.classe.grade.section, r.reprimandDate, r.type, r.description, r.issuedBy.id, r.issuedBy.firstName,
-        r.issuedBy.lastName, r.issuedBy.image, r.issuedBy.reference, r.punishment) from Reprimand r join r.student s
-        where r.student.id = ?1 and s.academicYear.id = ?2 order by r.reprimandDate desc
+        select new com.edusyspro.api.dto.custom.ReprimandBasic(r.id, s.academicYear.id, s.academicYear.years, s.student.id,
+        s.classe.id, s.classe.name, r.reprimandDate, r.type) from Reprimand r join r.student s
+        where s.student.id = ?1 order by r.reprimandDate desc
     """)
-    Page<ReprimandEssential> findReprimandsByStudentId(UUID student_id, UUID academicYear_id, Pageable pageable);
+    List<ReprimandBasic> findReprimandsByStudentId(UUID student_id);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ReprimandEssential(r.id, s.academicYear.id, s.academicYear.years, s.student.id,

@@ -74,6 +74,31 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudents(schoolId, q));
     }
 
+    @GetMapping("/{schoolId}/{teacherId}")
+    ResponseEntity<Page<EnrollmentDTO>> getEnrolledStudentsByTeacher(
+            @PathVariable String schoolId,
+            @PathVariable String teacherId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortCriteria
+    ) {
+        Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
+        return ResponseEntity.ok(
+                enrollmentService.getEnrolledStudentByTeacherClasses(schoolId, teacherId, pageable)
+        );
+    }
+
+    @GetMapping("/search/{schoolId}/{teacherId}")
+    ResponseEntity<List<EnrollmentDTO>> getEnrolledStudentsByTeacher(
+            @PathVariable String schoolId,
+            @PathVariable String teacherId,
+            @RequestParam String query
+    ) {
+        return ResponseEntity.ok(
+                enrollmentService.getEnrolledStudentByTeacherClasses(schoolId, teacherId, query)
+        );
+    }
+
     @GetMapping("/not_enrolled/{schoolId}")
     ResponseEntity<?> getNotEnrolledStudents(@PathVariable String schoolId, @RequestParam String query) {
         return ResponseEntity.ok(enrollmentService.getUnenrolledStudents(schoolId, query));

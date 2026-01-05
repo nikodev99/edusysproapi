@@ -37,6 +37,10 @@ public interface EnrollmentService {
      */
     List<EnrollmentDTO> getEnrolledStudents(String schoolId, String lastname);
 
+    Page<EnrollmentDTO> getEnrolledStudentByTeacherClasses(String schoolId, String teacherId, Pageable pageable);
+
+    List<EnrollmentDTO> getEnrolledStudentByTeacherClasses(String schoolId, String teacherId, String lastname);
+
     /**
      * Get the searched student of the previous academic year in a school
      * @param schoolId The school id.
