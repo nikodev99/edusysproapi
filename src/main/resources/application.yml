@@ -76,7 +76,7 @@ jwt:
     expiration: ${REF_EXP}
 
 app:
-  db-type: postgres
+  db-type: mysql
   mail:
     from: "Edusyspro"
     queue:

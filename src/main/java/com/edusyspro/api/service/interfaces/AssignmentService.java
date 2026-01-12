@@ -23,8 +23,6 @@ public interface AssignmentService {
 
     List<AssignmentDTO> findAllClasseExamAssignments(Integer classeId, String academicYear, Long examId);
 
-    List<AssignmentDTO> findAllStudentAssignmentsByExam(Long examId, Integer classeId, String academicYear, String studentId);
-
     List<AssignmentDTO> findAllClasseAssignmentsBySubject(Integer classeId, String academicYear, Integer subjectId);
 
     List<AssignmentDTO> findAllCourseAssignments(Integer courseId, String academicYear);

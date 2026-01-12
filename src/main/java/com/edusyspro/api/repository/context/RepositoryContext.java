@@ -17,7 +17,7 @@ public class RepositoryContext {
 
     private final EntityManager entityManager;
 
-    @Value("${spring.profiles.active[0]}")
+    @Value("${app.db-type}")
     private String activeProfile;
 
     public RepositoryContext(EntityManager entityManager) {

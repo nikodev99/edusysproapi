@@ -1,6 +1,5 @@
 package com.edusyspro.api.controller;
 
-import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.service.interfaces.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class ExamController {
             @RequestParam String academicYear
     ){
         try {
-            return ResponseEntity.ok(examService.findClasseExamsAssignments(examId, classeId, academicYear));
+            return ResponseEntity.ok(examService.findClasseExamWithCalculations(examId, classeId, academicYear));
         }catch (NotFountException n) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(n.getMessage());
         }
@@ -50,7 +49,20 @@ public class ExamController {
             @RequestParam String academicYear
     ){
         try {
-            return ResponseEntity.ok(examService.findStudentExamsAssignments(examId, classeId, academicYear, studentId));
+            return ResponseEntity.ok(examService.findStudentExamWithCalculations(examId, classeId, academicYear, studentId));
+        }catch (NotFountException n) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(n.getMessage());
+        }
+    }
+
+    @GetMapping("/progress/{studentId}/{classeId}")
+    ResponseEntity<?> getStudentExamProgress(
+            @PathVariable String studentId,
+            @PathVariable Integer classeId,
+            @RequestParam String academicYear
+    ){
+        try {
+            return ResponseEntity.ok(examService.getStudentExamProgress(studentId, classeId, academicYear));
         }catch (NotFountException n) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(n.getMessage());
         }
