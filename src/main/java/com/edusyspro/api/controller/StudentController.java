@@ -2,10 +2,16 @@ package com.edusyspro.api.controller;
 
 import com.edusyspro.api.dto.StudentDTO;
 import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.model.Address;
+import com.edusyspro.api.model.GuardianEntity;
+import com.edusyspro.api.model.enums.IndividualType;
+import com.edusyspro.api.service.interfaces.GuardianService;
+import com.edusyspro.api.service.interfaces.IndividualReferenceService;
 import com.edusyspro.api.service.interfaces.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,10 +19,18 @@ import org.springframework.web.bind.annotation.*;
 public class StudentController {
 
     private final StudentService studentService;
+    private final GuardianService guardianService;
+    private final IndividualReferenceService individualReferenceService;
 
     @Autowired
-    public StudentController(StudentService studentService) {
+    public StudentController(
+            StudentService studentService,
+            GuardianService guardianService,
+            IndividualReferenceService individualReferenceService
+    ) {
         this.studentService = studentService;
+        this.guardianService = guardianService;
+        this.individualReferenceService = individualReferenceService;
     }
 
     @GetMapping("/{id}")
@@ -37,6 +51,14 @@ public class StudentController {
         }catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/{studentId}")
+    @Transactional
+    ResponseEntity<?> changeGuardian(@PathVariable String studentId, @RequestBody GuardianEntity guardianPost) {
+        String guardianReference = individualReferenceService.generateReference(IndividualType.GUARDIAN);
+        GuardianEntity guardian = guardianService.saveOrUpdateGuardian(guardianPost, guardianReference);
+        return ResponseEntity.ok(studentService.changeStudentGuardian(studentId, guardian));
     }
 
     @PatchMapping("/address/{addressId}")
@@ -79,12 +101,15 @@ public class StudentController {
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Health Condition not found or update failed");
         }catch (IllegalArgumentException e) {
-            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/address/{studentId}")
+    ResponseEntity<Address> getStudentAddress(@PathVariable String studentId) {
+        return ResponseEntity.ok(studentService.getStudentAddress(studentId));
     }
 
     @PatchMapping("/guardian/{guardianId}")

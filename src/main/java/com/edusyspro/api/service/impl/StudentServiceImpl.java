@@ -1,5 +1,6 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.StudentDTO;
 import com.edusyspro.api.dto.custom.StudentEssential;
 import com.edusyspro.api.model.Address;
@@ -16,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,6 +63,30 @@ public class StudentServiceImpl implements StudentService {
     public GuardianEntity getStudentGuardian(String studentId) {
         return studentRepository.getStudentEntityGuardianByStudentId(UUID.fromString(studentId))
                 .orElseThrow();
+    }
+
+    @Override
+    public GuardianDTO changeStudentGuardian(String studentId, GuardianEntity guardian) {
+        StudentEntity student = studentRepository.findStudentEntityById(UUID.fromString(studentId));
+        GuardianEntity oldGuardian = student.getGuardian();
+        if (oldGuardian != null) {
+            oldGuardian.getStudents().remove(student);
+        }
+        student.setGuardian(guardian);
+
+        if (guardian != null) {
+            if (guardian.getStudents() == null) {
+                guardian.setStudents(new ArrayList<>());
+            }
+
+            if (!guardian.getStudents().contains(student)) {
+                guardian.getStudents().add(student);
+            }
+        }
+
+        StudentEntity storedStudent = studentRepository.save(student);
+
+        return GuardianDTO.fromEntity(storedStudent.getGuardian());
     }
 
     @Override

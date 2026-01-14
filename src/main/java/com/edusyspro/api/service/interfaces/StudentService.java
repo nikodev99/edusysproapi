@@ -1,5 +1,6 @@
 package com.edusyspro.api.service.interfaces;
 
+import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.StudentDTO;
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.GuardianEntity;
@@ -13,6 +14,7 @@ public interface StudentService {
     Address getStudentAddress(String studentId);
 
     GuardianEntity getStudentGuardian(String studentId);
+    GuardianDTO changeStudentGuardian(String studentId, GuardianEntity guardian);
 
     HealthCondition getStudentHealthCondition(String studentId);
 
