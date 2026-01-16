@@ -1,10 +1,8 @@
 package com.edusyspro.api.dto;
 
-import com.edusyspro.api.model.EnrollmentEntity;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.Reprimand;
 import com.edusyspro.api.model.enums.ReprimandType;
-import com.edusyspro.api.service.impl.EnrollmentArchiver;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -251,6 +251,11 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudentGuardians(schoolId, q));
     }
 
+    @PutMapping("/archive/{schoolId}/{studentId}")
+    ResponseEntity<MessageResponse> archiveStudent(@PathVariable String schoolId, @PathVariable String studentId) {
+        return ResponseEntity.ok(enrollmentService.archiveEnrolledStudent(studentId, schoolId));
+    }
+
     /**
      * Counts the number of students in a specific class for a given academic year.
      *

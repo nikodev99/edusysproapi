@@ -110,7 +110,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserInfoResponse getUserByPersonalInfo(Long personalInfoId) {
         return userRepository.findUserByPersonalInfoId(personalInfoId)
-                .orElseThrow();
+                .orElse(null);
     }
 
     @Transactional

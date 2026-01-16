@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -283,4 +284,9 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     @Transactional
     @Query("UPDATE EnrollmentEntity e SET e.isArchived = true WHERE e.isArchived = false and e.academicYear.endDate <= :now")
     int archiveByAcademicYearEnd(@Param("now")LocalDate now);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE EnrollmentEntity e SET e.isArchived = true WHERE e.academicYear.school.id = ?1 AND e.student.id = ?2")
+    Optional<Integer> archiveStudent(UUID schoolId, UUID studentId);
 }

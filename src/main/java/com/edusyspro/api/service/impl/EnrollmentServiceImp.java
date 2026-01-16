@@ -1,5 +1,6 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.EnrolledStudentBasic;
 import com.edusyspro.api.dto.custom.GenderCount;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -255,6 +257,25 @@ public class EnrollmentServiceImp implements EnrollmentService {
         return guardianEssentials.stream()
                 .map(GuardianEssential::populateGuardian)
                 .toList();
+    }
+
+    @Override
+    public MessageResponse archiveEnrolledStudent(String studentId, String schoolId) {
+        Integer updatedRows = enrollmentRepository.archiveStudent(
+                UUID.fromString(schoolId), UUID.fromString(studentId)
+        ).orElse(0);
+
+        return updatedRows == 0
+                ? MessageResponse.builder()
+                    .message("Mis à jour avorté car l'étudiant non trouvé")
+                    .timestamp(Instant.now().toString())
+                    .isError(true)
+                    .build()
+                : MessageResponse.builder()
+                    .message("Étudiant rétiré avec succès")
+                    .timestamp(Instant.now().toString())
+                    .isError(false)
+                    .build();
     }
 
     @Override

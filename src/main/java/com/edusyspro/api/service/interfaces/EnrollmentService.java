@@ -1,5 +1,6 @@
 package com.edusyspro.api.service.interfaces;
 
+import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.dto.EnrollmentDTO;
 import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.custom.GenderCount;
@@ -127,6 +128,8 @@ public interface EnrollmentService {
      * @return List<GuardianDTO>
      */
     List<GuardianDTO> getEnrolledStudentGuardians(String schoolId, String lastname);
+
+    MessageResponse archiveEnrolledStudent(String studentId, String schoolId);
 
     /**
      * This counts the gender of students by class and specific academic year
