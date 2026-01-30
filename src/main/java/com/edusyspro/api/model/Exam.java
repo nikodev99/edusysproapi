@@ -20,7 +20,7 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "exam_type_id", referencedColumnName = "id")
     private ExamType examType;
 
@@ -31,7 +31,7 @@ public class Exam {
 
     private LocalDate endDate;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
     private AcademicYear academicYear;
 }

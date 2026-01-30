@@ -27,7 +27,7 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "personal_info", referencedColumnName = "id")
     private Individual personalInfo;
 
@@ -37,7 +37,7 @@ public class Teacher {
 
     private String contractType;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "class_teacher",
             joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
@@ -46,7 +46,7 @@ public class Teacher {
     @JsonProperty("classes")
     private List<ClasseEntity> aClasses;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "teacher_courses",
             joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
@@ -61,7 +61,7 @@ public class Teacher {
     @JsonIgnore
     private List<CourseProgram> courseProgram;
 
-    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(
             name = "teacher_schools",
             joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @SpringBootTest
@@ -23,7 +24,7 @@ public class ReprimandRepositoryTest {
                 .student(EnrollmentEntity.builder()
                         .id(101L)
                         .build())
-                .reprimandDate(LocalDate.of(2024, 12, 1))
+                .reprimandDate(ZonedDateTime.now())
                 .type(ReprimandType.DISRESPECT)
                 .description("Un élève a harcelé plusieurs camarades en classe, utilisant des insultes répétées et des comportements intimidants, créant un environnement hostile.")
                 .issuedBy(Individual.builder()
@@ -44,7 +45,7 @@ public class ReprimandRepositoryTest {
                 .student(EnrollmentEntity.builder()
                         .id(105L)
                         .build())
-                .reprimandDate(LocalDate.now())
+                .reprimandDate(ZonedDateTime.now())
                 .type(ReprimandType.CHEATING)
                 .description("Un élève a harcelé plusieurs camarades en classe, utilisant des insultes répétées et des comportements intimidants, créant un environnement hostile.")
                 .issuedBy(Individual.builder()
@@ -65,7 +66,7 @@ public class ReprimandRepositoryTest {
                 .student(EnrollmentEntity.builder()
                         .id(42L)
                         .build())
-                .reprimandDate(LocalDate.of(2024, 12, 7))
+                .reprimandDate(ZonedDateTime.now())
                 .type(ReprimandType.TRUANCY)
                 .description("Un élève a harcelé plusieurs camarades en classe, utilisant des insultes répétées et des comportements intimidants, créant un environnement hostile.")
                 .issuedBy(Individual.builder()

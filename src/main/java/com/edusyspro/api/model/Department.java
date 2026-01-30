@@ -30,7 +30,7 @@ public class Department {
     @Column(length = 500)
     private String purpose;
 
-    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "d_boss", referencedColumnName = "id")
     @JsonIgnore
     private DepartmentBoss boss;
@@ -39,7 +39,7 @@ public class Department {
     @JoinColumn(name = "grade_id", referencedColumnName = "id")
     private Grade grade;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     @JsonIgnore
     private School school;

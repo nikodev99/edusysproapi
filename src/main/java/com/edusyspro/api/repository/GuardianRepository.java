@@ -21,4 +21,6 @@ public interface GuardianRepository extends JpaRepository<GuardianEntity, UUID> 
             "from GuardianEntity g")
     List<GuardianEssential> findAllGuardians();
 
+    @Query("SELECT g.id FROM GuardianEntity g WHERE g.personalInfo.id = ?1")
+    Optional<UUID> getGuardianByPersonalInfo(Long personalInfoId);
 }

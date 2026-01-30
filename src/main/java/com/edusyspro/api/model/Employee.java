@@ -22,7 +22,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "personal_info", referencedColumnName = "id")
     private Individual personalInfo;
 

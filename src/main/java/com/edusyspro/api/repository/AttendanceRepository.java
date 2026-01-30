@@ -39,7 +39,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             "and a.academicYear.id = ?2")
     List<AttendanceEssential> findAllByStudentAndAcademicYear(long studentId, UUID academicYearId);
 
-    @Query("select new com.edusyspro.api.dto.custom.IndividualBasic(a.individual.id, a.individual.firstName, a.individual.lastName, a.individual.image), a.status, count(a.status) " +
+    @Query("select new com.edusyspro.api.dto.custom.IndividualBasic(a.individual.id, a.individual.firstName, a.individual.lastName, a.individual.image, a.individual.reference), a.status, count(a.status) " +
             "from Attendance a where a.individual.id = ?1 and a.academicYear.id = ?2")
     List<Object[]> findStudentAttendanceStatus(long studentId, UUID academicYearId);
 
@@ -57,13 +57,13 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             "AND (LOWER(a.individual.lastName) LIKE LOWER(?3) OR LOWER(a.individual.firstName) LIKE LOWER(?3) )")
     List<Long> findClasseAttendanceStatus(int classeId, UUID academicYearId, String name);
 
-    @Query("SELECT new com.edusyspro.api.dto.custom.IndividualBasic(a.individual.id, a.individual.firstName, a.individual.lastName, a.individual.image), " +
+    @Query("SELECT new com.edusyspro.api.dto.custom.IndividualBasic(a.individual.id, a.individual.firstName, a.individual.lastName, a.individual.image, a.individual.reference), " +
             "a.status, COUNT(a.status), a.classeEntity.id, a.classeEntity.name FROM Attendance a WHERE a.individual.id in (?1) AND a.academicYear.id = ?2 " +
             "GROUP BY a.individual.id, a.individual.firstName, a.individual.lastName, a.individual.image, a.status")
     List<Object[]> findClasseAttendanceStatus(List<Long> ids, UUID academicYearId);
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.custom.IndividualBasic(a.individual.id, a.individual.firstName, a.individual.lastName, a.individual.image),
+        SELECT new com.edusyspro.api.dto.custom.IndividualBasic(a.individual.id, a.individual.firstName, a.individual.lastName, a.individual.image, a.individual.reference),
         a.status, COUNT(a.status), a.classeEntity.id, a.classeEntity.name FROM Attendance a WHERE a.classeEntity.id = :classeId
         AND a.academicYear.id = :academicYearId AND a.status = :status GROUP BY a.individual.id, a.individual.firstName,
         a.individual.lastName, a.individual.image, a.status, a.classeEntity.id, a.classeEntity.name order by count(a.status) desc
@@ -76,7 +76,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     );
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.custom.IndividualBasic(a.individual.id, a.individual.firstName, a.individual.lastName, a.individual.image),
+        SELECT new com.edusyspro.api.dto.custom.IndividualBasic(a.individual.id, a.individual.firstName, a.individual.lastName, a.individual.image, a.individual.reference),
         a.status, COUNT(a.status), a.classeEntity.id, a.classeEntity.name FROM Attendance a WHERE a.academicYear.school.id = :schoolId
         AND a.academicYear.id = :academicYearId AND a.status = :status GROUP BY a.individual.id, a.individual.firstName,
         a.individual.lastName, a.individual.image, a.status, a.classeEntity.id, a.classeEntity.name order by count(a.status) desc

@@ -57,7 +57,7 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
     List<Object[]> findTeacherIdByPersonalInfoId(long personalInfo);
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.custom.IndividualBasic(i.id, i.firstName, i.lastName, CONCAT("[", i.emailId, ",", i.telephone, ",", i.individualType, "]"))
+        SELECT new com.edusyspro.api.dto.custom.IndividualBasic(i.id, i.firstName, i.lastName, CONCAT("[", i.emailId, ",", i.telephone, ",", i.individualType, "]"), i.reference)
         FROM Individual i WHERE lower(i.firstName) LIKE lower(?1) OR lower(i.lastName) LIKE lower(?1)
     """)
     List<IndividualBasic> findPotentialUserPersonalInfo(String name);

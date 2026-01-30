@@ -25,27 +25,27 @@ public class Assignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "planning_id", referencedColumnName = "id")
     @JsonIgnore
     private Planning semester;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "exam_id", referencedColumnName = "id")
     private Exam exam;
 
     //Ceci sera toujours l'ID de l'enseignant
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "preparde_by_id", referencedColumnName = "id")
     private Individual preparedBy;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "class_id", referencedColumnName = "id")
     @JsonProperty("classe")
     @JsonIgnore
     private ClasseEntity classeEntity;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course subject;
 
@@ -64,7 +64,7 @@ public class Assignment {
 
     private Integer coefficient;
 
-    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "assignment", cascade = CascadeType.PERSIST)
     private List<Score> marks;
 
     private ZonedDateTime addedDate;

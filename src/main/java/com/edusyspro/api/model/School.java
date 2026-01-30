@@ -33,7 +33,7 @@ public class School {
     @Column(length = 50)
     private String abbr;
 
-    @OneToOne(cascade = {CascadeType.ALL, CascadeType.MERGE})
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
@@ -54,7 +54,7 @@ public class School {
     @Column(length = 50)
     private String websiteURL;
 
-    @OneToMany(mappedBy = "school", cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "school", cascade = {CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Grade> grades;
 

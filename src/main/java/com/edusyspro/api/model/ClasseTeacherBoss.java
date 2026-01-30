@@ -18,11 +18,11 @@ public class ClasseTeacherBoss {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "academic_year_id", referencedColumnName = "id")
     private AcademicYear academicYear;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Teacher principalTeacher;
 

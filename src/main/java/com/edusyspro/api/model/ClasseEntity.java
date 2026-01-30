@@ -29,39 +29,39 @@ public class ClasseEntity {
     @Column(length = 100)
     private String category;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "grade_id", referencedColumnName = "id")
     private Grade grade;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
 
-    @OneToMany(mappedBy = "classeEntity", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "classeEntity", cascade = {CascadeType.MERGE, CascadeType.DETACH}, fetch = FetchType.EAGER)
     private List<Schedule> schedule;
 
     private Integer roomNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "principal_teacher_id", referencedColumnName = "id")
     @JsonIgnore
     private ClasseTeacherBoss principalTeacher;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "principal_student_id", referencedColumnName = "id")
     @JsonIgnore
     private ClasseStudentBoss principalStudent;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "principal_course_id", referencedColumnName = "id")
     @JsonIgnore
     private Course principalCourse;
 
-    @OneToMany(mappedBy = "classe", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "classe", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<EnrollmentEntity> students;
 
-    @ManyToMany(mappedBy = "aClasses", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "aClasses", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Teacher> classTeachers;
 

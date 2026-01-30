@@ -29,7 +29,7 @@ public class Grade {
     @Column(name = "program", length = 50)
     private String subSection;
 
-    @OneToMany(mappedBy = "grade", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "grade", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Planning> planning;
 

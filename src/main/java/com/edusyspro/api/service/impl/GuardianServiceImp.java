@@ -63,6 +63,11 @@ public class GuardianServiceImp implements GuardianService {
     }
 
     @Override
+    public UUID getGuardianId(Long personalInfoId) {
+        return guardianRepository.getGuardianByPersonalInfo(personalInfoId).orElse(UUID.randomUUID());
+    }
+
+    @Override
     public List<GuardianDTO> findAll() {
         return guardianRepository.findAllGuardians()
                 .stream()

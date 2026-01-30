@@ -43,7 +43,7 @@ public class User {
 
     private Long personalInfoId;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<UserSchoolRole> schoolAffiliations = new ArrayList<>();
 
     @Enumerated

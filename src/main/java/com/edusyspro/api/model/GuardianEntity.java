@@ -24,7 +24,7 @@ public class GuardianEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "personal_info", referencedColumnName = "id")
     private Individual personalInfo;
 
@@ -32,7 +32,7 @@ public class GuardianEntity {
 
     private String company;
 
-    @OneToMany(mappedBy = "guardian", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "guardian", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<StudentEntity> students;
 

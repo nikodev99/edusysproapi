@@ -24,11 +24,11 @@ public class StudentEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "personal_info", referencedColumnName = "id")
     private Individual personalInfo;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "student", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JsonProperty("enrollments")
     private List<EnrollmentEntity> enrollmentEntities;
 
@@ -36,15 +36,15 @@ public class StudentEntity {
 
     private String momName;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
     @JoinColumn(name = "guardian_id", referencedColumnName = "id")
     private GuardianEntity guardian;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE})
     @JoinColumn(name = "health_condition", referencedColumnName = "id")
     private HealthCondition healthCondition;
 
-    @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.PERSIST)
     private List<Score> marks;
 
     private ZonedDateTime createdAt;
