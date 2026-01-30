@@ -1,11 +1,8 @@
-package com.edusyspro.api.finance.repos;
+package com.edusyspro.api.finance.entities;
 
 import com.edusyspro.api.model.School;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
@@ -18,10 +15,6 @@ public class FeeCategories {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "school_id", referencedColumnName = "id")
-    private School school;
-
     @Column(length = 100)
     private String name;
 
@@ -33,6 +26,7 @@ public class FeeCategories {
     private Boolean isMandatory;
     private Boolean isActive;
 
-    @Column(length = 20)
-    private String accountCode;
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "account_chart", referencedColumnName = "id")
+    private AccountCharts accountCode;
 }

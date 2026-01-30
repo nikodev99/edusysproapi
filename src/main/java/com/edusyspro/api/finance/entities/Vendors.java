@@ -1,8 +1,9 @@
-package com.edusyspro.api.finance.repos;
+package com.edusyspro.api.finance.entities;
 
-import com.edusyspro.api.finance.enums.AccountType;
+import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.School;
+import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @Builder
 @Table(name = "vendors", schema = "finance")
-public class AccountCharts {
+public class Vendors {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,25 +27,36 @@ public class AccountCharts {
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     private School school;
 
-    @Column(length = 20)
-    private String accountCode;
-
     @Column(length = 200)
-    private String accountName;
-
-    private Integer accountClass;
+    private String vendor_name;
 
     @Column(length = 20)
-    private String parentAccountCode;
+    private String vendor_code;
 
-    @Enumerated
-    private AccountType accountType;
+    @Column(length = 50)
+    private String contact;
+    private String email;
+
+    @OneToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    private Address address;
+
+    private String tax;
+    private String bankAccount;
+
+    @Column(length = 100)
+    private String paymentTerm;
 
     private Boolean isActive;
-    private Boolean isSystemAccount;
 
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "createdBy", referencedColumnName = "id")
     private Individual createdBy;
+
     private ZonedDateTime createdAt;
+
+    @PrePersist
+    public void preInsert() {
+        this.createdAt = Datetime.brazzavilleDatetime();
+    }
 }

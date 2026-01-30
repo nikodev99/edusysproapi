@@ -1,9 +1,10 @@
-package com.edusyspro.api.finance.repos;
+package com.edusyspro.api.finance.entities;
 
 import com.edusyspro.api.finance.enums.ApprovalStatus;
 import com.edusyspro.api.finance.enums.PaymentMethod;
 import com.edusyspro.api.finance.enums.PaymentStatus;
 import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -62,4 +63,9 @@ public class Expenses {
 
     private ZonedDateTime createdAt;
     private String receiptUrl;
+
+    @PrePersist
+    public void preInsert() {
+        this.createdAt = Datetime.brazzavilleDatetime();
+    }
 }

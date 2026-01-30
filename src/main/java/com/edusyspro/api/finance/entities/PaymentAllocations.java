@@ -1,5 +1,6 @@
-package com.edusyspro.api.finance.repos;
+package com.edusyspro.api.finance.entities;
 
+import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,4 +28,9 @@ public class PaymentAllocations {
     private BigDecimal allocatedAmount;
     private ZonedDateTime allocationDate;
     private  ZonedDateTime createdAt;
+
+    @PrePersist
+    public void preInsert() {
+        this.createdAt = Datetime.brazzavilleDatetime();
+    }
 }

@@ -1,9 +1,9 @@
-package com.edusyspro.api.finance.repos;
+package com.edusyspro.api.finance.entities;
 
-import com.edusyspro.api.model.Address;
-import com.edusyspro.api.model.Employee;
+import com.edusyspro.api.finance.enums.AccountType;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.School;
+import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,8 +17,8 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "vendors", schema = "finance")
-public class Vendors {
+@Table(name = "account_charts", schema = "finance")
+public class AccountCharts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,31 +27,30 @@ public class Vendors {
     @JoinColumn(name = "school_id", referencedColumnName = "id")
     private School school;
 
+    @Column(length = 20)
+    private String accountCode;
+
     @Column(length = 200)
-    private String vendor_name;
+    private String accountName;
+
+    private Integer accountClass;
 
     @Column(length = 20)
-    private String vendor_code;
+    private String parentAccountCode;
 
-    @Column(length = 50)
-    private String contact;
-    private String email;
-
-    @OneToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private Address address;
-
-    private String tax;
-    private String bankAccount;
-
-    @Column(length = 100)
-    private String paymentTerm;
+    @Enumerated
+    private AccountType accountType;
 
     private Boolean isActive;
+    private Boolean isSystemAccount;
 
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "createdBy", referencedColumnName = "id")
     private Individual createdBy;
-
     private ZonedDateTime createdAt;
+
+    @PrePersist
+    public void preInsert() {
+        this.createdAt = Datetime.brazzavilleDatetime();
+    }
 }

@@ -1,8 +1,9 @@
-package com.edusyspro.api.finance.repos;
+package com.edusyspro.api.finance.entities;
 
 import com.edusyspro.api.finance.enums.JournalEntryType;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.School;
+import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ import java.util.UUID;
 public class JournalEntries {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private Long id;
+    private UUID id;
 
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "school_id", referencedColumnName = "id")
@@ -52,4 +53,9 @@ public class JournalEntries {
     @JoinColumn(name = "createdBy", referencedColumnName = "id")
     private Individual createdBy;
     private ZonedDateTime createdAt;
+
+    @PrePersist
+    public void preInsert() {
+        this.createdAt = Datetime.brazzavilleDatetime();
+    }
 }

@@ -1,7 +1,8 @@
-package com.edusyspro.api.finance.repos;
+package com.edusyspro.api.finance.entities;
 
 import com.edusyspro.api.model.Department;
 import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,4 +53,10 @@ public class Budgets {
     private ZonedDateTime approvedAt;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
+
+    @PrePersist
+    public void preInsert() {
+        this.createdAt = Datetime.brazzavilleDatetime();
+        this.modifyAt = Datetime.brazzavilleDatetime();
+    }
 }

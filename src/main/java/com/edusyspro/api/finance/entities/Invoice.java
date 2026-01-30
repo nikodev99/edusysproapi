@@ -1,8 +1,8 @@
-package com.edusyspro.api.finance.repos;
+package com.edusyspro.api.finance.entities;
 
 import com.edusyspro.api.finance.enums.InvoiceStatus;
-import com.edusyspro.api.model.EnrollmentEntity;
 import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -25,11 +26,14 @@ public class Invoice {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "student_id", referencedColumnName = "id")
-    private EnrollmentEntity student;
+    @JoinColumn(name = "assessment_id", referencedColumnName = "id")
+    private FeeAssessment feeAssessment;
 
     private ZonedDateTime invoiceDate;
-    private ZonedDateTime dueDate;
+
+    @Column(name = "invoice_number", unique = true, nullable = false, length = 100)
+    private String invoiceNumber;
+    private LocalDate dueDate;
     private BigDecimal subTotalAmount;
     private BigDecimal discount;
     private BigDecimal taxAmount;
@@ -37,7 +41,7 @@ public class Invoice {
     private BigDecimal amountPaid;
     private BigDecimal balanceDue;
 
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.PERSIST)
     private List<InvoiceLine> invoiceLines;
 
     @Enumerated
@@ -51,4 +55,9 @@ public class Invoice {
     private Individual createdBy;
 
     private ZonedDateTime createdAt;
+
+    @PrePersist
+    public void preInsert() {
+        this.createdAt = Datetime.brazzavilleDatetime();
+    }
 }

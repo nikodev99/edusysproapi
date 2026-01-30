@@ -1,10 +1,11 @@
-package com.edusyspro.api.finance.repos;
+package com.edusyspro.api.finance.entities;
 
 import com.edusyspro.api.finance.enums.PaymentGateway;
 import com.edusyspro.api.finance.enums.PaymentMethod;
 import com.edusyspro.api.finance.enums.PaymentStatus;
 import com.edusyspro.api.model.EnrollmentEntity;
 import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +34,7 @@ public class Payments {
     @Column(length = 100, unique = true)
     private String voucherNumber;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "invoice_id", referencedColumnName = "id")
     private Invoice invoice;
 
@@ -57,10 +58,20 @@ public class Payments {
 
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "processed_by", referencedColumnName = "id")
-    private Individual processedBy;
+    private Individual processedBy; /* This is the person who actually made the payment even the personne who gave the cash */
+
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
+    private Individual createdBy; /* This is the person who made the record could be the person who processed of the person that record the cash payment */
+
 
     @Column(length = 2000)
     private String notes;
 
     private ZonedDateTime createdAt;
+
+    @PrePersist
+    public void preInsert() {
+        this.createdAt = Datetime.brazzavilleDatetime();
+    }
 }

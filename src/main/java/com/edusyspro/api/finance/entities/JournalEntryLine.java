@@ -1,4 +1,4 @@
-package com.edusyspro.api.finance.repos;
+package com.edusyspro.api.finance.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
