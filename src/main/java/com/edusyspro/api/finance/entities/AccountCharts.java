@@ -1,5 +1,6 @@
 package com.edusyspro.api.finance.entities;
 
+import com.edusyspro.api.finance.enums.AccountParents;
 import com.edusyspro.api.finance.enums.AccountType;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.School;
@@ -36,7 +37,8 @@ public class AccountCharts {
     private Integer accountClass;
 
     @Column(length = 20)
-    private String parentAccountCode;
+    @Enumerated
+    private AccountParents parentAccountCode;
 
     @Enumerated
     private AccountType accountType;

@@ -3,6 +3,7 @@ package com.edusyspro.api.finance.services;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.finance.dto.*;
 import com.edusyspro.api.finance.dto.post.PaymentPost;
+import com.edusyspro.api.finance.dto.request.InvoiceLineRequest;
 import com.edusyspro.api.finance.dto.request.InvoiceRequest;
 import com.edusyspro.api.finance.dto.request.OutstandingInvoice;
 import com.edusyspro.api.finance.dto.request.PaymentRequest;
@@ -13,6 +14,7 @@ import com.edusyspro.api.finance.enums.InvoiceStatus;
 import com.edusyspro.api.finance.enums.PaymentStatus;
 import com.edusyspro.api.finance.repos.InvoiceRepository;
 import com.edusyspro.api.finance.repos.PaymentRepository;
+import com.edusyspro.api.utils.Datetime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,18 +63,31 @@ public class GuardianPaymentService {
                 .toList();
     }
 
-    public InvoiceDTO getActiveInvoice(String guardianId, String academicYear) {
-        LocalDate now = LocalDate.now();
+    public List<InvoiceDTO> getGuardianInvoicesByAcademicYear(String guardianId, String academicYear) {
+        return invoiceRepository.findAllByGuardianByAcademicYear(UUID.fromString(guardianId), UUID.fromString(academicYear)).stream()
+                .map(InvoiceRequest::toDto)
+                .toList();
+    }
+
+    public List<InvoiceDTO> getActiveInvoice(String guardianId, String academicYear) {
+        LocalDate now = Datetime.brazzavilleDatetime().toLocalDate();
         return invoiceRepository.findActiveInvoice(
                         UUID.fromString(guardianId),
                         UUID.fromString(academicYear),
-                        InvoiceStatus.PAID,
+                        List.of(InvoiceStatus.PAID, InvoiceStatus.CANCELLED),
                         BigDecimal.ZERO,
                         now, now.plusDays(10)
-                )
-                .map(InvoiceRequest::toDto)
-                .orElse(InvoiceDTO.builder().build());
+                ).stream()
+                .map(inv -> {
+                    InvoiceDTO invoice = inv.toDto();
+                    List<InvoiceItemDto> invoiceLines = invoiceRepository.findInvoiceLineByInvoice(inv.invoiceId()).stream()
+                            .map(InvoiceLineRequest::toDto)
+                            .toList();
+                    invoice.setItems(invoiceLines);
 
+                    return invoice;
+                })
+                .toList();
     }
 
     public List<PaymentHistory> getGuardianPaymentHistory(String guardianId, String academicYear) {

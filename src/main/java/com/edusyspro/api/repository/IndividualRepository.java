@@ -1,6 +1,5 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.dto.custom.EmployeeIndividual;
 import com.edusyspro.api.dto.custom.IndividualBasic;
 import com.edusyspro.api.model.Individual;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,8 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface IndividualRepository extends JpaRepository<Individual, Long> {

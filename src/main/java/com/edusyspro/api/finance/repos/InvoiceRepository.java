@@ -1,5 +1,6 @@
 package com.edusyspro.api.finance.repos;
 
+import com.edusyspro.api.finance.dto.request.InvoiceLineRequest;
 import com.edusyspro.api.finance.dto.request.InvoiceRequest;
 import com.edusyspro.api.finance.dto.request.OutstandingInvoice;
 import com.edusyspro.api.finance.entities.Invoice;
@@ -46,13 +47,20 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     Optional<InvoiceRequest> findInvoiceByInvoiceNumber(String voucherNumber);
 
     @Query("""
-        SELECT new com.edusyspro.api.finance.dto.request.InvoiceRequest(i.id, s.id, st.id, p.firstName, p.lastName, p.reference,
+        SELECT DISTINCT new com.edusyspro.api.finance.dto.request.InvoiceRequest(i.id, s.id, st.id, p.firstName, p.lastName, p.reference,
         p.image, i.invoiceDate, i.dueDate, i.invoiceNumber, i.subTotalAmount, i.discount, i.taxAmount, i.totalAmount, i.amountPaid,
         i.balanceDue, i.status, ind.id, ind.firstName, ind.lastName, ind.reference, ind.image, i.createdAt) FROM Invoice i
         JOIN i.createdBy ind JOIN i.feeAssessment f JOIN f.student s JOIN s.student st JOIN st.personalInfo p WHERE st.guardian.id = ?1
-         AND s.academicYear.id = ?2 AND i.status <> ?3 AND i.amountPaid = ?4 AND i.dueDate BETWEEN ?5 AND ?6
+         AND s.academicYear.id = ?2 AND i.status NOT IN ?3 AND i.amountPaid = ?4 AND ((i.dueDate BETWEEN ?5 AND ?6) OR (i.dueDate < ?5))
     """)
-    Optional<InvoiceRequest> findActiveInvoice(UUID guardianId, UUID academicYearId, InvoiceStatus status, BigDecimal amountPaid, LocalDate startDate, LocalDate endDate);
+    List<InvoiceRequest> findActiveInvoice(UUID guardianId, UUID academicYearId, List<InvoiceStatus> status, BigDecimal amountPaid, LocalDate startDate, LocalDate endDate);
+
+    @Query("""
+        SELECT new com.edusyspro.api.finance.dto.request.InvoiceLineRequest(il.id, il.description, il.categories.name,
+        il.categories.category_code, il.quantity, il.unitPrice, il.discountPercentage, il.discountAmount, il.totalAmount)
+        FROM Invoice i JOIN i.invoiceLines il WHERE i.id = ?1
+    """)
+    List<InvoiceLineRequest> findInvoiceLineByInvoice(Long invoiceId);
 
     @Modifying
     @Transactional

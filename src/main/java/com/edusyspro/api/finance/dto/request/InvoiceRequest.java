@@ -62,7 +62,7 @@ public record InvoiceRequest(
                 .amountPaid(amountPaid)
                 .balanceDue(balanceDue)
                 .status(status)
-                .isOverdue((status != InvoiceStatus.PAID && dueDate.isAfter(LocalDate.now())))
+                .isOverdue((status != InvoiceStatus.PAID) && (dueDate.isBefore(LocalDate.now())))
                 .issueBy(new IndividualBasic(
                         issueById,
                         issueByFirstName,

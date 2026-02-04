@@ -30,7 +30,7 @@ public class GuardianPaymentController {
         return ResponseEntity.ok(guardianPaymentService.getPaymentSummary(guardianId, academicYear));
     }
 
-    @GetMapping("/invoices/{guardianId}/{schoolId}")
+    @GetMapping("/invoices_all/{guardianId}/{schoolId}")
     ResponseEntity<List<InvoiceDTO>> getGuardianInvoices(
             @PathVariable String guardianId,
             @PathVariable String schoolId
@@ -38,8 +38,16 @@ public class GuardianPaymentController {
         return ResponseEntity.ok(guardianPaymentService.getGuardianInvoices(guardianId, schoolId));
     }
 
+    @GetMapping("/invoices_current/{guardianId}")
+    ResponseEntity<List<InvoiceDTO>> getGuardianCurrentInvoices(
+            @PathVariable String guardianId,
+            @RequestParam String academicYear
+    ) {
+        return ResponseEntity.ok(guardianPaymentService.getGuardianInvoicesByAcademicYear(guardianId, academicYear));
+    }
+
     @GetMapping("/active_invoice/{guardianId}")
-    ResponseEntity<InvoiceDTO> getGuardianActiveInvoice(@PathVariable String guardianId, @RequestParam String academicYear) {
+    ResponseEntity<List<InvoiceDTO>> getGuardianActiveInvoices(@PathVariable String guardianId, @RequestParam String academicYear) {
         return ResponseEntity.ok(guardianPaymentService.getActiveInvoice(guardianId, academicYear));
     }
 
@@ -53,7 +61,7 @@ public class GuardianPaymentController {
             @AuthenticationPrincipal CustomUserDetails guardian,
             @Valid @RequestBody PaymentPost paymentRequest
     ) {
-            UUID guardianId = guardianService.getGuardianId(guardian.getPersonalInfoId());
+        UUID guardianId = guardianService.getGuardianId(guardian.getPersonalInfoId());
         return ResponseEntity.ok(guardianPaymentService.createPayment(guardianId.toString(), paymentRequest));
     }
 }

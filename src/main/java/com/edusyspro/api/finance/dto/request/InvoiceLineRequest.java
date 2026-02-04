@@ -1,6 +1,7 @@
 package com.edusyspro.api.finance.dto.request;
 
 import com.edusyspro.api.finance.dto.InvoiceItemDto;
+import com.edusyspro.api.finance.entities.AccountCharts;
 import com.edusyspro.api.finance.entities.FeeCategories;
 
 import java.math.BigDecimal;
