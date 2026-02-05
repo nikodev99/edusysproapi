@@ -21,7 +21,7 @@ public interface SchoolRepository extends JpaRepository<School, UUID> {
     @Query(value = "update School s set s.name = :name where s.id = :id")
     int updateSchoolNameById(@Param("name") String name, @Param("id") UUID id);
 
-    @Query("SELECT g.section FROM School s JOIN s.grades g WHERE s.id = :schoolId")
+    @Query("SELECT g.section FROM Grade g WHERE g.school.id = :schoolId")
     List<Section> getSchoolSections(@Param("schoolId") UUID schoolId);
 
     @Transactional

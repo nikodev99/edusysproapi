@@ -20,7 +20,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = {"grades"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class School {
 
@@ -53,10 +52,6 @@ public class School {
 
     @Column(length = 50)
     private String websiteURL;
-
-    @OneToMany(mappedBy = "school", cascade = {CascadeType.DETACH, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Grade> grades;
 
     private ZonedDateTime createdAt;
 

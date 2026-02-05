@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fra">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Invoice</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 40px;
+            @bottom-center {
+                content: element(foot);
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #000;
+        }
+
+        .header {
+            display: table;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .header-left {
+            display: table-cell;
+            width: 60%;
+            vertical-align: top;
+        }
+
+        .header-right {
+            display: table-cell;
+            width: 40%;
+            text-align: right;
+            vertical-align: top;
+        }
+
+        .school-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1890ff;
+            margin-bottom: 5px;
+        }
+
+        .school-info {
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .invoice-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1890ff;
+            margin-bottom: 10px;
+        }
+
+        .invoice-number {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .invoice-date {
+            font-size: 10px;
+        }
+
+        .info-box {
+            display: table;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .info-box-cell {
+            display: table-cell;
+            width: 50%;
+            padding: 10px;
+            border: 1px solid #d9d9d9;
+            vertical-align: top;
+        }
+
+        .info-box-header {
+            background-color: #f5f5f5;
+            padding: 8px 10px;
+            font-weight: bold;
+            font-size: 10px;
+            border: 1px solid #d9d9d9;
+            border-bottom: none;
+        }
+
+        .student-name {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .items-table thead {
+            background-color: #1890ff;
+            color: white;
+        }
+
+        .items-table th {
+            padding: 10px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .items-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e8e8e8;
+            font-size: 9px;
+        }
+
+        .items-table tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .totals-section {
+            width: 40%;
+            float: right;
+            margin-top: 20px;
+        }
+
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .totals-table td {
+            padding: 5px 10px;
+            font-size: 10px;
+        }
+
+        .totals-table .label {
+            text-align: right;
+        }
+
+        .totals-table .value {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .total-row {
+            background-color: #1890ff;
+            color: white;
+            font-size: 14px;
+        }
+
+        .balance-row {
+            font-size: 13px;
+            color: #ff4d4f;
+        }
+
+        .payment-info {
+            clear: both;
+            margin-top: 100px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-left: 4px solid #1890ff;
+        }
+
+        .payment-info h3 {
+            margin: 0 0 10px 0;
+            font-size: 11px;
+        }
+
+        .payment-info p {
+            margin: 5px 0;
+            font-size: 9px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            border-top: 1px solid #d9d9d9;
+            text-align: center;
+            font-size: 8px;
+            color: #8c8c8c;
+            position: running(foot);
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="header-left">
+        <div class="school-name" th:text="${school.name}"></div>
+        <div class="school-info">
+            <div th:if="${school.address != null}" th:text="${school.address.number} + ', ' + ${school.address.street}"></div>
+            <div th:if="${school.address != null}">
+                <span th:text="${school.address.city}"></span>,
+                <span th:text="${school.address.country}"></span>
+            </div>
+            <div>Tél: <span th:text="${school.phoneNumber}"></span></div>
+            <div>Email: <span th:text="${school.contactEmail}"></span></div>
+        </div>
+    </div>
+    <div class="header-right">
+        <div class="invoice-title">FACTURE</div>
+        <div class="invoice-number">N°: <span th:text="${invoice.invoiceNumber}"></span></div>
+        <div class="invoice-date">
+            Date: <span th:text="${datetimeFormatter.apply(invoice.invoiceDate)}"></span>
+        </div>
+        <div class="invoice-date" style="font-weight: bold;">
+            Échéance: <span th:text="${dateFormatter.apply(invoice.dueDate)}"></span>
+        </div>
+    </div>
+</div>
+
+<table class="info-box">
+    <tr>
+        <td class="info-box-header">FACTURÉ DE</td>
+        <td class="info-box-header">STATUT</td>
+    </tr>
+    <tr>
+        <td class="info-box-cell">
+            <div class="student-name">
+                <span th:text="${student.student.personalInfo.firstName}"></span>
+                <span th:text="${student.student.personalInfo.lastName}"></span>
+            </div>
+            <div>Classe: <span th:text="${student.classe.name}"></span></div>
+            <div th:if="${guardian != null}">
+                Tuteur:
+                <span th:text="${guardian.personalInfo.firstName}"></span>
+                <span th:text="${guardian.personalInfo.lastName}"></span>
+            </div>
+        </td>
+        <td class="info-box-cell">
+            <div class="status-badge" th:style="'background-color: ' + ${statusColor} + '; color: white;'">
+                <span th:text="${statusText}"></span>
+            </div>
+            <div style="margin-top: 10px;">
+                <div>Montant Total: <strong th:text="${currencyFormatter.apply(invoice.totalAmount)}"></strong></div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<h3 style="font-size: 12px; margin-bottom: 10px;">DÉTAILS DE LA FACTURE</h3>
+<table class="items-table">
+    <thead>
+    <tr>
+        <th style="width: 45%;">Description</th>
+        <th class="text-center" style="width: 10%;">Qté</th>
+        <th class="text-right" style="width: 15%;text-align: right">Prix Unit.</th>
+        <th class="text-right" style="width: 15%;text-align: right">Remise</th>
+        <th class="text-right" style="width: 15%;text-align: right">Montant</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${items}">
+        <td>
+            <div th:text="${item.description}"></div>
+            <div style="font-size: 8px; color: #8c8c8c;" th:text="${item.categories.name}"></div>
+        </td>
+        <td class="text-center" style="text-align: center" th:text="${item.quantity}"></td>
+        <td class="text-right" th:text="${currencyFormatter.apply(item.unitPrice)}"></td>
+        <td class="text-right" th:text="${discountFormatter.apply(item.discountPercentage)}"></td>
+        <td class="text-right" th:text="${currencyFormatter.apply(item.totalAmount)}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="totals-section">
+    <table class="totals-table">
+        <tr th:if="${invoice.subTotalAmount != null}">
+            <td class="label">Sous-total:</td>
+            <td class="value" th:text="${currencyFormatter.apply(invoice.subTotalAmount)}"></td>
+        </tr>
+        <tr th:if="${invoice.discount != null and invoice.discount > 0}">
+            <td class="label">Remise:</td>
+            <td class="value" th:text="'-' + ${currencyFormatter.apply(invoice.discount)}"></td>
+        </tr>
+        <tr th:if="${invoice.taxAmount != null and invoice.taxAmount > 0}">
+            <td class="label">Taxe:</td>
+            <td class="value" th:text="${currencyFormatter.apply(invoice.taxAmount)}"></td>
+        </tr>
+        <tr class="total-row">
+            <td class="label" style="padding: 10px;">TOTAL:</td>
+            <td class="value" style="padding: 10px;" th:text="${currencyFormatter.apply(invoice.totalAmount)}"></td>
+        </tr>
+        <tr th:if="${invoice.amountPaid != null and invoice.amountPaid > 0}">
+            <td class="label">Montant Payé:</td>
+            <td class="value" th:text="${currencyFormatter.apply(invoice.amountPaid)}"></td>
+        </tr>
+        <tr class="balance-row">
+            <td class="label" style="padding: 8px;">SOLDE DÛ:</td>
+            <td class="value" style="padding: 8px;" th:text="${currencyFormatter.apply(invoice.balanceDue)}"></td>
+        </tr>
+    </table>
+</div>
+
+<div class="payment-info">
+    <h3>INFORMATIONS DE PAIEMENT</h3>
+    <p>Veuillez effectuer le paiement par l'une des méthodes suivantes :</p>
+    <p>• Mobile Money: via notre portail en ligne<br/>
+        • Virement bancaire: IBAN XXXX XXXX XXXX XXXX<br/>
+        • En espèces au bureau de l'école<br/>
+        • Carte bancaire via notre portail en ligne</p>
+    <p th:if="${invoice.notes != null and !#strings.isEmpty(invoice.notes)}">
+        <strong>Notes:</strong> <span th:text="${invoice.notes}">Notes</span>
+    </p>
+</div>
+
+<div class="footer">
+    <p>Merci pour votre confiance !</p>
+    <p th:text="${school.name} + ' - ' + ${school.address?.city}"></p>
+    <p>Ce document est généré électroniquement et valable sans signature.</p>
+</div>
+</body>
+</html>

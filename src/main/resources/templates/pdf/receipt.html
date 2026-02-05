@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fra">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Payment Receipt</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 40px;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: #000;
+    }
+
+    .header {
+      display: table;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    .header-left, .header-right {
+      display: table-cell;
+      width: 50%;
+      vertical-align: top;
+    }
+
+    .header-right {
+      text-align: right;
+    }
+
+    .school-name {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1890ff;
+    }
+
+    .receipt-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #52c41a;
+    }
+
+    .receipt-number {
+      font-size: 12px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .paid-stamp {
+      width: 200px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 3px solid #52c41a;
+      text-align: center;
+    }
+
+    .paid-text {
+      font-size: 40px;
+      font-weight: bold;
+      color: #52c41a;
+    }
+
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .details-table td {
+      padding: 10px;
+      border: 1px solid #d9d9d9;
+    }
+
+    .details-table .label {
+      font-weight: bold;
+      font-size: 9px;
+      background-color: #f5f5f5;
+    }
+
+    .details-table .value {
+      font-size: 10px;
+    }
+
+    .amount-box {
+      margin: 30px auto;
+      padding: 20px;
+      border: 2px solid #52c41a;
+      text-align: center;
+    }
+
+    .amount-label {
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .amount-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #52c41a;
+    }
+
+    .invoice-info {
+      background-color: #f5f5f5;
+      padding: 15px;
+      margin: 20px 0;
+    }
+
+    .invoice-info h3 {
+      margin: 0 0 10px 0;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .signature {
+      margin-top: 60px;
+      text-align: center;
+    }
+
+    .signature-line {
+      width: 200px;
+      border-top: 1px solid #000;
+      margin: 30px auto 10px auto;
+    }
+
+    .footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #d9d9d9;
+      text-align: center;
+      font-size: 8px;
+      color: #8c8c8c;
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <div class="school-name" th:text="${school.name}"></div>
+    <div th:if="${school.address != null}" th:text="${school.address.number} + ', ' ${school.address.street}"></div>
+    <div th:if="${school.address != null}">
+      <span th:text="${school.address.city}"></span>,
+      <span th:text="${school.address.country}"></span>
+    </div>
+    <div>Tél: <span th:text="${school.phoneNumber}"></span></div>
+    <div>Email: <span th:text="${school.contactEmail}"></span></div>
+  </div>
+  <div class="header-right">
+    <div class="receipt-title">REÇU DE PAIEMENT</div>
+    <div class="receipt-number">N° <span th:text="${payment.getVoucherNumber()}"></span></div>
+  </div>
+</div>
+
+<div class="paid-stamp">
+  <div class="paid-text">PAYÉ</div>
+</div>
+
+<table class="details-table">
+  <tr>
+    <td class="label" style="width: 30%;">N° Reçu:</td>
+    <td class="value" th:text="${payment.transactionId}"></td>
+    <td class="label" style="width: 30%;">N° Bon:</td>
+    <td class="value" th:text="${payment.voucherNumber}"></td>
+  </tr>
+  <tr>
+    <td class="label">Date de paiement :</td>
+    <td class="value" th:text="${datetimeFormatter.apply(payment.paymentDate)}"></td>
+    <td class="label">Méthode:</td>
+    <td class="value" th:text="${paymentMethodText}"></td>
+  </tr>
+</table>
+
+<table class="details-table">
+  <tr>
+    <td class="label" style="width: 25%;">Reçu de:</td>
+    <td class="value" colspan="3">
+      <div style="font-weight: bold; font-size: 12px;">
+        <span th:text="${student.student.personalInfo.firstName}"></span>
+        <span th:text="${student.student.personalInfo.lastName}"></span>
+      </div>
+      <div>Classe: <span th:text="${student.classe.name}"></span></div>
+      <div th:if="${guardian != null}">
+        Tuteur:
+        <span th:text="${guardian.personalInfo.firstName}"></span>
+        <span th:text="${guardian.personalInfo.lastName}"></span>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<div class="amount-box">
+  <div class="amount-label">MONTANT PAYÉ</div>
+  <div class="amount-value" th:text="${currencyFormatter.apply(payment.amountPaid)}"></div>
+</div>
+
+<div class="invoice-info" th:if="${invoice != null}">
+  <h3>FACTURE ASSOCIÉE</h3>
+  <table style="width: 100%; font-size: 10px;">
+    <tr>
+      <td style="width: 30%;">N° Facture:</td>
+      <td th:text="${invoice.invoiceNumber}"></td>
+      <td style="width: 30%;">Date facture:</td>
+      <td th:text="${datetimeFormatter.apply(invoice.invoiceDate)}"></td>
+    </tr>
+    <tr>
+      <td>Montant facture:</td>
+      <td th:text="${currencyFormatter.apply(invoice.totalAmount)}"></td>
+      <td>Solde restant:</td>
+      <td style="font-weight: bold; color: #ff4d4f;" th:text="${currencyFormatter.apply(invoice.balanceDue)}"></td>
+    </tr>
+  </table>
+</div>
+
+<div th:if="${payment.notes != null and !#strings.isEmpty(payment.notes)}" style="margin-top: 20px;">
+  <strong style="font-size: 10px;">Notes:</strong>
+  <p style="font-size: 9px; font-style: italic;" th:text="${payment.notes}">Notes</p>
+</div>
+
+<div class="signature">
+  <div class="signature-line"></div>
+  <div style="font-size: 9px;">Signature autorisée</div>
+  <div style="font-size: 9px; margin-top: 5px;" th:text="${school.name}">School Name</div>
+</div>
+
+<div class="footer">
+  <p>Merci pour votre paiement !</p>
+  <p>Ce reçu est généré électroniquement et valable sans signature.</p>
+  <p th:text="${school.name} + ' - ' + ${school.address?.city}"></p>
+</div>
+</body>
+</html>
