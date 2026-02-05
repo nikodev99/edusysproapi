@@ -6,12 +6,15 @@
   <style>
     @page {
       size: A4;
-      margin: 40px;
+      margin: 40px 40px 110px 40px;
+      @bottom-center {
+        content: element(foot);
+      }
     }
 
     body {
-      font-family: Arial, sans-serif;
-      font-size: 11px;
+      font-family: Aptos, Daytona, Cambria, Arial, sans-serif;
+      font-size: 12px;
       color: #000;
     }
 
@@ -32,9 +35,9 @@
     }
 
     .school-name {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
-      color: #1890ff;
+      color: #000C40;
     }
 
     .receipt-title {
@@ -127,12 +130,12 @@
     }
 
     .footer {
-      margin-top: 30px;
-      padding-top: 20px;
+      margin-bottom: 30px;
       border-top: 1px solid #d9d9d9;
       text-align: center;
       font-size: 8px;
       color: #8c8c8c;
+      position: running(foot);
     }
   </style>
 </head>
@@ -140,7 +143,7 @@
 <div class="header">
   <div class="header-left">
     <div class="school-name" th:text="${school.name}"></div>
-    <div th:if="${school.address != null}" th:text="${school.address.number} + ', ' ${school.address.street}"></div>
+    <div th:if="${school.address != null}" th:text="${school.address.number} + ', ' + ${school.address.street}"></div>
     <div th:if="${school.address != null}">
       <span th:text="${school.address.city}"></span>,
       <span th:text="${school.address.country}"></span>
@@ -150,7 +153,7 @@
   </div>
   <div class="header-right">
     <div class="receipt-title">REÇU DE PAIEMENT</div>
-    <div class="receipt-number">N° <span th:text="${payment.getVoucherNumber()}"></span></div>
+    <div class="receipt-number">N°: <span th:text="${payment.voucherNumber}"></span></div>
   </div>
 </div>
 
@@ -160,16 +163,16 @@
 
 <table class="details-table">
   <tr>
-    <td class="label" style="width: 30%;">N° Reçu:</td>
-    <td class="value" th:text="${payment.transactionId}"></td>
-    <td class="label" style="width: 30%;">N° Bon:</td>
-    <td class="value" th:text="${payment.voucherNumber}"></td>
+    <td class="label" style="width: 15%;">N° Reçu:</td>
+    <td class="value" style="width: 35%;" th:text="${payment.transactionId != null and !#strings.isEmpty(payment.transactionId) ? payment.transactionId : ' '}"></td>
+    <td class="label" style="width: 15%;">N° Bon:</td>
+    <td class="value" style="width: 35%;" th:text="${payment.voucherNumber}"></td>
   </tr>
   <tr>
-    <td class="label">Date de paiement :</td>
-    <td class="value" th:text="${datetimeFormatter.apply(payment.paymentDate)}"></td>
-    <td class="label">Méthode:</td>
-    <td class="value" th:text="${paymentMethodText}"></td>
+    <td class="label" style="width: 15%;">Date de paiement :</td>
+    <td class="value" style="width: 35%;" th:text="${datetimeFormatter.apply(payment.paymentDate)}"></td>
+    <td class="label" style="width: 15%;">Méthode:</td>
+    <td class="value" style="width: 35%;" th:text="${paymentMethodText}"></td>
   </tr>
 </table>
 

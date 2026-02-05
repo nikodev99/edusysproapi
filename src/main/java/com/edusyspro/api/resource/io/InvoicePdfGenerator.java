@@ -1,5 +1,6 @@
 package com.edusyspro.api.resource.io;
 
+import com.edusyspro.api.auth.user.CustomUserDetails;
 import com.edusyspro.api.finance.dto.InvoiceDTO;
 import com.edusyspro.api.finance.entities.Invoice;
 import com.edusyspro.api.model.School;
@@ -21,7 +22,7 @@ import static com.edusyspro.api.helper.UtilHelper.getInvoiceStatusText;
 
 
 @Component
-public class InvoicePdfGenerator extends AbstractFileGenerator<Invoice> {
+public class InvoicePdfGenerator extends AbstractFileGenerator<InvoiceDTO> {
 
     private final TemplateEngine templateEngine;
 
@@ -30,16 +31,16 @@ public class InvoicePdfGenerator extends AbstractFileGenerator<Invoice> {
     }
 
     @Override
-    public void generate(Invoice data, School school, ByteArrayOutputStream outputStream) throws FileGenerationException {
+    public void generate(CustomUserDetails user, InvoiceDTO data, School school, ByteArrayOutputStream outputStream) throws FileGenerationException {
         validData(data);
 
         try {
             Context context = new Context();
             context.setVariable("school", school);
             context.setVariable("invoice", data);
-            context.setVariable("student", data.getFeeAssessment().getStudent());
-            context.setVariable("guardian", data.getFeeAssessment().getStudent().getStudent().getGuardian());
-            context.setVariable("items", data.getInvoiceLines());
+            context.setVariable("student", data.getEnrolledStudent());
+            context.setVariable("guardian", data.getGuardian());
+            context.setVariable("items", data.getItems());
             context.setVariable("datetimeFormatter", (Function<ZonedDateTime, String>) this::formatDateTime);
             context.setVariable("dateFormatter", (Function<LocalDate, String>) this::formatDate);
             context.setVariable("currencyFormatter", (Function<BigDecimal, String>) this::formatCurrency);
@@ -52,7 +53,10 @@ public class InvoicePdfGenerator extends AbstractFileGenerator<Invoice> {
             ITextRenderer renderer = new ITextRenderer();
             renderer.setDocumentFromString(html);
             renderer.layout();
-            renderer.createPDF(outputStream);
+            renderer.createPDF(outputStream, false);
+            writePdfInfo(user, renderer, school, "Facture " + data.getInvoiceNumber());
+            renderer.finishPDF();
+
         }catch (Exception e){
             throw new FileGenerationException("Failed to generate Invoice PDF: " + e.getMessage());
         }

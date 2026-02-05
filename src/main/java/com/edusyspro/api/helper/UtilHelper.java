@@ -8,9 +8,9 @@ public class UtilHelper {
         return switch (status) {
             case PAID -> "PAYÉE";
             case PARTIALLY_PAID -> "PARTIELLEMENT PAYÉE";
-            case DRAFT -> "EN ATTENTE";
+            case DRAFT -> "BROUILLON";
             case CANCELLED -> "ANNULÉE";
-            case SENT -> "BROUILLON";
+            case SENT -> "ENVOYER";
             case OVERDUE -> "EN RETARD";
         };
     }

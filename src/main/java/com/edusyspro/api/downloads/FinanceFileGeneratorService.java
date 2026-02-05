@@ -1,53 +1,58 @@
 package com.edusyspro.api.downloads;
 
-import com.edusyspro.api.finance.entities.Invoice;
-import com.edusyspro.api.finance.entities.Payments;
-import com.edusyspro.api.finance.repos.InvoiceRepository;
-import com.edusyspro.api.finance.repos.PaymentRepository;
+import com.edusyspro.api.auth.user.CustomUserDetails;
+import com.edusyspro.api.finance.dto.InvoiceDTO;
+import com.edusyspro.api.finance.dto.PaymentHistory;
+import com.edusyspro.api.finance.services.InvoiceService;
+import com.edusyspro.api.finance.services.PaymentService;
 import com.edusyspro.api.model.School;
-import com.edusyspro.api.repository.SchoolRepository;
 import com.edusyspro.api.resource.FileGenerationException;
 import com.edusyspro.api.resource.FileGenerator;
 import com.edusyspro.api.resource.io.InvoicePdfGenerator;
 import com.edusyspro.api.resource.io.PaymentReceiptPdfGenerator;
+import com.edusyspro.api.service.interfaces.SchoolService;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class FinanceFileGeneratorService {
     private final List<FileGenerator<?>> fileGenerators;
-    private final InvoiceRepository invoiceRepository;
-    private final PaymentRepository paymentRepository;
-    private final SchoolRepository schoolRepository;
+    private final InvoiceService invoiceRepository;
+    private final PaymentService paymentService;
+    private final SchoolService schoolService;
 
-    public FinanceFileGeneratorService(List<FileGenerator<?>> fileGenerators, InvoiceRepository invoiceRepository, PaymentRepository paymentRepository, SchoolRepository schoolRepository) {
+    public FinanceFileGeneratorService(
+            List<FileGenerator<?>> fileGenerators,
+            InvoiceService invoiceRepository,
+            PaymentService paymentService,
+            SchoolService schoolService
+    ) {
         this.fileGenerators = fileGenerators;
         this.invoiceRepository = invoiceRepository;
-        this.paymentRepository = paymentRepository;
-        this.schoolRepository = schoolRepository;
+        this.paymentService = paymentService;
+        this.schoolService = schoolService;
     }
 
-    public byte[] generateInvoice(Long invoiceId, String schoolId) throws FileGenerationException {
-        FileGenerator<Invoice> file = findGenerator(InvoicePdfGenerator.class);
-        Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new FileGenerationException("Invoice not found"));
+    public byte[] generateInvoice(CustomUserDetails user, Long invoiceId, String schoolId) throws FileGenerationException {
+        FileGenerator<InvoiceDTO> file = findGenerator(InvoicePdfGenerator.class);
+        InvoiceDTO invoice = invoiceRepository.getInvoiceById(invoiceId);
         School school = findSchool(schoolId);
-        return generateWithGenerator(invoice, school, file);
+        return generateWithGenerator(user, invoice, school, file);
     }
 
-    public byte[] generatePaymentReceipt(String paymentId, String schoolId) throws FileGenerationException {
-        FileGenerator<Payments> file = findGenerator(PaymentReceiptPdfGenerator.class);
-        Payments payment = paymentRepository.findById(UUID.fromString(paymentId)).orElseThrow(() -> new FileGenerationException("Payment not found"));
+    public byte[] generatePaymentReceipt(CustomUserDetails user, String paymentId, String schoolId) throws FileGenerationException {
+        FileGenerator<PaymentHistory> file = findGenerator(PaymentReceiptPdfGenerator.class);
+        PaymentHistory payment = paymentService.getPayment(paymentId);
         School school = findSchool(schoolId);
-        return generateWithGenerator(payment, school, file);
+        return generateWithGenerator(user, payment, school, file);
     }
 
-    private <T> byte[] generateWithGenerator(T data, School school, FileGenerator<T> generator)
+    private <T> byte[] generateWithGenerator(CustomUserDetails user, T data, School school, FileGenerator<T> generator)
             throws FileGenerationException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        generator.generate(data, school, outputStream);
+        generator.generate(user, data, school, outputStream);
         return outputStream.toByteArray();
     }
 
@@ -61,7 +66,7 @@ public class FinanceFileGeneratorService {
                         "Generator not found: " + generatorClass.getSimpleName()));
     }
 
-    private School findSchool(String schoolId) throws FileGenerationException {
-        return schoolRepository.findById(UUID.fromString(schoolId)).orElseThrow(() -> new FileGenerationException("School not found"));
+    private School findSchool(String schoolId) {
+        return schoolService.getSchool(schoolId);
     }
 }

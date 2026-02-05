@@ -69,7 +69,7 @@ public class MockUtils {
 
     @PostConstruct
     private void init() {
-       SCHOOL_MOCK = schoolRepository.getSchoolById(UUID.fromString(ConstantUtils.SCHOOL_ID));
+       SCHOOL_MOCK = schoolRepository.findById(UUID.fromString(ConstantUtils.SCHOOL_ID)).orElse(null);
        ACADEMIC_YEAR_MOCK = academicYearRepository.findAcademicYearBySchoolIdAndCurrentIsTrue(UUID.fromString(ConstantUtils.SCHOOL_ID));
        FIRST_SEMESTER = semesterRepository.findById(1).orElse(null);
        SECOND_SEMESTER = semesterRepository.findById(2).orElse(null);

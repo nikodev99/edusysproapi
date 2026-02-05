@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -23,7 +24,4 @@ public interface SchoolRepository extends JpaRepository<School, UUID> {
 
     @Query("SELECT g.section FROM Grade g WHERE g.school.id = :schoolId")
     List<Section> getSchoolSections(@Param("schoolId") UUID schoolId);
-
-    @Transactional
-    School getSchoolById(UUID uuid);
 }

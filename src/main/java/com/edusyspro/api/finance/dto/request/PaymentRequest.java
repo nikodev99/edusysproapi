@@ -1,6 +1,8 @@
 package com.edusyspro.api.finance.dto.request;
 
+import com.edusyspro.api.dto.ClasseDTO;
 import com.edusyspro.api.dto.EnrollmentDTO;
+import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.StudentDTO;
 import com.edusyspro.api.dto.custom.IndividualBasic;
 import com.edusyspro.api.finance.dto.InvoiceDTO;
@@ -23,6 +25,10 @@ public record PaymentRequest(
         String studentLastName,
         String studentReference,
         String studentImage,
+        String studentClasse,
+        String guardianFirstName,
+        String guardianLastName,
+        String guardianReference,
         Long invoiceId,
         ZonedDateTime invoiceDate,
         LocalDate dueDate,
@@ -65,6 +71,16 @@ public record PaymentRequest(
                                         .image(studentImage)
                                         .build())
                                 .build())
+                        .classe(ClasseDTO.builder()
+                                .name(studentClasse)
+                                .build())
+                        .build())
+                .guardian(GuardianDTO.builder()
+                        .personalInfo(Individual.builder()
+                                .firstName(guardianFirstName)
+                                .lastName(guardianLastName)
+                                .reference(guardianReference)
+                                .build())
                         .build())
                 .invoice(InvoiceDTO.builder()
                         .invoiceId(invoiceId)
@@ -76,6 +92,8 @@ public record PaymentRequest(
                         .totalAmount(totalAmount)
                         .build())
                 .amountPaid(amountPaid)
+                .voucherNumber(voucherNumber)
+                .paymentDate(paymentDate)
                 .currency(currency)
                 .transactionId(transactionId)
                 .paymentGateway(paymentGateway)

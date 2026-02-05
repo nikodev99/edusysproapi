@@ -1,10 +1,13 @@
 package com.edusyspro.api.finance.dto.request;
 
+import com.edusyspro.api.dto.ClasseDTO;
 import com.edusyspro.api.dto.EnrollmentDTO;
+import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.StudentDTO;
 import com.edusyspro.api.dto.custom.IndividualBasic;
 import com.edusyspro.api.finance.dto.InvoiceDTO;
 import com.edusyspro.api.finance.enums.InvoiceStatus;
+import com.edusyspro.api.model.GuardianEntity;
 import com.edusyspro.api.model.Individual;
 
 import java.math.BigDecimal;
@@ -20,6 +23,10 @@ public record InvoiceRequest(
         String studentLastName,
         String studentReference,
         String studentImage,
+        String studentClasse,
+        String guardianFirstName,
+        String guardianLastName,
+        String guardianReference,
         ZonedDateTime invoiceDate,
         LocalDate dueDate,
         String invoiceNumber,
@@ -35,6 +42,7 @@ public record InvoiceRequest(
         String issueByLastName,
         String issueByReference,
         String issueByImage,
+        String notes,
         ZonedDateTime createdAt
 ) {
     public InvoiceDTO toDto() {
@@ -51,6 +59,16 @@ public record InvoiceRequest(
                                         .image(studentImage)
                                         .build())
                                 .build())
+                        .classe(ClasseDTO.builder()
+                                .name(studentClasse)
+                                .build())
+                        .build())
+                .guardian(GuardianDTO.builder()
+                        .personalInfo(Individual.builder()
+                                .firstName(guardianFirstName)
+                                .lastName(guardianLastName)
+                                .reference(guardianReference)
+                                .build())
                         .build())
                 .invoiceDate(invoiceDate)
                 .dueDate(dueDate)
@@ -63,6 +81,7 @@ public record InvoiceRequest(
                 .balanceDue(balanceDue)
                 .status(status)
                 .isOverdue((status != InvoiceStatus.PAID) && (dueDate.isBefore(LocalDate.now())))
+                .notes(notes)
                 .issueBy(new IndividualBasic(
                         issueById,
                         issueByFirstName,

@@ -1,5 +1,13 @@
 package com.edusyspro.api.resource;
 
+import com.edusyspro.api.auth.user.CustomUserDetails;
+import com.edusyspro.api.model.School;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfObject;
+import com.lowagie.text.pdf.PdfString;
+import com.lowagie.text.pdf.PdfWriter;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -24,6 +32,22 @@ public abstract class AbstractFileGenerator<T> implements FileGenerator<T> {
         NUMBER_FORMAT.setMaximumFractionDigits(2);
         NUMBER_FORMAT.setMinimumFractionDigits(0);
         NUMBER_FORMAT.setCurrency(Currency.getInstance("XAF"));
+    }
+
+    protected void writePdfInfo(CustomUserDetails user, ITextRenderer render, School school, String title) {
+        PdfWriter writer = render.getWriter();
+
+        writer.getInfo().put(PdfName.TITLE, new PdfString(title, PdfObject.TEXT_UNICODE));
+
+        if (user.getUsername() != null) {
+            writer.getInfo().put(PdfName.AUTHOR, new PdfString(user.getUsername(), PdfObject.TEXT_UNICODE));
+        }
+        if (school.getId() != null) {
+            writer.getInfo().put(PdfName.AUTHOR, new PdfString(school.getName(), PdfObject.TEXT_UNICODE));
+        }
+        if (user.getEmail() != null) {
+            writer.getInfo().put(PdfName.KEYWORDS, new PdfString(user.getEmail(), PdfObject.TEXT_UNICODE));
+        }
     }
 
     protected String formatCurrency(BigDecimal amount) {

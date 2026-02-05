@@ -1,6 +1,7 @@
 package com.edusyspro.api.finance.dto;
 
 import com.edusyspro.api.dto.EnrollmentDTO;
+import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.custom.IndividualBasic;
 import com.edusyspro.api.finance.enums.InvoiceStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -23,6 +24,7 @@ public class InvoiceDTO {
     private Long invoiceId;
     private Long enrollmentId;
     private EnrollmentDTO enrolledStudent;
+    private GuardianDTO guardian;
     private ZonedDateTime invoiceDate;
     private LocalDate dueDate;
     private String invoiceNumber;
@@ -36,4 +38,5 @@ public class InvoiceDTO {
     private Boolean isOverdue;
     private List<InvoiceItemDto> items;
     private IndividualBasic issueBy;
+    private String notes;
 }

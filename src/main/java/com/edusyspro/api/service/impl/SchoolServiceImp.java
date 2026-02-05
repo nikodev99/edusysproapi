@@ -1,6 +1,7 @@
 package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.SchoolRepository;
@@ -25,7 +26,7 @@ public class SchoolServiceImp implements SchoolService {
 
     @Override
     public School getSchool(String schoolId) {
-        return schoolRepository.getSchoolById(UUID.fromString(schoolId));
+        return schoolRepository.findById(UUID.fromString(schoolId)).orElseThrow(() -> new NotFountException("School not found"));
     }
 
     @Override

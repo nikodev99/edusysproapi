@@ -1,6 +1,7 @@
 package com.edusyspro.api.finance.dto;
 
 import com.edusyspro.api.dto.EnrollmentDTO;
+import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.custom.IndividualBasic;
 import com.edusyspro.api.finance.entities.Payments;
 import com.edusyspro.api.finance.enums.PaymentGateway;
@@ -27,6 +28,7 @@ public class PaymentHistory {
     private String receiptNumber;
     private ZonedDateTime paymentDate;
     private EnrollmentDTO enrolledStudent;
+    private GuardianDTO guardian;
     private InvoiceDTO invoice;
     private BigDecimal amountPaid;
     private String currency;

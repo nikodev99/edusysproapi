@@ -1,5 +1,6 @@
 package com.edusyspro.api.resource.io;
 
+import com.edusyspro.api.auth.user.CustomUserDetails;
 import com.edusyspro.api.finance.dto.PaymentHistory;
 import com.edusyspro.api.finance.entities.Payments;
 import com.edusyspro.api.model.School;
@@ -19,7 +20,7 @@ import java.util.function.Function;
 import static com.edusyspro.api.helper.UtilHelper.getPaymentMethodText;
 
 @Component
-public class PaymentReceiptPdfGenerator extends AbstractFileGenerator<Payments> {
+public class PaymentReceiptPdfGenerator extends AbstractFileGenerator<PaymentHistory> {
     private final TemplateEngine templateEngine;
 
     public PaymentReceiptPdfGenerator(TemplateEngine templateEngine) {
@@ -27,7 +28,7 @@ public class PaymentReceiptPdfGenerator extends AbstractFileGenerator<Payments> 
     }
 
     @Override
-    public void generate(Payments data, School school, ByteArrayOutputStream outputStream) throws FileGenerationException {
+    public void generate(CustomUserDetails user, PaymentHistory data, School school, ByteArrayOutputStream outputStream) throws FileGenerationException {
         validData(data);
 
         try {
@@ -35,8 +36,8 @@ public class PaymentReceiptPdfGenerator extends AbstractFileGenerator<Payments> 
             context.setVariable("school", school);
             context.setVariable("payment", data);
             context.setVariable("invoice", data.getInvoice());
-            context.setVariable("student", data.getStudent());
-            context.setVariable("guardian", data.getStudent().getStudent().getGuardian());
+            context.setVariable("student", data.getEnrolledStudent());
+            context.setVariable("guardian", data.getGuardian());
             context.setVariable("datetimeFormatter", (Function<ZonedDateTime, String>) this::formatDateTime);
             context.setVariable("dateFormatter", (Function<LocalDate, String>) this::formatDate);
             context.setVariable("currencyFormatter", (Function<BigDecimal, String>) this::formatCurrency);
@@ -47,7 +48,8 @@ public class PaymentReceiptPdfGenerator extends AbstractFileGenerator<Payments> 
             ITextRenderer renderer = new ITextRenderer();
             renderer.setDocumentFromString(htmlContent);
             renderer.layout();
-            renderer.createPDF(outputStream);
+            renderer.createPDF(outputStream, false);
+            writePdfInfo(user, renderer, school, "Reçu " + data.getVoucherNumber());
 
         } catch (Exception e) {
             throw new FileGenerationException("Failed to generate receipt PDF", e);

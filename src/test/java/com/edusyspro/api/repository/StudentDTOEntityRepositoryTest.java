@@ -30,7 +30,7 @@ class StudentDTOEntityRepositoryTest {
     }
 
     private School getSchool() {
-        return schoolRepository.getSchoolById(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548"));
+        return schoolRepository.findById(UUID.fromString("19e8cf01-5098-453b-9d65-d57cd17fc548")).orElse(null);
     }
 
     private ClasseEntity getClasse(int id) {
