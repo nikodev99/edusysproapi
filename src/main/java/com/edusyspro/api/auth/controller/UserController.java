@@ -164,6 +164,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByPersonalInfo(personalInfoId));
     }
 
+    @GetMapping("/address/{personalId}")
+    ResponseEntity<?> getUserAddress(@PathVariable Long personalId) {
+        return ResponseEntity.ok(individualService.getAddress(personalId));
+    }
+
     @PostMapping("/change-password")
     ResponseEntity<?> changePassword(@Valid @RequestBody ChangePassword request) {
         try {

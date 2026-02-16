@@ -21,6 +21,7 @@ public class LoginResponse {
     private Long id;
     private String username;
     private String email;
+    private String phoneNumber;
     private boolean enabled;
     private boolean accountNonLocked;
     private List<String> roles;

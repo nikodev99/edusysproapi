@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -131,7 +132,7 @@ public class AuthController {
     }
 
     @PostMapping("/select_school/")
-    ResponseEntity<?> selectSchool(@Valid @RequestBody SchoolSelectionRequest selection, HttpServletRequest request) {
+    ResponseEntity<?> selectSchool(@Valid @RequestBody SchoolSelectionRequest selection, @AuthenticationPrincipal CustomUserDetails auth, HttpServletRequest request) {
         String token = jwtUtils.extractTokenFromHeader(request.getHeader("Authorization"));
         if (token == null || jwtUtils.isTokenExpired(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -152,9 +153,8 @@ public class AuthController {
         String username = jwtUtils.getUsernameFromToken(token);
 
         try {
-            CustomUserDetails userPrincipal = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             UserSchoolRole userSchoolRole = userSchoolRoleService.getUserSchoolRole(userId, selection.getSchoolId());
-            return handleSingleSchoolLogin(userPrincipal, userSchoolRole, request);
+            return handleSingleSchoolLogin(auth, userSchoolRole, request);
         }catch (BadCredentialsException e) {
             logger.warn("Failed login for user: {} from IP: {}",
                     username, authenticationEntryPoint.getClientIpAddress(request));
@@ -274,6 +274,7 @@ public class AuthController {
                     .userAgent(token.getUserAgent())
                     .email(userDetails.getEmail())
                     .username(userDetails.getUsername())
+                    .phoneNumber(userDetails.getPhoneNumber())
                     .tokenType("Bearer")
                     .id(userDetails.getPersonalInfoId())
                     .roles(userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
@@ -461,6 +462,7 @@ public class AuthController {
                     .userAgent(userAgent)
                     .email(userPrincipal.getEmail())
                     .username(userPrincipal.getUsername())
+                    .phoneNumber(userPrincipal.getPhoneNumber())
                     .tokenType("Bearer")
                     .enabled(schoolAffiliation.getEnabled())
                     .accountNonLocked(schoolAffiliation.getAccountNonLocked())
@@ -501,6 +503,7 @@ public class AuthController {
                         .accessToken(accessToken)
                         .email(userPrincipal.getEmail())
                         .username(userPrincipal.getUsername())
+                        .phoneNumber(userPrincipal.getPhoneNumber())
                         .tokenType("Bearer")
                         .id(userPrincipal.getPersonalInfoId())
                         .user(user)

@@ -72,6 +72,7 @@ public class Payments {
 
     @PrePersist
     public void preInsert() {
+        paymentDate = Datetime.brazzavilleDatetime();
         this.createdAt = Datetime.brazzavilleDatetime();
     }
 }

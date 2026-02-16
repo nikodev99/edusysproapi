@@ -4,6 +4,7 @@ import com.edusyspro.api.auth.user.UserType;
 import com.edusyspro.api.dto.IndividualUser;
 import com.edusyspro.api.dto.custom.IndividualBasic;
 import com.edusyspro.api.dto.custom.SchoolBasic;
+import com.edusyspro.api.model.Address;
 import com.edusyspro.api.repository.IndividualRepository;
 import com.edusyspro.api.service.interfaces.IndividualService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,12 @@ public class IndividualServiceImpl implements IndividualService {
     @Override
     public List<IndividualBasic> getSearchedUserPersonalInfo(String searchKeyword) {
         return individualRepository.findPotentialUserPersonalInfo("%" + searchKeyword + "%");
+    }
+
+    @Override
+    public Address getAddress(Long personalId) {
+        return individualRepository.findIndividualAddress(personalId)
+                .orElse(Address.builder().build());
     }
 
     private IndividualUser mapToIndividualUser(Object[] firstRow, List<Object[]> allRows) {

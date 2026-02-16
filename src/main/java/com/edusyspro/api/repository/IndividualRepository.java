@@ -1,12 +1,14 @@
 package com.edusyspro.api.repository;
 
 import com.edusyspro.api.dto.custom.IndividualBasic;
+import com.edusyspro.api.model.Address;
 import com.edusyspro.api.model.Individual;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IndividualRepository extends JpaRepository<Individual, Long> {
@@ -58,4 +60,7 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
         FROM Individual i WHERE lower(i.firstName) LIKE lower(?1) OR lower(i.lastName) LIKE lower(?1)
     """)
     List<IndividualBasic> findPotentialUserPersonalInfo(String name);
+
+    @Query("SELECT i.address FROM Individual i WHERE i.id = ?1")
+    Optional<Address> findIndividualAddress(Long indId);
 }

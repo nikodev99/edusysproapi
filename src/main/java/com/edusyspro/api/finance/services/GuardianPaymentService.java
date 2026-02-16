@@ -11,7 +11,6 @@ import com.edusyspro.api.finance.dto.response.PaymentResponse;
 import com.edusyspro.api.finance.entities.Invoice;
 import com.edusyspro.api.finance.entities.Payments;
 import com.edusyspro.api.finance.enums.InvoiceStatus;
-import com.edusyspro.api.finance.enums.PaymentStatus;
 import com.edusyspro.api.finance.repos.InvoiceRepository;
 import com.edusyspro.api.finance.repos.PaymentRepository;
 import com.edusyspro.api.utils.Datetime;
@@ -20,17 +19,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.*;
 
 @Service
 public class GuardianPaymentService {
     private final InvoiceRepository invoiceRepository;
     private final PaymentRepository paymentRepository;
+    private final DocumentSequenceService documentSequenceService;
 
-    public GuardianPaymentService(InvoiceRepository invoiceRepository, PaymentRepository paymentRepository) {
+    public GuardianPaymentService(
+            InvoiceRepository invoiceRepository,
+            PaymentRepository paymentRepository,
+            DocumentSequenceService documentSequenceService
+    ) {
         this.invoiceRepository = invoiceRepository;
         this.paymentRepository = paymentRepository;
+        this.documentSequenceService = documentSequenceService;
     }
 
     public PaymentSummary getPaymentSummary(String guardianId, String academicYear) {
@@ -99,48 +103,31 @@ public class GuardianPaymentService {
     }
 
     @Transactional
-    public PaymentResponse createPayment(String guardianId, PaymentPost request) {
-        Invoice invoice = invoiceRepository.findById(request.getInvoiceId())
+    public PaymentResponse createPayment(String schoolId, PaymentPost request) {
+        Invoice invoice = invoiceRepository.findById(request.getInvoice())
                 .orElseThrow(() -> new NotFountException("Invoice not found"));
 
-        if (!invoice.getFeeAssessment().getStudent().getStudent().getGuardian().getId().equals(UUID.fromString(guardianId))) {
-            throw new RuntimeException("Guardian id not found");
-        }
-
-        if (request.getAmount().compareTo(invoice.getBalanceDue()) > 0) {
+        if (request.getAmountPaid().compareTo(invoice.getBalanceDue()) > 0) {
             throw new RuntimeException("Amount must be greater than zero");
         }
 
-        Currency currency = Currency.getInstance(new Locale("fr", "CG"));
-        String voucherNumber = "VCH-" + LocalDate.now().toString().replace("-", "") +
-                "-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String[] parts = invoice.getInvoiceNumber().split("/");
+        String code = parts.length > 0 ? parts[1] : invoice.getInvoiceLines()
+                .get(0)
+                .getCategories()
+                .getAccountCode()
+                .getAccountCode();
 
-        // TODO: Integrate with payment gateway based on payment method
-        String paymentGatewayUrl = null;
-        String transactionReference = UUID.randomUUID().toString();
-
-        Payments createdPayment = Payments.builder()
-                .student(invoice.getFeeAssessment().getStudent())
-                .invoice(invoice)
-                .paymentDate(ZonedDateTime.now())
-                .paymentMethod(request.getPaymentMethod())
-                .amountPaid(request.getAmount())
-                .currency(currency.getCurrencyCode())
-                .status(PaymentStatus.PENDING)
-                .notes(request.getNotes())
-                .createdAt(ZonedDateTime.now())
-                .voucherNumber(voucherNumber)
-                .transactionId(transactionReference)
-                .paymentGateway(request.getPaymentGateway())
-                .build();
-
-        Payments savedPayment = paymentRepository.save(createdPayment);
+        String voucherNumber = documentSequenceService.generateVoucherNumber(schoolId, code);
+        Payments paymentRequest = request.buildPayment();
+        paymentRequest.setVoucherNumber(voucherNumber);
+        Payments savedPayment = paymentRepository.save(paymentRequest);
 
         return PaymentResponse.builder()
                 .paymentId(savedPayment.getId())
                 .voucherNumber(voucherNumber)
-                .paymentGatewayUrl(paymentGatewayUrl)
-                .transactionReference(transactionReference)
+                .paymentGatewayUrl("")
+                .transactionReference(savedPayment.getTransactionId())
                 .message("Payment created successfully")
                 .build();
     }
