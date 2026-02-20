@@ -41,10 +41,10 @@ spring:
 
   #Mail config
   mail:
-    host: ${MAIL_HOST:smtp.gmail.com}
-    port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:tt9999.tt123@gmail.com}
-    password: ${MAIL_PASSWORD:'vzcj rtse mskr czyj'}
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         transport:
@@ -61,11 +61,11 @@ spring:
 
   #RabbitMQ config
   rabbitmq:
-    host: ${AMQ_HOST:seal.lmq.cloudamqp.com}
-    port: ${AMQ_PORT:5672}
-    username: ${AMQ_USERNAME:ceuftess}
-    password: ${AMQ_PASSWORD:1gLnGKtzJ8LmF3UkChkOhD3WthLE0QN2}
-    virtual-host: ${AMQ_VH:ceuftess}
+    host: ${AMQ_HOST}
+    port: ${AMQ_PORT}
+    username: ${AMQ_USERNAME}
+    password: ${AMQ_PASSWORD}
+    virtual-host: ${AMQ_VH}
 
 #JWT Settings
 ---

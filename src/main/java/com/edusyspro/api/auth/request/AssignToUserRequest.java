@@ -15,6 +15,8 @@ public record AssignToUserRequest(
 ) {
     public UserSchoolRole affiliation() {
         return UserSchoolRole.builder()
+                .userId(userId)
+                .schoolId(UUID.fromString(schoolId))
                 .user(User.builder()
                         .id(userId)
                         .build())
@@ -22,7 +24,10 @@ public record AssignToUserRequest(
                         .id(UUID.fromString(schoolId))
                         .build())
                 .roles(roles)
+                .enabled(true)
+                .accountNonLocked(true)
                 .isActive(true)
+                .failedLoginAttempts(0)
                 .build();
     }
 }

@@ -2,8 +2,6 @@ package com.edusyspro.api.auth.user;
 
 import com.edusyspro.api.auth.request.AssignToUserRequest;
 import com.edusyspro.api.dto.custom.UpdateField;
-import com.edusyspro.api.model.School;
-import com.edusyspro.api.model.enums.Role;
 import com.edusyspro.api.utils.Datetime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,7 @@
 package com.edusyspro.api.auth.user;
 
 import com.edusyspro.api.auth.exception.UserNotFoundException;
+import com.edusyspro.api.auth.response.UserInfo;
 import com.edusyspro.api.auth.response.UserInfoResponse;
 import com.edusyspro.api.auth.request.SignupRequest;
 import com.edusyspro.api.mail.EmailRequest;
@@ -120,6 +121,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserInfoResponse getUserByPersonalInfo(Long personalInfoId) {
         return userRepository.findUserByPersonalInfoId(personalInfoId)
+                .map(UserInfo::toResponse)
                 .orElse(null);
     }
 
@@ -141,6 +143,13 @@ public class UserService implements UserDetailsService {
     @Transactional
     public Boolean existsByPersonalInfoId(Long personalInfoId) {
         return userRepository.existsByPersonalInfoId(personalInfoId);
+    }
+
+    @Transactional
+    public Boolean existBySchoolId(String schoolId, Long personalInfoId) {
+        return userRepository.countAccountInSchool(
+                UUID.fromString(schoolId), personalInfoId
+        ) == 1;
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package com.edusyspro.api.auth.user;
 
+import com.edusyspro.api.auth.response.UserInfo;
 import com.edusyspro.api.auth.response.UserInfoResponse;
 import com.edusyspro.api.model.enums.Role;
 import org.springframework.data.domain.Page;
@@ -29,11 +30,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<UserInfoResponse> findUserById(@Param("id") Long id, @Param("schoolId") UUID schoolId);
 
     @Query("""
-        SELECT new com.edusyspro.api.auth.response.UserInfoResponse(u.id, s.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
-        s.enabled, s.accountNonLocked, s.failedLoginAttempts, s.lastLogin, u.userType, u.createdAt, u.updatedAt)
-        FROM User u JOIN Individual i ON i.id = u.personalInfoId JOIN u.schoolAffiliations s WHERE u.personalInfoId = :personalInfoId
+        SELECT distinct new com.edusyspro.api.auth.response.UserInfo(u.id, u.username, u.email, i.firstName, i.lastName)
+        FROM User u JOIN Individual i ON i.id = u.personalInfoId WHERE u.personalInfoId = :personalInfoId
     """)
-    Optional<UserInfoResponse> findUserByPersonalInfoId(@Param("personalInfoId") Long personalInfoId);
+    Optional<UserInfo> findUserByPersonalInfoId(@Param("personalInfoId") Long personalInfoId);
 
     @Query("""
         SELECT new com.edusyspro.api.auth.response.UserInfoResponse(u.id, s.id, u.username, u.email, i.firstName, i.lastName, s.roles, u.phoneNumber,
@@ -73,6 +73,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByPhoneNumber(String phoneNumber);
 
     Boolean existsByPersonalInfoId(Long personalInfoId);
+
+    @Query("select count(usr.id) from User u join u.schoolAffiliations usr where usr.school.id = ?1 and u.personalInfoId = ?2")
+    Long countAccountInSchool(UUID schoolId, Long personalInfoId);
 
     @Query("SELECT COUNT(u.id) FROM User u JOIN u.schoolAffiliations s WHERE s.schoolId = :schoolId")
     Optional<Long> countAllUsersBySchoolId(@Param("schoolId") UUID schoolId);

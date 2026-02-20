@@ -25,7 +25,6 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -191,11 +190,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-
-        System.out.println("---------------------");
-        System.out.println("USER TO ADD: " + signUpRequest);
-        System.out.println("---------------------");
-
         try {
             if (userService.existsByUsername(signUpRequest.getUsername())) {
                 return ResponseEntity.badRequest()
@@ -419,6 +413,11 @@ public class AuthController {
     @GetMapping("/user/{personalInfoId}")
     ResponseEntity<Boolean> findUserExists(@PathVariable Long personalInfoId) {
         return ResponseEntity.ok(userService.existsByPersonalInfoId(personalInfoId));
+    }
+
+    @GetMapping("/account/{schoolId}/{personalInfoId}")
+    ResponseEntity<Boolean> findUserExistsInSchool(@PathVariable String schoolId, @PathVariable Long personalInfoId) {
+        return ResponseEntity.ok(userService.existBySchoolId(schoolId, personalInfoId));
     }
 
     private ResponseEntity<?> handleSingleSchoolLogin(CustomUserDetails userPrincipal, UserSchoolRole schoolAffiliation, HttpServletRequest request) {
