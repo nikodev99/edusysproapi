@@ -8,7 +8,6 @@ import com.edusyspro.api.finance.dto.request.InvoiceRequest;
 import com.edusyspro.api.finance.dto.request.OutstandingInvoice;
 import com.edusyspro.api.finance.dto.request.PaymentRequest;
 import com.edusyspro.api.finance.dto.response.PaymentResponse;
-import com.edusyspro.api.finance.entities.Invoice;
 import com.edusyspro.api.finance.entities.Payments;
 import com.edusyspro.api.finance.enums.InvoiceStatus;
 import com.edusyspro.api.finance.repos.InvoiceRepository;
@@ -104,31 +103,41 @@ public class GuardianPaymentService {
 
     @Transactional
     public PaymentResponse createPayment(String schoolId, PaymentPost request) {
-        Invoice invoice = invoiceRepository.findById(request.getInvoice())
+        InvoiceRequest invoice = invoiceRepository.findInvoiceById(request.getInvoice())
                 .orElseThrow(() -> new NotFountException("Invoice not found"));
 
-        if (request.getAmountPaid().compareTo(invoice.getBalanceDue()) > 0) {
+        List<InvoiceLineRequest> lines = invoiceRepository.findInvoiceLineByInvoice(invoice.invoiceId());
+
+        if (request.getAmountPaid().compareTo(invoice.balanceDue()) > 0) {
             throw new RuntimeException("Amount must be greater than zero");
         }
 
-        String[] parts = invoice.getInvoiceNumber().split("/");
-        String code = parts.length > 0 ? parts[1] : invoice.getInvoiceLines()
-                .get(0)
-                .getCategories()
-                .getAccountCode()
-                .getAccountCode();
+        String[] parts = invoice.invoiceNumber().split("/");
+        String code = parts.length > 2 ? parts[1] : lines.get(0).accountCode();
 
         String voucherNumber = documentSequenceService.generateVoucherNumber(schoolId, code);
         Payments paymentRequest = request.buildPayment();
         paymentRequest.setVoucherNumber(voucherNumber);
         Payments savedPayment = paymentRepository.save(paymentRequest);
 
+        if(savedPayment.getId() != null) {
+            switch (invoice.totalAmount().compareTo(savedPayment.getAmountPaid())) {
+                case 0 -> invoiceRepository.makeInvoicePaid(invoice.invoiceId(), BigDecimal.ZERO, InvoiceStatus.PAID, savedPayment.getAmountPaid());
+                case 1 -> invoiceRepository.makeInvoicePaid(
+                        invoice.invoiceId(),
+                        invoice.totalAmount().subtract(savedPayment.getAmountPaid()),
+                        InvoiceStatus.PARTIALLY_PAID,
+                        savedPayment.getAmountPaid()
+                );
+            }
+        }
+
         return PaymentResponse.builder()
                 .paymentId(savedPayment.getId())
                 .voucherNumber(voucherNumber)
                 .paymentGatewayUrl("")
                 .transactionReference(savedPayment.getTransactionId())
-                .message("Payment created successfully")
+                .message("Paiement effectué avec succès")
                 .build();
     }
 

@@ -58,10 +58,10 @@ public class GuardianPaymentController {
 
     @PostMapping("/initiate")
     ResponseEntity<PaymentResponse> initiatePayment(
-            @AuthenticationPrincipal CustomUserDetails guardian,
+            @AuthenticationPrincipal CustomUserDetails connectedUser,
             @Valid @RequestBody PaymentPost paymentRequest
     ) {
-        UUID guardianId = guardianService.getGuardianId(guardian.getPersonalInfoId());
-        return ResponseEntity.ok(guardianPaymentService.createPayment(guardianId.toString(), paymentRequest));
+        paymentRequest.setCreatedBy(connectedUser.getPersonalInfoId());
+        return ResponseEntity.ok(guardianPaymentService.createPayment(paymentRequest.getSchoolId(), paymentRequest));
     }
 }

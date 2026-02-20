@@ -11,6 +11,7 @@ public record InvoiceLineRequest(
         String description,
         String categoryName,
         String categoryCode,
+        String accountCode,
         Byte quantity,
         BigDecimal unitPrice,
         Double discountPercentage,
@@ -29,6 +30,9 @@ public record InvoiceLineRequest(
                 .category(FeeCategories.builder()
                         .name(categoryName)
                         .category_code(categoryCode)
+                        .accountCode(AccountCharts.builder()
+                                .accountCode(accountCode)
+                                .build())
                         .build())
                 .build();
     }

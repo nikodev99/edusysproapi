@@ -42,6 +42,7 @@ public class PaymentPost {
     private Long processedBy;
     private Long createdBy;
     private String notes;
+    private String schoolId;
 
     public Payments buildPayment() {
         return Payments.builder()

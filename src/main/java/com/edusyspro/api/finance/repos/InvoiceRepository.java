@@ -71,15 +71,15 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
     @Query("""
         SELECT new com.edusyspro.api.finance.dto.request.InvoiceLineRequest(il.id, il.description, il.categories.name,
-        il.categories.category_code, il.quantity, il.unitPrice, il.discountPercentage, il.discountAmount, il.totalAmount)
+        il.categories.category_code,  il.categories.accountCode.accountCode, il.quantity, il.unitPrice, il.discountPercentage, il.discountAmount, il.totalAmount)
         FROM Invoice i JOIN i.invoiceLines il WHERE i.id = ?1
     """)
     List<InvoiceLineRequest> findInvoiceLineByInvoice(Long invoiceId);
 
     @Modifying
     @Transactional
-    @Query("UPDATE Invoice i SET i.balanceDue = ?2, i.status = ?3, i.amountPaid = ?4, i.notes = ?5 WHERE i.id = ?1")
-    void makeInvoicePaid(Long invoiceId, BigDecimal balanceDue, InvoiceStatus status, BigDecimal amountPaid, BigDecimal notes);
+    @Query("UPDATE Invoice i SET i.balanceDue = ?2, i.status = ?3, i.amountPaid = ?4 WHERE i.id = ?1")
+    void makeInvoicePaid(Long invoiceId, BigDecimal balanceDue, InvoiceStatus status, BigDecimal amountPaid);
 
     @Modifying
     @Transactional
