@@ -4,10 +4,7 @@ import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.service.interfaces.GuardianService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,9 +19,9 @@ public class GuardianController {
         this.guardianService = guardianService;
     }
 
-    @GetMapping("/all")
-    ResponseEntity<List<GuardianDTO>> findAllGuardians() {
-        return ResponseEntity.ok(guardianService.findAll());
+    @GetMapping("/search-all")
+    ResponseEntity<List<GuardianDTO>> findAllGuardians(@RequestParam String searchInput) {
+        return ResponseEntity.ok(guardianService.searchAll(searchInput));
     }
 
     @GetMapping("/{guardianId}")
@@ -32,8 +29,11 @@ public class GuardianController {
         return ResponseEntity.ok(guardianService.findGuardianById(guardianId));
     }
 
-    @GetMapping("/withStudent/{guardianId}")
-    ResponseEntity<GuardianDTO> findGuardianByIdWithStudents(@PathVariable String guardianId) {
-        return ResponseEntity.ok(guardianService.findGuardianByIdWithStudents(guardianId));
+    @GetMapping("/withStudent/{schoolId}/{guardianId}")
+    ResponseEntity<GuardianDTO> findGuardianByIdWithStudents(
+            @PathVariable String schoolId,
+            @PathVariable String guardianId
+    ) {
+        return ResponseEntity.ok(guardianService.findGuardianByIdWithStudents(schoolId, guardianId));
     }
 }

@@ -18,10 +18,10 @@ spring:
 
   #DB config
   datasource:
-    driver-class-name: ${DB_DRIVER}
-    url: 'jdbc:${DB_DBMS}://${DB_SERVER}:${DB_PORT}/${DB_DATABASE_NAME}'
-    username: '${DB_USERNAME}'
-    password: '${DB_PASSWORD}'
+    driver-class-name: ${DB_DRIVER:com.mysql.cj.jdbc.Driver}
+    url: 'jdbc:${DB_DBMS:mysql}://${DB_SERVER:localhost}:${DB_PORT:3306}/${DB_DATABASE_NAME:academic}'
+    username: '${DB_USERNAME:root}'
+    password: '${DB_PASSWORD:password}'
 
   #JPA config
   jpa:
@@ -41,10 +41,10 @@ spring:
 
   #Mail config
   mail:
-    host: ${MAIL_HOST}
-    port: ${MAIL_PORT}
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:tt9999.tt123@gmail.com}
+    password: ${MAIL_PASSWORD:'vzcj rtse mskr czyj'}
     properties:
       mail:
         transport:
@@ -61,29 +61,29 @@ spring:
 
   #RabbitMQ config
   rabbitmq:
-    host: ${AMQ_HOST}
-    port: ${AMQ_PORT}
-    username: ${AMQ_USERNAME}
-    password: ${AMQ_PASSWORD}
-    virtual-host: ${AMQ_VH}
+    host: ${AMQ_HOST:seal.lmq.cloudamqp.com}
+    port: ${AMQ_PORT:5672}
+    username: ${AMQ_USERNAME:ceuftess}
+    password: ${AMQ_PASSWORD:1gLnGKtzJ8LmF3UkChkOhD3WthLE0QN2}
+    virtual-host: ${AMQ_VH:ceuftess}
 
 #JWT Settings
 ---
 jwt:
-  secret: ${SECRET}
-  expiration: ${EXP}
+  secret: ${SECRET:mySecretKey12345678901234567890123456789012}
+  expiration: ${EXP:86400000}
   refresh:
-    expiration: ${REF_EXP}
+    expiration: ${REF_EXP:604800000}
 
 app:
   db-type: mysql
   mail:
     from: "Edusyspro"
     queue:
-      exchange: ${MAIL_EXCHANGE}
-      queue: ${MAIL_QUEUE}
-      routing-key: ${MAIL_ROT_QUEUE}
+      exchange: ${MAIL_EXCHANGE:mail.exchange}
+      queue: ${MAIL_QUEUE:mail.queue}
+      routing-key: ${MAIL_ROT_QUEUE:mail.send}
 
 ui:
-  url: ${URL}
-  email-base-url: ${MAIL_URL}
+  url: ${URL:'http://localhost:3000;http://localhost:5173'}
+  email-base-url: ${MAIL_URL:http://localhost:5173}

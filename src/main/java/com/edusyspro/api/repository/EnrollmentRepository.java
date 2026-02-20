@@ -83,10 +83,28 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
         and (lower(e.student.personalInfo.lastName) like lower(?3) or lower(e.student.personalInfo.firstName) like lower(?3)
         or lower(e.student.personalInfo.reference) like lower(?3)) order by e.student.personalInfo.lastName asc
     """)
-    List<EnrolledStudent> findAllStudentByTeacherByAcademicYearAndSchool(UUID teacherId, UUID schoolId, String lastName);
+    List<EnrolledStudent> findAllStudentByTeacherByAcademicYearAndSchool(UUID schoolId, UUID teacherId, String lastName);
+
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
+        e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.isArchived, e.classe.monthCost,
+        e.student.dadName, e.student.momName) from EnrollmentEntity e where e.isArchived = false and e.academicYear.current = true
+        and e.academicYear.school.id = ?1 and e.student.guardian.id = ?2
+    """)
+    Page<EnrolledStudent> findAllStudentByGuardianByAcademicYearAndSchool(UUID schoolId, UUID guardianId, Pageable pageable);
+
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
+        e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.isArchived, e.classe.monthCost,
+        e.student.dadName, e.student.momName) from EnrollmentEntity e where e.isArchived = false and e.academicYear.current = true
+        and e.academicYear.school.id = ?1 and e.student.guardian.id = ?2 and (lower(e.student.personalInfo.lastName) like lower(?3)
+        or lower(e.student.personalInfo.firstName) like lower(?3) or lower(e.student.personalInfo.reference) like lower(?3))
+        order by e.student.personalInfo.lastName asc
+    """)
+    List<EnrolledStudent> findAllStudentByGuardianByAcademicYearAndSchool(UUID schoolId, UUID teacherId, String lastName);
 
     @Query(value = """
-            select distinct new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
+            select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
             e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.isArchived, e.classe.monthCost,
             e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id = ?1
             and (lower(e.student.personalInfo.lastName) like lower(?2) or lower(e.student.personalInfo.firstName) like lower(?2)
@@ -151,9 +169,11 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
      * @return a Page containing GuardianEssential objects with details of the guardians
      */
     @Query("""
-        select distinct new com.edusyspro.api.dto.custom.GuardianEssential(e.student.guardian.id, e.student.guardian.personalInfo,
-        e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.createdAt, e.student.guardian.modifyAt)
-        from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false
+        select distinct new com.edusyspro.api.dto.custom.GuardianEssential(g.id, p.id, p.firstName, p.lastName, p.gender,
+        p.status, p.emailId, p.telephone, p.mobile, p.reference, ad.id, ad.number, ad.street, ad.secondStreet, ad.city,
+        ad.country, ad.neighborhood, ad.borough, ad.zipCode, g.jobTitle, g.company, g.createdAt, g.modifyAt)
+        from EnrollmentEntity e join e.student s join s.guardian g join g.personalInfo p left join p.address ad
+        where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false
     """)
     Page<GuardianEssential> findEnrolledStudentGuardian(UUID schoolId, Pageable pageable);
 
@@ -209,9 +229,8 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
         select new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
         e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.isArchived, e.classe.monthCost,
         e.student.dadName, e.student.momName) from EnrollmentEntity e where e.academicYear.school.id <> ?1
-       and (lower(concat(e.student.personalInfo.lastName, ' ', e.student.personalInfo.firstName)) like lower(?2)
-       or lower(e.student.personalInfo.reference) like lower(?2))
-      order by e.enrollmentDate desc
+        and (lower(concat(e.student.personalInfo.lastName, ' ', e.student.personalInfo.firstName)) like lower(?2)
+        or lower(e.student.personalInfo.reference) like lower(?2)) order by e.enrollmentDate desc
    """)
     Page<EnrolledStudent> getSearchedStudent(UUID schoolId, String searchInput, Pageable pageable);
 
@@ -224,14 +243,55 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
      * @param lastName a string used to filter guardians by their last name or first name (case-insensitive)
      * @return a list of {@code GuardianEssential} objects representing the essential details of the guardians
      */
-    @Query("""
-        select distinct new com.edusyspro.api.dto.custom.GuardianEssential(e.student.guardian.id, e.student.guardian.personalInfo,
-        e.student.guardian.jobTitle, e.student.guardian.company, e.student.guardian.createdAt, e.student.guardian.modifyAt)
-        from EnrollmentEntity e where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false
-        and (lower(e.student.guardian.personalInfo.lastName) like lower(?2) or lower(e.student.guardian.personalInfo.firstName) like lower(?2))
-        order by e.student.guardian.personalInfo.lastName asc
+    @Query(value = """
+        select distinct new com.edusyspro.api.dto.custom.GuardianEssential(g.id, p.id, p.firstName, p.lastName, p.gender,
+        p.status, p.emailId, p.telephone, p.mobile, p.reference, ad.id, ad.number, ad.street, ad.secondStreet, ad.city,
+        ad.country, ad.neighborhood, ad.borough, ad.zipCode, g.jobTitle, g.company, g.createdAt, g.modifyAt)
+        from EnrollmentEntity e join e.student s join s.guardian g join g.personalInfo p left join p.address ad
+        where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false and (lower(p.lastName) like lower(?2)
+        or lower(p.firstName) like lower(?2) or lower(p.reference) like lower(?2)) order by p.lastName asc
     """)
     List<GuardianEssential> findEnrolledStudentGuardian(UUID schoolId, String lastName);
+
+    @Query("""
+        select distinct new com.edusyspro.api.dto.custom.GuardianEssential(g.id, p.id, p.firstName, p.lastName, p.gender,
+        p.status, p.emailId, p.telephone, p.mobile, p.reference, ad.id, ad.number, ad.street, ad.secondStreet, ad.city,
+        ad.country, ad.neighborhood, ad.borough, ad.zipCode, g.jobTitle, g.company, g.createdAt, g.modifyAt)
+        from EnrollmentEntity e join e.student s join s.guardian g join g.personalInfo p
+        left join p.address ad join e.classe c join c.classTeachers t where e.academicYear.school.id = ?1 and e.academicYear.current = true
+        and e.isArchived = false and t.id = ?2
+    """)
+    Page<GuardianEssential> findEnrolledStudentGuardiansByTeacher(UUID schoolId, UUID teacherId, Pageable pageable);
+
+    @Query("""
+        select distinct new com.edusyspro.api.dto.custom.GuardianEssential(g.id, p.id, p.firstName, p.lastName, p.gender,
+        p.status, p.emailId, p.telephone, p.mobile, p.reference, ad.id, ad.number, ad.street, ad.secondStreet, ad.city,
+        ad.country, ad.neighborhood, ad.borough, ad.zipCode, g.jobTitle, g.company, g.createdAt, g.modifyAt)
+        from EnrollmentEntity e join e.student s join s.guardian g join g.personalInfo p
+        left join p.address ad join e.classe c join c.classTeachers t where e.academicYear.school.id = ?1 and t.id = ?2
+        and e.academicYear.current = true and e.isArchived = false and (lower(p.lastName) like lower(?3) or lower(p.reference) like lower(?3)
+        or lower(p.firstName) like lower(?3)) order by p.lastName asc
+    """)
+    Stream<GuardianEssential> findEnrolledStudentGuardiansByTeacher(UUID schoolId, UUID teacherId, String searchInput);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.GuardianEssential(g.id, p.id, p.firstName, p.lastName, p.gender,
+        p.status, p.emailId, p.telephone, p.mobile, p.reference, ad.id, ad.number, ad.street, ad.secondStreet, ad.city,
+        ad.country, ad.neighborhood, ad.borough, ad.zipCode, g.jobTitle, g.company, g.createdAt, g.modifyAt)
+        from EnrollmentEntity e join e.student s join s.guardian g join g.personalInfo p
+        left join p.address ad where e.academicYear.school.id = ?1 and g.id = ?2 and e.academicYear.current = true and e.isArchived = false
+    """)
+    Page<GuardianEssential> findEnrolledStudentSelfGuardian(UUID schoolId, UUID guardianId, Pageable pageable);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.GuardianEssential(g.id, p.id, p.firstName, p.lastName, p.gender,
+        p.status, p.emailId, p.telephone, p.mobile, p.reference, ad.id, ad.number, ad.street, ad.secondStreet, ad.city,
+        ad.country, ad.neighborhood, ad.borough, ad.zipCode, g.jobTitle, g.company, g.createdAt, g.modifyAt)
+        from EnrollmentEntity e join e.student s join s.guardian g join g.personalInfo p
+        left join p.address ad where e.academicYear.school.id = ?1 and e.academicYear.current = true and e.isArchived = false and g.id = ?2
+        and (lower(p.lastName) like lower(?3) or lower(p.reference) like lower(?3) or lower(p.firstName) like lower(?3)) order by p.lastName asc
+    """)
+    Stream<GuardianEssential> findEnrolledStudentSelfGuardian(UUID schoolId, UUID guardianId, String searchInput);
 
     /**
      * Counts all students by class and academic year.

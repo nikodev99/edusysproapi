@@ -24,7 +24,7 @@ public class StudentDTO {
     private List<EnrollmentDTO> enrollmentEntities;
     private String dadName;
     private String momName;
-    private GuardianEntity guardian;
+    private GuardianDTO guardian;
     private HealthCondition healthCondition;
     private List<ScoreDTO> marks;
     private List<AttendanceDTO> attendances;
@@ -39,7 +39,7 @@ public class StudentDTO {
                 .personalInfo(student.getPersonalInfo())
                 .dadName(student.getDadName())
                 .momName(student.getMomName())
-                .guardian(student.getGuardian())
+                .guardian(GuardianDTO.fromEntity(student.getGuardian()))
                 .healthCondition(student.getHealthCondition())
                 .build();
     }
@@ -50,7 +50,15 @@ public class StudentDTO {
                 .personalInfo(student.getPersonalInfo())
                 .dadName(student.getDadName())
                 .momName(student.getMomName())
-                .guardian(student.getGuardian())
+                .guardian(GuardianEntity.builder()
+                        .id(student.getGuardian().getId())
+                        .personalInfo(student.getGuardian().getPersonalInfo())
+                        .jobTitle(student.getGuardian().getJobTitle())
+                        .company(student.getGuardian().getCompany())
+                        .linkToStudent(student.getGuardian().getLinkToStudent())
+                        .createdAt(student.getGuardian().getCreatedAt())
+                        .modifyAt(student.getGuardian().getModifyAt())
+                        .build())
                 .healthCondition(student.getHealthCondition())
                 .build();
     }

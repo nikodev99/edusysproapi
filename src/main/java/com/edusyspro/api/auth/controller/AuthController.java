@@ -191,6 +191,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+
+        System.out.println("---------------------");
+        System.out.println("USER TO ADD: " + signUpRequest);
+        System.out.println("---------------------");
+
         try {
             if (userService.existsByUsername(signUpRequest.getUsername())) {
                 return ResponseEntity.badRequest()

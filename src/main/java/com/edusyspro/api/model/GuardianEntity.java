@@ -1,7 +1,6 @@
 package com.edusyspro.api.model;
 
 import com.edusyspro.api.utils.Datetime;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +32,6 @@ public class GuardianEntity {
     private String company;
 
     @OneToMany(mappedBy = "guardian", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @JsonIgnore
     private List<StudentEntity> students;
 
     @Column(length = 100)

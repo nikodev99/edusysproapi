@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -167,13 +166,14 @@ class ClasseDTORepositoryTest {
 
     @Test
     public void classeExistsTest() {
+        Grade grade = getGrade(Section.LYCEE);
         ClasseEntity classe = ClasseEntity.builder()
                 .name("Terminale A")
                 .category("Terminale Littéraire")
-                .grade(getGrade(Section.LYCEE))
+                .grade(grade)
                 .monthCost(new BigDecimal("3300"))
                 .build();
-        boolean exists = classeRepository.existsByName(classe.getName());
+        boolean exists = classeRepository.countBySchoolAndName(grade.getId(), classe.getName()) > 0;
         assertTrue(exists);
     }
 

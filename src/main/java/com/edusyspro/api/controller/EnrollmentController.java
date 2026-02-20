@@ -2,7 +2,6 @@ package com.edusyspro.api.controller;
 
 import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.controller.utils.ControllerUtils;
-import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.EnrollmentDTO;
 import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.service.interfaces.EnrollmentService;
@@ -96,6 +95,31 @@ public class EnrollmentController {
     ) {
         return ResponseEntity.ok(
                 enrollmentService.getEnrolledStudentByTeacherClasses(schoolId, teacherId, query)
+        );
+    }
+
+    @GetMapping("/guardian-student/{schoolId}/{guardianId}")
+    ResponseEntity<Page<EnrollmentDTO>> getEnrolledStudentsByGuardian(
+            @PathVariable String schoolId,
+            @PathVariable String guardianId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortCriteria
+    ) {
+        Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
+        return ResponseEntity.ok(
+                enrollmentService.getEnrolledStudentByGuardian(schoolId, guardianId, pageable)
+        );
+    }
+
+    @GetMapping("/guardian-student-search/{schoolId}/{guardianId}")
+    ResponseEntity<List<EnrollmentDTO>> getEnrolledStudentsByGuardian(
+            @PathVariable String schoolId,
+            @PathVariable String guardianId,
+            @RequestParam String query
+    ) {
+        return ResponseEntity.ok(
+                enrollmentService.getEnrolledStudentByGuardian(schoolId, guardianId, query)
         );
     }
 
@@ -249,6 +273,80 @@ public class EnrollmentController {
     @GetMapping("/guardians/search/{schoolId}")
     ResponseEntity<List<GuardianDTO>> fetchEnrolledStudentsGuardians(@PathVariable String schoolId, @RequestParam String q) {
         return ResponseEntity.ok(enrollmentService.getEnrolledStudentGuardians(schoolId, q));
+    }
+
+    /**
+     * Fetches a paginated list of guardians for enrolled students.
+     *
+     * @param page the page number to retrieve, default is 0
+     * @param size the number of records per page, default is 10
+     * @param sortCriteria an optional parameter to specify the sorting criteria
+     * @return a ResponseEntity containing a Page of GuardianDTO objects
+     */
+    @GetMapping("/guardians/{schoolId}/{teacherId}")
+    ResponseEntity<Page<GuardianDTO>> fetchEnrolledStudentsGuardiansByTeacher(
+            @PathVariable String schoolId,
+            @PathVariable String teacherId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortCriteria
+    ) {
+        Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
+        return ResponseEntity.ok(
+                enrollmentService.getEnrolledStudentGuardiansByTeacher(schoolId, teacherId, pageable)
+        );
+    }
+
+    /**
+     * Fetches the list of guardians for students enrolled in the school based on search criteria.
+     *
+     * @param q the query parameter used for filtering guardians by specific criteria.
+     * @return a ResponseEntity containing a list of GuardianDTO objects that match the query.
+     */
+    @GetMapping("/guardians/search/{schoolId}/{teacherId}")
+    ResponseEntity<List<GuardianDTO>> fetchEnrolledStudentsGuardiansByTeacher(
+            @PathVariable String schoolId,
+            @PathVariable String teacherId,
+            @RequestParam String q
+    ) {
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudentGuardiansByTeacher(schoolId, teacherId, q));
+    }
+
+    /**
+     * Fetches a paginated list of guardians for enrolled students.
+     *
+     * @param page the page number to retrieve, default is 0
+     * @param size the number of records per page, default is 10
+     * @param sortCriteria an optional parameter to specify the sorting criteria
+     * @return a ResponseEntity containing a Page of GuardianDTO objects
+     */
+    @GetMapping("/guardian-self/{schoolId}/{guardianId}")
+    ResponseEntity<Page<GuardianDTO>> fetchEnrolledStudentsSelfGuardian(
+            @PathVariable String schoolId,
+            @PathVariable String guardianId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortCriteria
+    ) {
+        Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
+        return ResponseEntity.ok(
+                enrollmentService.getEnrolledStudentSelfGuardian(schoolId, guardianId, pageable)
+        );
+    }
+
+    /**
+     * Fetches the list of guardians for students enrolled in the school based on search criteria.
+     *
+     * @param q the query parameter used for filtering guardians by specific criteria.
+     * @return a ResponseEntity containing a list of GuardianDTO objects that match the query.
+     */
+    @GetMapping("/guardian-self/search/{schoolId}/{guardianId}")
+    ResponseEntity<List<GuardianDTO>> fetchEnrolledStudentsSelfGuardian(
+            @PathVariable String schoolId,
+            @PathVariable String guardianId,
+            @RequestParam String q
+    ) {
+        return ResponseEntity.ok(enrollmentService.getEnrolledStudentSelfGuardian(schoolId, guardianId, q));
     }
 
     @PutMapping("/archive/{schoolId}/{studentId}")

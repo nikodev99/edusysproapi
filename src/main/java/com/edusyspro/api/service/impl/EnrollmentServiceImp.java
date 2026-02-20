@@ -77,6 +77,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
             if (studentInd != null) {
                 String reference = individualReferenceService.generateReference(IndividualType.STUDENT, school.getId());
                 studentInd.setReference(reference);
+                enrollmentEntity.getStudent().setPersonalInfo(studentInd);
             }
 
             GuardianEntity guardianEntity = enrollmentEntity.getStudent().getGuardian();
@@ -126,6 +127,20 @@ public class EnrollmentServiceImp implements EnrollmentService {
     public List<EnrollmentDTO> getEnrolledStudentByTeacherClasses(String schoolId, String teacherId, String lastname) {
         return enrollmentRepository.findAllStudentByTeacherByAcademicYearAndSchool(
                 UUID.fromString(schoolId), UUID.fromString(teacherId), "%" + lastname + "%"
+        ).stream().map(EnrolledStudent::populateStudent).toList();
+    }
+
+    @Override
+    public Page<EnrollmentDTO> getEnrolledStudentByGuardian(String schoolId, String guardianId, Pageable pageable) {
+        return enrollmentRepository.findAllStudentByGuardianByAcademicYearAndSchool(
+                UUID.fromString(schoolId), UUID.fromString(guardianId), pageable
+        ).map(EnrolledStudent::populateStudent);
+    }
+
+    @Override
+    public List<EnrollmentDTO> getEnrolledStudentByGuardian(String schoolId, String guardianId, String lastname) {
+        return enrollmentRepository.findAllStudentByGuardianByAcademicYearAndSchool(
+                UUID.fromString(schoolId), UUID.fromString(guardianId), lastname
         ).stream().map(EnrolledStudent::populateStudent).toList();
     }
 
@@ -247,7 +262,9 @@ public class EnrollmentServiceImp implements EnrollmentService {
 
     @Override
     public Page<GuardianDTO> getEnrolledStudentGuardians(String schoolId, Pageable pageable) {
-        Page<GuardianEssential> enrolledStudentGuardian = enrollmentRepository.findEnrolledStudentGuardian(UUID.fromString(schoolId), pageable);
+        Page<GuardianEssential> enrolledStudentGuardian = enrollmentRepository.findEnrolledStudentGuardian(
+                UUID.fromString(schoolId), pageable
+        );
         return enrolledStudentGuardian.map(GuardianEssential::populateGuardian);
     }
 
@@ -255,6 +272,32 @@ public class EnrollmentServiceImp implements EnrollmentService {
     public List<GuardianDTO> getEnrolledStudentGuardians(String schoolId, String lastname) {
         List<GuardianEssential> guardianEssentials = enrollmentRepository.findEnrolledStudentGuardian(UUID.fromString(schoolId), "%" + lastname + "%");
         return guardianEssentials.stream()
+                .map(GuardianEssential::populateGuardian)
+                .toList();
+    }
+
+    @Override
+    public Page<GuardianDTO> getEnrolledStudentGuardiansByTeacher(String schoolId, String teacherId, Pageable pageable) {
+        return enrollmentRepository.findEnrolledStudentGuardiansByTeacher(UUID.fromString(schoolId), UUID.fromString(teacherId), pageable)
+                .map(GuardianEssential::populateGuardian);
+    }
+
+    @Override
+    public List<GuardianDTO> getEnrolledStudentGuardiansByTeacher(String schoolId, String teacherId, String searchInput) {
+        return enrollmentRepository.findEnrolledStudentGuardiansByTeacher(UUID.fromString(schoolId), UUID.fromString(teacherId), "%" + searchInput + "%")
+                .map(GuardianEssential::populateGuardian)
+                .toList();
+    }
+
+    @Override
+    public Page<GuardianDTO> getEnrolledStudentSelfGuardian(String schoolId, String guardianId, Pageable pageable) {
+        return enrollmentRepository.findEnrolledStudentSelfGuardian(UUID.fromString(schoolId), UUID.fromString(guardianId), pageable)
+                .map(GuardianEssential::populateGuardian);
+    }
+
+    @Override
+    public List<GuardianDTO> getEnrolledStudentSelfGuardian(String schoolId, String guardianId, String searchInput) {
+        return enrollmentRepository.findEnrolledStudentSelfGuardian(UUID.fromString(schoolId), UUID.fromString(guardianId), "%" + searchInput + "%")
                 .map(GuardianEssential::populateGuardian)
                 .toList();
     }

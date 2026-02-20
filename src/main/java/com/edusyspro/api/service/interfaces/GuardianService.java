@@ -2,6 +2,8 @@ package com.edusyspro.api.service.interfaces;
 
 import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.model.GuardianEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +16,10 @@ public interface GuardianService {
 
     GuardianDTO findGuardianById(String id);
 
-    GuardianDTO findGuardianByIdWithStudents(String guardianId);
+    GuardianDTO findGuardianByIdWithStudents(String schoolId, String guardianId);
 
     UUID getGuardianId(Long personalInfoId);
 
-    List<GuardianDTO> findAll();
+    List<GuardianDTO> searchAll(String searchInput);
 
 }

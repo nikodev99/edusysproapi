@@ -3,6 +3,7 @@ package com.edusyspro.api.service.impl;
 import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
+import com.edusyspro.api.model.School;
 import com.edusyspro.api.repository.ClasseRepository;
 import com.edusyspro.api.repository.GradeRepository;
 import com.edusyspro.api.service.interfaces.*;
@@ -211,9 +212,10 @@ public class ClasseServiceImp implements ClasseServiceInterface {
     }
 
     private boolean classeAlreadyExists(ClasseDTO entity) {
-        return classeRepository.existsByName(
+        return classeRepository.countBySchoolAndName(
+                entity.getGrade().getId(),
                 entity.getName()
-        );
+        ) > 0;
     }
 
     private boolean countClasseName(ClasseDTO entity, int classeId) {

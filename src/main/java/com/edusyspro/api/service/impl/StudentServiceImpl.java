@@ -2,6 +2,7 @@ package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.StudentDTO;
+import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.dto.custom.StudentEssential;
 import com.edusyspro.api.model.Address;
 import com.edusyspro.api.repository.ScheduleRepository;
@@ -60,8 +61,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public GuardianEntity getStudentGuardian(String studentId) {
+    public GuardianDTO getStudentGuardian(String studentId) {
         return studentRepository.getStudentEntityGuardianByStudentId(UUID.fromString(studentId))
+                .map(GuardianEssential::populateGuardian)
                 .orElseThrow();
     }
 
@@ -126,8 +128,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDTO> findStudentByGuardian(String guardianId) {
-        return studentRepository.findStudentByGuardianId(UUID.fromString(guardianId)).stream()
+    public List<StudentDTO> findStudentByGuardian(String schoolId, String guardianId) {
+        return studentRepository.findStudentByGuardianId(UUID.fromString(schoolId), UUID.fromString(guardianId)).stream()
                 .map(StudentEssential::toStudent)
                 .toList();
     }

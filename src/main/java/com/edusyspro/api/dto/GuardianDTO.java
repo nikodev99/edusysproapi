@@ -36,7 +36,6 @@ public class GuardianDTO {
                 .jobTitle(guardianEntity.getJobTitle())
                 .company(guardianEntity.getCompany())
                 .personalInfo(guardianEntity.getPersonalInfo())
-                .studentDTOS(guardianEntity.getStudents().stream().map(StudentDTO::fromEntity).toList())
                 .linkToStudent(guardianEntity.getLinkToStudent())
                 .createdAt(guardianEntity.getCreatedAt())
                 .modifyAt(guardianEntity.getModifyAt())

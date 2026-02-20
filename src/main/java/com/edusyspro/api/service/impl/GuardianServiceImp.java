@@ -2,6 +2,7 @@ package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.GuardianDTO;
 import com.edusyspro.api.dto.StudentDTO;
+import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.GuardianEntity;
 import com.edusyspro.api.dto.custom.GuardianEssential;
 import com.edusyspro.api.model.Individual;
@@ -10,6 +11,8 @@ import com.edusyspro.api.service.interfaces.GuardianService;
 import com.edusyspro.api.service.interfaces.StudentService;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +46,7 @@ public class GuardianServiceImp implements GuardianService {
             }
             return guardianRepository.save(guardianEntity);
         }else {
-            return entityManager.merge(guardianEntity);
+            return entityManager.getReference(GuardianEntity.class, guardianEntity.getId());
         }
     }
 
@@ -55,21 +58,22 @@ public class GuardianServiceImp implements GuardianService {
     }
 
     @Override
-    public GuardianDTO findGuardianByIdWithStudents(String guardianId) {
+    public GuardianDTO findGuardianByIdWithStudents(String schoolId, String guardianId) {
         GuardianDTO guardianDTO = findGuardianById(guardianId);
-        List<StudentDTO> studentDTO = studentService.findStudentByGuardian(guardianId);
+        List<StudentDTO> studentDTO = studentService.findStudentByGuardian(schoolId, guardianId);
         guardianDTO.setStudentDTOS(studentDTO);
         return guardianDTO;
     }
 
     @Override
     public UUID getGuardianId(Long personalInfoId) {
-        return guardianRepository.getGuardianByPersonalInfo(personalInfoId).orElse(UUID.randomUUID());
+        return guardianRepository.getGuardianByPersonalInfo(personalInfoId).orElseThrow(
+                () -> new NotFountException("Tuteur introuvable"));
     }
 
     @Override
-    public List<GuardianDTO> findAll() {
-        return guardianRepository.findAllGuardians()
+    public List<GuardianDTO> searchAll(String searchInput) {
+        return guardianRepository.findAllGuardians(searchInput)
                 .stream()
                 .map(GuardianEssential::populateGuardian)
                 .toList();

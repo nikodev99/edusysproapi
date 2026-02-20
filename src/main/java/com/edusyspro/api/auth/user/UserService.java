@@ -5,6 +5,7 @@ import com.edusyspro.api.auth.response.UserInfoResponse;
 import com.edusyspro.api.auth.request.SignupRequest;
 import com.edusyspro.api.mail.EmailRequest;
 import com.edusyspro.api.mail.EmailService;
+import com.edusyspro.api.model.School;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -69,13 +70,22 @@ public class UserService implements UserDetailsService {
         User user = request.toEntity();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        //TODO Send email and phone message to user
-        User addedUser = userRepository.save(user);
-        if (addedUser.getId() != null) {
-            addedUser.setSchoolAffiliations(request.toUserSchoolRole(addedUser.getId()));
-        }
+        UserSchoolRole userRoles = UserSchoolRole.builder()
+                .schoolId(request.getRoles().getSchoolId())
+                .school(School.builder()
+                        .id(request.getRoles().getSchoolId())
+                        .build())
+                .roles(request.getRoles().getRoles())
+                .user(user)
+                .enabled(true)
+                .accountNonLocked(true)
+                .isActive(true)
+                .failedLoginAttempts(0)
+                .build();
 
-        return userRepository.save(addedUser);
+        user.setSchoolAffiliations(List.of(userRoles));
+
+        return userRepository.save(user);
     }
 
     @Transactional

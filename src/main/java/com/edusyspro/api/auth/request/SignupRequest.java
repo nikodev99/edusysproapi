@@ -3,6 +3,7 @@ package com.edusyspro.api.auth.request;
 import com.edusyspro.api.auth.user.UserSchoolRole;
 import com.edusyspro.api.auth.user.UserType;
 import com.edusyspro.api.auth.user.User;
+import com.edusyspro.api.model.School;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -62,9 +63,16 @@ public class SignupRequest {
         UserSchoolRole userRoles =  UserSchoolRole.builder()
                 .userId(userId)
                 .schoolId(roles.getSchoolId())
+                .user(User.builder()
+                        .id(userId)
+                        .build())
+                .school(School.builder()
+                        .id(roles.getSchoolId())
+                        .build())
                 .roles(roles.getRoles())
                 .enabled(true)
                 .accountNonLocked(true)
+                .isActive(true)
                 .failedLoginAttempts(0)
                 .build();
 

@@ -40,6 +40,7 @@ public class Individual {
     @Enumerated
     private Status status;
 
+    //TODO put this unique
     private String emailId;
 
     private LocalDate birthDate;
@@ -50,12 +51,14 @@ public class Individual {
     @Column(length = 100)
     private String nationality;
 
+    //TODO put this unique
     @Column(length = 50)
     private String telephone;
 
     @Column(length = 50)
     private String mobile;
 
+    //TODO put this unique
     @Column(length = 50)
     private String reference;
 

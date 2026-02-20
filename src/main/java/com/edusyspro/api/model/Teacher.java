@@ -61,7 +61,7 @@ public class Teacher {
     @JsonIgnore
     private List<CourseProgram> courseProgram;
 
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinTable(
             name = "teacher_schools",
             joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),

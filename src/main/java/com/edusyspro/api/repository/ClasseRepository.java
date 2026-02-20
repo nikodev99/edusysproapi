@@ -78,7 +78,10 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
 
     List<ClasseEntity> getClassesByGradeSection(Section section);
 
-    boolean existsByName(String classeName);
+    @Query("""
+        select count(c.id) from ClasseEntity c left join c.grade g where g.id = ?1 and c.name = ?2
+    """ )
+    Long countBySchoolAndName(Integer gradeId, String classeName);
 
     @Query("select count(c) from ClasseEntity c where lower(c.name) = lower(?1) and c.id != ?2")
     int countByName(String classeName, Integer classeId);

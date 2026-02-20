@@ -42,6 +42,10 @@ public interface EnrollmentService {
 
     List<EnrollmentDTO> getEnrolledStudentByTeacherClasses(String schoolId, String teacherId, String lastname);
 
+    Page<EnrollmentDTO> getEnrolledStudentByGuardian(String schoolId, String guardianId, Pageable pageable);
+
+    List<EnrollmentDTO> getEnrolledStudentByGuardian(String schoolId, String guardianId, String lastname);
+
     /**
      * Get the searched student of the previous academic year in a school
      * @param schoolId The school id.
@@ -128,6 +132,14 @@ public interface EnrollmentService {
      * @return List<GuardianDTO>
      */
     List<GuardianDTO> getEnrolledStudentGuardians(String schoolId, String lastname);
+
+    Page<GuardianDTO> getEnrolledStudentGuardiansByTeacher(String schoolId, String teacherId, Pageable pageable);
+
+    List<GuardianDTO> getEnrolledStudentGuardiansByTeacher(String schoolId, String teacherId, String searchInput);
+
+    Page<GuardianDTO> getEnrolledStudentSelfGuardian(String schoolId, String guardianId, Pageable pageable);
+
+    List<GuardianDTO> getEnrolledStudentSelfGuardian(String schoolId, String guardianId, String searchInput);
 
     MessageResponse archiveEnrolledStudent(String studentId, String schoolId);
 

@@ -13,7 +13,7 @@ public interface StudentService {
 
     Address getStudentAddress(String studentId);
 
-    GuardianEntity getStudentGuardian(String studentId);
+    GuardianDTO getStudentGuardian(String studentId);
     GuardianDTO changeStudentGuardian(String studentId, GuardianEntity guardian);
 
     HealthCondition getStudentHealthCondition(String studentId);
@@ -24,5 +24,5 @@ public interface StudentService {
     int updateStudentHealth(String field, Object value, String studentId);
     int updateStudentGuardian(String field, Object value, String guardianId);
 
-    List<StudentDTO> findStudentByGuardian(String guardianId);
+    List<StudentDTO> findStudentByGuardian(String schoolId, String guardianId);
 }
