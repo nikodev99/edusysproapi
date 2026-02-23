@@ -45,6 +45,20 @@ public class IndividualServiceImpl implements IndividualService {
     }
 
     @Override
+    public IndividualUser getLoginUser(UUID schoolId, Long personalId, UserType type) {
+        IndividualUser individualUser = getLoginUser(personalId, type);
+        return IndividualUser.builder()
+                .userId(individualUser.getUserId())
+                .firstName(individualUser.getFirstName())
+                .lastName(individualUser.getLastName())
+                .schools(individualUser.getSchools().stream()
+                        .filter(s -> s.id().equals(schoolId))
+                        .toList()
+                )
+                .build();
+    }
+
+    @Override
     public List<IndividualBasic> getSearchedUserPersonalInfo(String searchKeyword) {
         return individualRepository.findPotentialUserPersonalInfo("%" + searchKeyword + "%");
     }

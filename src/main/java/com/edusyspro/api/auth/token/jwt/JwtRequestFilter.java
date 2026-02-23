@@ -104,7 +104,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         logger.info("shouldNotFilter - checking URI: {}", requestUri);
 
         // Check for public endpoints that should skip JWT validation
-        boolean shouldSkip = requestUri.startsWith("/api/v1/auth/") ||
+        boolean shouldSkip = requestUri.equals("/api/v1/auth/login") ||
                 requestUri.startsWith("/api/v1/public/") ||
                 requestUri.equals("/favicon.ico") ||
                 requestUri.equals("/error");

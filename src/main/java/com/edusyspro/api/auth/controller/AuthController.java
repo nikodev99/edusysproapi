@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -92,10 +93,10 @@ public class AuthController {
             }
 
             if (schoolAffiliations.size() == 1) {
-                return handleSingleSchoolLogin(userPrincipal, schoolAffiliations.get(0), request);
+                return handleSingleSchoolLogin(userPrincipal, schoolAffiliations.get(0), false, request);
             }
 
-            return handleMultiSchoolLogin(userPrincipal, schoolAffiliations);
+            return handleMultiSchoolLogin(userPrincipal);
 
         }catch (BadCredentialsException e) {
             logger.warn("Failed login attempt for user: {} from IP: {}",
@@ -133,6 +134,7 @@ public class AuthController {
     @PostMapping("/select_school/")
     ResponseEntity<?> selectSchool(@Valid @RequestBody SchoolSelectionRequest selection, @AuthenticationPrincipal CustomUserDetails auth, HttpServletRequest request) {
         String token = jwtUtils.extractTokenFromHeader(request.getHeader("Authorization"));
+
         if (token == null || jwtUtils.isTokenExpired(token)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(MessageResponse.builder()
@@ -141,7 +143,9 @@ public class AuthController {
                             .build());
         }
 
-        if (!jwtUtils.requiresSchoolSelection(token)) {
+        boolean shouldSelectSchool = jwtUtils.requiresSchoolSelection(token);
+
+        if (!shouldSelectSchool) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(MessageResponse.builder()
                             .message("Token does not allow school selection")
@@ -153,7 +157,7 @@ public class AuthController {
 
         try {
             UserSchoolRole userSchoolRole = userSchoolRoleService.getUserSchoolRole(userId, selection.getSchoolId());
-            return handleSingleSchoolLogin(auth, userSchoolRole, request);
+            return handleSingleSchoolLogin(auth, userSchoolRole, true, request);
         }catch (BadCredentialsException e) {
             logger.warn("Failed login for user: {} from IP: {}",
                     username, authenticationEntryPoint.getClientIpAddress(request));
@@ -186,6 +190,27 @@ public class AuthController {
                             .build());
         }
 
+    }
+
+    @PostMapping("/unscope/")
+    ResponseEntity<?> unscopedToken(@Valid @RequestBody RefreshTokenRequest request) {
+        try {
+            String refreshToken = request.getRefreshToken();
+
+            if (!jwtUtils.isRefreshToken(refreshToken) || jwtUtils.isTokenExpired(refreshToken)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(MessageResponse.builder().message("Invalid or expired refresh token").build());
+            }
+
+            String username = jwtUtils.getUsernameFromToken(refreshToken);
+            CustomUserDetails userDetails = (CustomUserDetails) userService.loadUserByUsername(username);
+
+            return handleMultiSchoolLogin(userDetails);
+        }catch (Exception e) {
+            logger.error("Token change error", e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(MessageResponse.builder().message("Token change failed").build());
+        }
     }
 
     @PostMapping("/register")
@@ -248,7 +273,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+    ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request, @AuthenticationPrincipal CustomUserDetails userDetails) {
         try {
             String refreshToken = request.getRefreshToken();
 
@@ -257,13 +282,13 @@ public class AuthController {
                         .body(MessageResponse.builder().message("Invalid or expired refresh token").build());
             }
 
-            String username = jwtUtils.getUsernameFromToken(refreshToken);
-            CustomUserDetails userDetails = (CustomUserDetails) userService.loadUserByUsername(username);
-
-            String accessToken = jwtUtils.generateToken(userDetails);
+            boolean shouldPickSchool = jwtUtils.requiresSchoolSelection(refreshToken);
+            UserSchoolRole schoolAffiliate = userSchoolRoleService.getUserSchoolRole(userDetails.getId(), request.getSchoolId());
+            String accessToken = jwtUtils.generateTokenWithContext(userDetails, schoolAffiliate, shouldPickSchool);
             RefreshEntity token = refreshTokenService.findAndValidateRefreshToken(refreshToken);
 
             IndividualUser user = individualService.getLoginUser(
+                    UUID.fromString(request.getSchoolId()),
                     userDetails.getPersonalInfoId(),
                     userDetails.getUserType()
             );
@@ -420,9 +445,9 @@ public class AuthController {
         return ResponseEntity.ok(userService.existBySchoolId(schoolId, personalInfoId));
     }
 
-    private ResponseEntity<?> handleSingleSchoolLogin(CustomUserDetails userPrincipal, UserSchoolRole schoolAffiliation, HttpServletRequest request) {
+    private ResponseEntity<?> handleSingleSchoolLogin(CustomUserDetails userPrincipal, UserSchoolRole schoolAffiliation, boolean requireSchoolSelection, HttpServletRequest request) {
         try {
-            String accessToken = jwtUtils.generateTokenWithContext(userPrincipal, schoolAffiliation);
+            String accessToken = jwtUtils.generateTokenWithContext(userPrincipal, schoolAffiliation, requireSchoolSelection);
 
             String userAgent = request.getHeader("User-Agent");
             String clientType = request.getHeader("sec-ch-ua");
@@ -432,7 +457,7 @@ public class AuthController {
             String refreshToken;
 
             if (refreshEntity == null) {
-                refreshToken = jwtUtils.generateRefreshToken(userPrincipal);
+                refreshToken = jwtUtils.generateRefreshToken(userPrincipal, requireSchoolSelection);
                 String deviceType = request.getHeader("sec-ch-ua-platform");
                 Date expiryDate = jwtUtils.getExpirationDateFromToken(refreshToken);
                 RefreshEntity toSave = RefreshEntity.builder()
@@ -456,6 +481,7 @@ public class AuthController {
 
             userSchoolRoleService.updateLastLogin(userPrincipal.getId(), schoolAffiliation.getSchoolId());
             IndividualUser user = individualService.getLoginUser(
+                    schoolAffiliation.getSchoolId(),
                     userPrincipal.getPersonalInfoId(),
                     userPrincipal.getUserType()
             );
@@ -494,15 +520,15 @@ public class AuthController {
         }
     }
 
-    private ResponseEntity<?> handleMultiSchoolLogin(CustomUserDetails userPrincipal, List<UserSchoolRole> schoolAffiliations) {
+    private ResponseEntity<?> handleMultiSchoolLogin(CustomUserDetails userPrincipal) {
         try {
-            if (schoolAffiliations.size() > 1) {
+            IndividualUser user = individualService.getLoginUser(
+                    userPrincipal.getPersonalInfoId(),
+                    userPrincipal.getUserType()
+            );
+            if (user.getSchools().size() > 1) {
                 String accessToken = jwtUtils.generateToken(userPrincipal);
 
-                IndividualUser user = individualService.getLoginUser(
-                        userPrincipal.getPersonalInfoId(),
-                        userPrincipal.getUserType()
-                );
                 LoginResponse response = LoginResponse.builder()
                         .accessToken(accessToken)
                         .email(userPrincipal.getEmail())

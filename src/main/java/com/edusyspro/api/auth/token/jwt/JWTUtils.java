@@ -1,6 +1,7 @@
 package com.edusyspro.api.auth.token.jwt;
 
 import com.edusyspro.api.auth.user.UserSchoolRole;
+import com.edusyspro.api.dto.custom.SchoolBasic;
 import com.edusyspro.api.model.enums.Role;
 import com.edusyspro.api.auth.user.CustomUserDetails;
 import io.jsonwebtoken.Claims;
@@ -35,13 +36,13 @@ public class JWTUtils {
             userClaims(claims, customUserDetails);
 
             claims.put("availableSchools", customUserDetails.getAvailableSchools());
-            claims.put("requiresSchoolSelection ", true);
+            claims.put("requiresSchoolSelection", true);
         }
 
         return createToken(claims, userDetails.getUsername(), jwtExpiration);
     }
 
-    public String generateTokenWithContext(UserDetails userDetails, UserSchoolRole schoolRole) {
+    public String generateTokenWithContext(UserDetails userDetails, UserSchoolRole schoolRole, boolean requireSchoolSelection) {
         Map<String, Object> claims = new HashMap<>();
 
         if (userDetails instanceof CustomUserDetails customUserDetails) {
@@ -53,15 +54,16 @@ public class JWTUtils {
                     .toList();
 
             claims.put("roles", authorities);
-            claims.put("requiresSchoolSelection ", false);
+            claims.put("requiresSchoolSelection", requireSchoolSelection);
         }
 
         return createToken(claims, userDetails.getUsername(), jwtExpiration);
     }
 
-    public String generateRefreshToken(UserDetails userDetails) {
+    public String generateRefreshToken(UserDetails userDetails, boolean requireSchoolSelection) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("type", "refresh");
+        claims.put("requiresSchoolSelection", requireSchoolSelection);
 
         if (userDetails instanceof CustomUserDetails customUserDetails) {
             claims.put("id", customUserDetails.getId());
@@ -121,6 +123,12 @@ public class JWTUtils {
         return schoolIdStr != null ? UUID.fromString(schoolIdStr) : null;
     }
 
+    @SuppressWarnings("unchecked")
+    public List<SchoolBasic> getAvailableSchools(String token) {
+        final Claims claims = getAllClaimsFromToken(token);
+        return (List<SchoolBasic>) claims.get("availableSchools");
+    }
+
     /**
      * Gets roles for the school from the token.
      * These are the actual Role enums for the selected school.
@@ -133,6 +141,15 @@ public class JWTUtils {
 
     public Boolean requiresSchoolSelection(String token) {
         final Claims claims = getAllClaimsFromToken(token);
+        Object val = claims.get("requiresSchoolSelection");
+
+        if (val == null) {
+            val = claims.get("availableSchools");
+        }
+
+        if (val == null) return Boolean.FALSE;
+        if (val instanceof Boolean) return (Boolean) val;
+
         return Boolean.TRUE.equals(claims.get("requiresSchoolSelection", Boolean.class));
     }
 
