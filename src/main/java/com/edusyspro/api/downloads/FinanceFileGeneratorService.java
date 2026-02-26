@@ -8,8 +8,8 @@ import com.edusyspro.api.finance.services.PaymentService;
 import com.edusyspro.api.model.School;
 import com.edusyspro.api.resource.FileGenerationException;
 import com.edusyspro.api.resource.FileGenerator;
-import com.edusyspro.api.resource.io.InvoicePdfGenerator;
-import com.edusyspro.api.resource.io.PaymentReceiptPdfGenerator;
+import com.edusyspro.api.resource.pdf.InvoicePdfGenerator;
+import com.edusyspro.api.resource.pdf.PaymentReceiptPdfGenerator;
 import com.edusyspro.api.service.interfaces.SchoolService;
 import org.springframework.stereotype.Service;
 

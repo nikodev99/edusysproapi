@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public record PaymentSummary(
         BigDecimal totalOutstanding,
         BigDecimal totalPaidThisYear,
-        Integer overdueInvoices
+        Integer overdueInvoices,
+        Long countStudent
 ) {
 }

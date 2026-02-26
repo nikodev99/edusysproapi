@@ -40,8 +40,16 @@ public class GuardianPaymentService {
         List<OutstandingInvoice> outstandingInvoices = invoiceRepository.findOutstandingInvoicesByGuardianId(
                 UUID.fromString(guardianId),
                 UUID.fromString(academicYear),
-                List.of(InvoiceStatus.DRAFT, InvoiceStatus.PARTIALLY_PAID)
+                List.of(InvoiceStatus.DRAFT, InvoiceStatus.OVERDUE, InvoiceStatus.SENT)
         );
+
+        List<OutstandingInvoice> paidInvoices = invoiceRepository.findOutstandingInvoicesByGuardianId(
+                UUID.fromString(guardianId),
+                UUID.fromString(academicYear),
+                List.of(InvoiceStatus.PAID, InvoiceStatus.PARTIALLY_PAID)
+        );
+
+        Long countStudent = paymentRepository.countStudentByGuardianId(UUID.fromString(guardianId), UUID.fromString(academicYear));
 
         BigDecimal totalOutstanding = outstandingInvoices.stream()
                 .map(OutstandingInvoice::getBalanceDue)
@@ -51,11 +59,11 @@ public class GuardianPaymentService {
                 .filter(inv -> inv.getDueDate().isBefore(LocalDate.now()))
                 .count());
 
-        BigDecimal totalPaid = Optional.of(outstandingInvoices.get(0))
+        BigDecimal totalPaid = paidInvoices.stream()
                 .map(OutstandingInvoice::getAmountPaid)
-                .orElse(BigDecimal.ZERO);
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        return new PaymentSummary(totalOutstanding, totalPaid, overdueCount);
+        return new PaymentSummary(totalOutstanding, totalPaid, overdueCount, countStudent);
     }
 
     public List<InvoiceDTO> getGuardianInvoices(String guardianId, String schoolId) {

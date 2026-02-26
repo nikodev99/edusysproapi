@@ -76,6 +76,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     """)
     List<InvoiceLineRequest> findInvoiceLineByInvoice(Long invoiceId);
 
+    //TODO CHANGE HERE TO ADD THE CHANGE IN ASSESSMENT AMOUNT TO PAID
     @Modifying
     @Transactional
     @Query("UPDATE Invoice i SET i.balanceDue = ?2, i.status = ?3, i.amountPaid = ?4 WHERE i.id = ?1")
@@ -87,7 +88,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     void chanceInvoiceStatus(Long invoiceId, InvoiceStatus status);
 
     @Query("""
-        SELECT i.balanceDue as balanceDue, i.dueDate as dueDate, s.id as id, f.amountPaid as amountPaid FROM Invoice i JOIN i.feeAssessment f
+        SELECT i.balanceDue as balanceDue, i.dueDate as dueDate, s.id as id, i.amountPaid as amountPaid FROM Invoice i JOIN i.feeAssessment f
         JOIN f.student e JOIN e.student s WHERE s.guardian.id = ?1 AND e.academicYear.id = ?2 AND i.status IN ?3
     """)
     List<OutstandingInvoice> findOutstandingInvoicesByGuardianId(UUID guardianId, UUID academicYear, List<InvoiceStatus> statuses);

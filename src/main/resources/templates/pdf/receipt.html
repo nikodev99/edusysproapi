@@ -13,7 +13,7 @@
     }
 
     body {
-      font-family: Aptos, Daytona, Cambria, Arial, sans-serif;
+      font-family: Montserrat, Arial, sans-serif;
       font-size: 12px;
       color: #000;
     }
@@ -153,7 +153,7 @@
   </div>
   <div class="header-right">
     <div class="receipt-title">REÇU DE PAIEMENT</div>
-    <div class="receipt-number">N°: <span th:text="${payment.voucherNumber}"></span></div>
+    <div class="receipt-number">N°: <span th:text="${data.voucherNumber}"></span></div>
   </div>
 </div>
 
@@ -164,13 +164,13 @@
 <table class="details-table">
   <tr>
     <td class="label" style="width: 15%;">N° Reçu:</td>
-    <td class="value" style="width: 35%;" th:text="${payment.transactionId != null and !#strings.isEmpty(payment.transactionId) ? payment.transactionId : ' '}"></td>
+    <td class="value" style="width: 35%;" th:text="${data.transactionId != null and !#strings.isEmpty(data.transactionId) ? data.transactionId : ' '}"></td>
     <td class="label" style="width: 15%;">N° Bon:</td>
-    <td class="value" style="width: 35%;" th:text="${payment.voucherNumber}"></td>
+    <td class="value" style="width: 35%;" th:text="${data.voucherNumber}"></td>
   </tr>
   <tr>
     <td class="label" style="width: 15%;">Date de paiement :</td>
-    <td class="value" style="width: 35%;" th:text="${datetimeFormatter.apply(payment.paymentDate)}"></td>
+    <td class="value" style="width: 35%;" th:text="${datetimeFormatter.apply(data.paymentDate)}"></td>
     <td class="label" style="width: 15%;">Méthode:</td>
     <td class="value" style="width: 35%;" th:text="${paymentMethodText}"></td>
   </tr>
@@ -196,7 +196,7 @@
 
 <div class="amount-box">
   <div class="amount-label">MONTANT PAYÉ</div>
-  <div class="amount-value" th:text="${currencyFormatter.apply(payment.amountPaid)}"></div>
+  <div class="amount-value" th:text="${currencyFormatter.apply(data.amountPaid)}"></div>
 </div>
 
 <div class="invoice-info" th:if="${invoice != null}">
@@ -217,15 +217,15 @@
   </table>
 </div>
 
-<div th:if="${payment.notes != null and !#strings.isEmpty(payment.notes)}" style="margin-top: 20px;">
+<div th:if="${data.notes != null and !#strings.isEmpty(data.notes)}" style="margin-top: 20px;">
   <strong style="font-size: 10px;">Notes:</strong>
-  <p style="font-size: 9px; font-style: italic;" th:text="${payment.notes}">Notes</p>
+  <p style="font-size: 9px; font-style: italic;" th:text="${data.notes}"></p>
 </div>
 
 <div class="signature">
   <div class="signature-line"></div>
   <div style="font-size: 9px;">Signature autorisée</div>
-  <div style="font-size: 9px; margin-top: 5px;" th:text="${school.name}">School Name</div>
+  <div style="font-size: 9px; margin-top: 5px;" th:text="${school.name}"></div>
 </div>
 
 <div class="footer">

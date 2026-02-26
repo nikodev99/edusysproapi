@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: Aptos, Daytona, Cambria, Arial, sans-serif;
+            font-family: Montserrat, Arial, sans-serif;
             font-size: 12px;
             color: #000;
         }
@@ -220,12 +220,12 @@
     </div>
     <div class="header-right">
         <div class="invoice-title">FACTURE</div>
-        <div class="invoice-number">N°: <span th:text="${invoice.invoiceNumber}"></span></div>
+        <div class="invoice-number">N°: <span th:text="${data.invoiceNumber}"></span></div>
         <div class="invoice-date">
-            Date: <span th:text="${datetimeFormatter.apply(invoice.invoiceDate)}"></span>
+            Date: <span th:text="${datetimeFormatter.apply(data.invoiceDate)}"></span>
         </div>
         <div class="invoice-date" style="font-weight: bold;">
-            Échéance: <span th:text="${dateFormatter.apply(invoice.dueDate)}"></span>
+            Échéance: <span th:text="${dateFormatter.apply(data.dueDate)}"></span>
         </div>
     </div>
 </div>
@@ -253,7 +253,7 @@
                 <span th:text="${statusText}"></span>
             </div>
             <div style="margin-top: 10px;">
-                <div>Montant Total: <strong th:text="${currencyFormatter.apply(invoice.totalAmount)}"></strong></div>
+                <div>Montant Total: <strong th:text="${currencyFormatter.apply(data.totalAmount)}"></strong></div>
             </div>
         </td>
     </tr>
@@ -286,29 +286,29 @@
 
 <div class="totals-section">
     <table class="totals-table">
-        <tr th:if="${invoice.subTotalAmount != null}">
+        <tr th:if="${data.subTotalAmount != null}">
             <td class="label">Sous-total:</td>
-            <td class="value" th:text="${currencyFormatter.apply(invoice.subTotalAmount)}"></td>
+            <td class="value" th:text="${currencyFormatter.apply(data.subTotalAmount)}"></td>
         </tr>
-        <tr th:if="${invoice.discount != null and invoice.discount > 0}">
+        <tr th:if="${data.discount != null and data.discount > 0}">
             <td class="label">Remise:</td>
-            <td class="value" th:text="'-' + ${currencyFormatter.apply(invoice.discount)}"></td>
+            <td class="value" th:text="'-' + ${currencyFormatter.apply(data.discount)}"></td>
         </tr>
-        <tr th:if="${invoice.taxAmount != null and invoice.taxAmount > 0}">
+        <tr th:if="${data.taxAmount != null and data.taxAmount > 0}">
             <td class="label">Taxe:</td>
-            <td class="value" th:text="${currencyFormatter.apply(invoice.taxAmount)}"></td>
+            <td class="value" th:text="${currencyFormatter.apply(data.taxAmount)}"></td>
         </tr>
         <tr class="total-row">
             <td class="label" style="padding: 10px;">TOTAL:</td>
-            <td class="value" style="padding: 10px;" th:text="${currencyFormatter.apply(invoice.totalAmount)}"></td>
+            <td class="value" style="padding: 10px;" th:text="${currencyFormatter.apply(data.totalAmount)}"></td>
         </tr>
-        <tr th:if="${invoice.amountPaid != null and invoice.amountPaid > 0}">
+        <tr th:if="${data.amountPaid != null and data.amountPaid > 0}">
             <td class="label">Montant Payé:</td>
-            <td class="value" th:text="${currencyFormatter.apply(invoice.amountPaid)}"></td>
+            <td class="value" th:text="${currencyFormatter.apply(data.amountPaid)}"></td>
         </tr>
         <tr class="balance-row">
             <td class="label" style="padding: 8px;">SOLDE DÛ:</td>
-            <td class="value" style="padding: 8px;" th:text="${currencyFormatter.apply(invoice.balanceDue)}"></td>
+            <td class="value" style="padding: 8px;" th:text="${currencyFormatter.apply(data.balanceDue)}"></td>
         </tr>
     </table>
 </div>
@@ -320,8 +320,8 @@
         • Virement bancaire: IBAN XXXX XXXX XXXX XXXX<br/>
         • En espèces au bureau de l'école<br/>
         • Carte bancaire via notre portail en ligne</p>
-    <p th:if="${invoice.notes != null and !#strings.isEmpty(invoice.notes)}">
-        <strong>Notes:</strong> <span th:text="${invoice.notes}">Notes</span>
+    <p th:if="${data.notes != null and !#strings.isEmpty(data.notes)}">
+        <strong>Notes:</strong> <span th:text="${data.notes}">Notes</span>
     </p>
 </div>
 

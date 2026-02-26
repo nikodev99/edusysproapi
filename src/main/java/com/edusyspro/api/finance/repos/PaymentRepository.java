@@ -33,4 +33,7 @@ public interface PaymentRepository extends JpaRepository<Payments, UUID> {
     JOIN s.guardian g JOIN s.personalInfo ind JOIN g.personalInfo gp JOIN p.processedBy pro JOIN p.createdBy c WHERE p.id = :paymentId
     """)
     Optional<PaymentRequest> findPaymentById(@Param("paymentId") UUID paymentId);
+
+    @Query("SELECT distinct COUNT(DISTINCT p.student.id) FROM Payments p WHERE p.student.student.guardian.id = ?1 and p.student.academicYear.id = ?2")
+    Long countStudentByGuardianId(UUID guardianId, UUID academicYear);
 }
