@@ -39,7 +39,7 @@ public class TeacherController {
     }
 
     @GetMapping("/{id}/{schoolId}")
-    ResponseEntity<?> getTeacher(@PathVariable(name = "id") String id, @PathVariable(name = "schoolId") String schoolId) {
+    ResponseEntity<?> getTeacher(@PathVariable String id, @PathVariable String schoolId) {
         try {
             return ResponseEntity.ok(teacherService.findTeacherById(id, schoolId));
         }catch (NotFountException n) {
@@ -49,7 +49,7 @@ public class TeacherController {
 
     @GetMapping(value = {"/{schoolId}", "/all/{schoolId}"})
     ResponseEntity<Page<TeacherDTO>> getTeachers(
-            @PathVariable(name = "schoolId") String schoolId,
+            @PathVariable String schoolId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortCriteria
@@ -58,8 +58,20 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.findAllTeachers(schoolId, pageable));
     }
 
+    @GetMapping(value = {"/self/{schoolId}/{teacherId}"})
+    ResponseEntity<Page<TeacherDTO>> getTeachers(
+            @PathVariable String schoolId,
+            @PathVariable String teacherId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortCriteria
+    ) {
+        Pageable pageable = ControllerUtils.setSort(page, size, sortCriteria);
+        return ResponseEntity.ok(teacherService.findAllTeachers(schoolId, teacherId, pageable));
+    }
+
     @GetMapping("/search/{schoolId}")
-    ResponseEntity<List<TeacherDTO>> getSearchedTeachers(@PathVariable(name = "schoolId") String schoolId, @RequestParam String q) {
+    ResponseEntity<List<TeacherDTO>> getSearchedTeachers(@PathVariable String schoolId, @RequestParam String q) {
         return ResponseEntity.ok(teacherService.findAllTeachers(schoolId, q));
     }
 
@@ -74,7 +86,7 @@ public class TeacherController {
     }
 
     @GetMapping("/count/{schoolId}")
-    ResponseEntity<?> countTeachers(@PathVariable(name = "schoolId") String schoolId) {
+    ResponseEntity<?> countTeachers(@PathVariable String schoolId) {
         return ResponseEntity.ok(teacherService.countAllTeachers(schoolId));
     }
 

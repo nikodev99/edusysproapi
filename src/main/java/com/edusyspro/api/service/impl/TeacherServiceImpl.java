@@ -82,28 +82,23 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     @Override
     public Page<TeacherDTO> fetchAll(String schoolId, Pageable pageable) {
         Page<TeacherEssential> teacherEssentials = teacherRepository.findAllBySchoolId(UUID.fromString(schoolId), pageable);
-        return teacherEssentials.map((t) -> {
-            TeacherDTO teacherDTO = t.toTeacher();
-            List<CourseBasicValue> courses = teacherRepository.findTeacherCourses(t.id(), UUID.fromString(schoolId));
-            List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(t.id(), UUID.fromString(schoolId));
-            teacherDTO.setCourses(courses.stream().map(CourseBasicValue::toCourse).toList());
-            teacherDTO.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
-            return teacherDTO;
-        });
+        return teacherEssentials.map(t -> getTeacherDTO(t, UUID.fromString(schoolId)));
     }
 
     @Override
     public List<TeacherDTO> fetchAll(Object... args) {
-        String schoolId = UUID.fromString(args[0].toString()).toString();
+        UUID schoolId = UUID.fromString(args[0].toString());
         String lastname = "%" + args[1].toString() + "%";
-        return teacherRepository.findAllBySchoolId(UUID.fromString(schoolId), lastname).stream()
+        return teacherRepository.findAllBySchoolId(schoolId, lastname).stream()
                 .map(TeacherEssential::toTeacher)
                 .toList();
     }
 
     @Override
     public Page<TeacherDTO> fetchAll(Pageable pageable, Object... args) {
-        return null;
+        UUID schoolId = UUID.fromString(args[0].toString());
+        UUID teacherId = UUID.fromString(args[1].toString());
+        return teacherRepository.findAllBySchoolId(schoolId, teacherId, pageable).map(t -> getTeacherDTO(t, schoolId));
     }
 
     @Override
@@ -236,6 +231,15 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     public GenderCount countAllTeachers(String schoolId) {
         List<Object[]> countTeachers = teacherRepository.countAllTeachers(UUID.fromString(schoolId));
         return CustomMethod.genderCountInClasse(countTeachers);
+    }
+
+    private TeacherDTO getTeacherDTO(TeacherEssential t, UUID schoolId) {
+        TeacherDTO teacherDTO = t.toTeacher();
+        List<CourseBasicValue> courses = teacherRepository.findTeacherCourses(t.id(), schoolId);
+        List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(t.id(), schoolId);
+        teacherDTO.setCourses(courses.stream().map(CourseBasicValue::toCourse).toList());
+        teacherDTO.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
+        return teacherDTO;
     }
 
     private boolean teacherEmailExists(TeacherDTO teacherDTO) {

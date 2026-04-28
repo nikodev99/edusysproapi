@@ -42,6 +42,10 @@ public class TeacherService extends TeacherServiceImpl {
         return fetchAll(schoolId, pageable);
     }
 
+    public Page<TeacherDTO> findAllTeachers(String schoolId, String teacherId, Pageable pageable) {
+        return fetchAll(pageable, schoolId, teacherId);
+    }
+
     public List<TeacherDTO> findAllTeachers(String schoolId, String lastName) {
         return fetchAll(schoolId, lastName);
     }

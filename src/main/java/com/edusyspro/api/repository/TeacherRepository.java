@@ -25,6 +25,13 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     """)
     Page<TeacherEssential> findAllBySchoolId(UUID schoolId, Pageable pageable);
 
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.TeacherEssential(
+            t.id, t.personalInfo, t.hireDate, t.salaryByHour, s.id, s.name, t.createdAt, t.modifyAt
+        ) FROM Teacher t JOIN t.school s WHERE s.id = ?1 AND t.id = ?2
+    """)
+    Page<TeacherEssential> findAllBySchoolId(UUID schoolId, UUID teacherId, Pageable pageable);
+
     @Query("select new com.edusyspro.api.dto.custom.ClassBasicValue(c.id, c.name, c.category, g.section, d.name, d.code) from Teacher t " +
             "join t.aClasses c left join c.grade g left join c.department d where t.id = ?1 and ((g is null or g.school.id = ?2) or (d is null or d.school.id = ?2))")
     List<ClassBasicValue> findTeacherClasses(UUID teacherId, UUID schoolId);
