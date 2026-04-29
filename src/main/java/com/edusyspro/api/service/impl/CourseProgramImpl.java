@@ -1,19 +1,19 @@
 package com.edusyspro.api.service.impl;
 
-import com.edusyspro.api.dto.CourseProgramDTO;
+import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
-import com.edusyspro.api.dto.custom.CourseProgramBasic;
 import com.edusyspro.api.dto.custom.CourseProgramEssential;
-import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.dto.custom.CourseProgramResponse;
+import com.edusyspro.api.dto.custom.CourseProgramSemester;
 import com.edusyspro.api.repository.CourseProgramRepository;
 import com.edusyspro.api.service.interfaces.CourseProgramService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseProgramImpl implements CourseProgramService {
@@ -25,151 +25,124 @@ public class CourseProgramImpl implements CourseProgramService {
     }
 
     @Override
-    public CourseProgramDTO save(CourseProgramDTO entity) {
-        return null;
-    }
+    public CourseProgramResponse findAllProgramsByTeacherCourseAndClasse(String teacherId, CourseAndClasseIds ids, String academicYear) {
+        List<CourseProgramEssential> results = courseProgramRepository.findAllPerTeacherByCourseClasseAndAcademicYear(
+                UUID.fromString(teacherId), ids.courseId(), ids.classId(), UUID.fromString(academicYear)
+        );
 
-    @Override
-    public List<CourseProgramDTO> saveAll(List<CourseProgramDTO> entities) {
-        return List.of();
-    }
+        if (results.isEmpty()) {
+            return CourseProgramResponse.builder().semesters(Collections.emptyList()).build();
+        }
 
-    @Override
-    public List<CourseProgramDTO> fetchAll() {
-        return List.of();
-    }
+        CourseProgramEssential ref = results.get(0);
 
-    @Override
-    public List<CourseProgramDTO> fetchAll(String schoolId) {
-        return List.of();
-    }
+        List<CourseProgramSemester> semesters = results.stream()
+                .collect(Collectors.groupingBy(r -> r.getSemester().getSemesterId()))
+                .values().stream()
+                .map(entry -> {
+                    List<CourseProgramDTO> programs = entry.stream()
+                            .collect(Collectors.groupingBy(CourseProgramEssential::getProgramId))
+                            .values().stream()
+                            .map(this::mapToProgram)
+                            .sorted(Comparator.comparing(cp -> cp.getTiming().getStartDate(), Comparator.nullsLast(Comparator.naturalOrder())))
+                            .toList();
 
-    @Override
-    public Page<CourseProgramDTO> fetchAll(String schoolId, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public List<CourseProgramDTO> fetchAll(Object... args) {
-        return List.of();
-    }
-
-    @Override
-    public Page<CourseProgramDTO> fetchAll(Pageable pageable, Object... args) {
-        return null;
-    }
-
-    @Override
-    public List<CourseProgramDTO> fetchAllById(Long id) {
-        return List.of();
-    }
-
-    @Override
-    public List<CourseProgramDTO> fetchAllById(Object... arg) {
-        return List.of();
-    }
-
-    @Override
-    public Page<CourseProgramDTO> fetchAllByOtherEntityId(String otherEntityId, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public List<CourseProgramDTO> fetchAllByOtherEntityId(String otherEntityId) {
-        return List.of();
-    }
-
-    @Override
-    public List<CourseProgramDTO> fetchAllByOtherEntityId(Object... arg) {
-        var teacherId = UUID.fromString(arg[0].toString());
-        var schoolId = UUID.fromString(arg[1].toString());
-        return courseProgramRepository
-                .findBasicTeacherCoursePrograms(teacherId, schoolId).stream()
-                .map(CourseProgramBasic::toDTO)
+                    return new CourseProgramSemester(entry.get(0).getSemester(), programs);
+                })
+                .sorted(Comparator.comparing(s -> s.semester().getTemplate().getDisplayOrder(), Comparator.nullsLast(Comparator.naturalOrder())))
                 .toList();
+
+        return CourseProgramResponse.builder()
+                .semesters(semesters)
+                .academicYear(mapToAcademicYear(ref))
+                .teacher(mapToTeacher(ref))
+                .course(mapToCourse(ref))
+                .classe(mapToClasse(ref))
+                .build();
     }
 
     @Override
-    public CourseProgramDTO fetchOneById(Long id) {
-        return null;
+    public List<CourseProgramDTO> findAllProgramsByTeacherAndClasse(String teacherId, CourseAndClasseIds ids, String academicYear) {
+        return List.of();
     }
 
-    @Override
-    public CourseProgramDTO fetchOneById(Long id, String schoolId) {
-        return null;
+    private CourseProgramDTO mapToProgram(List<CourseProgramEssential> rows) {
+        CourseProgramEssential first = rows.get(0);
+
+        List<CourseProgramTopicDTO> topics = rows.stream()
+                .filter(r -> r.getTopicId() != null)
+                .map(this::mapToTopic)
+                .sorted(Comparator.comparing(CourseProgramTopicDTO::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList());
+
+        return CourseProgramDTO.builder()
+                .id(first.getProgramId())
+                .name(first.getProgramName())
+                .purpose(first.getPurpose())
+                .description(first.getProgramDescription())
+                .timing(mapToProgramTiming(first))
+                .topic(topics)
+                .build();
     }
 
-    @Override
-    public CourseProgramDTO fetchOneById(Long id, Object... args) {
-        return null;
+    private CourseProgramTopicDTO mapToTopic(CourseProgramEssential row) {
+        return CourseProgramTopicDTO.builder()
+                .id(row.getTopicId())
+                .title(row.getTopicTitle())
+                .description(row.getTopicDescription())
+                .order(row.getOrder())
+                .timing(mapToTopicTiming(row))
+                .build();
     }
 
-    @Override
-    public CourseProgramDTO fetchOneByCustomColumn(String columnValue, String schoolId) {
-        return null;
+    private CourseProgramTimingDTO mapToProgramTiming(CourseProgramEssential row) {
+        return CourseProgramTimingDTO.builder()
+                .id(row.getProgramTimingId())
+                .startDate(row.getProgramStartDate())
+                .endDate(row.getProgramEndDate())
+                .status(row.getProgramStatus())
+                .updatedAt(row.getProgramUpdateDate())
+                .completedAt(row.getProgramCompletedDate())
+                .build();
     }
 
-    @Override
-    public CourseProgramDTO fetchOneByCustomColumn(String columnValue) {
-        return null;
+    private CourseProgramTimingDTO mapToTopicTiming(CourseProgramEssential row) {
+        return CourseProgramTimingDTO.builder()
+                .id(row.getTopicTimingId())
+                .startDate(row.getTopicStartDate())
+                .endDate(row.getTopicEndDate())
+                .status(row.getTopicStatus())
+                .updatedAt(row.getTopicUpdateDate())
+                .completedAt(row.getTopicCompletedDate())
+                .build();
     }
 
-    @Override
-    public CourseProgramDTO fetchOneByCustomColumn(String columnValue, Object... args) {
-        return null;
+    private AcademicYearDTO mapToAcademicYear(CourseProgramEssential row) {
+        return AcademicYearDTO.builder()
+                .id(row.getAcademicYearId())
+                .years(row.getAcademicYear())
+                .build();
     }
 
-    @Override
-    public CourseProgramDTO fetchOneById(Object... arg) {
-        return null;
+    private TeacherDTO mapToTeacher(CourseProgramEssential row) {
+        return TeacherDTO.builder()
+                .personalInfo(row.getTeacher())
+                .build();
     }
 
-    @Override
-    public int update(CourseProgramDTO entity) {
-        return 0;
+    private CourseDTO mapToCourse(CourseProgramEssential row) {
+        return CourseDTO.builder()
+                .course(row.getCourseName())
+                .abbr(row.getCourseAbbr())
+                .build();
     }
 
-    @Override
-    public Map<String, Boolean> update(CourseProgramDTO entity, Long id) {
-        return Map.of();
-    }
-
-    @Override
-    public int patch(Long id, UpdateField field) {
-        return 0;
-    }
-
-    @Override
-    public int delete(CourseProgramDTO entity) {
-        return 0;
-    }
-
-    @Override
-    public Map<String, Long> count(Long id) {
-        return Map.of();
-    }
-
-    @Override
-    public Map<String, Long> count(String schoolId) {
-        return Map.of();
-    }
-
-    @Override
-    public Map<String, Long> count(Object... args) {
-        return Map.of();
-    }
-
-    @Override
-    public List<CourseProgramDTO> findAllProgramsByTeacherCourseAndClasse(String teacherId, CourseAndClasseIds ids) {
-        return courseProgramRepository.findAllByTeacherId(UUID.fromString(teacherId), ids.classId(), ids.courseId()).stream()
-                .map(CourseProgramEssential::toDTO)
-                .toList();
-    }
-
-    @Override
-    public List<CourseProgramDTO> findAllProgramsByTeacherAndClasse(String teacherId, CourseAndClasseIds ids) {
-        return courseProgramRepository.findAllByTeacherId(UUID.fromString(teacherId), ids.classId()).stream()
-                .map(CourseProgramEssential::toDTO)
-                .toList();
+    private ClasseDTO mapToClasse(CourseProgramEssential row) {
+        return ClasseDTO.builder()
+                .name(row.getClasseName())
+                .grade(GradeDTO.builder()
+                        .section(row.getSection())
+                        .build())
+                .build();
     }
 }

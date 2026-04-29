@@ -3,49 +3,40 @@ package com.edusyspro.api.dto.custom;
 import com.edusyspro.api.dto.*;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.Semester;
+import com.edusyspro.api.model.enums.ProgramStatus;
 import com.edusyspro.api.model.enums.Section;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.UUID;
 
-public record CourseProgramEssential(
-        Long id,
-        String topic,
-        String purpose,
-        String description,
-        boolean active,
-        boolean passed,
-        LocalDate updateDate,
-        Semester semestre,
-        String academicYear,
-        String courseName,
-        String courseAbbr,
-        String classeName,
-        Section section,
-        Individual teacher
-) {
-    public CourseProgramDTO toDTO() {
-        return CourseProgramDTO.builder()
-                .id(id)
-                .topic(topic)
-                .purpose(purpose)
-                .description(description)
-                .active(active)
-                .passed(passed)
-                .updateDate(updateDate)
-                .semester(semestre)
-                .course(CourseDTO.builder()
-                        .course(courseName)
-                        .abbr(courseAbbr)
-                        .build())
-                .classe(ClasseDTO.builder()
-                        .name(classeName)
-                        .grade(GradeDTO.builder()
-                                .section(section)
-                                .build())
-                        .build())
-                .teacher(TeacherDTO.builder()
-                        .personalInfo(teacher)
-                        .build())
-                .build();
-    }
+public interface CourseProgramEssential {
+    Long getProgramId();
+    Long getTopicId();
+    String getProgramName();
+    String getTopicTitle();
+    String getPurpose();
+    String getProgramDescription();
+    String getTopicDescription();
+    Short getOrder();
+    ProgramStatus getProgramStatus();
+    ProgramStatus getTopicStatus();
+    Semester getSemester();
+    Long getProgramTimingId();
+    Long getTopicTimingId();
+    LocalDate getProgramStartDate();
+    LocalDate getProgramEndDate();
+    LocalDate getTopicStartDate();
+    LocalDate getTopicEndDate();
+    UUID getAcademicYearId();
+    String getAcademicYear();
+    ZonedDateTime getProgramUpdateDate();
+    ZonedDateTime getProgramCompletedDate();
+    ZonedDateTime getTopicUpdateDate();
+    ZonedDateTime getTopicCompletedDate();
+    String getCourseName();
+    String getCourseAbbr();
+    String getClasseName();
+    Section getSection();
+    Individual getTeacher();
 }

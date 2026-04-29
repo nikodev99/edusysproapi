@@ -2,25 +2,15 @@ package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.ClasseDTO;
 import com.edusyspro.api.dto.CourseProgramDTO;
+import com.edusyspro.api.model.enums.ProgramStatus;
 
 import java.time.LocalDate;
+import java.util.List;
 
-public record CourseProgramBasic(
-        Long id,
-        String topic,
-        LocalDate updateDate,
-        String classe,
-        boolean active
-) {
-    public CourseProgramDTO toDTO() {
-        return CourseProgramDTO.builder()
-                .id(id)
-                .topic(topic)
-                .updateDate(updateDate)
-                .active(active)
-                .classe(ClasseDTO.builder()
-                        .name(classe)
-                        .build())
-                .build();
-    }
+public interface CourseProgramBasic {
+    Long getId();
+    String getProgramName();
+    String getTopicTitle();
+    String getClasse();
+    ProgramStatus getProgramStatus();
 }

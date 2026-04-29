@@ -2,6 +2,7 @@ package com.edusyspro.api.controller;
 
 import com.edusyspro.api.dto.CourseProgramDTO;
 import com.edusyspro.api.dto.custom.CourseAndClasseIds;
+import com.edusyspro.api.dto.custom.CourseProgramResponse;
 import com.edusyspro.api.service.interfaces.CourseProgramService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,25 +19,27 @@ public class CourseProgramController {
     }
 
     @GetMapping("/course/{teacherId}")
-    ResponseEntity<List<CourseProgramDTO>> getAllTeacherPrograms(
+    ResponseEntity<CourseProgramResponse> getAllTeacherPrograms(
             @PathVariable String teacherId,
             @RequestParam int classe,
-            @RequestParam(required = false) int course
+            @RequestParam(required = false) Integer course,
+            @RequestParam String academicYear
     ) {
         CourseAndClasseIds ids = new CourseAndClasseIds(course, classe);
         return ResponseEntity.ok(courseProgramService.findAllProgramsByTeacherCourseAndClasse(
-                teacherId, ids
+                teacherId, ids, academicYear
         ));
     }
 
     @GetMapping("/{teacherId}")
     ResponseEntity<List<CourseProgramDTO>> getAllTeacherPrograms(
             @PathVariable String teacherId,
-            @RequestParam int classe
+            @RequestParam int classe,
+            @RequestParam String academicYear
     ) {
         CourseAndClasseIds ids = new CourseAndClasseIds(0, classe);
         return ResponseEntity.ok(courseProgramService.findAllProgramsByTeacherAndClasse(
-                teacherId, ids
+                teacherId, ids, academicYear
         ));
     }
 }

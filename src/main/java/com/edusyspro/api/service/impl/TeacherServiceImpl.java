@@ -144,7 +144,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
                         .toTeacher();
         List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(dto.getId(), UUID.fromString(schoolId));
         List<CourseEssential> courses = teacherRepository.findTeacherEssentialCourses(dto.getId(), UUID.fromString(schoolId));
-        List<CourseProgramDTO> programs = courseProgramService.fetchAllByOtherEntityId(String.valueOf(dto.getId()), schoolId);
+        List<CourseProgramDTO> programs = List.of();
 
         dto.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
         dto.setCourses(courses.stream().map(CourseEssential::toCourse).toList());
