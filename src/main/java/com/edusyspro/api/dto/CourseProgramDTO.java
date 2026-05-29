@@ -1,5 +1,6 @@
 package com.edusyspro.api.dto;
 
+import com.edusyspro.api.model.CourseProgram;
 import com.edusyspro.api.model.Semester;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -21,4 +22,10 @@ public class CourseProgramDTO {
     private String description;
     private CourseProgramTimingDTO timing;
     private List<CourseProgramTopicDTO> topic;
+
+    public CourseProgram toMerge() {
+        return CourseProgram.builder()
+                .id(id)
+                .build();
+    }
 }

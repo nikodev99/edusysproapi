@@ -1,55 +1,94 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.dto.*;
-import com.edusyspro.api.dto.custom.CourseAndClasseIds;
-import com.edusyspro.api.dto.custom.CourseProgramEssential;
-import com.edusyspro.api.dto.custom.CourseProgramResponse;
-import com.edusyspro.api.dto.custom.CourseProgramSemester;
+import com.edusyspro.api.dto.custom.*;
+import com.edusyspro.api.model.CourseProgram;
+import com.edusyspro.api.model.CourseProgramTopic;
+import com.edusyspro.api.model.enums.ProgramStatus;
 import com.edusyspro.api.repository.CourseProgramRepository;
+import com.edusyspro.api.repository.CourseProgramTimingRepository;
+import com.edusyspro.api.repository.CourseProgramTopicRepository;
 import com.edusyspro.api.service.interfaces.CourseProgramService;
+import com.edusyspro.api.utils.Datetime;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class CourseProgramImpl implements CourseProgramService {
 
     private final CourseProgramRepository courseProgramRepository;
+    private final CourseProgramTopicRepository courseProgramTopicRepository;
+    private final CourseProgramTimingRepository courseProgramTimingRepository;
 
-    public CourseProgramImpl(CourseProgramRepository courseProgramRepository) {
+    public CourseProgramImpl(
+            CourseProgramRepository courseProgramRepository,
+            CourseProgramTopicRepository courseProgramTopicRepository,
+            CourseProgramTimingRepository courseProgramTimingRepository
+    ) {
         this.courseProgramRepository = courseProgramRepository;
+        this.courseProgramTopicRepository = courseProgramTopicRepository;
+        this.courseProgramTimingRepository = courseProgramTimingRepository;
+    }
+
+    @Transactional
+    public Long saveCourseProgram(CourseProgramRequest program) {
+        CourseProgram entity = program.toEntity();
+        CourseProgram saved = courseProgramRepository.save(entity);
+        return saved.getId();
+    }
+
+    @Override
+    public Long saveCourseProgramTopic(CourseProgramTopicDTO topic) {
+        CourseProgramTopic entity = topic.toEntity();
+        CourseProgramTopic saved = courseProgramTopicRepository.save(entity);
+        return saved.getId();
     }
 
     @Override
     public CourseProgramResponse findAllProgramsByTeacherCourseAndClasse(String teacherId, CourseAndClasseIds ids, String academicYear) {
-        List<CourseProgramEssential> results = courseProgramRepository.findAllPerTeacherByCourseClasseAndAcademicYear(
+        List<CourseProgramEssential> programs = courseProgramRepository.findAllPerTeacherByCourseClasseAndAcademicYear(
                 UUID.fromString(teacherId), ids.courseId(), ids.classId(), UUID.fromString(academicYear)
         );
 
-        if (results.isEmpty()) {
+        if (programs.isEmpty()) {
             return CourseProgramResponse.builder().semesters(Collections.emptyList()).build();
         }
 
-        CourseProgramEssential ref = results.get(0);
+        List<Long> programIds = programs.stream().map(CourseProgramEssential::getProgramId).toList();
 
-        List<CourseProgramSemester> semesters = results.stream()
+        List<CourseProgramTopicEssential> topics = courseProgramTopicRepository.findAllProgramsTopics(programIds);
+
+        Map<Long, List<CourseProgramTopicEssential>> topicsByProgramId = topics.stream()
+                .collect(Collectors.groupingBy(CourseProgramTopicEssential::getProgramId));
+
+        CourseProgramEssential ref = programs.get(0);
+
+        List<CourseProgramSemester> semesters = programs.stream()
                 .collect(Collectors.groupingBy(r -> r.getSemester().getSemesterId()))
                 .values().stream()
-                .map(entry -> {
-                    List<CourseProgramDTO> programs = entry.stream()
-                            .collect(Collectors.groupingBy(CourseProgramEssential::getProgramId))
-                            .values().stream()
-                            .map(this::mapToProgram)
-                            .sorted(Comparator.comparing(cp -> cp.getTiming().getStartDate(), Comparator.nullsLast(Comparator.naturalOrder())))
+                .map(e -> {
+                    List<CourseProgramDTO> programList = e.stream()
+                            .map(p -> mapToProgram(p, topicsByProgramId.getOrDefault(
+                                    p.getProgramId(), Collections.emptyList()
+                            )))
+                            .sorted(Comparator.comparing(
+                                    cp -> cp.getTiming().getStartDate(),
+                                    Comparator.nullsLast(Comparator.naturalOrder())
+                            ))
                             .toList();
 
-                    return new CourseProgramSemester(entry.get(0).getSemester(), programs);
+                    return new CourseProgramSemester(e.get(0).getSemester(), programList);
                 })
-                .sorted(Comparator.comparing(s -> s.semester().getTemplate().getDisplayOrder(), Comparator.nullsLast(Comparator.naturalOrder())))
+                .sorted(Comparator.comparing(
+                        s -> s.semester().getTemplate().getDisplayOrder(),
+                        Comparator.nullsLast(Comparator.naturalOrder())
+                ))
                 .toList();
 
         return CourseProgramResponse.builder()
@@ -66,26 +105,112 @@ public class CourseProgramImpl implements CourseProgramService {
         return List.of();
     }
 
-    private CourseProgramDTO mapToProgram(List<CourseProgramEssential> rows) {
-        CourseProgramEssential first = rows.get(0);
+    @Override
+    public MessageResponse changeStatus(Long id, ProgramStatus status) {
+        int updatedRow = courseProgramTimingRepository.updateStatus(id, status, Datetime.brazzavilleDatetime());
+        return updatedRow > 0 ?
+                MessageResponse.builder()
+                        .message("Status du thème mis à jour avec succès")
+                        .timestamp(ZonedDateTime.now().toString())
+                        .isError(false)
+                .build() :
+                MessageResponse.builder()
+                        .message("La tentative de mise à jour du status à échouer")
+                        .timestamp(ZonedDateTime.now().toString())
+                        .isError(true)
+                .build();
+    }
 
-        List<CourseProgramTopicDTO> topics = rows.stream()
+    @Override
+    public MessageResponse completed(Long id) {
+        int updatedRow = courseProgramTimingRepository.completeProgram(id, Datetime.brazzavilleDatetime());
+        return updatedRow > 0 ?
+                MessageResponse.builder()
+                        .message("Thème terminé. Félicitations!")
+                        .timestamp(ZonedDateTime.now().toString())
+                        .isError(false)
+                .build() :
+                MessageResponse.builder()
+                        .message("Le thème n'a pas été mis à jour")
+                        .timestamp(ZonedDateTime.now().toString())
+                        .isError(true)
+                .build();
+    }
+
+    @Override
+    public MessageResponse deleteProgram(Long id) {
+        try {
+            return courseProgramRepository.findById(id)
+                    .map(program -> {
+                        courseProgramRepository.delete(program);
+                        return MessageResponse.builder()
+                                .message("Thème supprimé avec succès")
+                                .timestamp(Instant.now().toString())
+                                .isError(false)
+                        .build();
+                    })
+                    .orElseGet(() -> MessageResponse.builder()
+                            .message("Program not found")
+                            .timestamp(Instant.now().toString())
+                            .isError(true)
+                            .build()
+                    );
+        } catch (Exception e) {
+            return MessageResponse.builder()
+                    .message("Deletion failed")
+                    .timestamp(Instant.now().toString())
+                    .isError(true)
+                    .description("An error occurred while deleting program with id " + id + ": " + e.getMessage())
+            .build();
+        }
+    }
+
+    @Override
+    public MessageResponse deleteTopic(Long id) {
+        try {
+            return courseProgramTopicRepository.findById(id)
+                    .map(program -> {
+                        courseProgramTopicRepository.delete(program);
+                        return MessageResponse.builder()
+                                .message("Sous-thème supprimé avec succès")
+                                .timestamp(Instant.now().toString())
+                                .isError(false)
+                                .build();
+                    })
+                    .orElseGet(() -> MessageResponse.builder()
+                            .message("Topic not found")
+                            .timestamp(Instant.now().toString())
+                            .isError(true)
+                            .build()
+                    );
+        } catch (Exception e) {
+            return MessageResponse.builder()
+                    .message("Deletion failed")
+                    .timestamp(Instant.now().toString())
+                    .isError(true)
+                    .description("An error occurred while deleting topic with id " + id + ": " + e.getMessage())
+                    .build();
+        }
+    }
+
+    private CourseProgramDTO mapToProgram(CourseProgramEssential programRow, List<CourseProgramTopicEssential> topicRows) {
+        List<CourseProgramTopicDTO> topics = topicRows.stream()
                 .filter(r -> r.getTopicId() != null)
                 .map(this::mapToTopic)
                 .sorted(Comparator.comparing(CourseProgramTopicDTO::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
                 .collect(Collectors.toList());
 
         return CourseProgramDTO.builder()
-                .id(first.getProgramId())
-                .name(first.getProgramName())
-                .purpose(first.getPurpose())
-                .description(first.getProgramDescription())
-                .timing(mapToProgramTiming(first))
+                .id(programRow.getProgramId())
+                .name(programRow.getProgramName())
+                .purpose(programRow.getPurpose())
+                .description(programRow.getProgramDescription())
+                .timing(mapToProgramTiming(programRow))
                 .topic(topics)
                 .build();
     }
 
-    private CourseProgramTopicDTO mapToTopic(CourseProgramEssential row) {
+    private CourseProgramTopicDTO mapToTopic(CourseProgramTopicEssential row) {
         return CourseProgramTopicDTO.builder()
                 .id(row.getTopicId())
                 .title(row.getTopicTitle())
@@ -106,7 +231,7 @@ public class CourseProgramImpl implements CourseProgramService {
                 .build();
     }
 
-    private CourseProgramTimingDTO mapToTopicTiming(CourseProgramEssential row) {
+    private CourseProgramTimingDTO mapToTopicTiming(CourseProgramTopicEssential row) {
         return CourseProgramTimingDTO.builder()
                 .id(row.getTopicTimingId())
                 .startDate(row.getTopicStartDate())

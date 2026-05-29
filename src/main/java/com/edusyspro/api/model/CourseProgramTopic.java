@@ -22,7 +22,7 @@ public class CourseProgramTopic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REMOVE })
+    @ManyToOne(cascade = { CascadeType.DETACH })
     @JoinColumn(name = "course_program_id", referencedColumnName = "id")
     private CourseProgram courseProgram;
 
@@ -37,7 +37,7 @@ public class CourseProgramTopic {
     @Column(name = "sort_order")
     private Short order;
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.DETACH})
     @JoinColumn(name = "parent_topic_id", referencedColumnName = "id")
     @JsonBackReference
     private CourseProgramTopic parentTopic;

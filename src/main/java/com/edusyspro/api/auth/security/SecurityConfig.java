@@ -32,7 +32,7 @@ public class SecurityConfig {
 
     private final JwtRequestFilter jwtRequestFilter;
 
-    @Value("${ui.url}")
+    @Value("${ui.cors_url}")
     private String UI_URL;
 
     @Autowired

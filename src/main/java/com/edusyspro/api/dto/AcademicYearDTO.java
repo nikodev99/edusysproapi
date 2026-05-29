@@ -50,4 +50,10 @@ public class AcademicYearDTO {
                 .school(school)
                 .build();
     }
+
+    public AcademicYear toMergeEntity() {
+        return AcademicYear.builder()
+                .id(id)
+                .build();
+    }
 }

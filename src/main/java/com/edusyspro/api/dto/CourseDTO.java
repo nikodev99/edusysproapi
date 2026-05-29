@@ -41,4 +41,10 @@ public class CourseDTO {
                .modifyAt(course.getModifyAt())
                .build();
     }
+
+    public Course toMarge() {
+        return Course.builder()
+                .id(id)
+                .build();
+    }
 }

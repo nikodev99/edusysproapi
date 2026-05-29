@@ -1,6 +1,6 @@
 package com.edusyspro.api.dto;
 
-import com.edusyspro.api.model.CourseProgramTiming;
+import com.edusyspro.api.model.CourseProgramTopic;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +25,16 @@ public class CourseProgramTopicDTO {
     private CourseProgramTopicDTO parentTopic;
     private List<CourseProgramTopicDTO> childTopics;
     private ZonedDateTime createAt;
+
+    public CourseProgramTopic toEntity() {
+        return CourseProgramTopic.builder()
+                .id(id)
+                .courseProgram(courseProgram.toMerge())
+                .title(title)
+                .timing(timing != null ? timing.toTiming() : null)
+                .description(description)
+                .order(order)
+                .createAt(createAt)
+                .build();
+    }
 }

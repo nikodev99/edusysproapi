@@ -12,28 +12,18 @@ import java.util.UUID;
 
 public interface CourseProgramEssential {
     Long getProgramId();
-    Long getTopicId();
     String getProgramName();
-    String getTopicTitle();
     String getPurpose();
     String getProgramDescription();
-    String getTopicDescription();
-    Short getOrder();
     ProgramStatus getProgramStatus();
-    ProgramStatus getTopicStatus();
     Semester getSemester();
     Long getProgramTimingId();
-    Long getTopicTimingId();
     LocalDate getProgramStartDate();
     LocalDate getProgramEndDate();
-    LocalDate getTopicStartDate();
-    LocalDate getTopicEndDate();
     UUID getAcademicYearId();
     String getAcademicYear();
     ZonedDateTime getProgramUpdateDate();
     ZonedDateTime getProgramCompletedDate();
-    ZonedDateTime getTopicUpdateDate();
-    ZonedDateTime getTopicCompletedDate();
     String getCourseName();
     String getCourseAbbr();
     String getClasseName();

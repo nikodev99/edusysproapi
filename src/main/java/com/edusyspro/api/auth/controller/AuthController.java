@@ -273,7 +273,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         try {
             String refreshToken = request.getRefreshToken();
 
@@ -282,10 +282,14 @@ public class AuthController {
                         .body(MessageResponse.builder().message("Invalid or expired refresh token").build());
             }
 
+            RefreshEntity token = refreshTokenService.findAndValidateRefreshToken(refreshToken);
+
+            String username = jwtUtils.getUsernameFromToken(refreshToken);
+            CustomUserDetails userDetails = (CustomUserDetails) userService.loadUserByUsername(username);
             boolean shouldPickSchool = jwtUtils.requiresSchoolSelection(refreshToken);
             UserSchoolRole schoolAffiliate = userSchoolRoleService.getUserSchoolRole(userDetails.getId(), request.getSchoolId());
             String accessToken = jwtUtils.generateTokenWithContext(userDetails, schoolAffiliate, shouldPickSchool);
-            RefreshEntity token = refreshTokenService.findAndValidateRefreshToken(refreshToken);
+
 
             IndividualUser user = individualService.getLoginUser(
                     UUID.fromString(request.getSchoolId()),

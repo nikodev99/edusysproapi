@@ -71,4 +71,10 @@ public class TeacherDTO {
                 .modifyAt(teacherDTO.getModifyAt())
                 .build();
     }
+
+    public Teacher toMarge() {
+        return Teacher.builder()
+                .id(id)
+                .build();
+    }
 }
