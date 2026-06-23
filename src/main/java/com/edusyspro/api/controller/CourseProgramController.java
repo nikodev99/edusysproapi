@@ -74,7 +74,7 @@ public class CourseProgramController {
     }
 
     @GetMapping("/{teacherId}")
-    ResponseEntity<List<CourseProgramDTO>> getAllTeacherPrograms(
+    ResponseEntity<CourseProgramResponse> getAllTeacherPrograms(
             @PathVariable String teacherId,
             @RequestParam int classe,
             @RequestParam String academicYear

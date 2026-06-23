@@ -1,4 +1,4 @@
 package com.edusyspro.api.dto.custom;
 
-public record CourseAndClasseIds(int courseId, int classId) {
+public record CourseAndClasseIds(Integer courseId, int classId) {
 }

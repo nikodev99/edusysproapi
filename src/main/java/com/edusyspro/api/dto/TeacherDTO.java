@@ -37,7 +37,7 @@ public class TeacherDTO {
 
     private List<CourseDTO> courses;
     private BigDecimal salaryByHour;
-    private List<CourseProgramDTO> courseProgram;
+    private List<List<CourseProgramDTO>> courseProgram;
     private School school;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;

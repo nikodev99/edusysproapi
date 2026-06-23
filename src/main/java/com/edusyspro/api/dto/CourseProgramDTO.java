@@ -22,6 +22,7 @@ public class CourseProgramDTO {
     private String description;
     private CourseProgramTimingDTO timing;
     private List<CourseProgramTopicDTO> topic;
+    private String classeName;
 
     public CourseProgram toMerge() {
         return CourseProgram.builder()

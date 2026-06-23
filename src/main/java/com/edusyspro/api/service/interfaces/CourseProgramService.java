@@ -17,7 +17,10 @@ public interface CourseProgramService {
     Long saveCourseProgramTopic(CourseProgramTopicDTO topic);
 
     CourseProgramResponse findAllProgramsByTeacherCourseAndClasse(String teacherId, CourseAndClasseIds ids, String academicYear);
-    List<CourseProgramDTO> findAllProgramsByTeacherAndClasse(String teacherId, CourseAndClasseIds ids, String academicYear);
+    CourseProgramResponse findAllProgramsByTeacherAndClasse(String teacherId, CourseAndClasseIds ids, String academicYear);
+
+    List<CourseProgramDTO> findAllProgramsByTeacherByCourseAndClasse(String teacherId, CourseAndClasseIds ids);
+    List<CourseProgramDTO> findAllProgramsByTeacherByClasse(String teacherId, CourseAndClasseIds ids);
 
     MessageResponse changeStatus(Long id, ProgramStatus status);
     MessageResponse completed(Long id);

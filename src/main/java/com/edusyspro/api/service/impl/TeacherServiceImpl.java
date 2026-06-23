@@ -20,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class TeacherServiceImpl implements TeacherServiceInterface {
 
@@ -144,7 +146,42 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
                         .toTeacher();
         List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(dto.getId(), UUID.fromString(schoolId));
         List<CourseEssential> courses = teacherRepository.findTeacherEssentialCourses(dto.getId(), UUID.fromString(schoolId));
-        List<CourseProgramDTO> programs = List.of();
+
+        List<List<CourseProgramDTO>> programs = new ArrayList<>();
+
+        if (!courses.isEmpty()) {
+            List<ScheduleDTO> teacherSchedules = scheduleService.getTeacherSchedule(dto.getId().toString());
+            List<ScheduleDTO> distinctSchedule = teacherSchedules.stream()
+                    .filter(s -> s.getClasse() != null)
+                    .filter(s -> s.getCourse() != null)
+                    .collect(Collectors.toMap(
+                            s -> new AbstractMap.SimpleEntry<>(
+                                    s.getClasse().getId(), s.getCourse().getId()
+                            ),
+                            Function.identity(),
+                            (first, second) -> first,
+                            LinkedHashMap::new
+                    ))
+                    .values()
+                    .stream()
+                    .toList();
+
+            for (ScheduleDTO s : distinctSchedule) {
+                List<CourseProgramDTO> p = courseProgramService.findAllProgramsByTeacherByCourseAndClasse(
+                        dto.getId().toString(),
+                        new CourseAndClasseIds(s.getCourse().getId(), s.getClasse().getId())
+                );
+                programs.add(p);
+            }
+        }else {
+            for (ClassBasicValue c : classes) {
+                List<CourseProgramDTO> p = courseProgramService.findAllProgramsByTeacherByClasse(
+                        dto.getId().toString(),
+                        new CourseAndClasseIds(null, c.id())
+                );
+                programs.add(p);
+            }
+        }
 
         dto.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
         dto.setCourses(courses.stream().map(CourseEssential::toCourse).toList());

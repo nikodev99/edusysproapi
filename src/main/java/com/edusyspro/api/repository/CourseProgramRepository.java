@@ -3,6 +3,7 @@ package com.edusyspro.api.repository;
 import com.edusyspro.api.dto.custom.CourseProgramBasic;
 import com.edusyspro.api.dto.custom.CourseProgramEssential;
 import com.edusyspro.api.model.CourseProgram;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -42,8 +43,16 @@ public interface CourseProgramRepository extends JpaRepository<CourseProgram, Lo
     @Query("""
         SELECT cp.id as id, cp.name as programName, cpt.title as topicTitle, cp.classe.name as classe, cp.timing.status as programStatus
         FROM CourseProgram cp JOIN cp.topic cpt WHERE cp.teacher.id = ?1 AND cp.course.id = ?2 AND cp.classe.id = ?3 AND cp.timing.academicYear.current = true
+        ORDER BY cp.timing.startDate DESC
     """)
-    List<CourseProgramBasic> findAllBasicPerTeacherByCourseClasseAndCurrentAcademicYear(UUID teacherId, int courseId, int classeId);
+    List<CourseProgramBasic> findAllBasicPerTeacherByCourseClasseAndCurrentAcademicYear(UUID teacherId, int courseId, int classeId, Pageable pageable);
+
+    @Query("""
+        SELECT cp.id as id, cp.name as programName, cpt.title as topicTitle, cp.classe.name as classe, cp.timing.status as programStatus
+        FROM CourseProgram cp JOIN cp.topic cpt WHERE cp.teacher.id = ?1 AND cp.course.id = ?2 AND cp.classe.id = ?3 AND cp.timing.academicYear.current = true
+        ORDER BY cp.timing.startDate DESC
+    """)
+    List<CourseProgramBasic> findAllBasicPerTeacherByClasseAndCurrentAcademicYear(UUID teacherId, int classeId, Pageable pageable);
 
     @Query("""
         SELECT cp.id as programId, cpt.id as topicId, cp.name as programName, cpt.title as topicTitle, cp.purpose as purpose,

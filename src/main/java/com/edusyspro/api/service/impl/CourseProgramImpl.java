@@ -11,6 +11,7 @@ import com.edusyspro.api.repository.CourseProgramTimingRepository;
 import com.edusyspro.api.repository.CourseProgramTopicRepository;
 import com.edusyspro.api.service.interfaces.CourseProgramService;
 import com.edusyspro.api.utils.Datetime;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,53 +57,32 @@ public class CourseProgramImpl implements CourseProgramService {
                 UUID.fromString(teacherId), ids.courseId(), ids.classId(), UUID.fromString(academicYear)
         );
 
-        if (programs.isEmpty()) {
-            return CourseProgramResponse.builder().semesters(Collections.emptyList()).build();
-        }
-
-        List<Long> programIds = programs.stream().map(CourseProgramEssential::getProgramId).toList();
-
-        List<CourseProgramTopicEssential> topics = courseProgramTopicRepository.findAllProgramsTopics(programIds);
-
-        Map<Long, List<CourseProgramTopicEssential>> topicsByProgramId = topics.stream()
-                .collect(Collectors.groupingBy(CourseProgramTopicEssential::getProgramId));
-
-        CourseProgramEssential ref = programs.get(0);
-
-        List<CourseProgramSemester> semesters = programs.stream()
-                .collect(Collectors.groupingBy(r -> r.getSemester().getSemesterId()))
-                .values().stream()
-                .map(e -> {
-                    List<CourseProgramDTO> programList = e.stream()
-                            .map(p -> mapToProgram(p, topicsByProgramId.getOrDefault(
-                                    p.getProgramId(), Collections.emptyList()
-                            )))
-                            .sorted(Comparator.comparing(
-                                    cp -> cp.getTiming().getStartDate(),
-                                    Comparator.nullsLast(Comparator.naturalOrder())
-                            ))
-                            .toList();
-
-                    return new CourseProgramSemester(e.get(0).getSemester(), programList);
-                })
-                .sorted(Comparator.comparing(
-                        s -> s.semester().getTemplate().getDisplayOrder(),
-                        Comparator.nullsLast(Comparator.naturalOrder())
-                ))
-                .toList();
-
-        return CourseProgramResponse.builder()
-                .semesters(semesters)
-                .academicYear(mapToAcademicYear(ref))
-                .teacher(mapToTeacher(ref))
-                .course(mapToCourse(ref))
-                .classe(mapToClasse(ref))
-                .build();
+       return mapToProgramResponse(programs);
     }
 
     @Override
-    public List<CourseProgramDTO> findAllProgramsByTeacherAndClasse(String teacherId, CourseAndClasseIds ids, String academicYear) {
-        return List.of();
+    public CourseProgramResponse findAllProgramsByTeacherAndClasse(String teacherId, CourseAndClasseIds ids, String academicYear) {
+        List<CourseProgramEssential> programs = courseProgramRepository.findAllPerTeacherByClasseAndAcademicYear(
+                UUID.fromString(teacherId), ids.courseId(), UUID.fromString(academicYear)
+        );
+
+        return mapToProgramResponse(programs);
+    }
+
+    @Override
+    public List<CourseProgramDTO> findAllProgramsByTeacherByCourseAndClasse(String teacherId, CourseAndClasseIds ids) {
+        List<CourseProgramBasic> programs = courseProgramRepository.findAllBasicPerTeacherByCourseClasseAndCurrentAcademicYear(
+                UUID.fromString(teacherId), ids.courseId(), ids.classId(), PageRequest.of(0, 2)
+        );
+        return mapToPrograms(programs);
+    }
+
+    @Override
+    public List<CourseProgramDTO> findAllProgramsByTeacherByClasse(String teacherId, CourseAndClasseIds ids) {
+        List<CourseProgramBasic> programs = courseProgramRepository.findAllBasicPerTeacherByClasseAndCurrentAcademicYear(
+                UUID.fromString(teacherId), ids.courseId(), PageRequest.of(0, 2)
+        );
+        return mapToPrograms(programs);
     }
 
     @Override
@@ -191,6 +171,76 @@ public class CourseProgramImpl implements CourseProgramService {
                     .description("An error occurred while deleting topic with id " + id + ": " + e.getMessage())
                     .build();
         }
+    }
+
+    private CourseProgramResponse mapToProgramResponse(List<CourseProgramEssential> programs) {
+        if (programs.isEmpty()) {
+            return CourseProgramResponse.builder().semesters(Collections.emptyList()).build();
+        }
+
+        List<Long> programIds = programs.stream().map(CourseProgramEssential::getProgramId).toList();
+
+        List<CourseProgramTopicEssential> topics = courseProgramTopicRepository.findAllProgramsTopics(programIds);
+
+        Map<Long, List<CourseProgramTopicEssential>> topicsByProgramId = topics.stream()
+                .collect(Collectors.groupingBy(CourseProgramTopicEssential::getProgramId));
+
+        CourseProgramEssential ref = programs.get(0);
+
+        List<CourseProgramSemester> semesters = programs.stream()
+                .collect(Collectors.groupingBy(r -> r.getSemester().getSemesterId()))
+                .values().stream()
+                .map(e -> {
+                    List<CourseProgramDTO> programList = e.stream()
+                            .map(p -> mapToProgram(p, topicsByProgramId.getOrDefault(
+                                    p.getProgramId(), Collections.emptyList()
+                            )))
+                            .sorted(Comparator.comparing(
+                                    cp -> cp.getTiming().getStartDate(),
+                                    Comparator.nullsLast(Comparator.naturalOrder())
+                            ))
+                            .toList();
+
+                    return new CourseProgramSemester(e.get(0).getSemester(), programList);
+                })
+                .sorted(Comparator.comparing(
+                        s -> s.semester().getTemplate().getDisplayOrder(),
+                        Comparator.nullsLast(Comparator.naturalOrder())
+                ))
+                .toList();
+
+        return CourseProgramResponse.builder()
+                .semesters(semesters)
+                .academicYear(mapToAcademicYear(ref))
+                .teacher(mapToTeacher(ref))
+                .course(mapToCourse(ref))
+                .classe(mapToClasse(ref))
+                .build();
+    }
+
+    private List<CourseProgramDTO> mapToPrograms(List<CourseProgramBasic> rows) {
+        Map<Long, CourseProgramDTO> map = new LinkedHashMap<>();
+
+        for (CourseProgramBasic row : rows) {
+            CourseProgramDTO dto = map.computeIfAbsent(row.getId(), id -> CourseProgramDTO.builder()
+                    .id(id)
+                    .name(row.getProgramName())
+                    .topic(new ArrayList<>())
+                    .timing(CourseProgramTimingDTO.builder()
+                            .status(row.getProgramStatus())
+                            .build())
+                    .classeName(row.getClasse())
+                    .build()
+            );
+
+            CourseProgramTopicDTO topics = CourseProgramTopicDTO.builder()
+                    .title(row.getTopicTitle())
+                    .build();
+
+            dto.getTopic().add(topics);
+        }
+
+        return new ArrayList<>(map.values());
     }
 
     private CourseProgramDTO mapToProgram(CourseProgramEssential programRow, List<CourseProgramTopicEssential> topicRows) {
