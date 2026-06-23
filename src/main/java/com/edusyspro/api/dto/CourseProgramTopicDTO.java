@@ -37,4 +37,10 @@ public class CourseProgramTopicDTO {
                 .createAt(createAt)
                 .build();
     }
+
+    public CourseProgramTopic toDetach() {
+        return CourseProgramTopic.builder()
+                .id(id)
+                .build();
+    }
 }

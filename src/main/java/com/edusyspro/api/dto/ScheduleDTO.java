@@ -54,4 +54,10 @@ public class ScheduleDTO {
                 .endTime(schedule.getEndTime())
                 .build();
     }
+
+    public Schedule toDetach() {
+        return Schedule.builder()
+                .id(id)
+                .build();
+    }
 }

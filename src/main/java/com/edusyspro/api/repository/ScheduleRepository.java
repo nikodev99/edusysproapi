@@ -93,4 +93,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query("select concat(s.teacher.personalInfo.lastName, ' ', s.teacher.personalInfo.firstName) , s.startTime, s.endTime " +
             "from Schedule s where s.course.id = ?1 group by s.teacher.id, s.classeEntity.id, s.startTime, s.endTime")
     List<Object[]> findCourseHourByTeacher(int courseId);
+
+    @Query("SELECT s.dayOfWeek FROM Schedule s WHERE s.teacher.id = ?1")
+    List<Day> getDayBySessionDate(UUID teacherId);
 }

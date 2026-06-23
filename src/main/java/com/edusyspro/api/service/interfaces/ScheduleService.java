@@ -3,6 +3,7 @@ package com.edusyspro.api.service.interfaces;
 import com.edusyspro.api.dto.ScheduleDTO;
 import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.ScheduleHoursBy;
+import com.edusyspro.api.model.enums.Day;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.service.CustomService;
 
@@ -29,4 +30,6 @@ public interface ScheduleService extends CustomService<ScheduleDTO, Long> {
 
     List<ScheduleHoursBy> getTotalCourseHoursByClasses(int courseId);
     List<ScheduleHoursBy> getTotalCourseHoursByTeachers(int courseId);
+
+    List<Day> getTeacherDays(String teacherId);
 }

@@ -109,6 +109,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public List<Day> getTeacherDays(String teacherId) {
+        return scheduleRepository.getDayBySessionDate(UUID.fromString(teacherId));
+    }
+
+    @Override
     public ScheduleDTO save(ScheduleDTO entity) {
         return null;
     }
