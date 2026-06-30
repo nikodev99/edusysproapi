@@ -80,7 +80,7 @@ public class CourseProgramImpl implements CourseProgramService {
     @Override
     public List<CourseProgramDTO> findAllProgramsByTeacherByClasse(String teacherId, CourseAndClasseIds ids) {
         List<CourseProgramBasic> programs = courseProgramRepository.findAllBasicPerTeacherByClasseAndCurrentAcademicYear(
-                UUID.fromString(teacherId), ids.courseId(), PageRequest.of(0, 2)
+                UUID.fromString(teacherId), ids.classId(), PageRequest.of(0, 2)
         );
         return mapToPrograms(programs);
     }

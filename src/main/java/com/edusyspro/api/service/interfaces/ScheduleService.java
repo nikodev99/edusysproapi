@@ -16,9 +16,9 @@ public interface ScheduleService extends CustomService<ScheduleDTO, Long> {
 
     List<ScheduleDTO> getAllClasseSchedule(int classeId, Section section);
 
-    List<ScheduleDTO> getTeacherSchedule(String teacherId);
+    List<ScheduleDTO> getTeacherSchedule(String academicYear, String teacherId);
 
-    List<ScheduleDTO> getTeacherScheduleByDay(String teacherId, boolean allDay);
+    List<ScheduleDTO> getTeacherScheduleByDay(String academicYear, String teacherId, boolean allDay);
 
     List<TeacherDTO> getAllClasseTeachers(int classeId);
 

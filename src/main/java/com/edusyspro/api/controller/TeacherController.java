@@ -85,6 +85,16 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.findTeacherBasicValue(teacherId, classe));
     }
 
+    @GetMapping("/classe/{teacherId}/{schoolId}")
+    ResponseEntity<?> getTeacherClasses(@PathVariable String teacherId, @PathVariable String schoolId) {
+        return ResponseEntity.ok(teacherService.fetchOneByCustomColumn(teacherId, schoolId, false));
+    }
+
+    @GetMapping("/course/{teacherId}/{schoolId}")
+    ResponseEntity<?> getTeacherCourses(@PathVariable String teacherId, @PathVariable String schoolId) {
+        return ResponseEntity.ok(teacherService.fetchOneByCustomColumn(teacherId, schoolId, true));
+    }
+
     @GetMapping("/count/{schoolId}")
     ResponseEntity<?> countTeachers(@PathVariable String schoolId) {
         return ResponseEntity.ok(teacherService.countAllTeachers(schoolId));

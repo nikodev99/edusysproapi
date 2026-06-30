@@ -34,13 +34,13 @@ public class ScheduleController {
     }
 
     @GetMapping("/teacher/{teacherId}")
-    ResponseEntity<List<ScheduleDTO>> allTeacherSchedules(@PathVariable String teacherId) {
-        return ResponseEntity.ok(scheduleService.getTeacherSchedule(teacherId));
+    ResponseEntity<List<ScheduleDTO>> allTeacherSchedules(@PathVariable String teacherId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(scheduleService.getTeacherSchedule(academicYear, teacherId));
     }
 
     @GetMapping("/teacher_day/{teacherId}")
-    ResponseEntity<List<ScheduleDTO>> teacherSchedulesByDay(@PathVariable String teacherId, @RequestParam boolean allDay) {
-        return ResponseEntity.ok(scheduleService.getTeacherScheduleByDay(teacherId, allDay));
+    ResponseEntity<List<ScheduleDTO>> teacherSchedulesByDay(@PathVariable String teacherId, @RequestParam String academicYear, @RequestParam boolean allDay) {
+        return ResponseEntity.ok(scheduleService.getTeacherScheduleByDay(academicYear, teacherId, allDay));
     }
 
     @GetMapping("/teachers/{classeId}")

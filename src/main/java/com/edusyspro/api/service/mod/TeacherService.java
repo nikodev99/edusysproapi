@@ -6,6 +6,7 @@ import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.impl.TeacherServiceImpl;
+import com.edusyspro.api.service.interfaces.AcademicYearService;
 import com.edusyspro.api.service.interfaces.CourseProgramService;
 import com.edusyspro.api.service.interfaces.IndividualReferenceService;
 import com.edusyspro.api.service.interfaces.ScheduleService;
@@ -21,6 +22,7 @@ public class TeacherService extends TeacherServiceImpl {
     public TeacherService(
             TeacherRepository teacherRepository,
             ScheduleService scheduleService,
+            AcademicYearService academicYearService,
             UpdateContext updateContext,
             CourseProgramService courseProgramService,
             IndividualReferenceService individualReferenceService
@@ -28,6 +30,7 @@ public class TeacherService extends TeacherServiceImpl {
         super(
                 teacherRepository,
                 scheduleService ,
+                academicYearService,
                 updateContext,
                 courseProgramService,
                 individualReferenceService

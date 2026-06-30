@@ -53,15 +53,15 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<ScheduleDTO> getTeacherSchedule(String teacherId) {
-        return scheduleRepository.findAllByTeacherId(UUID.fromString(teacherId)).stream()
+    public List<ScheduleDTO> getTeacherSchedule(String academicYear, String teacherId) {
+        return scheduleRepository.findAllByTeacherId(UUID.fromString(academicYear), UUID.fromString(teacherId)).stream()
                 .map(ScheduleEssential::toScheduleDto)
                 .toList();
     }
 
     @Override
-    public List<ScheduleDTO> getTeacherScheduleByDay(String teacherId, boolean allDay) {
-        return scheduleRepository.findAllByTeacherIdByDay(UUID.fromString(teacherId), allDay ? Day.ALL_DAYS : Day.getCurrentDay()).stream()
+    public List<ScheduleDTO> getTeacherScheduleByDay(String academicYear, String teacherId, boolean allDay) {
+        return scheduleRepository.findAllByTeacherIdByDay(UUID.fromString(academicYear), UUID.fromString(teacherId), allDay ? Day.ALL_DAYS : Day.getCurrentDay()).stream()
                 .map(ScheduleEssential::toScheduleDto)
                 .toList();
     }

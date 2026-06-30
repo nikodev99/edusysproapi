@@ -59,17 +59,17 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
         select new com.edusyspro.api.dto.custom.ScheduleEssential(
             s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
             s.course.abbr, s.classeEntity.id, s.classeEntity.name, s.classeEntity.grade.section, s.designation, s.dayOfWeek, s.startTime, s.endTime
-        ) from Schedule s left join s.course where s.academicYear.current = true and s.teacher.id = ?1
+        ) from Schedule s left join s.course where s.academicYear.id = ?1 and s.academicYear.current = true and s.teacher.id = ?2
     """)
-    List<ScheduleEssential> findAllByTeacherId(UUID teacher_id);
+    List<ScheduleEssential> findAllByTeacherId(UUID academicYear, UUID teacher_id);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScheduleEssential(
             s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
             s.course.abbr, s.classeEntity.id, s.classeEntity.name, s.classeEntity.grade.section, s.designation, s.dayOfWeek, s.startTime, s.endTime
-        ) from Schedule s left join s.course c where s.academicYear.current = true and s.teacher.id = ?1 and s.dayOfWeek = ?2
+        ) from Schedule s left join s.course c where s.academicYear.id = ?1 and s.academicYear.current = true and s.teacher.id = ?2 and s.dayOfWeek = ?3
     """)
-    List<ScheduleEssential> findAllByTeacherIdByDay(UUID teacher_id, Day dayOfWeek);
+    List<ScheduleEssential> findAllByTeacherIdByDay(UUID academicYear, UUID teacher_id, Day dayOfWeek);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScheduleEssential(

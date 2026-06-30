@@ -11,10 +11,7 @@ import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.CustomMethod;
-import com.edusyspro.api.service.interfaces.CourseProgramService;
-import com.edusyspro.api.service.interfaces.IndividualReferenceService;
-import com.edusyspro.api.service.interfaces.ScheduleService;
-import com.edusyspro.api.service.interfaces.TeacherServiceInterface;
+import com.edusyspro.api.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +24,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     private final TeacherRepository teacherRepository;
     private final ScheduleService scheduleService;
+    private final AcademicYearService academicYearService;
     private final UpdateContext updateContext;
     private final CourseProgramService courseProgramService;
     private final IndividualReferenceService individualReferenceService;
@@ -35,12 +33,14 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     public TeacherServiceImpl(
             TeacherRepository teacherRepository,
             ScheduleService scheduleService,
+            AcademicYearService academicYearService,
             UpdateContext updateContext,
             CourseProgramService courseProgramService,
             IndividualReferenceService individualReferenceService
     ) {
         this.teacherRepository = teacherRepository;
         this.scheduleService = scheduleService;
+        this.academicYearService = academicYearService;
         this.updateContext = updateContext;
         this.courseProgramService = courseProgramService;
         this.individualReferenceService = individualReferenceService;
@@ -150,7 +150,8 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
         List<List<CourseProgramDTO>> programs = new ArrayList<>();
 
         if (!courses.isEmpty()) {
-            List<ScheduleDTO> teacherSchedules = scheduleService.getTeacherSchedule(dto.getId().toString());
+            UUID academicYearId = academicYearService.getCurrentAcademicYear(schoolId).getId();
+            List<ScheduleDTO> teacherSchedules = scheduleService.getTeacherSchedule(academicYearId.toString(), dto.getId().toString());
             List<ScheduleDTO> distinctSchedule = teacherSchedules.stream()
                     .filter(s -> s.getClasse() != null)
                     .filter(s -> s.getCourse() != null)
@@ -206,7 +207,17 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public TeacherDTO fetchOneByCustomColumn(String columnValue, Object... args) {
-        return null;
+        UUID schoolId = UUID.fromString(args[0].toString());
+        Boolean hasCourse = (Boolean) args[1];
+        TeacherDTO teacher = TeacherDTO.builder().build();
+        if (hasCourse) {
+            List<CourseBasicValue> courses = teacherRepository.findTeacherCourses(UUID.fromString(columnValue), schoolId);
+            teacher.setCourses(courses.stream().map(CourseBasicValue::toCourse).toList());
+        }else {
+            List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(UUID.fromString(columnValue), schoolId);
+            teacher.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
+        }
+        return teacher;
     }
 
     @Override
