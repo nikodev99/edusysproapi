@@ -1,7 +1,6 @@
 package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.*;
-import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.model.enums.AssignmentType;
@@ -15,8 +14,6 @@ public record AssignmentToExam(
         Long id,
         Semester semester,
         UUID academicYearId,
-        Long planningId,
-        String planningName,
         Long examId,
         Long teacherId,
         String teacherFirstName,
@@ -40,11 +37,7 @@ public record AssignmentToExam(
     public AssignmentDTO toDTO() {
         return AssignmentDTO.builder()
                 .id(id)
-                .semester(PlanningDTO.builder()
-                        .id(planningId)
-                        .designation(planningName)
-                        .semestre(semester)
-                        .build())
+                .semester(semester)
                 .preparedBy(Individual.builder()
                         .id(teacherId)
                         .firstName(teacherFirstName)

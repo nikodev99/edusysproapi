@@ -17,7 +17,7 @@ public interface AssignmentService {
 
     Page<AssignmentDTO> findAllAssignments(AssignmentFilter filter, Pageable pageable);
 
-    List<AssignmentDTO> findAllNotCompleteAssignment(String academicYear);
+    List<AssignmentDTO> findAllNotCompleteAssignment(String academicYear, Long teacherId);
 
     List<AssignmentDTO> findAllClasseAssignments(Integer classeId, String academicYear);
 

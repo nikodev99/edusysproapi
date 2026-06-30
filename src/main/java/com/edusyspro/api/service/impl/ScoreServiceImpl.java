@@ -194,6 +194,13 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
+    public ScoreDTO getStudentAssignmentScore(long assignmentId, String studentId) {
+        return scoreRepository.findStudentScoreOfOneAssignment(assignmentId, UUID.fromString(studentId))
+                .map(ScoreBasicValue::toDTO)
+                .orElseThrow();
+    }
+
+    @Override
     public Long countAssignmentSCores(long assignmentId) {
         return scoreRepository.countAssignmentInScores(assignmentId).orElse(0L);
     }

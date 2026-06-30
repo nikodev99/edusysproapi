@@ -13,6 +13,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -96,7 +98,7 @@ public class PlanningServiceImpl implements PlanningService {
     }
 
     @Override
-    public List<PlanningDTO> findAllPlanningByClasseThroughoutTheAcademicYear(int classeId, LocalDate startDate, LocalDate endDate) {
+    public List<PlanningDTO> findAllPlanningByClasseThroughoutTheAcademicYear(int classeId, ZonedDateTime startDate, ZonedDateTime endDate) {
         return planningRepository.getClassePlanningByDates(classeId, startDate, endDate)
                 .orElse(List.of())
                 .stream()

@@ -31,8 +31,7 @@ public class AssignmentSpec {
         cq.select(cb.construct(
                 AssignmentEssential.class,
                 assignment.get("id"),
-                assignment.get("semester").get("semestre"),
-                assignment.get("semester").get("designation"),
+                assignment.get("semester"),
                 assignment.get("exam").get("examType"),
                 assignment.get("preparedBy").get("id"),
                 assignment.get("preparedBy").get("firstName"),
@@ -78,19 +77,23 @@ public class AssignmentSpec {
         List<Predicate> predicates = new ArrayList<>();
 
         predicates.add(cb.equal(
-                assignment.get("semester").get("semestre").get("academicYear").get("id"),
+                assignment.get("semester").get("academicYear").get("id"),
                 filters.academicYearId()));
 
-        if (filters.gradeId()      != null) {
+        if (filters.teacherId() != null) {
+            predicates.add(cb.equal(assignment.get("preparedBy").get("id"), filters.teacherId()));
+        }
+
+        if (filters.gradeId() != null) {
             predicates.add(cb.equal(assignment.get("classeEntity").get("grade").get("id"), filters.gradeId()));
         }
-        if (filters.semesterId()   != null) {
-            predicates.add(cb.equal(assignment.get("semester").get("semestre").get("semesterId"), filters.semesterId()));
+        if (filters.semesterId() != null) {
+            predicates.add(cb.equal(assignment.get("semester").get("semesterId"), filters.semesterId()));
         }
-        if (filters.classeId()      != null) {
+        if (filters.classeId() != null) {
             predicates.add(cb.equal(assignment.get("classeEntity").get("id"), filters.classeId()));
         }
-        if (filters.courseId()    != null) {
+        if (filters.courseId() != null) {
             predicates.add(cb.equal(assignment.get("subject").get("id"), filters.courseId()));
         }
 

@@ -1,17 +1,15 @@
 package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.PlanningDTO;
-import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.Semester;
 
-import java.time.LocalDate;
-import java.util.UUID;
+import java.time.ZonedDateTime;
 
 public record PlanningEssential(
         long id,
         String designation,
-        LocalDate termStartDate,
-        LocalDate termEndDate,
+        ZonedDateTime termStartDate,
+        ZonedDateTime termEndDate,
         Semester semestre
 ) {
     public PlanningDTO toDto() {

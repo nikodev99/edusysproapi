@@ -9,11 +9,12 @@ import com.edusyspro.api.dto.filters.AssignmentFilter;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.Assignment;
+import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.repository.AssignmentRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.repository.spec.AssignmentSpec;
 import com.edusyspro.api.service.interfaces.AssignmentService;
-import com.edusyspro.api.service.interfaces.PlanningService;
+import com.edusyspro.api.service.interfaces.SemesterService;
 import com.edusyspro.api.service.mod.ClasseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,20 +31,20 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final AssignmentRepository assignmentRepository;
     private final AssignmentSpec assignmentSpec;
     private final UpdateContext updateContext;
-    private final PlanningService planningService;
+    private final SemesterService semesterService;
     private final ClasseService classeService;
 
     public AssignmentServiceImpl(
             AssignmentRepository assignmentRepository,
             AssignmentSpec assignmentSpec,
             UpdateContext updateContext,
-            PlanningService planningService,
+            SemesterService semesterService,
             ClasseService classeService
     ) {
         this.assignmentRepository = assignmentRepository;
         this.assignmentSpec = assignmentSpec;
         this.updateContext = updateContext;
-        this.planningService = planningService;
+        this.semesterService = semesterService;
         this.classeService = classeService;
     }
 
@@ -54,7 +55,11 @@ public class AssignmentServiceImpl implements AssignmentService {
             assignmentRepository.save(assignment);
             return assignmentData;
         }
-        return null;
+        throw new AlreadyExistException("Le devoir avec le nom '"
+                + assignmentData.getExamName() +
+                "' existe déjà cette année."
+                
+        );
     }
 
     @Override
@@ -64,7 +69,11 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public List<AssignmentDTO> findAllNotCompleteAssignment(String academicYear) {
+    public List<AssignmentDTO> findAllNotCompleteAssignment(String academicYear, Long teacherId) {
+        if (teacherId != null)
+            return assignmentRepository.findAllTeacherNotCompleteAssignments(UUID.fromString(academicYear), teacherId).stream()
+                    .map(AssignmentEssential::toDTO)
+                    .toList();
         return assignmentRepository.findAllNotCompleteAssignments(UUID.fromString(academicYear)).stream()
                 .map(AssignmentEssential::toDTO)
                 .toList();
@@ -114,14 +123,14 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Override
     public List<AssignmentDTO> findAllAssignmentsPreparedByTeacherByCourse(long teacherId, CourseAndClasseIds ids) {
-        return assignmentRepository.findAllAssignmentsByTeacher(teacherId, ids.classId(), ids.courseId()).stream()
+        return assignmentRepository.findAllAssignmentsByTeacherByCourseByClasse(teacherId, ids.classId(), ids.courseId()).stream()
                 .map(AssignmentEssential::toDTO)
                 .toList();
     }
 
     @Override
     public List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, CourseAndClasseIds ids) {
-        return assignmentRepository.findAllAssignmentsByTeacher(teacherId, ids.classId()).stream()
+        return assignmentRepository.findAllAssignmentsByTeacherByClasse(teacherId, ids.classId()).stream()
                 .map(AssignmentEssential::toDTO)
                 .toList();
     }
@@ -133,10 +142,10 @@ public class AssignmentServiceImpl implements AssignmentService {
                 .toDTO();
 
         if (assignment != null && assignment.getId() > 0) {
-            PlanningDTO planning = planningService.findBasicPlanningById(assignment.getSemester().getId());
+            Semester semester = semesterService.fetchOneById(assignment.getSemester().getSemesterId());
             ClasseDTO classe = classeService.getClasseById(assignment.getClasse().getId());
             
-            assignment.setSemester(planning);
+            assignment.setSemester(semester);
             assignment.setClasse(classe);
         }
 
@@ -173,8 +182,19 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     private boolean assignmentExists(AssignmentDTO assignment) {
-        Long count = assignmentRepository.assignmentExists(assignment.getExamName())
-                .orElseThrow(() -> new AlreadyExistException("Le devoir avec le nom '" + assignment.getExamName() + "' existe déjà cette année."));
+        long count = 0L;
+        if (assignment.getSubject() != null && assignment.getSubject().getId() != null) {
+            count = assignmentRepository.courseAssignmentExists(
+                    assignment.getExamName(),
+                    assignment.getClasse().getId(),
+                    assignment.getSubject().getId()
+            ).orElseThrow();
+        }else {
+            count = assignmentRepository.assignmentExists(
+                    assignment.getExamName(),
+                    assignment.getClasse().getId()
+            ).orElseThrow();
+        }
         return count > 0;
     }
 }

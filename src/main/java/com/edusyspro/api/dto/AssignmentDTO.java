@@ -20,7 +20,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AssignmentDTO {
     private Long id;
-    private PlanningDTO semester;
+    private Semester semester;
     private ExamDTO exam;
     private Individual preparedBy;
     private ClasseDTO classe;
@@ -39,17 +39,17 @@ public class AssignmentDTO {
     public Assignment toEntity() {
         return Assignment.builder()
                 .id(id)
-                .semester(PlanningDTO.toEntity(semester))
+                .semester(semester)
                 .exam(exam.toEntity())
                 .preparedBy(preparedBy)
-                .classeEntity(ClasseDTO.toEntity(classe))
-                .subject(CourseDTO.toEntity(subject))
+                .classeEntity(classe.toMergeEntity())
+                .subject(subject.toMarge())
                 .examName(examName)
                 .examDate(examDate)
                 .startTime(startTime)
                 .endTime(endTime)
                 .passed(passed)
-                .coefficient(coefficient)
+                .coefficient(coefficient == null ? 1 : coefficient)
                 .type(type)
                 .addedDate(addedDate)
                 .updatedDate(updatedDate)

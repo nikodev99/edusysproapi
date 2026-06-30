@@ -14,12 +14,14 @@ import com.edusyspro.api.service.CustomMethod;
 import com.edusyspro.api.service.interfaces.AcademicYearService;
 import com.edusyspro.api.service.interfaces.AttendanceService;
 import com.edusyspro.api.service.interfaces.PlanningService;
+import com.edusyspro.api.utils.Datetime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -253,10 +255,10 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     public Integer getNumberOfClasseDays(int classeId, String academicYearId) {
         AcademicYearDTO academicYear = academicYearService.getAcademicYearById(academicYearId);
-        LocalDate currentDate = LocalDate.now();
-        LocalDate endDate = currentDate.isBefore(academicYear.getEndDate()) ? currentDate : academicYear.getEndDate();
+        ZonedDateTime currentDate = ZonedDateTime.now();
+        ZonedDateTime endDate = currentDate.isBefore(Datetime.toZone(academicYear.getEndDate())) ? currentDate : Datetime.toZone(academicYear.getEndDate());
         List<PlanningDTO> plannings = planningService.findAllPlanningByClasseThroughoutTheAcademicYear(
-                classeId, academicYear.getStartDate(), endDate
+                classeId, Datetime.toZone(academicYear.getStartDate()), endDate
         );
 
         Map<Integer, List<PlanningDTO>> bySemesters = plannings.stream()
@@ -269,13 +271,15 @@ public class AttendanceServiceImpl implements AttendanceService {
 
             LocalDate minStart = semestersPlannings.stream()
                     .map(PlanningDTO::getTermStartDate)
-                    .min(LocalDate::compareTo)
-                    .orElseThrow();
+                    .min(ZonedDateTime::compareTo)
+                    .orElseThrow()
+                    .toLocalDate();
 
             LocalDate maxEnd = semestersPlannings.stream()
                     .map(PlanningDTO::getTermEndDate)
-                    .max(LocalDate::compareTo)
-                    .orElseThrow();
+                    .max(ZonedDateTime::compareTo)
+                    .orElseThrow()
+                    .toLocalDate();
 
             grandTotalDays = countDays(minStart, maxEnd);
         }

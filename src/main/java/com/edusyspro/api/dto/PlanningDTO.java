@@ -2,6 +2,7 @@ package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Planning;
 import com.edusyspro.api.model.Semester;
+import com.edusyspro.api.utils.Datetime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 @Data
@@ -22,8 +22,8 @@ public class PlanningDTO {
     @JsonProperty("semester")
     private Semester semestre;
     private String designation;
-    private LocalDate termStartDate;
-    private LocalDate termEndDate;
+    private ZonedDateTime termStartDate;
+    private ZonedDateTime termEndDate;
     private GradeDTO grade;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
@@ -31,7 +31,6 @@ public class PlanningDTO {
     public static PlanningDTO fromEntity(Planning dto) {
         return PlanningDTO.builder()
                 .id(dto.getId())
-                .semestre(dto.getSemestre())
                 .designation(dto.getDesignation())
                 .termStartDate(dto.getTermStartDate())
                 .termEndDate(dto.getTermEndDate())
@@ -43,7 +42,6 @@ public class PlanningDTO {
     public static Planning toEntity(PlanningDTO dto) {
         return Planning.builder()
                 .id(dto.getId())
-                .semestre(dto.getSemestre())
                 .designation(dto.getDesignation())
                 .termStartDate(dto.getTermStartDate())
                 .termEndDate(dto.getTermEndDate())
@@ -52,9 +50,23 @@ public class PlanningDTO {
                 .build();
     }
 
+    public static Planning fromAssignment(AssignmentDTO dto) {
+        return Planning.builder()
+                .designation(dto.getExamName())
+                .termStartDate(Datetime.toZone(dto.getExamDate().atTime(dto.getStartTime())))
+                .termEndDate(Datetime.toZone(dto.getExamDate().atTime(dto.getEndTime())))
+                .createdAt(dto.getAddedDate() != null ? dto.getAddedDate() : Datetime.brazzavilleDatetime())
+                .updatedAt(dto.getUpdatedDate() != null ? dto.getUpdatedDate() : Datetime.brazzavilleDatetime())
+                .build();
+    }
+
     public static Planning toEntityWithGrade(PlanningDTO dto) {
         Planning planning = toEntity(dto);
         planning.setGrade(dto.getGrade() != null ? dto.grade.toEntity() : null);
         return planning;
+    }
+
+    public Planning toMerge() {
+        return Planning.builder().id(id).build();
     }
 }

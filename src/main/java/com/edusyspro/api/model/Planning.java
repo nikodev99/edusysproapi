@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -30,9 +29,9 @@ public class Planning {
     @Column(length = 500)
     private String designation;
 
-    private LocalDate termStartDate;
+    private ZonedDateTime termStartDate;
 
-    private LocalDate termEndDate;
+    private ZonedDateTime termEndDate;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
     @JoinColumn(name = "grade_id", referencedColumnName = "id")
@@ -61,7 +60,6 @@ public class Planning {
                 ", designation=" + designation +
                 ", termStartDate=" + termStartDate +
                 ", termEndDate=" + termEndDate +
-                ", semestre=" + semestre +
                 //", grade=" + grade +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt + "}";

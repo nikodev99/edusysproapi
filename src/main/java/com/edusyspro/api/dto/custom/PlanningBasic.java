@@ -4,13 +4,14 @@ import com.edusyspro.api.dto.PlanningDTO;
 import com.edusyspro.api.model.Semester;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 public record PlanningBasic(
        Long id,
        Integer semesterId,
        String designation,
-       LocalDate termStartDate,
-       LocalDate termEndDate
+       ZonedDateTime termStartDate,
+       ZonedDateTime termEndDate
 ) {
     public PlanningDTO toDto() {
         return PlanningDTO.builder()

@@ -1,8 +1,6 @@
 package com.edusyspro.api.utils;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -25,6 +23,22 @@ public class Datetime {
             zdt = (ZonedDateTime) content[1];
         }
         return zdt.withZoneSameInstant(ZoneId.systemDefault());
+    }
+
+    public static ZonedDateTime toZone(LocalDateTime datetime, ZoneId zoneId) {
+        return datetime.atZone(zoneId);
+    }
+
+    public static ZonedDateTime toZone(LocalDateTime datetime) {
+        return datetime.atZone(BRAZZA_TIME);
+    }
+
+    public static ZonedDateTime toZone(LocalDate date) {
+        return date.atStartOfDay(BRAZZA_TIME);
+    }
+
+    public static ZonedDateTime toZone(LocalDate datetime, ZoneId zoneId) {
+        return datetime.atStartOfDay(zoneId);
     }
 
     public static Object[] isZonedDatetime (String datetime) {

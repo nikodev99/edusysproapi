@@ -12,7 +12,6 @@ import java.time.ZonedDateTime;
 public record AssignmentEssential(
         Long id,
         Semester semester,
-        String planningName,
         ExamType examType,
         Long teacherId,
         String teacherFirstName,
@@ -36,10 +35,7 @@ public record AssignmentEssential(
     public AssignmentDTO toDTO() {
         return AssignmentDTO.builder()
                 .id(id)
-                .semester(PlanningDTO.builder()
-                        .designation(planningName)
-                        .semestre(semester)
-                        .build())
+                .semester(semester)
                 .exam(ExamDTO.builder()
                         .examType(examType)
                         .build())

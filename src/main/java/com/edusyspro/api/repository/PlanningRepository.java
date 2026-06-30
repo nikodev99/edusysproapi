@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,7 +44,7 @@ public interface PlanningRepository extends JpaRepository<Planning, Long> {
         select new com.edusyspro.api.dto.custom.PlanningBasic(p.id, p.semestre.semesterId, p.designation, p.termStartDate, p.termEndDate)
         from ClasseEntity c join c.grade g join g.planning p where c.id = ?1 and p.termStartDate between ?2 and ?3
     """)
-    Optional<List<PlanningBasic>> getClassePlanningByDates(int classeId, LocalDate startDate, LocalDate endDate);
+    Optional<List<PlanningBasic>> getClassePlanningByDates(int classeId, ZonedDateTime startDate, ZonedDateTime endDate);
 
     @Query("""
         update Planning p set p.semestre = ?1, p.designation = ?2, p.termStartDate = ?3, p.termEndDate = ?4
@@ -54,8 +55,8 @@ public interface PlanningRepository extends JpaRepository<Planning, Long> {
     int updatePlanning(
             Semester semester,
             String designation,
-            LocalDate termStartDate,
-            LocalDate termEndDate,
+            ZonedDateTime termStartDate,
+            ZonedDateTime termEndDate,
             long planningId
     );
 

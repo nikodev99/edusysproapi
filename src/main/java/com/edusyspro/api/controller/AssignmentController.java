@@ -47,6 +47,7 @@ public class AssignmentController {
         return ResponseEntity.ok(assignmentService.findAllAssignments(
                 new AssignmentFilter(
                         UUID.fromString(academicYear),
+                        null,
                         grade,
                         semester,
                         classe,
@@ -57,10 +58,38 @@ public class AssignmentController {
         ));
     }
 
+    @GetMapping(value = {"/teacher/{teacherId}"})
+    ResponseEntity<?> fetchAllTeacherAssignments(
+            @PathVariable String teacherId,
+            @RequestParam String academicYear,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortCriteria,
+            @RequestParam(required = false) Integer grade,
+            @RequestParam(required = false) Integer semester,
+            @RequestParam(required = false) Integer classe,
+            @RequestParam(required = false) Integer course,
+            @RequestParam(required = false) String search
+    ) {
+        return ResponseEntity.ok(assignmentService.findAllAssignments(
+                new AssignmentFilter(
+                        UUID.fromString(academicYear),
+                        Long.parseLong(teacherId),
+                        grade,
+                        semester,
+                        classe,
+                        course,
+                        search
+                ),
+                ControllerUtils.setSort(page, size, sortCriteria)
+        ));
+    }
+
+
     @GetMapping("/not_completed")
-    ResponseEntity<?> fetchAllNotCompletedAssignments(@RequestParam String academicYear) {
+    ResponseEntity<?> fetchAllNotCompletedAssignments(@RequestParam String academicYear, @RequestParam(required = false) Long preparedBy) {
         return ResponseEntity.ok(
-                assignmentService.findAllNotCompleteAssignment(academicYear)
+                assignmentService.findAllNotCompleteAssignment(academicYear, preparedBy)
         );
     }
 

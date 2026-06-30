@@ -1,8 +1,8 @@
 package com.edusyspro.api.dto;
 
-import com.edusyspro.api.dto.custom.ExamResult;
 import com.edusyspro.api.model.Exam;
 import com.edusyspro.api.model.ExamType;
+import com.edusyspro.api.model.Semester;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,5 +35,9 @@ public class ExamDTO {
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();
+    }
+
+    public Exam toMerge() {
+        return Exam.builder().id(id).build();
     }
 }

@@ -3,6 +3,7 @@ package com.edusyspro.api.dto.custom;
 import com.edusyspro.api.dto.*;
 import com.edusyspro.api.model.ExamType;
 import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.model.enums.AssignmentType;
 
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ import java.time.ZonedDateTime;
 
 public record AssignmentExhaustif(
         Long id,
-        Long planningId,
+        Integer planningId,
         Long examId,
         ExamType examType,
         LocalDate examStart,
@@ -36,8 +37,8 @@ public record AssignmentExhaustif(
     public AssignmentDTO toDTO() {
         return AssignmentDTO.builder()
                 .id(id)
-                .semester(PlanningDTO.builder()
-                        .id(planningId)
+                .semester(Semester.builder()
+                        .semesterId(planningId)
                         .build())
                 .preparedBy(Individual.builder()
                         .id(teacherId)

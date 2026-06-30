@@ -26,9 +26,9 @@ public class Assignment {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "planning_id", referencedColumnName = "id")
+    @JoinColumn(name = "semester_id", referencedColumnName = "semester_id")
     @JsonIgnore
-    private Planning semester;
+    private Semester semester;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "exam_id", referencedColumnName = "id")
