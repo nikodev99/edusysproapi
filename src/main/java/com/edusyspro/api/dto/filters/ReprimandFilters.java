@@ -11,6 +11,7 @@ public record ReprimandFilters(
         UUID studentId,
         UUID academicYearId,
         Integer classeId,
+        Long teacherId,
         PunishmentType punishmentType,
         ReprimandType reprimandType,
         PunishmentStatus punishmentStatus,

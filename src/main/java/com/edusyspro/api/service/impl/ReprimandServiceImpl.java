@@ -7,6 +7,7 @@ import com.edusyspro.api.dto.filters.ReprimandFilters;
 import com.edusyspro.api.model.Reprimand;
 import com.edusyspro.api.model.enums.PunishmentStatus;
 import com.edusyspro.api.repository.ReprimandRepository;
+import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.repository.spec.ReprimandSpec;
 import com.edusyspro.api.service.interfaces.ReprimandService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,13 @@ public class ReprimandServiceImpl implements ReprimandService {
 
     private final ReprimandRepository reprimandRepository;
     private final ReprimandSpec reprimandSpecRepository;
+    private final UpdateContext updateContext;
 
     @Autowired
-    public ReprimandServiceImpl(ReprimandRepository reprimandRepository, ReprimandSpec reprimandSpecRepository) {
+    public ReprimandServiceImpl(ReprimandRepository reprimandRepository, ReprimandSpec reprimandSpecRepository, UpdateContext updateContext) {
         this.reprimandRepository = reprimandRepository;
         this.reprimandSpecRepository = reprimandSpecRepository;
+        this.updateContext = updateContext;
     }
 
     @Override
@@ -64,8 +67,18 @@ public class ReprimandServiceImpl implements ReprimandService {
     }
 
     @Override
-    public Page<ReprimandDTO> fetchAllStudentReprimandedByTeacher(long teacherId, String academicYear, Pageable pageable) {
-        return reprimandRepository.findStudentReprimandByTeacher(teacherId, UUID.fromString(academicYear), pageable)
+    public Page<ReprimandDTO> fetchAllStudentReprimandedByTeacher(ReprimandFilters filters, Pageable pageable) {
+        return reprimandSpecRepository.findReprimandsByTeacher(filters, pageable)
                 .map(ReprimandEssential::toDTO);
+    }
+
+    @Override
+    public int updateReprimand(String field, Object value, Long reprimandId) {
+        return updateContext.updateReprimandFields(field, value, reprimandId);
+    }
+
+    @Override
+    public int updatePunishment(String field, Object value, Long punishmentId) {
+        return updateContext.updatePunishmentFields(field, value, punishmentId);
     }
 }

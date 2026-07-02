@@ -22,7 +22,7 @@ public class ReprimandSpec {
     private final EntityManager entityManager;
 
     enum FindPer {
-        STUDENT, CLASSE
+        STUDENT, CLASSE, TEACHER
     }
 
     public ReprimandSpec(EntityManager entityManager) {
@@ -35,6 +35,10 @@ public class ReprimandSpec {
 
     public Page<ReprimandEssential> findReprimandsByClasse(ReprimandFilters filters, Pageable pageable) {
         return findPaginatedReprimand(filters, pageable, FindPer.CLASSE);
+    }
+
+    public Page<ReprimandEssential> findReprimandsByTeacher(ReprimandFilters filters, Pageable pageable) {
+        return findPaginatedReprimand(filters, pageable, FindPer.TEACHER);
     }
 
     private Page<ReprimandEssential> findPaginatedReprimand(ReprimandFilters filters, Pageable pageable, FindPer findPer) {
@@ -94,8 +98,22 @@ public class ReprimandSpec {
                 if (filters.classeId() != null) {
                     predicates.add(cb.equal(reprimand.get("student").get("classe").get("id"), filters.classeId()));
                 }
+                if (filters.teacherId() != null) {
+                    predicates.add(cb.equal(reprimand.get("issuedBy").get("id"), filters.teacherId()));
+                }
             }
-            case CLASSE -> predicates.add(cb.equal(reprimand.get("student").get("classe").get("id"), filters.classeId()));
+            case CLASSE -> {
+                predicates.add(cb.equal(reprimand.get("student").get("classe").get("id"), filters.classeId()));
+                if (filters.teacherId() != null) {
+                    predicates.add(cb.equal(reprimand.get("issuedBy").get("id"), filters.teacherId()));
+                }
+            }
+            case TEACHER -> {
+                predicates.add(cb.equal(reprimand.get("issuedBy").get("id"), filters.teacherId()));
+                if (filters.classeId() != null) {
+                    predicates.add(cb.equal(reprimand.get("student").get("classe").get("id"), filters.classeId()));
+                }
+            }
         }
 
         predicates.add(cb.equal(reprimand.get("student").get("academicYear").get("id"), filters.academicYearId()));

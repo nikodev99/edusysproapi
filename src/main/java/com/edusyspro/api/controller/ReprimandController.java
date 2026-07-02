@@ -3,6 +3,7 @@ package com.edusyspro.api.controller;
 import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.ReprimandDTO;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.dto.filters.ReprimandFilters;
 import com.edusyspro.api.model.enums.PunishmentStatus;
 import com.edusyspro.api.model.enums.PunishmentType;
@@ -64,7 +65,7 @@ public class ReprimandController {
         Pageable pageable = ControllerUtils.setPage(page, size);
         ReprimandFilters filters = new ReprimandFilters(
                 UUID.fromString(studentId), UUID.fromString(academicYear),
-                classeId, punishmentType, reprimandType, punishmentStatus,
+                classeId, null, punishmentType, reprimandType, punishmentStatus,
                 reprimandBetween
         );
         return ResponseEntity.ok(reprimandService.findStudentReprimands(filters, pageable));
@@ -84,7 +85,7 @@ public class ReprimandController {
         Pageable pageable = ControllerUtils.setPage(page, size);
         ReprimandFilters filters = new ReprimandFilters(
                 null, UUID.fromString(academicYear),
-                classeId, punishmentType, reprimandType, punishmentStatus,
+                classeId, null, punishmentType, reprimandType, punishmentStatus,
                 reprimandBetween
         );
         return ResponseEntity.ok(reprimandService.findClasseReprimands(filters, pageable));
@@ -100,11 +101,50 @@ public class ReprimandController {
             @PathVariable String teacherId,
             @RequestParam String academicYear,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Integer classeId,
+            @RequestParam(required = false) PunishmentType punishmentType,
+            @RequestParam(required = false) ReprimandType reprimandType,
+            @RequestParam(required = false) PunishmentStatus punishmentStatus,
+            @RequestParam(required = false) LocalDate[] reprimandBetween
     ) {
-        return ResponseEntity.ok(reprimandService.fetchAllStudentReprimandedByTeacher(
-                Long.parseLong(teacherId), academicYear, ControllerUtils.setPage(page, size)
-        ));
+        Pageable pageable = ControllerUtils.setPage(page, size);
+        ReprimandFilters filters = new ReprimandFilters(
+                null, UUID.fromString(academicYear),
+                classeId, Long.parseLong(teacherId), punishmentType, reprimandType, punishmentStatus,
+                reprimandBetween
+        );
+        return ResponseEntity.ok(reprimandService.fetchAllStudentReprimandedByTeacher(filters, pageable));
+    }
+
+    @PatchMapping("/{reprimandId}")
+    ResponseEntity<?> updateReprimand(@PathVariable Long reprimandId, @RequestBody UpdateField fields) {
+        try {
+            int updated = reprimandService.updateReprimand(fields.field(), fields.value(), reprimandId);
+            if (updated > 0) {
+                return ResponseEntity.ok("Modification effective");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reprimand update failed or not found");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/punishment/{punishmentId}")
+    ResponseEntity<?> updatePunishment(@PathVariable Long punishmentId, @RequestBody UpdateField fields) {
+        try {
+            int updated = reprimandService.updatePunishment(fields.field(), fields.value(), punishmentId);
+            if (updated > 0) {
+                return ResponseEntity.ok("Modification effective");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Punishment update failed or not found");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
 }

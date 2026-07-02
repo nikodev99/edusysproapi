@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository.context;
 
+import com.edusyspro.api.dto.DateRange;
 import com.edusyspro.api.model.*;
 import com.edusyspro.api.utils.Datetime;
 import jakarta.persistence.EntityManager;
@@ -86,6 +87,35 @@ public class UpdateContext {
     @Transactional
     public int updateDepartmentField(String field, Object value, int departmentId) {
         return updateEntityField(Department.class, field, value, departmentId, "modifyAt");
+    }
+
+    @Modifying
+    @Transactional
+    public int updateReprimandFields(String field, Object value, Long reprimandId) {
+        return updateEntityField(Reprimand.class, field, value, reprimandId);
+    }
+
+    @Modifying
+    @Transactional
+    public int updatePunishmentFields(String field, Object value, Long punishmentId) {
+        if ("dateRange".equals(field)) {
+            if (!(value instanceof DateRange date)) {
+                throw new IllegalArgumentException("Value must be an instance of DateRange");
+            }
+
+            // Adjust each date individually
+            Object startDate = adjustDate("startDate", field, date.startDate());
+            Object endDate = adjustDate("endDate", field, date.startDate());
+
+            int startUpdate = updateEntityField(Punishment.class, "startDate", startDate, punishmentId);
+            int endUpdate = updateEntityField(Punishment.class, "endDate", endDate, punishmentId);
+
+            // Return 1 if both succeeded, otherwise 0 (or throw an exception if partial failure is bad)
+            return (startUpdate > 0 && endUpdate > 0) ? 1 : 0;
+        }
+
+        // For all other single fields
+        return updateEntityField(Punishment.class, field, value, punishmentId);
     }
 
     private Object adjustDate(String field, String existingField, Object value) {
