@@ -22,13 +22,13 @@ public interface GradeRepository extends JpaRepository<Grade, Integer> {
     List<GradeBasicValue> findAllGradeBySchool(UUID schoolId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre)
+        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre, p.status)
         from Grade g join g.planning p where g.id = ?1 and p.semestre.academicYear.id = ?2 order by p.termStartDate asc
     """)
     List<PlanningEssential> findPlanningsByGrade(int gradeId, UUID academicYearId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre)
+        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre, p.status)
         from Grade g join g.planning p where g.id = ?1 and p.semestre.academicYear.current = true order by p.termStartDate asc
     """)
     List<PlanningEssential> findPlanningsByGradeId(int gradeId);

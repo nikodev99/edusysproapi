@@ -2,6 +2,7 @@ package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Planning;
 import com.edusyspro.api.model.Semester;
+import com.edusyspro.api.model.enums.PlanningStatus;
 import com.edusyspro.api.utils.Datetime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,6 +26,7 @@ public class PlanningDTO {
     private ZonedDateTime termStartDate;
     private ZonedDateTime termEndDate;
     private GradeDTO grade;
+    private PlanningStatus status;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 

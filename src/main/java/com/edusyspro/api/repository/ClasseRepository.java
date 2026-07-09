@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -85,6 +86,12 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
 
     @Query("select count(c) from ClasseEntity c where lower(c.name) = lower(?1) and c.id != ?2")
     int countByName(String classeName, Integer classeId);
+
+    //UPDATE CLASSE:
+    @Query("select c.id from ClasseEntity c left join c.grade g left join c.department d " +
+            "where c.id in :ids and " +
+            "((g is not null and g.school.id = :schoolId) or (d is not null and d.school.id = :schoolId))")
+    List<Integer> findValidIdsForSchool(@Param("ids") List<Integer> ids, @Param("schoolId") UUID schoolId);
 
     //TEST
     ClasseEntity getClasseById(int id);

@@ -2,6 +2,7 @@ package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.PlanningDTO;
 import com.edusyspro.api.model.Semester;
+import com.edusyspro.api.model.enums.PlanningStatus;
 
 import java.time.ZonedDateTime;
 
@@ -10,7 +11,8 @@ public record PlanningEssential(
         String designation,
         ZonedDateTime termStartDate,
         ZonedDateTime termEndDate,
-        Semester semestre
+        Semester semestre,
+        PlanningStatus status
 ) {
     public PlanningDTO toDto() {
         return PlanningDTO.builder()
@@ -19,6 +21,7 @@ public record PlanningEssential(
                 .termStartDate(termStartDate)
                 .termEndDate(termEndDate)
                 .semestre(semestre)
+                .status(status)
                 .build();
     }
 }

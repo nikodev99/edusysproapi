@@ -16,6 +16,13 @@ public interface ScheduleService extends CustomService<ScheduleDTO, Long> {
 
     List<ScheduleDTO> getAllClasseSchedule(int classeId, Section section);
 
+    /**
+     * Retrieves the schedules for a specific teacher in a given academic year.
+     *
+     * @param academicYear the academic year for which the schedule is to be retrieved
+     * @param teacherId the unique identifier of the teacher whose schedule is requested
+     * @return a list of ScheduleDTO objects representing the teacher's schedules for the specified academic year
+     */
     List<ScheduleDTO> getTeacherSchedule(String academicYear, String teacherId);
 
     List<ScheduleDTO> getTeacherScheduleByDay(String academicYear, String teacherId, boolean allDay);

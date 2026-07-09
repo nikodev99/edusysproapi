@@ -1,5 +1,6 @@
 package com.edusyspro.api.model;
 
+import com.edusyspro.api.model.enums.PlanningStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -37,6 +38,9 @@ public class Planning {
     @JoinColumn(name = "grade_id", referencedColumnName = "id")
     @JsonIgnore
     private Grade grade;
+
+    @Enumerated(EnumType.STRING)
+    private PlanningStatus status;
 
     private ZonedDateTime createdAt;
 

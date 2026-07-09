@@ -5,6 +5,7 @@ import com.edusyspro.api.dto.custom.PlanningEssential;
 import com.edusyspro.api.model.Planning;
 import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.model.enums.Section;
+import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -21,30 +21,35 @@ import java.util.UUID;
 @Repository
 public interface PlanningRepository extends JpaRepository<Planning, Long> {
     @Query("""
-        select new com.edusyspro.api.dto.custom.PlanningBasic(p.id, p.semestre.semesterId, p.designation, p.termStartDate, p.termEndDate)
+        select new com.edusyspro.api.dto.custom.PlanningBasic(p.id, p.semestre.semesterId, p.designation, p.status, p.termStartDate, p.termEndDate)
         from Planning p join p.semestre s join s.academicYear a join a.school sc where sc.id = ?1 and a.id = ?2
         order by p.termStartDate
     """)
     List<PlanningBasic> findPlanningBasicValues(UUID schoolId, UUID academicYearId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre)
+        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre, p.status)
         from Planning p join p.semestre s join s.academicYear a join a.school sc where sc.id = ?1 and a.current = true
         and p.grade.section = ?2 order by p.termStartDate
     """)
     List<PlanningEssential> findPlanningsByGrade(UUID schoolId, Section section);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre)
+        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre, p.status)
         from Planning p where p.id = ?1
     """)
     Optional<PlanningEssential> findPlanningById(long planningId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.PlanningBasic(p.id, p.semestre.semesterId, p.designation, p.termStartDate, p.termEndDate)
+        select new com.edusyspro.api.dto.custom.PlanningBasic(p.id, p.semestre.semesterId, p.designation, p.status, p.termStartDate, p.termEndDate)
         from ClasseEntity c join c.grade g join g.planning p where c.id = ?1 and p.termStartDate between ?2 and ?3
     """)
     Optional<List<PlanningBasic>> getClassePlanningByDates(int classeId, ZonedDateTime startDate, ZonedDateTime endDate);
+
+    @Query("""
+       select p.termStartDate as startDate, p.termEndDate as endDate from Planning p where p.grade.id = ?1 and p.semestre.academicYear.id = ?2
+    """)
+    List<Tuple> getAllGradeeHolidays(int gradeId, UUID academicYearId);
 
     @Query("""
         update Planning p set p.semestre = ?1, p.designation = ?2, p.termStartDate = ?3, p.termEndDate = ?4

@@ -182,7 +182,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     private boolean assignmentExists(AssignmentDTO assignment) {
-        long count = 0L;
+        long count;
         if (assignment.getSubject() != null && assignment.getSubject().getId() != null) {
             count = assignmentRepository.courseAssignmentExists(
                     assignment.getExamName(),

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -60,6 +61,10 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Query("select count(c.course) from Course c where (lower(c.course) = lower(?1) or lower(c.abbr) = lower(?2)) and c.id != ?3")
     int countByCourse(String course, String abbr, int courseId);
+
+    //UPDATE COURSES:
+    @Query("select c.id from Course c join c.department d where c.id in :ids and d.school.id = :schoolId")
+    List<Integer> findValidIdsForSchool(@Param("ids") List<Integer> ids, @Param("schoolId") UUID schoolId);
 
     //TEST
     Course getCourseByAbbrContainingIgnoreCase(String abbr);
