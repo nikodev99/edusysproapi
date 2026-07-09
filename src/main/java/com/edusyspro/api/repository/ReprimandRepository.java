@@ -39,17 +39,6 @@ public interface ReprimandRepository extends JpaRepository<Reprimand, Long> {
             Pageable pageable
     );
 
-    @Query("""
-        select new com.edusyspro.api.dto.custom.ReprimandEssential(r.id, s.academicYear.id, s.academicYear.years, s.student.id,
-        s.student.personalInfo.lastName, s.student.personalInfo.firstName, s.student.personalInfo.image, s.student.personalInfo.reference,
-        s.classe.id, s.classe.name, s.classe.grade.section, r.reprimandDate, r.type, r.description, r.issuedBy.id, r.issuedBy.firstName,
-        r.issuedBy.lastName, r.issuedBy.image, r.issuedBy.reference, r.punishment) from Reprimand r join r.student s
-        where r.issuedBy.id = :teacherId and s.academicYear.id = :academicYear order by r.reprimandDate desc
-    """)
-    Page<ReprimandEssential> findStudentReprimandByTeacher(
-            @Param("teacherId") long teacherId,
-            @Param("academicYear") UUID academicYear,
-            Pageable pageable
-    );
-
+    @Query("select count(s.id) from Reprimand r join r.student s where r.issuedBy.id = :teacherId and s.academicYear.id = :academicYearId")
+    Long countStudentReprimandedByTeacher(@Param("teacherId") long teacherId, @Param("academicYearId") UUID academicYearId);
 }

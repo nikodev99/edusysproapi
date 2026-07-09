@@ -73,6 +73,11 @@ public class ReprimandServiceImpl implements ReprimandService {
     }
 
     @Override
+    public long countStudentReprimandedByTeacher(long teacherId, String academicYearId) {
+        return reprimandRepository.countStudentReprimandedByTeacher(teacherId, UUID.fromString(academicYearId));
+    }
+
+    @Override
     public int updateReprimand(String field, Object value, Long reprimandId) {
         return updateContext.updateReprimandFields(field, value, reprimandId);
     }

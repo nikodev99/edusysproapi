@@ -21,6 +21,8 @@ public interface ReprimandService {
 
     Page<ReprimandDTO> fetchAllStudentReprimandedByTeacher(ReprimandFilters filters, Pageable pageable);
 
+    long countStudentReprimandedByTeacher(long teacherId, String academicYearId);
+
     int updateReprimand(String field, Object value, Long reprimandId);
     int updatePunishment(String field, Object value, Long punishmentId);
 }
