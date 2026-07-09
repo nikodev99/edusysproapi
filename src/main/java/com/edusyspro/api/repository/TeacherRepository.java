@@ -3,10 +3,10 @@ package com.edusyspro.api.repository;
 import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.model.enums.Section;
-import jakarta.persistence.Tuple;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -66,9 +66,9 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     @Query("""
         SELECT DISTINCT new com.edusyspro.api.dto.custom.TeacherClasseCourse(
             t.id, t.personalInfo, t.hireDate, c.id, c.name, s.course.id, s.course.course
-        ) FROM Teacher t join t.aClasses c LEFT JOIN Schedule s WHERE c.id = ?1
+        ) FROM Teacher t join t.aClasses c left join c.schedule s WHERE c.id = ?1
     """)
-    List<TeacherEssential> findAllClasseTeachers(int classId);
+    List<TeacherClasseCourse> findAllClasseTeachers(int classId);
 
     @Query("""
         SELECT new com.edusyspro.api.dto.custom.TeacherBasic(
@@ -86,16 +86,43 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     """)
     Optional<TeacherBasic> findTeacherBasicValue(@Param("teacherId") long teacherId, @Param("classeId") int classId);
 
+    @Query("select new com.edusyspro.api.dto.custom.IndividualBasic(p.id, p.firstName, p.lastName, p.image, p.reference) from Teacher t join t.personalInfo p where t.id = ?1")
+    Optional<IndividualBasic> findTeacherPersonalInfo(UUID teacherId);
+
     @Query("select t.personalInfo.gender, t.personalInfo.birthDate from Teacher t join t.school s where s.id = ?1")
     List<Object[]> countAllTeachers (UUID schoolId);
 
     boolean existsByPersonalInfoEmailIdAndSchoolId(String emailId, UUID schoolId);
 
-    @Query("select count(s.id) from Teacher t join t.aClasses c join c.students s where t.id = :teacherId and s.academicYear.current = true")
-    Long countTeacherStudents(@Param("teacherId") UUID teacherId);
+    @Query("select count(s.id) from Teacher t join t.aClasses c join c.students s where t.id = :teacherId and s.academicYear.id = :academicYearId")
+    Long countTeacherStudents(@Param("teacherId") UUID teacherId, @Param("academicYearId") UUID academicYearId);
 
-    @Query("select c.name, count(s.id) from Teacher t join t.aClasses c join c.students s where t.id = ?1 group by c.id")
-    List<Object[]> countAllTeacherStudentsByClasses(UUID teacherId);
+    @Query("select c.name, count(s.id) from Teacher t join t.aClasses c join t.school sc join c.students s where t.id = ?1 and sc.id = ?2 group by c.id")
+    List<Object[]> countAllTeacherStudentsByClasses(UUID teacherId, UUID schoolId);
+
+    //UPDATE CLASSES:
+    @Query(value = "select class_id from class_teacher where teacher_id = :teacherId", nativeQuery = true)
+    List<Integer> findAssignedClassIds(@Param("teacherId") UUID teacherId);
+
+    @Modifying
+    @Query(value = "insert into class_teacher (teacher_id, class_id) values (:teacherId, :classId)", nativeQuery = true)
+    int linkClass(@Param("teacherId") UUID teacherId, @Param("classId") Integer classId);
+
+    @Modifying
+    @Query(value = "delete from class_teacher where teacher_id = :teacherId and class_id in :classIds", nativeQuery = true)
+    int unlinkClasses(@Param("teacherId") UUID teacherId, @Param("classIds") List<Integer> classIds);
+
+    //UPDATE COURSES:
+    @Query(value = "select course_id from teacher_courses where teacher_id = :teacherId", nativeQuery = true)
+    List<Integer> findAssignedCourseIds(@Param("teacherId") UUID teacherId);
+
+    @Modifying
+    @Query(value = "insert into teacher_courses (teacher_id, course_id) values (:teacherId, :courseId)", nativeQuery = true)
+    int linkCourse(@Param("teacherId") UUID teacherId, @Param("courseId") Integer courseId);
+
+    @Modifying
+    @Query(value = "delete from teacher_courses where teacher_id = :teacherId and course_id in :courseIds", nativeQuery = true)
+    int unlinkCourses(@Param("teacherId") UUID teacherId, @Param("courseIds") List<Integer> courseIds);
 
     //TESTING
     @Query("select t from Teacher t join t.aClasses c join t.courses co where c.id = :classId and co.id = :courseId")

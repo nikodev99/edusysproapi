@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.custom.TeacherClasseCourse;
 import com.edusyspro.api.dto.custom.TeacherEssential;
 import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.model.Course;
@@ -133,8 +134,8 @@ class TeacherDTORepositoryTest {
 
     @Test
     public void findAllClasseTeachers () {
-        List<TeacherEssential> teacherEssentials = teacherRepository.findAllClasseTeachers(15);
-        for (TeacherEssential teacherEssential : teacherEssentials) {
+        List<TeacherClasseCourse> teacherEssentials = teacherRepository.findAllClasseTeachers(15);
+        for (TeacherClasseCourse teacherEssential : teacherEssentials) {
             System.out.println(teacherEssential.personalInfo().getFirstName());
         }
     }

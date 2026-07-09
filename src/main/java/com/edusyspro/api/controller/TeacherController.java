@@ -2,12 +2,16 @@ package com.edusyspro.api.controller;
 
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.TeacherDTO;
+import com.edusyspro.api.dto.custom.TeacherClassUpdateRequest;
+import com.edusyspro.api.dto.custom.TeacherCourseUpdateRequest;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.service.mod.TeacherService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -100,14 +104,47 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.countAllTeachers(schoolId));
     }
 
-    @GetMapping("/{id}/count_student")
-    ResponseEntity<Map<String, Long>> getTeacherStudentCounts(@PathVariable String id) {
-        return ResponseEntity.ok(teacherService.count(UUID.fromString(id)));
+    @GetMapping("/{id}/count_student/{schoolId}")
+    ResponseEntity<Map<String, Long>> getTeacherStudentCounts(@PathVariable String id, @PathVariable String schoolId) {
+        return ResponseEntity.ok(teacherService.count(UUID.fromString(id), UUID.fromString(schoolId)));
     }
 
-    @GetMapping("/count_by_classe/{teacherId}")
-    ResponseEntity<?> countStudentsByClasse(@PathVariable String teacherId) {
-        return ResponseEntity.ok(teacherService.countStudentsByClasse(UUID.fromString(teacherId)));
+    @GetMapping("/count_by_classe/{teacherId}/{schoolId}")
+    ResponseEntity<?> countStudentsByClasse(@PathVariable String teacherId, @PathVariable String schoolId) {
+        return ResponseEntity.ok(teacherService.countStudentsByClasse(UUID.fromString(teacherId), UUID.fromString(schoolId)));
+    }
+
+    @GetMapping("/widgets/{teacherId}")
+    ResponseEntity<?> getTeacherWidget(@PathVariable String teacherId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(teacherService.fetchTeacherWidgets(teacherId, academicYear));
+    }
+
+    @PatchMapping("/classes/{teacherId}/{schoolId}")
+    ResponseEntity<?> updateClasses(@PathVariable String teacherId, @PathVariable String schoolId, @Valid @RequestBody TeacherClassUpdateRequest request) {
+        try {
+            int updated = teacherService.updateTeacherClasses(teacherId, schoolId, request.operationType(), request.classIds());
+            if (updated > 0) {
+                return ResponseEntity.ok("Modification classe effective");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Teacher not found or update failed");
+        }
+        catch(Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/courses/{teacherId}/{schoolId}")
+    ResponseEntity<?> updateCourses(@PathVariable String teacherId, @PathVariable String schoolId, @Valid @RequestBody TeacherCourseUpdateRequest request) {
+        try {
+            int updated = teacherService.updateTeacherCourses(teacherId, schoolId, request.operationType(), request.courseIds());
+            if (updated > 0) {
+                return ResponseEntity.ok("Modification course effective");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Teacher not found or update failed");
+        }
+        catch(Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PatchMapping("/{id}")

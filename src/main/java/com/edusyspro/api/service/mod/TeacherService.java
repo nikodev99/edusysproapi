@@ -3,13 +3,12 @@ package com.edusyspro.api.service.mod;
 import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.model.enums.Section;
+import com.edusyspro.api.repository.ClasseRepository;
+import com.edusyspro.api.repository.CourseRepository;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.impl.TeacherServiceImpl;
-import com.edusyspro.api.service.interfaces.AcademicYearService;
-import com.edusyspro.api.service.interfaces.CourseProgramService;
-import com.edusyspro.api.service.interfaces.IndividualReferenceService;
-import com.edusyspro.api.service.interfaces.ScheduleService;
+import com.edusyspro.api.service.interfaces.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,11 @@ public class TeacherService extends TeacherServiceImpl {
             AcademicYearService academicYearService,
             UpdateContext updateContext,
             CourseProgramService courseProgramService,
-            IndividualReferenceService individualReferenceService
+            IndividualReferenceService individualReferenceService,
+            ReprimandService reprimandService,
+            TeachingReportService teachingReportService,
+            ClasseRepository classeRepository,
+            CourseRepository courseRepository
     ) {
         super(
                 teacherRepository,
@@ -33,7 +36,11 @@ public class TeacherService extends TeacherServiceImpl {
                 academicYearService,
                 updateContext,
                 courseProgramService,
-                individualReferenceService
+                individualReferenceService,
+                reprimandService,
+                teachingReportService,
+                classeRepository,
+                courseRepository
         );
     }
 

@@ -7,7 +7,10 @@ import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.Teacher;
 import com.edusyspro.api.model.enums.IndividualType;
+import com.edusyspro.api.model.enums.OperationType;
 import com.edusyspro.api.model.enums.Section;
+import com.edusyspro.api.repository.ClasseRepository;
+import com.edusyspro.api.repository.CourseRepository;
 import com.edusyspro.api.repository.TeacherRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.CustomMethod;
@@ -15,7 +18,9 @@ import com.edusyspro.api.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -28,6 +33,10 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     private final UpdateContext updateContext;
     private final CourseProgramService courseProgramService;
     private final IndividualReferenceService individualReferenceService;
+    private final ReprimandService reprimandService;
+    private final TeachingReportService teachingReportService;
+    private final ClasseRepository classeRepository;
+    private final CourseRepository courseRepository;
 
     @Autowired
     public TeacherServiceImpl(
@@ -36,7 +45,11 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
             AcademicYearService academicYearService,
             UpdateContext updateContext,
             CourseProgramService courseProgramService,
-            IndividualReferenceService individualReferenceService
+            IndividualReferenceService individualReferenceService,
+            ReprimandService reprimandService,
+            TeachingReportService teachingReportService,
+            ClasseRepository classeRepository,
+            CourseRepository courseRepository
     ) {
         this.teacherRepository = teacherRepository;
         this.scheduleService = scheduleService;
@@ -44,6 +57,10 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
         this.updateContext = updateContext;
         this.courseProgramService = courseProgramService;
         this.individualReferenceService = individualReferenceService;
+        this.reprimandService = reprimandService;
+        this.teachingReportService = teachingReportService;
+        this.classeRepository = classeRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Override
@@ -121,7 +138,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     @Override
     public List<TeacherDTO> fetchAllByOtherEntityId(String otherEntityId) {
         return teacherRepository.findAllClasseTeachers(Integer.parseInt(otherEntityId)).stream()
-                .map(TeacherEssential::toTeacher)
+                .map(TeacherClasseCourse::toTeacher)
                 .toList();
     }
 
@@ -251,7 +268,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public Map<String, Long> count(UUID id) {
-        return Map.of("count", teacherRepository.countTeacherStudents(id));
+        return Map.of();
     }
 
     @Override
@@ -261,12 +278,14 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public Map<String, Long> count(Object... args) {
-        return Map.of();
+        UUID id = UUID.fromString(args[0].toString());
+        UUID schoolId = UUID.fromString(args[1].toString());
+        return Map.of("count", teacherRepository.countTeacherStudents(id, schoolId));
     }
 
     @Override
-    public List<Map<String, Object>> countStudentsByClasse(UUID teacherId) {
-        List<Object[]> counts = teacherRepository.countAllTeacherStudentsByClasses(teacherId);
+    public List<Map<String, Object>> countStudentsByClasse(UUID teacherId, UUID schoolId) {
+        List<Object[]> counts = teacherRepository.countAllTeacherStudentsByClasses(teacherId, schoolId);
         return counts.stream()
                 .map(row -> Map.of(
                         "classe", row[0],
@@ -279,6 +298,77 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     public GenderCount countAllTeachers(String schoolId) {
         List<Object[]> countTeachers = teacherRepository.countAllTeachers(UUID.fromString(schoolId));
         return CustomMethod.genderCountInClasse(countTeachers);
+    }
+
+    @Override
+    public Map<String, Object> fetchTeacherWidgets(String teacherId, String academicYear) {
+        Optional<IndividualBasic> personalInfo = teacherRepository.findTeacherPersonalInfo(UUID.fromString(teacherId));
+        if (personalInfo.isPresent()) {
+            UUID id = UUID.fromString(teacherId);
+            IndividualBasic p = personalInfo.get();
+            Long teacherStudentNumber = teacherRepository.countTeacherStudents(id, UUID.fromString(academicYear));
+            Long teacherReportNumber = teachingReportService.getReportCountByTeacher(teacherId, academicYear);
+            Long teacherReprimandedStudent = reprimandService.countStudentReprimandedByTeacher(p.id(), academicYear);
+            return Map.of(
+                    "students", teacherStudentNumber,
+                    "reports", teacherReportNumber,
+                    "reprimands", teacherReprimandedStudent
+            );
+        }
+        return Map.of();
+    }
+
+    @Override
+    @Transactional
+    public int updateTeacherClasses(String teacherId, String schoolId, OperationType operation, List<Integer> classeIds) throws AccessDeniedException {
+        throwIfTeacherNotFound(UUID.fromString(teacherId));
+
+        List<Integer> validIds = classeRepository.findValidIdsForSchool(classeIds, UUID.fromString(schoolId));
+        if (validIds.size() != classeIds.size()) {
+            throw new AccessDeniedException("You don't have access to these classes");
+        }
+
+        int updated = 0;
+        if(operation == OperationType.ADD) {
+            Set<Integer> alreadyAssigned = new HashSet<>(teacherRepository.findAssignedClassIds(UUID.fromString(teacherId)));
+            for (Integer classId: classeIds) {
+                if (!alreadyAssigned.contains(classId)) {
+                    updated = teacherRepository.linkClass(UUID.fromString(teacherId), classId);
+                }
+            }
+        }else {
+            updated = teacherRepository.unlinkClasses(UUID.fromString(teacherId), classeIds);
+        }
+        return updated;
+    }
+
+    @Override
+    public int updateTeacherCourses(String teacherId, String schoolId, OperationType operation, List<Integer> coursesIds) throws AccessDeniedException {
+        throwIfTeacherNotFound(UUID.fromString(teacherId));
+
+        List<Integer> validIds = courseRepository.findValidIdsForSchool(coursesIds, UUID.fromString(schoolId));
+        if (validIds.size() != coursesIds.size()) {
+            throw new AccessDeniedException("You don't have access to these classes");
+        }
+
+        int updated = 0;
+        if (operation == OperationType.ADD) {
+            Set<Integer> alreadyAssigned = new HashSet<>(teacherRepository.findAssignedCourseIds(UUID.fromString(teacherId)));
+            for (Integer courseId: coursesIds) {
+                if (!alreadyAssigned.contains(courseId)) {
+                    updated = teacherRepository.linkCourse(UUID.fromString(teacherId), courseId);
+                }
+            }
+        }else {
+            updated = teacherRepository.unlinkCourses(UUID.fromString(teacherId), coursesIds);
+        }
+        return updated;   
+    }
+
+    private void throwIfTeacherNotFound(UUID teacherId) {
+        if (!teacherRepository.existsById(teacherId)) {
+            throw new NotFountException("Teacher not found");
+        }
     }
 
     private TeacherDTO getTeacherDTO(TeacherEssential t, UUID schoolId) {

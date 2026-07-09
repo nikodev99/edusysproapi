@@ -46,7 +46,7 @@ public class Teacher {
     @JsonProperty("classes")
     private List<ClasseEntity> aClasses;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.DETACH}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "teacher_courses",
             joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),

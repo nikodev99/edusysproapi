@@ -25,4 +25,7 @@ public interface TeachingReportRepository extends JpaRepository<TeachingReport, 
         tr.isLateSubmission, tr.notes, tr.createdAt FROM TeachingReport tr WHERE tr.id = ?1
     """)
     Optional<Tuple> findReportById(Long id);
+
+    @Query("SELECT COUNT(tr.id) FROM TeachingReport tr WHERE tr.teacher.id = ?1 AND tr.schedule.academicYear.id = ?2")
+    Long countByTeacherId(UUID teacherId, UUID academicYear);
 }

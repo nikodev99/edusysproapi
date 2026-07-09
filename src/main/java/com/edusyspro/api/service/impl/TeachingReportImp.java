@@ -1,5 +1,7 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.AcademicYearDTO;
+import com.edusyspro.api.dto.DateRange;
 import com.edusyspro.api.dto.ScheduleDTO;
 import com.edusyspro.api.dto.TeachingReportDTO;
 import com.edusyspro.api.model.enums.Day;
@@ -12,8 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class TeachingReportImp implements TeachingReportService {
@@ -57,6 +58,69 @@ public class TeachingReportImp implements TeachingReportService {
         return teachingReportRepository.findReportById(reportId)
                 .map(t -> TeachingReportDTO.builder().build().toReport(t))
                 .orElse(TeachingReportDTO.builder().build());
+    }
+
+    @Override
+    public long getReportCountByTeacher(String teacherId, String academicYear) {
+        return teachingReportRepository.countByTeacherId(UUID.fromString(teacherId), UUID.fromString(academicYear));
+    }
+
+    @Override
+    public int calculateExpectedReportsByTeacher(String teacherId, AcademicYearDTO academicYear, List<DateRange> holidays) {
+        List<ScheduleDTO> teachingSessions = scheduleService.getTeacherSchedule(academicYear.getId().toString(), teacherId);
+        if (teachingSessions.isEmpty() || academicYear.getStartDate() == null || academicYear.getEndDate() == null)
+            return 0;
+        if (academicYear.getStartDate().isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("academicYearStart must not be after academicYearEnd");
+
+        List<DateRange> normalizedHolidays = validateAndNormalizeHolidays(holidays, academicYear);
+
+        int count = 0;
+
+        for (ScheduleDTO session : teachingSessions) {
+            Set<DayOfWeek> sessionDays = resolveDaysOfWeek(session.getDayOfWeek());
+            LocalDate current = academicYear.getStartDate();
+            while(!current.isAfter(academicYear.getEndDate())) {
+                if (sessionDays.contains(current.getDayOfWeek()) && !isHoliday(current, normalizedHolidays)) {
+                    count++;
+                }
+                current = current.plusDays(1);
+            }
+        }
+
+        return count;
+    }
+
+    private Set<DayOfWeek> resolveDaysOfWeek(Day day) {
+        if (day == Day.ALL_DAYS) {
+            return EnumSet.of(
+                    DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY,
+                    DayOfWeek.THURSDAY, DayOfWeek.FRIDAY
+            );
+        }
+        return EnumSet.of(day.toDayOfWeek());
+    }
+
+    private boolean isHoliday(LocalDate date, List<DateRange> holidays) {
+        for(DateRange holiday : holidays) {
+            return holiday.contains(date);
+        }
+        return false;
+    }
+
+    private List<DateRange> validateAndNormalizeHolidays(List<DateRange> holidays, AcademicYearDTO academicYear) {
+        if (holidays == null || holidays.isEmpty()) return Collections.emptyList();
+
+        for (DateRange holiday : holidays) {
+            if (holiday.startDate().isBefore(academicYear.getStartDate()) || holiday.endDate().isAfter(academicYear.getEndDate()))
+                throw new IllegalArgumentException(
+                        "Holiday period [" + holiday.startDate() + " - " + holiday.endDate() +
+                                "] must be within the academic year [" + academicYear.getStartDate() + " - " + academicYear.getEndDate() + "]"
+
+                );
+        }
+
+        return holidays;
     }
 
     private boolean isDayAllowed(DayOfWeek dayOfWeek, List<Day> allowedDays) {
