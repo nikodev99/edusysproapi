@@ -35,23 +35,25 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<ScheduleEssential> findAllDayClasseSchedules(@Param("id") int classeId);
 
     @Query("""
-        select distinct new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, t.hireDate, t.salaryByHour,
-        sc.id, sc.name, t.createdAt, t.modifyAt) from Schedule s join s.teacher t join t.school sc where s.academicYear.current = true
+        select distinct new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, sc.contract.id, sc.contract.role,
+        sc.contract.jobTitle, sc.contract.startDate, sc.contract.salaryByHour, sc.status, sc.school.id, sc.school.name,
+        t.createdAt, t.modifyAt) from Schedule s join s.teacher t join t.schoolAffiliations sc where s.academicYear.current = true
         and s.classeEntity.id = ?1 and s.course.id = ?2 and s.academicYear.school.id = ?3
     """)
     TeacherEssential findTeacherByClasseEntityIdAndCourseId(int classeEntity_id, int course_id, UUID school_id);
 
     @Query("""
-        select distinct new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, t.hireDate, t.salaryByHour,
-        sc.id, sc.name, t.createdAt, t.modifyAt) from Schedule s join s.teacher t join t.school sc where s.academicYear.current = true
+        select distinct new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, sc.contract.id, sc.contract.role,
+        sc.contract.jobTitle, sc.contract.startDate, sc.contract.salaryByHour, sc.status, sc.school.id, sc.school.name,
+        t.createdAt, t.modifyAt) from Schedule s join s.teacher t join t.schoolAffiliations sc where s.academicYear.current = true
         and s.classeEntity.id = ?1 and s.academicYear.school.id = ?2
     """)
     TeacherEssential findTeacherByClasseEntityId(int classeEntity_id, UUID school_id);
 
     @Query("""
         SELECT DISTINCT new com.edusyspro.api.dto.custom.TeacherClasseCourse(
-            t.id, t.personalInfo, t.hireDate, c.id, c.name, co.id, co.course
-        ) FROM Schedule s left join s.teacher t left join s.classeEntity c left join s.course co WHERE c.id = ?1
+            t.id, t.personalInfo, sc.contract.id, sc.contract.startDate, c.id, c.name, co.id, co.course
+        ) FROM Schedule s left join s.teacher t left join t.schoolAffiliations sc left join s.classeEntity c left join s.course co WHERE c.id = ?1
     """)
     List<TeacherClasseCourse> findAllClasseTeachers(int classId);
 

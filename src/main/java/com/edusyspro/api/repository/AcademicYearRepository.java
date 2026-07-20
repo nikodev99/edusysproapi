@@ -18,6 +18,17 @@ import java.util.UUID;
 @Repository
 public interface AcademicYearRepository extends JpaRepository<AcademicYear, UUID> {
 
+    @Modifying
+    @Transactional
+    @Query("""
+        update EnrollmentEntity e set e.isArchived = ?3 where e.academicYear.id = ?1 and e.academicYear.school.id = ?2
+    """)
+    void updateArchivedStatusBySchoolAndAcademicYear(
+            UUID academicYearId,
+            UUID schoolId,
+            boolean isArchived
+    );
+
     @Query("""
         SELECT new com.edusyspro.api.dto.AcademicYearDTO(a.id, a.startDate, a.endDate, a.current, a.years, null, null)
         FROM AcademicYear a WHERE a.school.id = ?1 and EXTRACT(YEAR FROM a.startDate) >= ?2

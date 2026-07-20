@@ -46,9 +46,6 @@ public class DepartmentController {
             @RequestParam String departmentCode,
             @PathVariable String schoolId
     ) {
-        System.out.println("-----------------------------------------------------------------");
-        System.out.println("SCHOOL_ID: " + schoolId + " CODE: " + departmentCode);
-        System.out.println("-----------------------------------------------------------------");
         return ResponseEntity.ok(departmentService.fetchOneByCustomColumn(departmentCode, schoolId));
     }
 

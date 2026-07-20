@@ -1,6 +1,7 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.Course;
+import com.edusyspro.api.model.enums.CourseType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ import java.time.ZonedDateTime;
 public class CourseDTO {
     private Integer id;
     private String course;
+    private CourseType courseType;
     private String abbr;
     private String discipline;
     private DepartmentDTO department;
@@ -34,6 +36,7 @@ public class CourseDTO {
        return Course.builder()
                .id(course.getId())
                .course(course.getCourse())
+               .courseType(course.getCourseType())
                .abbr(course.getAbbr())
                .discipline(course.getDiscipline())
                .department(DepartmentDTO.toEntity(course.getDepartment()))

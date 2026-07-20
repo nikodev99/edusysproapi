@@ -6,12 +6,14 @@ import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.ClasseRepository;
 import com.edusyspro.api.repository.CourseRepository;
 import com.edusyspro.api.repository.TeacherRepository;
+import com.edusyspro.api.repository.TeacherSchoolAffiliationRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.impl.TeacherServiceImpl;
 import com.edusyspro.api.service.interfaces.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +22,7 @@ import java.util.UUID;
 public class TeacherService extends TeacherServiceImpl {
     public TeacherService(
             TeacherRepository teacherRepository,
+            TeacherSchoolAffiliationRepository teacherSchoolAffiliationRepository,
             ScheduleService scheduleService,
             AcademicYearService academicYearService,
             UpdateContext updateContext,
@@ -32,6 +35,7 @@ public class TeacherService extends TeacherServiceImpl {
     ) {
         super(
                 teacherRepository,
+                teacherSchoolAffiliationRepository,
                 scheduleService ,
                 academicYearService,
                 updateContext,

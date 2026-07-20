@@ -32,15 +32,15 @@ public class IndividualReferenceServiceImpl implements IndividualReferenceServic
 
     @Override
     public String generateReference(IndividualType type, UUID schoolId) {
-        return generatePrefixCode(type, schoolId);
+        return generatePrefixCode(type, schoolId, null);
     }
 
     @Override
-    public String generateReference(IndividualType type) {
-        return generatePrefixCode(type, null);
+    public String generateReference(IndividualType type, String name) {
+        return generatePrefixCode(type, null, name);
     }
 
-    private String generatePrefixCode(IndividualType type, UUID schoolId) {
+    private String generatePrefixCode(IndividualType type, UUID schoolId, String name) {
         boolean isGlobal = (type == IndividualType.TEACHER || type == IndividualType.GUARDIAN);
         UUID keySchool = isGlobal ? null : schoolId;
         String abbr = "";
@@ -92,16 +92,17 @@ public class IndividualReferenceServiceImpl implements IndividualReferenceServic
         String yyPart = String.format("%02d", yy);
         String seqPart = String.format("%04d", seq);
         String numberPart = prefix + yyPart + seqPart;
+        String namePart = isGlobal && name != null ? name.substring(0, 1) : null;
 
         switch (type) {
             case EMPLOYEE, STUDENT -> {
                 return abbr + numberPart;
             }
             case GUARDIAN -> {
-                return "GDN" + numberPart;
+                return "GD"+ namePart + numberPart;
             }
             case TEACHER -> {
-                return "TCH" + numberPart;
+                return "TH" + namePart + numberPart;
             }
             default -> throw new IllegalArgumentException("Invalid individual type " + type);
         }

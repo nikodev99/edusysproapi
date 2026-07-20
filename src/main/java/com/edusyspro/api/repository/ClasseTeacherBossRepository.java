@@ -17,21 +17,21 @@ public interface ClasseTeacherBossRepository extends JpaRepository<ClasseTeacher
     @Query("""
         select new com.edusyspro.api.dto.custom.TeacherBossEssential(c.id, c.principalTeacher.id, c.principalTeacher.personalInfo.lastName,
         c.principalTeacher.personalInfo.firstName, c.current, c.startPeriod, c.endPeriod)
-        from ClasseTeacherBoss c join c.principalTeacher.aClasses cl where cl.id = ?1
+        from ClasseTeacherBoss c join c.principalTeacher.schoolAffiliations sa join sa.aClasses ca join ca.classe cl where cl.id = ?1
     """)
     Page<TeacherBossEssential> findAllTeacherBossByClasse(int classeId, Pageable pageable);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.TeacherBossEssential(c.id, c.principalTeacher.id, c.principalTeacher.personalInfo.lastName,
         c.principalTeacher.personalInfo.firstName, c.current, c.startPeriod, c.endPeriod) from ClasseTeacherBoss c
-        join c.principalTeacher.aClasses cl where cl.id = ?1 and c.academicYear.id = ?2
+        join c.principalTeacher.schoolAffiliations sa join sa.aClasses ca join ca.classe cl where cl.id = ?1 and c.academicYear.id = ?2
     """)
     List<TeacherBossEssential> findTeacherBossByClasseId(int classeId, UUID academicYearId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.TeacherBossEssential(c.id, c.principalTeacher.id, c.principalTeacher.personalInfo.lastName,
         c.principalTeacher.personalInfo.firstName, c.current, c.startPeriod, c.endPeriod) from ClasseTeacherBoss c
-        join c.principalTeacher p join p.aClasses cl where cl.id = ?1 and c.current = true
+        join c.principalTeacher.schoolAffiliations sa join sa.aClasses ca join ca.classe cl where cl.id = ?1 and c.current = true
     """)
     Optional<TeacherBossEssential> findCurrentTeacherBoss(int classeId);
 }

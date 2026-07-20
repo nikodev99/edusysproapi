@@ -20,13 +20,13 @@ import java.util.UUID;
 public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.CourseBasicValue(c.id, c.course, c.abbr, c.discipline) from Course c where c.department.school.id = ?1
+        select new com.edusyspro.api.dto.custom.CourseBasicValue(c.id, c.course, c.courseType, c.abbr, c.discipline) from Course c where c.department.school.id = ?1
     """)
     List<CourseBasicValue> findAllCourses(UUID schoolId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseEssential(
-            c.id, c.course, c.abbr, c.discipline, d.id, d.name, d.code, d.purpose, i.id, b.current, i.firstName,
+            c.id, c.course, c.courseType, c.abbr, c.discipline, d.id, d.name, d.code, d.purpose, i.id, b.current, i.firstName,
             i.lastName, b.startPeriod, b.endPeriod, c.createdAt
         ) from Course c left join c.department d left join d.boss b left join b.d_boss i
         where d.school.id = ?1 and (b is null or b.current = true)
@@ -35,7 +35,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseEssential(
-            c.id, c.course, c.abbr, c.discipline, d.id, d.name, d.code, d.purpose, i.id, b.current, i.firstName,
+            c.id, c.course, c.courseType, c.abbr, c.discipline, d.id, d.name, d.code, d.purpose, i.id, b.current, i.firstName,
             i.lastName, b.startPeriod, b.endPeriod, c.createdAt
         ) from Course c left join c.department d left join d.boss b left join b.d_boss i
         where d.school.id = ?1 and (b is null or b.current = true) and (lower(c.course) like lower(?2)
@@ -45,7 +45,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseEssential(
-            c.id, c.course, c.abbr, c.discipline, d.id, d.name, d.code, d.purpose, i.id, b.current, i.firstName,
+            c.id, c.course, c.courseType, c.abbr, c.discipline, d.id, d.name, d.code, d.purpose, i.id, b.current, i.firstName,
             i.lastName, b.startPeriod, b.endPeriod, c.createdAt
         ) from Course c left join c.department d left join d.boss b left join b.d_boss i
         where c.id = ?1 and (b is null or b.current = true)

@@ -110,7 +110,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
             TeacherBossDTO teacherBoss = classeTeacherBossService.fetchTeacherBoss(classe.getId());
             StudentBossDTO studentBoss = classeStudentBossService.fetchStudentBoss(classe.getId());
             CourseDTO principalCourse = getClassePrincipalCourse(classe.getId());
-            List<TeacherDTO> classeTeachers = scheduleService.getAllClasseTeachers(classe.getId());
+            List<TeacherClasseDTO> classeTeachers = scheduleService.getClasseTeachers(classe.getId());
             List<EnrollmentDTO> enrolledStudents = enrollmentService.getClasseEnrolledStudents(classe.getId(), 6);
 
             grade.setPlanning(

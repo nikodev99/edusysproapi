@@ -33,6 +33,9 @@ public class ClasseEntity {
     @JoinColumn(name = "grade_id", referencedColumnName = "id")
     private Grade grade;
 
+    /**
+     * TODO This shall be used only if the school is an University that have multiple departments.
+     */
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "department_id", referencedColumnName = "id")
     private Department department;
@@ -61,9 +64,9 @@ public class ClasseEntity {
     @JsonIgnore
     private List<EnrollmentEntity> students;
 
-    @ManyToMany(mappedBy = "aClasses", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "classe", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JsonIgnore
-    private List<Teacher> classTeachers;
+    private List<TeacherClasses> classTeachers;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal monthCost;

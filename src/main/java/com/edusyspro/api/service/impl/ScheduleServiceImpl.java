@@ -1,6 +1,7 @@
 package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.ScheduleDTO;
+import com.edusyspro.api.dto.TeacherClasseDTO;
 import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.ScheduleEssential;
 import com.edusyspro.api.dto.custom.ScheduleHoursBy;
@@ -70,6 +71,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<TeacherDTO> getAllClasseTeachers(int classeId) {
         return scheduleRepository.findAllClasseTeachers(classeId).stream()
                 .map(TeacherClasseCourse::toTeacher)
+                .toList();
+    }
+
+    @Override
+    public List<TeacherClasseDTO> getClasseTeachers(int classeId) {
+        return scheduleRepository.findAllClasseTeachers(classeId).stream()
+                .map(TeacherClasseCourse::toTeacherClasse)
                 .toList();
     }
 

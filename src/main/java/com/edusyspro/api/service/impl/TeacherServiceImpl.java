@@ -6,17 +6,21 @@ import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.Teacher;
+import com.edusyspro.api.model.TeacherSchoolAffiliation;
+import com.edusyspro.api.model.enums.AffiliationStatus;
 import com.edusyspro.api.model.enums.IndividualType;
 import com.edusyspro.api.model.enums.OperationType;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.ClasseRepository;
 import com.edusyspro.api.repository.CourseRepository;
 import com.edusyspro.api.repository.TeacherRepository;
+import com.edusyspro.api.repository.TeacherSchoolAffiliationRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.CustomMethod;
 import com.edusyspro.api.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +32,7 @@ import java.util.stream.Collectors;
 public class TeacherServiceImpl implements TeacherServiceInterface {
 
     private final TeacherRepository teacherRepository;
+    private final TeacherSchoolAffiliationRepository teacherSchoolAffiliationRepository;
     private final ScheduleService scheduleService;
     private final AcademicYearService academicYearService;
     private final UpdateContext updateContext;
@@ -41,6 +46,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     @Autowired
     public TeacherServiceImpl(
             TeacherRepository teacherRepository,
+            TeacherSchoolAffiliationRepository teacherSchoolAffiliationRepository,
             ScheduleService scheduleService,
             AcademicYearService academicYearService,
             UpdateContext updateContext,
@@ -52,6 +58,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
             CourseRepository courseRepository
     ) {
         this.teacherRepository = teacherRepository;
+        this.teacherSchoolAffiliationRepository = teacherSchoolAffiliationRepository;
         this.scheduleService = scheduleService;
         this.academicYearService = academicYearService;
         this.updateContext = updateContext;
@@ -67,19 +74,27 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     public TeacherDTO save(TeacherDTO entity) {
         if (teacherEmailExists(entity)) {
             throw new AlreadyExistException("L'adresse e-mail est déjà utilisée. Veuillez en fournir une autre.");
-        }else {
-            Teacher teacherEntity = TeacherDTO.toEntity(entity);
-            Individual teacherPersonalInfo = entity.getPersonalInfo();
-            if (teacherPersonalInfo != null) {
-                String reference = individualReferenceService.generateReference(IndividualType.TEACHER);
-                teacherPersonalInfo.setReference(reference);
-            }
-
-            Teacher insertedTeacher = teacherRepository.save(teacherEntity);
-            if (insertedTeacher.getId() != null) {
-                entity = TeacherDTO.fromEntity(insertedTeacher);
-            }
         }
+
+        Teacher teacherEntity = TeacherDTO.toEntity(entity);
+        Individual teacherPersonalInfo = entity.getPersonalInfo();
+        if (teacherPersonalInfo != null && teacherPersonalInfo.getReference() == null) {
+            String reference = individualReferenceService.generateReference(IndividualType.TEACHER, teacherPersonalInfo.getLastName());
+            teacherPersonalInfo.setReference(reference);
+        }
+
+        teacherEntity.getSchoolAffiliations().forEach(affiliation -> {
+            affiliation.setTeacher(teacherEntity);
+            affiliation.getAClasses().forEach(c -> c.setAffiliation(affiliation));
+            if (!affiliation.getCourses().isEmpty())
+                affiliation.getCourses().forEach(c -> c.setAffiliation(affiliation));
+        });
+
+        Teacher insertedTeacher = teacherRepository.save(teacherEntity);
+        if (insertedTeacher.getId() != null) {
+            entity = TeacherDTO.fromEntity(insertedTeacher);
+        }
+
         return entity;
     }
 
@@ -100,7 +115,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public Page<TeacherDTO> fetchAll(String schoolId, Pageable pageable) {
-        Page<TeacherEssential> teacherEssentials = teacherRepository.findAllBySchoolId(UUID.fromString(schoolId), pageable);
+        Page<TeacherEssential> teacherEssentials = teacherRepository.findAllBySchoolId(UUID.fromString(schoolId), AffiliationStatus.ACTIVE, pageable);
         return teacherEssentials.map(t -> getTeacherDTO(t, UUID.fromString(schoolId)));
     }
 
@@ -108,7 +123,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     public List<TeacherDTO> fetchAll(Object... args) {
         UUID schoolId = UUID.fromString(args[0].toString());
         String lastname = "%" + args[1].toString() + "%";
-        return teacherRepository.findAllBySchoolId(schoolId, lastname).stream()
+        return teacherRepository.findAllBySchoolId(schoolId, lastname, AffiliationStatus.ACTIVE).stream()
                 .map(TeacherEssential::toTeacher)
                 .toList();
     }
@@ -117,7 +132,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     public Page<TeacherDTO> fetchAll(Pageable pageable, Object... args) {
         UUID schoolId = UUID.fromString(args[0].toString());
         UUID teacherId = UUID.fromString(args[1].toString());
-        return teacherRepository.findAllBySchoolId(schoolId, teacherId, pageable).map(t -> getTeacherDTO(t, schoolId));
+        return teacherRepository.findAllBySchoolId(schoolId, teacherId, AffiliationStatus.ACTIVE, pageable).map(t -> getTeacherDTO(t, schoolId));
     }
 
     @Override
@@ -137,7 +152,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public List<TeacherDTO> fetchAllByOtherEntityId(String otherEntityId) {
-        return teacherRepository.findAllClasseTeachers(Integer.parseInt(otherEntityId)).stream()
+        return teacherRepository.findAllClasseTeachers(AffiliationStatus.ACTIVE, Integer.parseInt(otherEntityId)).stream()
                 .map(TeacherClasseCourse::toTeacher)
                 .toList();
     }
@@ -146,7 +161,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     public List<TeacherDTO> fetchAllByOtherEntityId(Object... arg) {
         int classeId = Integer.parseInt(arg[0].toString());
         Section section = Section.valueOf(arg[1].toString());
-        return teacherRepository.findAllTeacherBasicValue(classeId, section).stream()
+        return teacherRepository.findAllTeacherBySection(classeId, section, AffiliationStatus.ACTIVE).stream()
                 .map(TeacherBasic::toDTO)
                 .toList();
     }
@@ -161,8 +176,8 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
         TeacherDTO dto = teacherRepository.findTeacherById(id, UUID.fromString(schoolId))
                         .orElseThrow(() -> new NotFountException("Teacher was not found"))
                         .toTeacher();
-        List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(dto.getId(), UUID.fromString(schoolId));
-        List<CourseEssential> courses = teacherRepository.findTeacherEssentialCourses(dto.getId(), UUID.fromString(schoolId));
+        List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(dto.getId(), AffiliationStatus.ACTIVE, UUID.fromString(schoolId));
+        List<CourseEssential> courses = teacherRepository.findTeacherEssentialCourses(dto.getId(), AffiliationStatus.ACTIVE, UUID.fromString(schoolId));
 
         List<List<CourseProgramDTO>> programs = new ArrayList<>();
 
@@ -201,8 +216,8 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
             }
         }
 
-        dto.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
-        dto.setCourses(courses.stream().map(CourseEssential::toCourse).toList());
+        dto.setAClasses(classes.stream().map(ClassBasicValue::toTeacherClasse).toList());
+        dto.setCourses(courses.stream().map(CourseEssential::toTeacherCourse).toList());
         dto.setCourseProgram(programs);
         return dto;
     }
@@ -214,7 +229,13 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     @Override
     public TeacherDTO fetchOneByCustomColumn(String columnValue, String schoolId) {
-        return null;
+        return teacherRepository.findSearchedTeacher(UUID.fromString(schoolId), columnValue, PageRequest.of(0, 1))
+                .getContent()
+                .stream()
+                .filter(t -> !teacherExistInSchool(t.id(), schoolId))
+                .findFirst()
+                .map(TeacherEssential::toTeacher)
+                .orElseThrow(() -> new NotFountException("Teacher not found"));
     }
 
     @Override
@@ -228,11 +249,11 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
         Boolean hasCourse = (Boolean) args[1];
         TeacherDTO teacher = TeacherDTO.builder().build();
         if (hasCourse) {
-            List<CourseBasicValue> courses = teacherRepository.findTeacherCourses(UUID.fromString(columnValue), schoolId);
-            teacher.setCourses(courses.stream().map(CourseBasicValue::toCourse).toList());
+            List<CourseBasicValue> courses = teacherRepository.findTeacherCourses(UUID.fromString(columnValue), AffiliationStatus.ACTIVE, schoolId);
+            teacher.setCourses(courses.stream().map(CourseBasicValue::toTeacherCourse).toList());
         }else {
-            List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(UUID.fromString(columnValue), schoolId);
-            teacher.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
+            List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(UUID.fromString(columnValue), AffiliationStatus.ACTIVE, schoolId);
+            teacher.setAClasses(classes.stream().map(ClassBasicValue::toTeacherClasse).toList());
         }
         return teacher;
     }
@@ -241,7 +262,7 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     public TeacherDTO fetchOneById(Object... arg) {
         Long teacherId = (Long) arg[0];
         Integer classeId = (Integer) arg[1];
-        return teacherRepository.findTeacherBasicValue(teacherId, classeId)
+        return teacherRepository.findTeacherByClasse(teacherId, classeId)
                 .orElseThrow(() -> new NotFountException("Teacher not found"))
                 .toDTO();
     }
@@ -284,6 +305,32 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     }
 
     @Override
+    public void saveTeacherSchoolAffiliate(SchoolAffiliationDTO schoolAffiliation) {
+        boolean existInSchool = teacherExistInSchool(
+                schoolAffiliation.getTeacher().getId(),
+                schoolAffiliation.getSchool().getId().toString()
+        );
+
+        if (existInSchool) {
+            throw new RuntimeException("Teacher already affiliated to school");
+        }
+
+        TeacherSchoolAffiliation teacherToAffiliate = schoolAffiliation.toEntity();
+        teacherToAffiliate.getCourses().forEach(c -> c.setAffiliation(teacherToAffiliate));
+        teacherToAffiliate.getAClasses().forEach(c -> c.setAffiliation(teacherToAffiliate));
+
+        teacherSchoolAffiliationRepository.save(teacherToAffiliate);
+    }
+
+    @Override
+    public void inactivateTeacherSchoolAffiliation(String teacherId, String schoolId) {
+        teacherRepository.findSchoolToAffiliate(
+                UUID.fromString(teacherId),
+                UUID.fromString(schoolId)
+        ).ifPresent(s -> teacherSchoolAffiliationRepository.inactivate(s, AffiliationStatus.TERMINATED));
+    }
+
+    @Override
     public List<Map<String, Object>> countStudentsByClasse(UUID teacherId, UUID schoolId) {
         List<Object[]> counts = teacherRepository.countAllTeacherStudentsByClasses(teacherId, schoolId);
         return counts.stream()
@@ -298,6 +345,11 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
     public GenderCount countAllTeachers(String schoolId) {
         List<Object[]> countTeachers = teacherRepository.countAllTeachers(UUID.fromString(schoolId));
         return CustomMethod.genderCountInClasse(countTeachers);
+    }
+
+    @Override
+    public IndividualBasic fetchTeacherPersonalInfo(String teacherId) {
+        return teacherRepository.findTeacherPersonalInfo(UUID.fromString(teacherId)).orElseThrow();
     }
 
     @Override
@@ -331,9 +383,11 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
         int updated = 0;
         if(operation == OperationType.ADD) {
             Set<Integer> alreadyAssigned = new HashSet<>(teacherRepository.findAssignedClassIds(UUID.fromString(teacherId)));
+            long affiliateSchool = teacherRepository.findSchoolToAffiliate(UUID.fromString(teacherId), UUID.fromString(schoolId))
+                    .orElseThrow(() -> new NotFountException("Teacher Affiliation to school not found"));
             for (Integer classId: classeIds) {
                 if (!alreadyAssigned.contains(classId)) {
-                    updated = teacherRepository.linkClass(UUID.fromString(teacherId), classId);
+                    updated = teacherRepository.linkClass(UUID.fromString(teacherId), classId, affiliateSchool);
                 }
             }
         }else {
@@ -348,21 +402,27 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
         List<Integer> validIds = courseRepository.findValidIdsForSchool(coursesIds, UUID.fromString(schoolId));
         if (validIds.size() != coursesIds.size()) {
-            throw new AccessDeniedException("You don't have access to these classes");
+            throw new AccessDeniedException("You don't have access to these courses");
         }
 
         int updated = 0;
         if (operation == OperationType.ADD) {
             Set<Integer> alreadyAssigned = new HashSet<>(teacherRepository.findAssignedCourseIds(UUID.fromString(teacherId)));
+            long affiliateSchool = teacherRepository.findSchoolToAffiliate(UUID.fromString(teacherId), UUID.fromString(schoolId))
+                    .orElseThrow(() -> new NotFountException("Teacher Affiliation to school not found"));
             for (Integer courseId: coursesIds) {
                 if (!alreadyAssigned.contains(courseId)) {
-                    updated = teacherRepository.linkCourse(UUID.fromString(teacherId), courseId);
+                    updated = teacherRepository.linkCourse(UUID.fromString(teacherId), courseId, affiliateSchool);
                 }
             }
         }else {
             updated = teacherRepository.unlinkCourses(UUID.fromString(teacherId), coursesIds);
         }
         return updated;   
+    }
+
+    private boolean teacherExistInSchool(UUID teacherId, String schoolId) {
+        return teacherRepository.findSchoolToAffiliate(teacherId, UUID.fromString(schoolId)).isPresent();
     }
 
     private void throwIfTeacherNotFound(UUID teacherId) {
@@ -373,14 +433,17 @@ public class TeacherServiceImpl implements TeacherServiceInterface {
 
     private TeacherDTO getTeacherDTO(TeacherEssential t, UUID schoolId) {
         TeacherDTO teacherDTO = t.toTeacher();
-        List<CourseBasicValue> courses = teacherRepository.findTeacherCourses(t.id(), schoolId);
-        List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(t.id(), schoolId);
-        teacherDTO.setCourses(courses.stream().map(CourseBasicValue::toCourse).toList());
-        teacherDTO.setAClasses(classes.stream().map(ClassBasicValue::toClasse).toList());
+        List<CourseBasicValue> courses = teacherRepository.findTeacherCourses(t.id(), AffiliationStatus.ACTIVE, schoolId);
+        List<ClassBasicValue> classes = teacherRepository.findTeacherClasses(t.id(), AffiliationStatus.ACTIVE, schoolId);
+        teacherDTO.setCourses(courses.stream().map(CourseBasicValue::toTeacherCourse).toList());
+        teacherDTO.setAClasses(classes.stream().map(ClassBasicValue::toTeacherClasse).toList());
         return teacherDTO;
     }
 
     private boolean teacherEmailExists(TeacherDTO teacherDTO) {
-        return teacherRepository.existsByPersonalInfoEmailIdAndSchoolId(teacherDTO.getPersonalInfo().getEmailId(), teacherDTO.getSchool().getId());
+        return teacherRepository.findByPersonalInfoEmailIdAndSchoolId(
+                teacherDTO.getPersonalInfo().getEmailId(),
+                teacherDTO.getSchool().getId()
+        ).isPresent();
     }
 }

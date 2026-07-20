@@ -1,17 +1,16 @@
 package com.edusyspro.api.controller;
 
 import com.edusyspro.api.controller.utils.ControllerUtils;
+import com.edusyspro.api.dto.SchoolAffiliationDTO;
 import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.TeacherClassUpdateRequest;
 import com.edusyspro.api.dto.custom.TeacherCourseUpdateRequest;
 import com.edusyspro.api.dto.custom.UpdateField;
-import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.service.mod.TeacherService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -37,8 +36,28 @@ public class TeacherController {
     ResponseEntity<?> saveTeacher(@RequestBody TeacherDTO teacherDTO) {
         try {
             return ResponseEntity.ok(teacherService.saveTeacher(teacherDTO));
-        }catch (AlreadyExistException a) {
+        }catch (Exception a) {
             return ResponseEntity.badRequest().body(a.getMessage());
+        }
+    }
+
+    @PostMapping("/affiliate")
+    ResponseEntity<?> affiliateTeacher(@RequestBody SchoolAffiliationDTO schoolAffiliationDTO) {
+        try {
+            teacherService.saveTeacherSchoolAffiliate(schoolAffiliationDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body("New Teacher affiliated to school");
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{teacherId}/{schoolId}")
+    ResponseEntity<?> deleteTeacher(@PathVariable String teacherId, @PathVariable String schoolId) {
+        try {
+            teacherService.inactivateTeacherSchoolAffiliation(teacherId, schoolId);
+            return ResponseEntity.ok("L'affiliation de cet enseignant dans votre école est terminé");
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -79,6 +98,11 @@ public class TeacherController {
         return ResponseEntity.ok(teacherService.findAllTeachers(schoolId, q));
     }
 
+    @GetMapping("/search-one/{schoolId}")
+    ResponseEntity<TeacherDTO> getSearchedTeacher(@PathVariable String schoolId, @RequestParam String q) {
+        return ResponseEntity.ok(teacherService.fetchOneByCustomColumn(q, schoolId));
+    }
+
     @GetMapping("/basic/{classeId}")
     ResponseEntity<?> getTeachersBasicValues(@PathVariable int classeId, @RequestParam Section section) {
         return ResponseEntity.ok(teacherService.findAllTeacherBasicValue(classeId, section));
@@ -102,6 +126,11 @@ public class TeacherController {
     @GetMapping("/count/{schoolId}")
     ResponseEntity<?> countTeachers(@PathVariable String schoolId) {
         return ResponseEntity.ok(teacherService.countAllTeachers(schoolId));
+    }
+
+    @GetMapping("/personal/{teacherId}")
+    ResponseEntity<?> getTeacherPersonalInfo (@PathVariable String teacherId) {
+        return ResponseEntity.ok(teacherService.fetchTeacherPersonalInfo(teacherId));
     }
 
     @GetMapping("/{id}/count_student/{schoolId}")

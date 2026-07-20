@@ -1,17 +1,13 @@
 package com.edusyspro.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,44 +27,13 @@ public class Teacher {
     @JoinColumn(name = "personal_info", referencedColumnName = "id")
     private Individual personalInfo;
 
-    private String jobTitle;
-
-    private LocalDate hireDate;
-
-    private String contractType;
-
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH}, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "class_teacher",
-            joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "class_id", referencedColumnName = "id")
-    )
-    @JsonProperty("classes")
-    private List<ClasseEntity> aClasses;
-
-    @ManyToMany(cascade = {CascadeType.DETACH}, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "teacher_courses",
-            joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id")
-    )
-    private List<Course> courses;
-
-    @Column(precision = 10, scale = 2)
-    private BigDecimal salaryByHour;
-
     @OneToMany(mappedBy = "teacher")
     @JsonIgnore
     private List<CourseProgram> courseProgram;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH})
-    @JoinTable(
-            name = "teacher_schools",
-            joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "school_id", referencedColumnName = "id")
-    )
+    @OneToMany(mappedBy = "teacher", cascade = {CascadeType.ALL})
     @JsonIgnore
-    private List<School> school;
+    private List<TeacherSchoolAffiliation> schoolAffiliations;
 
     private ZonedDateTime createdAt;
 
@@ -85,22 +50,13 @@ public class Teacher {
         modifyAt = ZonedDateTime.now();
     }
 
-    public void addCourse(Course course) {
-        if (courses == null) {
-            courses = new ArrayList<>();
-        }
-        courses.add(course);
-    }
-
     @Override
     public String toString() {
         return "Teacher{" +
                 "id=" + id +
                 ", personalInfo=" + personalInfo +
-                ", hireDate=" + hireDate +
                 //", aClasses=" + aClasses +
                 //", courses=" + courses +
-                ", salaryByHour=" + salaryByHour +
                 //", courseProgram=" + courseProgram +
                 //", school=" + school +
                 ", createdAt=" + createdAt +

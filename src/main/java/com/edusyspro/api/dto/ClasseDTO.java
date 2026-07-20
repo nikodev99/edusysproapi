@@ -30,7 +30,7 @@ public class ClasseDTO {
     private CourseDTO principalCourse;
     private List<EnrollmentDTO> students;
     @JsonProperty("classeTeachers")
-    private List<TeacherDTO> classTeacherCourses;
+    private List<TeacherClasseDTO> classTeacherCourses;
     private BigDecimal monthCost;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
@@ -78,7 +78,7 @@ public class ClasseDTO {
                 )
                 .classTeacherCourses(
                         classe.getClassTeachers() != null
-                                ? classe.getClassTeachers().stream().map(TeacherDTO::fromEntity).toList()
+                                ? classe.getClassTeachers().stream().map(TeacherClasseDTO::toDto).toList()
                                 : List.of()
                 )
                 .monthCost(classe.getMonthCost())

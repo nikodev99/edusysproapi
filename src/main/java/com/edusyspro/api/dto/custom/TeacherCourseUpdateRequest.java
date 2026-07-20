@@ -10,6 +10,9 @@ public record TeacherCourseUpdateRequest(
         OperationType operationType,
 
         @NotNull
-        List<Integer> courseIds
+        List<Integer> courseIds,
+
+        @NotNull
+        Long schoolAffiliated
 ) {
 }

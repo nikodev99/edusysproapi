@@ -1,7 +1,9 @@
 package com.edusyspro.api.service.interfaces;
 
+import com.edusyspro.api.dto.SchoolAffiliationDTO;
 import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.GenderCount;
+import com.edusyspro.api.dto.custom.IndividualBasic;
 import com.edusyspro.api.model.enums.OperationType;
 import com.edusyspro.api.service.CustomService;
 
@@ -11,6 +13,9 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface TeacherServiceInterface extends CustomService<TeacherDTO, UUID> {
+    void saveTeacherSchoolAffiliate(SchoolAffiliationDTO schoolAffiliation);
+    void inactivateTeacherSchoolAffiliation(String teacherId, String schoolId);
+
     List<Map<String, Object>> countStudentsByClasse(UUID teacherId, UUID schoolId);
 
     /**
@@ -20,9 +25,10 @@ public interface TeacherServiceInterface extends CustomService<TeacherDTO, UUID>
      */
     GenderCount countAllTeachers(String schoolId);
 
+    IndividualBasic fetchTeacherPersonalInfo(String teacherId);
     Map<String, Object> fetchTeacherWidgets(String teacherId, String academicYear);
 
-    int updateTeacherClasses(String teacherId, String schoolId, OperationType operation, List<Integer> classeIds) throws AccessDeniedException;
-    int updateTeacherCourses(String teacherId, String schoolId, OperationType operation, List<Integer> coursesIds) throws AccessDeniedException;
+    int updateTeacherClasses(String teacherId, String schoolId, OperationType operation, List<Integer> classIds) throws AccessDeniedException;
+    int updateTeacherCourses(String teacherId, String schoolId, OperationType operation, List<Integer> courseIds) throws AccessDeniedException;
 
 }

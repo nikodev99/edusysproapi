@@ -1,5 +1,6 @@
 package com.edusyspro.api.model;
 
+import com.edusyspro.api.model.enums.CourseType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,9 @@ public class Course {
 
     @Column(length = 500, name = "course_name")
     private String course;
+
+    @Enumerated(EnumType.ORDINAL)
+    private CourseType courseType;
 
     @Column(length = 50, unique = true)
     private String abbr;

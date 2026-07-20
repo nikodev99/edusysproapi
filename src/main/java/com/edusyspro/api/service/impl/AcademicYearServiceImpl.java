@@ -55,6 +55,11 @@ public class AcademicYearServiceImpl implements AcademicYearService {
 
         boolean statusChange;
         if (currentAcademicYear != null && insertedAcademicYear.getId() != null) {
+            academicYearRepository.updateArchivedStatusBySchoolAndAcademicYear(
+                    academicYear.getSchool().getId(),
+                    currentAcademicYear.getId(),
+                    true
+            );
             statusChange = changeAcademicYearStatus(currentAcademicYear);
         }else {
             statusChange = true;

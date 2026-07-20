@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public interface IndividualReferenceService {
     String generateReference(IndividualType type, UUID schoolId);
-    String generateReference(IndividualType type);
+    String generateReference(IndividualType type, String name);
 }

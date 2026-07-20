@@ -50,8 +50,8 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
      *         if a teacher and their school are found; otherwise, an empty {@code Optional}
      */
     @Query("""
-        SELECT t.id, t.personalInfo.firstName, t.personalInfo.lastName, s.id, s.name, s.abbr, s.websiteURL
-        FROM Teacher t LEFT JOIN t.school s WHERE t.personalInfo.id = ?1
+        SELECT t.id, t.personalInfo.firstName, t.personalInfo.lastName, s.id, s.school.name, s.school.abbr, s.school.websiteURL
+        FROM Teacher t LEFT JOIN t.schoolAffiliations s WHERE t.personalInfo.id = ?1
     """)
     List<Object[]> findTeacherIdByPersonalInfoId(long personalInfo);
 

@@ -2,8 +2,10 @@ package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.CourseDTO;
 import com.edusyspro.api.dto.DepartmentDTO;
+import com.edusyspro.api.dto.TeacherCourseDTO;
 import com.edusyspro.api.model.DepartmentBoss;
 import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.model.enums.CourseType;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -11,6 +13,7 @@ import java.time.ZonedDateTime;
 public record CourseEssential(
         Integer id,
         String course,
+        CourseType courseType,
         String abbr,
         String discipline,
         Integer departmentId,
@@ -29,6 +32,7 @@ public record CourseEssential(
         return CourseDTO.builder()
                 .id(id)
                 .course(course)
+                .courseType(courseType)
                 .abbr(abbr)
                 .discipline(discipline)
                 .department(DepartmentDTO.builder()
@@ -48,6 +52,12 @@ public record CourseEssential(
                                 .build())
                         .build())
                 .createdAt(addedDate)
+                .build();
+    }
+
+    public TeacherCourseDTO toTeacherCourse(){
+        return TeacherCourseDTO.builder()
+                .course(toCourse())
                 .build();
     }
 }

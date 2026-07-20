@@ -9,11 +9,12 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface EmployeeService {
-    Employee saveEmployee(Employee employee);
+    EmployeeDTO saveEmployee(EmployeeDTO employee);
     Page<EmployeeDTO> findAllEmployees(String schoolId, Pageable pageable);
     List<EmployeeDTO> findAllSearchedEmployees(String schoolId, String searchInput);
     EmployeeDTO findEmployee(String employeeId);
     Integer updateEmployeeField(String employeeId, UpdateField fields);
+    int updateEmployeeContractFields(long contractId, UpdateField field);
 
     List<EmployeeDTO> getEmployeeIndividuals(String schoolId, String searchInput);
 }

@@ -3,6 +3,7 @@ package com.edusyspro.api.dto;
 import com.edusyspro.api.model.Department;
 import com.edusyspro.api.model.DepartmentBoss;
 import com.edusyspro.api.model.School;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DepartmentDTO {
     private Integer id;
     private String name;

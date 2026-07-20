@@ -1,6 +1,7 @@
 package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.ClasseDTO;
+import com.edusyspro.api.dto.TeacherClasseDTO;
 import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.Gender;
@@ -39,9 +40,11 @@ public record TeacherBasic(
                         .birthCity(birthCity)
                         .telephone(telephone)
                         .build())
-                .aClasses(List.of(ClasseDTO.builder()
+                .aClasses(List.of(TeacherClasseDTO.builder()
+                        .classe(ClasseDTO.builder()
                                 .id(classeId)
                                 .name(classeName)
+                                .build())
                         .build()))
                 .build();
     }

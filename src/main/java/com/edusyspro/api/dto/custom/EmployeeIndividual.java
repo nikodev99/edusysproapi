@@ -1,8 +1,10 @@
 package com.edusyspro.api.dto.custom;
 
+import com.edusyspro.api.dto.EmployeeContractDTO;
 import com.edusyspro.api.dto.EmployeeDTO;
 import com.edusyspro.api.model.Individual;
 import com.edusyspro.api.model.enums.Gender;
+import com.edusyspro.api.model.enums.StaffRole;
 import com.edusyspro.api.model.enums.Status;
 
 import java.time.LocalDate;
@@ -20,7 +22,7 @@ public record EmployeeIndividual(
         String reference,
         String image,
         LocalDate hireDate,
-        String jobTitle
+        StaffRole jobTitle
 ) {
     public EmployeeDTO toEmployee() {
         return EmployeeDTO.builder()
@@ -36,8 +38,10 @@ public record EmployeeIndividual(
                         .reference(reference)
                         .image(image)
                         .build())
-                .hireDate(hireDate)
-                .jobTitle(jobTitle)
+                .contract(EmployeeContractDTO.builder()
+                        .startDate(hireDate)
+                        .role(jobTitle)
+                        .build())
                 .build();
     }
 }

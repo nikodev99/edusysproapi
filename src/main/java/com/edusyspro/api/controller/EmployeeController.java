@@ -22,7 +22,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    ResponseEntity<?> saveEmployee(@RequestBody Employee employee) {
+    ResponseEntity<?> saveEmployee(@RequestBody EmployeeDTO employee) {
         return ResponseEntity.ok(employeeService.saveEmployee(employee));
     }
 
@@ -60,11 +60,28 @@ public class EmployeeController {
 
     @PatchMapping("/{id}")
     ResponseEntity<String> updateEmployeeFields(@PathVariable String id, @RequestBody UpdateField employee) {
-        System.out.println("GIVEN: {ID=" + id + "} {VALUE=" + employee.value() + "} {FIELD=" + employee.field() + "}");
         try {
             int updated = employeeService.updateEmployeeField(id, employee);
             if (updated > 0) {
-                return ResponseEntity.ok("Modification " + employee.field() + " effective");
+                return ResponseEntity.ok("Modification effective");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found or update failed");
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/contract/{id}")
+    ResponseEntity<String> updateEmployeeContractFields(@PathVariable long id, @RequestBody UpdateField employee) {
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("GIVEN: {ID=" + id + "} {VALUE=" + employee.value() + "} {FIELD=" + employee.field() + "}");
+        System.out.println("--------------------------------------------------------------");
+        try {
+            int updated = employeeService.updateEmployeeContractFields(id, employee);
+            if (updated > 0) {
+                return ResponseEntity.ok("Modification effective");
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found or update failed");
         }catch (IllegalArgumentException e) {

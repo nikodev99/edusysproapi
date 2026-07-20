@@ -1,17 +1,14 @@
 package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.*;
+import com.edusyspro.api.model.enums.AffiliationStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -25,33 +22,32 @@ public class TeacherDTO {
     private UUID id;
     private Individual personalInfo;
 
-    @NotBlank
-    @Size(min = 3, max = 100, message = "Job Title should not exceed 100 characters")
-    private String jobTitle = "Enseignant";
-
-    private LocalDate hireDate;
-    private String contractType;
-
     @JsonProperty("classes")
-    private List<ClasseDTO> aClasses;
+    private List<TeacherClasseDTO> aClasses;
 
-    private List<CourseDTO> courses;
-    private BigDecimal salaryByHour;
+    private List<TeacherCourseDTO> courses;
+
     private List<List<CourseProgramDTO>> courseProgram;
     private School school;
+    private AffiliationStatus status;
+    private EmployeeContractDTO contract;
     private ZonedDateTime createdAt;
     private ZonedDateTime modifyAt;
 
     public static TeacherDTO fromEntity(Teacher teacher){
+        TeacherSchoolAffiliation schoolAffiliation = teacher.getSchoolAffiliations().stream()
+                .findFirst()
+                .orElse(TeacherSchoolAffiliation.builder().build());
+
         return TeacherDTO.builder()
                 .id(teacher.getId())
                 .personalInfo(teacher.getPersonalInfo())
-                .hireDate(teacher.getHireDate())
-                .aClasses(teacher.getAClasses().stream().map(ClasseDTO::fromEntity).toList())
-                .courses(teacher.getCourses().stream().map(CourseDTO::fromEntity).toList())
-                .salaryByHour(teacher.getSalaryByHour())
+                .aClasses(SchoolAffiliationDTO.toClasse(schoolAffiliation))
+                .courses(SchoolAffiliationDTO.toCourse(schoolAffiliation))
                 //.courseProgram(teacher.getCourseProgram().stream().map(CourseProgramDTO::fromEntity).toList())
-                .school(teacher.getSchool().get(0))
+                .school(schoolAffiliation.getSchool())
+                .status(schoolAffiliation.getStatus())
+                .contract(SchoolAffiliationDTO.toContract(schoolAffiliation))
                 .createdAt(teacher.getCreatedAt())
                 .modifyAt(teacher.getModifyAt())
                 .build();
@@ -61,12 +57,16 @@ public class TeacherDTO {
         return Teacher.builder()
                 .id(teacherDTO.getId())
                 .personalInfo(teacherDTO.getPersonalInfo())
-                .hireDate(teacherDTO.getHireDate())
-                .aClasses(teacherDTO.getAClasses().stream().map(ClasseDTO::toEntity).toList())
-                .courses(teacherDTO.getCourses().stream().map(CourseDTO::toEntity).toList())
-                .salaryByHour(teacherDTO.getSalaryByHour())
+                .schoolAffiliations(List.of(
+                        TeacherSchoolAffiliation.builder()
+                                .contract(teacherDTO.getContract().toEntity())
+                                .aClasses(teacherDTO.getAClasses().stream().map(c -> c.toEntity()).toList())
+                                .courses(teacherDTO.getCourses() != null ? teacherDTO.getCourses().stream().map(TeacherCourseDTO::toEntity).toList() : null)
+                                .school(teacherDTO.getSchool())
+                                .build()
+                        )
+                )
                 //.courseProgram(teacherDTO.getCourseProgram().stream().map(CourseProgramDTO::toEntity).toList())
-                .school(List.of(teacherDTO.getSchool()))
                 .createdAt(teacherDTO.getCreatedAt())
                 .modifyAt(teacherDTO.getModifyAt())
                 .build();

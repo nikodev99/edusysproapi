@@ -4,12 +4,13 @@ import com.edusyspro.api.dto.EmployeeDTO;
 import com.edusyspro.api.dto.custom.EmployeeEssential;
 import com.edusyspro.api.dto.custom.EmployeeIndividual;
 import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.Employee;
 import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.model.enums.ContractStatus;
 import com.edusyspro.api.model.enums.IndividualType;
 import com.edusyspro.api.repository.EmployeeRepository;
-import com.edusyspro.api.repository.IndividualRepository;
 import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.EmployeeService;
 import com.edusyspro.api.service.interfaces.IndividualReferenceService;
@@ -40,33 +41,35 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee saveEmployee(Employee employee) {
+    public EmployeeDTO saveEmployee(EmployeeDTO employee) {
         if (!employeeExists(
                 employee.getPersonalInfo().getEmailId(),
                 employee.getSchool().getId()
-        )) {
-            Individual employeePersonalInfo = employee.getPersonalInfo();
-            if (employeePersonalInfo != null) {
-                String reference = individualReferenceService.generateReference(
-                        IndividualType.EMPLOYEE,
-                        employee.getSchool().getId()
-                );
-                employeePersonalInfo.setReference(reference);
-            }
-            return employeeRepository.save(employee);
+        )) throw new AlreadyExistException("Employee with email " + employee.getPersonalInfo().getEmailId() + " already exists");
+
+        Employee employeeToSave = employee.toEntity();
+        Individual employeePersonalInfo = employeeToSave.getPersonalInfo();
+        if (employeePersonalInfo != null && employeePersonalInfo.getReference() == null) {
+            String reference = individualReferenceService.generateReference(
+                    IndividualType.EMPLOYEE,
+                    employeeToSave.getSchool().getId()
+            );
+            employeePersonalInfo.setReference(reference);
         }
-        return null;
+
+        Employee savedEmployee = employeeRepository.save(employeeToSave);
+        return EmployeeDTO.fromEntity(savedEmployee);
     }
 
     @Override
     public Page<EmployeeDTO> findAllEmployees(String schoolId, Pageable pageable) {
-        return employeeRepository.findAllEmployees(UUID.fromString(schoolId), pageable)
+        return employeeRepository.findAllEmployees(UUID.fromString(schoolId), ContractStatus.ACTIVE, pageable)
                 .map(EmployeeEssential::toDto);
     }
 
     @Override
     public List<EmployeeDTO> findAllSearchedEmployees(String schoolId, String searchInput) {
-        return employeeRepository.findSearchedEmployees(UUID.fromString(schoolId), "%" + searchInput + "%").stream()
+        return employeeRepository.findSearchedEmployees(UUID.fromString(schoolId), "%" + searchInput + "%", ContractStatus.ACTIVE).stream()
                 .map(EmployeeEssential::toDto)
                 .toList();
     }
@@ -84,6 +87,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public int updateEmployeeContractFields(long contractId, UpdateField field) {
+        return updateContext.updateEmployeeContract(field.field(), field.value(), contractId);
+    }
+
+    @Override
     public List<EmployeeDTO> getEmployeeIndividuals(String schoolId, String searchInput) {
         return searchInput != null && !searchInput.isEmpty()
             ? employeeRepository.findEmployeeIndividuals(UUID.fromString(schoolId), "%" + searchInput + "%").stream()
@@ -96,6 +104,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private boolean employeeExists(String email, UUID schoolId) {
-        return employeeRepository.existsEmployeeByPersonalInfoEmailIdAndSchoolId(email, schoolId);
+        return employeeRepository.findEmployeeByPersonalInfoEmailIdAndSchoolId(email, schoolId).isPresent();
     }
 }

@@ -2,6 +2,7 @@ package com.edusyspro.api.dto.custom;
 import com.edusyspro.api.dto.ClasseDTO;
 import com.edusyspro.api.dto.DepartmentDTO;
 import com.edusyspro.api.dto.GradeDTO;
+import com.edusyspro.api.dto.TeacherClasseDTO;
 import com.edusyspro.api.model.enums.Section;
 
 public record ClassBasicValue (
@@ -24,6 +25,12 @@ public record ClassBasicValue (
                         .name(department)
                         .code(code)
                         .build())
+                .build();
+    }
+
+    public TeacherClasseDTO toTeacherClasse() {
+        return TeacherClasseDTO.builder()
+                .classe(toClasse())
                 .build();
     }
 }

@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -22,20 +20,13 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(cascade = {CascadeType.PERSIST})
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "personal_info", referencedColumnName = "id")
     private Individual personalInfo;
 
-    private String jobTitle;
-
-    @Column(precision = 10, scale = 2)
-    private BigDecimal salary;
-
-    private String contractType;
-
-    private boolean active;
-
-    private LocalDate hireDate;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "contract_id", referencedColumnName = "id")
+    private EmployeeContracts contract;
 
     @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "school_id", referencedColumnName = "id")
@@ -49,7 +40,6 @@ public class Employee {
     public void prePersist() {
         createdAt = Datetime.brazzavilleDatetime();
         modifyAt = Datetime.brazzavilleDatetime();
-        active = true;
     }
 
     @PreUpdate
