@@ -115,29 +115,30 @@ public class AssignmentController {
         return ResponseEntity.ok(assignmentService.findAllCourseAssignments(courseId, academicYear));
     }
 
-    @GetMapping("/teacher_some_{teacherId}")
-    ResponseEntity<?> fetchSomeTeacherAssignments(@PathVariable String teacherId) {
+    @GetMapping("/teacher_some_{teacherId}/{schoolId}")
+    ResponseEntity<?> fetchSomeTeacherAssignments(@PathVariable String teacherId, @PathVariable String schoolId) {
         return ResponseEntity.ok(
-                assignmentService.findSomeAssignmentsPreparedByTeacher(Long.parseLong(teacherId))
+                assignmentService.findSomeAssignmentsPreparedByTeacher(Long.parseLong(teacherId), schoolId)
         );
     }
 
     @GetMapping("/teacher_all/{teacherId}")
-    ResponseEntity<?> fetchAllTeacherAssignments(@PathVariable String teacherId) {
+    ResponseEntity<?> fetchAllTeacherAssignments(@PathVariable String teacherId, @RequestParam String academicYear) {
         return ResponseEntity.ok(
-                assignmentService.findAllAssignmentsPreparedByTeacher(Long.parseLong(teacherId))
+                assignmentService.findAllAssignmentsPreparedByTeacher(Long.parseLong(teacherId), academicYear)
         );
     }
 
     @GetMapping("/teacher_all_course_{teacherId}")
     ResponseEntity<?> fetchAllTeacherAssignments(
             @PathVariable String teacherId,
+            @RequestParam String academicYear,
             @RequestParam() int classe,
             @RequestParam() int course
     ) {
         return ResponseEntity.ok(
                 assignmentService.findAllAssignmentsPreparedByTeacherByCourse(
-                        Long.parseLong(teacherId), new CourseAndClasseIds(course, classe)
+                        Long.parseLong(teacherId), academicYear, new CourseAndClasseIds(course, classe)
                 )
         );
     }
@@ -145,11 +146,12 @@ public class AssignmentController {
     @GetMapping("/teacher_all_{teacherId}")
     ResponseEntity<?> fetchAllTeacherAssignments(
             @PathVariable String teacherId,
-            @RequestParam() int classe
+            @RequestParam String academicYear,
+            @RequestParam int classe
     ) {
         return ResponseEntity.ok(
                 assignmentService.findAllAssignmentsPreparedByTeacher(
-                        Long.parseLong(teacherId), new CourseAndClasseIds(0, classe)
+                        Long.parseLong(teacherId), academicYear, new CourseAndClasseIds(0, classe)
                 )
         );
     }

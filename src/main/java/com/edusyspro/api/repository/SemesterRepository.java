@@ -1,5 +1,6 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.AcademicYearDTO;
 import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.model.SemesterTemplate;
@@ -33,6 +34,10 @@ public interface SemesterRepository extends JpaRepository<Semester, Integer> {
     Optional<List<Semester>> findSemesterByAcademicYearId(UUID academicYearId);
 
     Optional<Semester> findSemesterBySemesterId(int semesterId);
+
+    @Query("SELECT new com.edusyspro.api.dto.AcademicYearDTO(ay.id, ay.startDate, ay.endDate, ay.current, ay.years, null, null)" +
+            "FROM Semester s JOIN s.academicYear ay WHERE s.semesterId = ?1")
+    Optional<AcademicYearDTO> findAcademicYearBySemesterId(int semesterId);
 
     @Modifying
     @Transactional

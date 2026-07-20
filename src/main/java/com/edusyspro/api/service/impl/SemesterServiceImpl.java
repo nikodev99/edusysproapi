@@ -1,5 +1,6 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.AcademicYearDTO;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.model.Semester;
@@ -187,5 +188,10 @@ public class SemesterServiceImpl implements SemesterService {
     @Override
     public Map<String, Long> count(Object... args) {
         return Map.of();
+    }
+
+    @Override
+    public AcademicYearDTO getAcademicYear(int semesterId) {
+        return semesterRepository.findAcademicYearBySemesterId(semesterId).orElse(AcademicYearDTO.builder().build());
     }
 }
