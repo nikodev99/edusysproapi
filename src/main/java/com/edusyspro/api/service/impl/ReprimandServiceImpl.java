@@ -59,9 +59,9 @@ public class ReprimandServiceImpl implements ReprimandService {
     }
 
     @Override
-    public List<ReprimandDTO> fetchSomeStudentReprimandedByTeacher(long teacherId) {
+    public List<ReprimandDTO> fetchSomeStudentReprimandedByTeacher(long teacherId, String schoolId) {
         Pageable pageable = PageRequest.of(0, 5);
-        return reprimandRepository.findStudentReprimandByTeacher(teacherId, PunishmentStatus.COMPLETED, "DIFF", pageable)
+        return reprimandRepository.findStudentReprimandByTeacher(teacherId, UUID.fromString(schoolId), PunishmentStatus.COMPLETED, "DIFF", pageable)
                 .map(ReprimandEssential::toDTO)
                 .toList();
     }

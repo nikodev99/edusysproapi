@@ -91,9 +91,9 @@ public class ReprimandController {
         return ResponseEntity.ok(reprimandService.findClasseReprimands(filters, pageable));
     }
 
-    @GetMapping("/teacher_some/{teacherId}")
-    ResponseEntity<?> getSomeStudentReprimandsByTeacher(@PathVariable String teacherId) {
-        return ResponseEntity.ok(reprimandService.fetchSomeStudentReprimandedByTeacher(Long.parseLong(teacherId)));
+    @GetMapping("/teacher_some/{teacherId}/{schoolId}")
+    ResponseEntity<?> getSomeStudentReprimandsByTeacher(@PathVariable String teacherId, @PathVariable String schoolId) {
+        return ResponseEntity.ok(reprimandService.fetchSomeStudentReprimandedByTeacher(Long.parseLong(teacherId), schoolId));
     }
 
     @GetMapping("/teacher_all/{teacherId}")

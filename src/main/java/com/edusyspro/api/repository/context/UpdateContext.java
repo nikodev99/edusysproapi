@@ -29,7 +29,6 @@ public class UpdateContext {
     @Modifying
     @Transactional
     public int updatePersonalInfoByField(String field, Object value, long infoId) {
-        value = adjustDate("birthDate", field, value);
         return updateEntityField(Individual.class, field, value, infoId);
     }
 
@@ -42,24 +41,18 @@ public class UpdateContext {
     @Modifying
     @Transactional
     public int updateTeacherField(String field, Object value, UUID teacherId) {
-        value = adjustDate("hireDate", field, value);
         return updateEntityField(Teacher.class, field, value, teacherId, "modifyAt");
     }
 
     @Modifying
     @Transactional
     public int updateEmployeeFields(String field, Object value, UUID employeeId) {
-        value = adjustDate("hireDate", field, value);
-        value = adjustDate("birthDate", field, value);
         return updateEntityField(Employee.class, field, value, employeeId, "modifyAt");
     }
 
     @Modifying
     @Transactional
     public int updateAssignmentField(String field, Object value, long assignmentId) {
-        value = adjustDate("examDate", field, value);
-        value = adjustTime("startTime", field, value);
-        value = adjustTime("endTime", field, value);
         return updateEntityField(Assignment.class, field, value, assignmentId, "updatedDate");
     }
 
@@ -72,8 +65,6 @@ public class UpdateContext {
     @Modifying
     @Transactional
     public int updateAcademicYearField(String field, Object value, String academicYearId) {
-        value = adjustDate("startDate", field, value);
-        value = adjustDate("endDate", field, value);
         return updateEntityField(AcademicYear.class, field, value, UUID.fromString(academicYearId));
     }
 
@@ -98,24 +89,13 @@ public class UpdateContext {
     @Modifying
     @Transactional
     public int updatePunishmentFields(String field, Object value, Long punishmentId) {
-        if ("dateRange".equals(field)) {
-            if (!(value instanceof DateRange date)) {
-                throw new IllegalArgumentException("Value must be an instance of DateRange");
-            }
+        return updateRange(Punishment.class, field, value, punishmentId, null);
+    }
 
-            // Adjust each date individually
-            Object startDate = adjustDate("startDate", field, date.startDate());
-            Object endDate = adjustDate("endDate", field, date.startDate());
-
-            int startUpdate = updateEntityField(Punishment.class, "startDate", startDate, punishmentId);
-            int endUpdate = updateEntityField(Punishment.class, "endDate", endDate, punishmentId);
-
-            // Return 1 if both succeeded, otherwise 0 (or throw an exception if partial failure is bad)
-            return (startUpdate > 0 && endUpdate > 0) ? 1 : 0;
-        }
-
-        // For all other single fields
-        return updateEntityField(Punishment.class, field, value, punishmentId);
+    @Modifying
+    @Transactional
+    public int updateEmployeeContract(String field, Object value, Long contractId) {
+       return updateEntityField(EmployeeContracts.class, field, value, contractId);
     }
 
     private Object adjustDate(String field, String existingField, Object value) {
@@ -134,11 +114,45 @@ public class UpdateContext {
         return value;
     }
 
+    private int updateRange(Class<?> entityClass, String field, Object value, Object entityId, String modifyField) {
+        if ("dateRange".equals(field)) {
+            if (!(value instanceof DateRange date)) {
+                throw new IllegalArgumentException("Value must be an instance of DateRange");
+            }
+
+            // Adjust each date individually
+            Object startDate = adjustDate("startDate", field, date.startDate());
+            Object endDate = adjustDate("endDate", field, date.startDate());
+
+            int startUpdate = updateEntityField(entityClass, "startDate", startDate, entityId);
+            int endUpdate = updateEntityField(entityClass, "endDate", endDate, entityId);
+
+            // Return 1 if both succeeded, otherwise 0 (or throw an exception if partial failure is bad)
+            return (startUpdate > 0 && endUpdate > 0) ? 1 : 0;
+        }
+        return modifyField != null
+                ? updateEntityField(entityClass, field, value, entityId, modifyField)
+                : updateEntityField(entityClass, field, value, entityId);
+    }
+
     private int updateEntityField(Class<?> entityClass, String field, Object value, Object entityId) {
-        return  PatchContext.updateEntityField(entityManager, entityClass, field, value, entityId);
+        return  PatchContext.updateEntityField(entityManager, entityClass, field, compileeAdjustDateAndTime(field, value), entityId);
     }
 
     private int updateEntityField(Class<?> entityClass, String field, Object value, Object entityId, String modifyField) {
-        return  PatchContext.updateEntityField(entityManager, entityClass, field, value, entityId, modifyField);
+        return  PatchContext.updateEntityField(entityManager, entityClass, field, compileeAdjustDateAndTime(field, value), entityId, modifyField);
+    }
+
+    private Object compileeAdjustDateAndTime(String field, Object value) {
+        return switch (field) {
+            case "birthDate" -> adjustDate("birthDate", field, value);
+            case "hireDate" -> adjustDate("hireDate", field, value);
+            case "examDate" -> adjustDate("examDate", field, value);
+            case "startTime" -> adjustTime("startTime", field, value);
+            case "endTime" -> adjustTime("endTime", field, value);
+            case "startDate" -> adjustDate("startDate", field, value);
+            case "endDate" -> adjustDate("endDate", field, value);
+            default -> value;
+        };
     }
 }

@@ -56,7 +56,7 @@ public class StudentController {
     @PostMapping("/{studentId}")
     @Transactional
     ResponseEntity<?> changeGuardian(@PathVariable String studentId, @RequestBody GuardianEntity guardianPost) {
-        String guardianReference = individualReferenceService.generateReference(IndividualType.GUARDIAN);
+        String guardianReference = individualReferenceService.generateReference(IndividualType.GUARDIAN, guardianPost.getPersonalInfo().getLastName());
         GuardianEntity guardian = guardianService.saveOrUpdateGuardian(guardianPost, guardianReference);
         return ResponseEntity.ok(studentService.changeStudentGuardian(studentId, guardian));
     }

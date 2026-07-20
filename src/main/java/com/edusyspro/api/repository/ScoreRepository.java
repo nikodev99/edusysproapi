@@ -19,19 +19,19 @@ import java.util.UUID;
 @Repository
 public interface ScoreRepository extends JpaRepository<Score, Long> {
 
-    @Query("select new com.edusyspro.api.dto.custom.ScoreEssential(s.id, s.assignment.id, s.assignment.examName, s.assignment.examDate, " +
+    @Query("select new com.edusyspro.api.dto.custom.ScoreEssential(s.id, s.assignment.id, s.assignment.examName, s.assignment.type, s.assignment.examDate, " +
             "s.assignment.startTime, s.assignment.endTime, s.assignment.classeEntity.name, s.assignment.classeEntity.grade.section, " +
             "s.assignment.subject.id, s.assignment.subject.course, s.obtainedMark, s.assignment.coefficient) " +
             "from Score s where s.assignment.semester.academicYear.current = true and s.studentEntity.id = ?1 order by s.assignment.examDate desc")
     Page<ScoreEssential> findLastFiveScoresByStudent(UUID studentId, Pageable pageable);
 
-    @Query("select new com.edusyspro.api.dto.custom.ScoreEssential(s.id, s.assignment.id, s.assignment.examName, s.assignment.examDate, " +
+    @Query("select new com.edusyspro.api.dto.custom.ScoreEssential(s.id, s.assignment.id, s.assignment.examName, s.assignment.type, s.assignment.examDate, " +
             "s.assignment.startTime, s.assignment.endTime, s.assignment.classeEntity.name, s.assignment.classeEntity.grade.section, " +
             "s.assignment.subject.id, s.assignment.subject.course, s.obtainedMark, s.assignment.coefficient) " +
             "from Score s where s.assignment.semester.academicYear.id = ?1 and s.studentEntity.id = ?2 order by s.assignment.examDate desc")
     Page<ScoreEssential> findAllByStudentIdAndAcademicYear(UUID academicYearId, UUID studentId, Pageable pageable);
 
-    @Query("select new com.edusyspro.api.dto.custom.ScoreEssential(s.id, s.assignment.id, s.assignment.examName, s.assignment.examDate, " +
+    @Query("select new com.edusyspro.api.dto.custom.ScoreEssential(s.id, s.assignment.id, s.assignment.examName, s.assignment.type, s.assignment.examDate, " +
             "s.assignment.startTime, s.assignment.endTime, s.assignment.classeEntity.name, s.assignment.classeEntity.grade.section, " +
             "s.assignment.subject.id, s.assignment.subject.course, s.obtainedMark, s.assignment.coefficient) " +
             "from Score s where s.studentEntity.id = ?1 and s.assignment.subject.id = ?2 and s.assignment.semester.academicYear.id = ?3 order by s.assignment.examDate desc")

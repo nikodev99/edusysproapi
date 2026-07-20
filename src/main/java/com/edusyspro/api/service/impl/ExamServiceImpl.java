@@ -54,7 +54,7 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public ExamResponse findClasseExamWithCalculations(Long examId, Integer classeId, String academicYear) {
+    public ExamResponse findClasseExamWithCalculations(Long examId, Integer classeId, String academicYear, boolean onlyStat) {
         ExamDTO exam = examRepository.findClasseExamsAssignments(examId, classeId, UUID.fromString(academicYear))
                 .orElseThrow(() -> new NotFountException("No Exam Found for ExamID: " + examId))
                 .toDto();
@@ -83,6 +83,13 @@ public class ExamServiceImpl implements ExamService {
         statistics.setTotalMarks(Optional.of(allScores).orElseGet(Collections::emptyList).stream().mapToDouble(ScoreDTO::getObtainedMark).sum());
 
         return new ExamResponse(exam, examViews, assignments, statistics);
+    }
+
+    @Override
+    public List<ExamResponse> findClasseAllExamWithCalculations(Integer classeId, String academicYear, boolean onlyStat) {
+        List<ExamDTO> exams = findAllClasseExams(classeId, academicYear);
+
+        return List.of();
     }
 
     @Override
@@ -129,7 +136,7 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public ExamResponse findStudentExamWithCalculations(Long examId, Integer classeId, String academicYear, String studentId) {
+    public ExamResponse findStudentExamWithCalculations(Long examId, Integer classeId, String academicYear, String studentId, boolean onlyStat) {
         ExamDTO exam = examRepository.findClasseExamsAssignments(examId, classeId, UUID.fromString(academicYear))
                 .orElseThrow(() -> new NotFountException("No Exam Found for ExamID: " + examId))
                 .toDto();
@@ -158,7 +165,16 @@ public class ExamServiceImpl implements ExamService {
         statistics.setTotalAssignments(assignments.size());
         statistics.setTotalMarks(Optional.of(allScores).orElseGet(Collections::emptyList).stream().mapToDouble(ScoreDTO::getObtainedMark).sum());
 
+        if (onlyStat) {
+            return new ExamResponse(exam, List.of(), List.of(), statistics);
+        }
+
         return new ExamResponse(exam, List.of(examViews), assignments, statistics);
+    }
+
+    @Override
+    public List<ExamResponse> findStudentExamWithCalculations(Integer classeId, String academicYear, String studentId, boolean onlyStat) {
+        return List.of();
     }
 
     @Override
@@ -313,6 +329,10 @@ public class ExamServiceImpl implements ExamService {
     }
 
     private List<AssignmentTypeAverage> calculateTypeAverages(List<AssignmentDTO> assignments) {
+        if (assignments == null || assignments.isEmpty()) {
+            return List.of();
+        }
+
         return assignments.stream()
                 .collect(Collectors.groupingBy(AssignmentDTO::getType))
                 .entrySet().stream()

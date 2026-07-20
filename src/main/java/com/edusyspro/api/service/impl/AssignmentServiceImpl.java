@@ -108,29 +108,29 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public List<AssignmentDTO> findSomeAssignmentsPreparedByTeacher(long teacherId) {
-        return assignmentRepository.findAssignmentsByTeacher(teacherId, PageRequest.of(0, 5))
+    public List<AssignmentDTO> findSomeAssignmentsPreparedByTeacher(long teacherId, String schoolId) {
+        return assignmentRepository.findAssignmentsByTeacher(teacherId, UUID.fromString(schoolId), PageRequest.of(0, 5))
                 .map(AssignmentEssential::toDTO)
                 .toList();
     }
 
     @Override
-    public List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId) {
-        return assignmentRepository.findAssignmentsByTeacher(teacherId).stream()
+    public List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, String academicYear) {
+        return assignmentRepository.findAssignmentsByTeacher(teacherId, UUID.fromString(academicYear)).stream()
                 .map(AssignmentEssential::toDTO)
                 .toList();
     }
 
     @Override
-    public List<AssignmentDTO> findAllAssignmentsPreparedByTeacherByCourse(long teacherId, CourseAndClasseIds ids) {
-        return assignmentRepository.findAllAssignmentsByTeacherByCourseByClasse(teacherId, ids.classId(), ids.courseId()).stream()
+    public List<AssignmentDTO> findAllAssignmentsPreparedByTeacherByCourse(long teacherId, String academicYear, CourseAndClasseIds ids) {
+        return assignmentRepository.findAllAssignmentsByTeacherByCourseByClasse(teacherId, UUID.fromString(academicYear), ids.classId(), ids.courseId()).stream()
                 .map(AssignmentEssential::toDTO)
                 .toList();
     }
 
     @Override
-    public List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, CourseAndClasseIds ids) {
-        return assignmentRepository.findAllAssignmentsByTeacherByClasse(teacherId, ids.classId()).stream()
+    public List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, String academicYear, CourseAndClasseIds ids) {
+        return assignmentRepository.findAllAssignmentsByTeacherByClasse(teacherId, UUID.fromString(academicYear), ids.classId()).stream()
                 .map(AssignmentEssential::toDTO)
                 .toList();
     }
@@ -183,15 +183,18 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     private boolean assignmentExists(AssignmentDTO assignment) {
         long count;
+        AcademicYearDTO academicYear = semesterService.getAcademicYear(assignment.getSemester().getSemesterId());
         if (assignment.getSubject() != null && assignment.getSubject().getId() != null) {
             count = assignmentRepository.courseAssignmentExists(
                     assignment.getExamName(),
+                    academicYear.getId(),
                     assignment.getClasse().getId(),
                     assignment.getSubject().getId()
             ).orElseThrow();
         }else {
             count = assignmentRepository.assignmentExists(
                     assignment.getExamName(),
+                    academicYear.getId(),
                     assignment.getClasse().getId()
             ).orElseThrow();
         }

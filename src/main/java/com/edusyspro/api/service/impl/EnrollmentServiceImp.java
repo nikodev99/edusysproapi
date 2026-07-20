@@ -70,10 +70,10 @@ public class EnrollmentServiceImp implements EnrollmentService {
     @Transactional
     public EnrollmentDTO enrollStudent(EnrollmentDTO enrollmentDTO) {
         EnrollmentEntity enrollmentEntity = EnrollmentDTO.toEntity(enrollmentDTO);
+        School school = enrollmentEntity.getAcademicYear().getSchool();
 
         if(enrollmentEntity.getStudent().getId() == null) {
             Individual studentInd = enrollmentEntity.getStudent().getPersonalInfo();
-            School school = enrollmentEntity.getAcademicYear().getSchool();
             if (studentInd != null) {
                 String reference = individualReferenceService.generateReference(IndividualType.STUDENT, school.getId());
                 studentInd.setReference(reference);
@@ -82,20 +82,23 @@ public class EnrollmentServiceImp implements EnrollmentService {
 
             GuardianEntity guardianEntity = enrollmentEntity.getStudent().getGuardian();
             if (guardianEntity != null) {
-                String guardianReference = individualReferenceService.generateReference(IndividualType.GUARDIAN);
+                String guardianReference = individualReferenceService.generateReference(IndividualType.GUARDIAN, guardianEntity.getPersonalInfo().getLastName());
                 GuardianEntity guardian = guardianService.saveOrUpdateGuardian(guardianEntity, guardianReference);
                 enrollmentEntity.getStudent().setGuardian(guardian);
             }
         }else {
             StudentEntity studentEntity = entityManager.getReference(StudentEntity.class, enrollmentEntity.getStudent().getId());
-            enrollmentEntity.setStudent(studentEntity);
 
-            getStudentSchoolHistory(enrollmentEntity.getStudent().getId().toString(), ArchivedStatus.NOT_ARCHIVED)
+            getStudentSchoolHistory(studentEntity.getId().toString(), ArchivedStatus.NOT_ARCHIVED)
                     .forEach(e -> enrollmentRepository.updateEnrollmentByStudentId(
                             true,
                             e.getStudent().getId(),
                             e.getAcademicYear().getId()
                     ));
+
+            String newReference = individualReferenceService.generateReference(IndividualType.STUDENT, school.getId());
+            studentEntity.getPersonalInfo().setReference(newReference);
+            enrollmentEntity.setStudent(studentEntity);
         }
 
         EnrollmentEntity saved = enrollmentRepository.save(enrollmentEntity);
@@ -162,6 +165,11 @@ public class EnrollmentServiceImp implements EnrollmentService {
                 .filter(enrollmentDTOS -> enrollmentDTOS.stream()
                         .noneMatch(enr -> Boolean.FALSE.equals(enr.getIsArchived())))
                 .map(enrollmentDTOS -> enrollmentDTOS.stream()
+                        .peek(e -> {
+                            e.getStudent().setGuardian(studentService.getStudentGuardian(e.getId().toString()));
+                            e.getStudent().setHealthCondition(studentService.getStudentHealthCondition(e.getId().toString()));
+                            e.getStudent().setEnrollmentEntities(getStudentSchoolHistory(e.getId().toString(), ArchivedStatus.ARCHIVED).limit(5).toList());
+                        })
                         .max(byDateAndId)
                         .orElse(null))
                 .filter(Objects::nonNull)
@@ -256,7 +264,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
                 .getContent()
                 .stream()
                 .findFirst()
-                .map(EnrolledStudent::populateStudent)
+                .map(e -> {
+                    EnrollmentDTO enrolledStudent = e.populateStudent();
+                    enrolledStudent.getStudent().setGuardian(studentService.getStudentGuardian(e.id().toString()));
+                    enrolledStudent.getStudent().setHealthCondition(studentService.getStudentHealthCondition(e.id().toString()));
+                    enrolledStudent.getStudent().setEnrollmentEntities(getStudentSchoolHistory(e.id().toString(), ArchivedStatus.ARCHIVED).limit(5).toList());
+                    return enrolledStudent;
+                })
                 .orElseThrow(() -> new NotFountException("Student not found"));
     }
 

@@ -29,11 +29,13 @@ public interface ReprimandRepository extends JpaRepository<Reprimand, Long> {
         s.student.personalInfo.lastName, s.student.personalInfo.firstName, s.student.personalInfo.image, s.student.personalInfo.reference,
         s.classe.id, s.classe.name, s.classe.grade.section, r.reprimandDate, r.type, r.description, r.issuedBy.id, r.issuedBy.firstName,
         r.issuedBy.lastName, r.issuedBy.image, r.issuedBy.reference, r.punishment) from Reprimand r join r.student s
-        where r.issuedBy.id = :teacherId and s.academicYear.current = true and (:status is null or (:operator = 'EQUAL' and r.punishment.status = :status) or
-        (:operator = 'DIFF' and r.punishment.status != :status)) order by r.reprimandDate desc
+        where r.issuedBy.id = :teacherId and s.academicYear.school.id = :schoolId and s.academicYear.current = true
+        and ((:status is null or (:operator = 'EQUAL' and r.punishment.status = :status) or
+        (:operator = 'DIFF' and r.punishment.status != :status))) order by r.reprimandDate desc
     """)
     Page<ReprimandEssential> findStudentReprimandByTeacher(
             @Param("teacherId") long teacherId,
+            @Param("schoolId") UUID schoolId,
             @Param("status") PunishmentStatus status,
             @Param("operator") String operator,
             Pageable pageable

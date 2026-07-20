@@ -13,13 +13,15 @@ public interface ExamService {
 
     ExamDTO findClasseExamsAssignments(Long examId, Integer classeId, String academicYear);
 
-    ExamResponse findClasseExamWithCalculations(Long examId, Integer classeId, String academicYear);
+    ExamResponse findClasseExamWithCalculations(Long examId, Integer classeId, String academicYear, boolean onlyStat);
+    List<ExamResponse> findClasseAllExamWithCalculations(Integer classeId, String academicYear, boolean onlyStat);
 
     List<ExamProgress> getStudentExamProgress(String studentId, Integer classeId, String academicYear);
 
     ExamDTO findStudentExamsAssignments(Long examId, Integer classeId, String academicYear, String studentId);
 
-    ExamResponse findStudentExamWithCalculations(Long examId, Integer classeId, String academicYear, String studentId);
+    ExamResponse findStudentExamWithCalculations(Long examId, Integer classeId, String academicYear, String studentId, boolean onlyStat);
+    List<ExamResponse> findStudentExamWithCalculations(Integer classeId, String academicYear, String studentId, boolean onlyStat);
 
     ExamDTO findExamById(Long examId);
 

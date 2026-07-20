@@ -1,6 +1,8 @@
 package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.*;
+import com.edusyspro.api.model.ExamType;
+import com.edusyspro.api.model.enums.AssignmentType;
 import com.edusyspro.api.model.enums.Section;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +20,7 @@ public class ScoreEssential {
     private long id;
     private long assignmentId;
     private String examName;
+    private AssignmentType examType;
     private LocalDate examDate;
     private LocalTime examStartTime;
     private LocalTime examEndDate;
@@ -35,6 +38,7 @@ public class ScoreEssential {
                         .id(e.assignmentId)
                         .examName(e.examName)
                         .examDate(e.examDate)
+                        .type(e.examType)
                         .startTime(e.examStartTime)
                         .endTime(e.examEndDate)
                         .classe(ClasseDTO.builder()

@@ -15,7 +15,7 @@ public interface EnrollmentService {
      * Enrolls a student based on the provided enrollment details.
      *
      * @param enrollmentDTO the enrollment data transfer object (DTO) containing
-     *                       necessary details for student enrollment
+     *                       the necessary details for student enrollment
      * @return the enrolled student's details encapsulated in an EnrollmentDTO
      */
     EnrollmentDTO enrollStudent(EnrollmentDTO enrollmentDTO);

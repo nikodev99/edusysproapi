@@ -2,9 +2,9 @@ package com.edusyspro.api.dto.custom;
 
 import com.edusyspro.api.dto.*;
 import com.edusyspro.api.model.Individual;
+import com.edusyspro.api.model.School;
 import com.edusyspro.api.model.enums.Section;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 public record EnrolledStudentBasic (
@@ -15,13 +15,13 @@ public record EnrolledStudentBasic (
     Integer classeId,
     String classeName,
     Section classeSection,
-    BigDecimal classeAmount,
     long individualId,
     String firstName,
     String lastName,
     String image,
     String reference,
-    Boolean isArchived
+    Boolean isArchived,
+    String schoolName
 ) {
     public EnrollmentDTO toDTO() {
         return EnrollmentDTO.builder()
@@ -29,6 +29,9 @@ public record EnrolledStudentBasic (
                 .academicYear(AcademicYearDTO.builder()
                         .id(academicYearId)
                         .years(academicYear)
+                        .school(School.builder()
+                                .name(schoolName)
+                                .build())
                         .build())
                 .student(StudentDTO.builder()
                         .id(id)
@@ -46,7 +49,6 @@ public record EnrolledStudentBasic (
                         .grade(GradeDTO.builder()
                                 .section(classeSection)
                                 .build())
-                        .monthCost(classeAmount)
                         .build())
                 .isArchived(isArchived)
                 .build();

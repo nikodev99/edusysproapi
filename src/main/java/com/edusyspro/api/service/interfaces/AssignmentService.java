@@ -27,13 +27,13 @@ public interface AssignmentService {
 
     List<AssignmentDTO> findAllCourseAssignments(Integer courseId, String academicYear);
 
-    List<AssignmentDTO> findSomeAssignmentsPreparedByTeacher(long teacherId);
+    List<AssignmentDTO> findSomeAssignmentsPreparedByTeacher(long teacherId, String schoolId);
 
-    List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId);
+    List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, String academicYear);
 
-    List<AssignmentDTO> findAllAssignmentsPreparedByTeacherByCourse(long teacherId, CourseAndClasseIds ids);
+    List<AssignmentDTO> findAllAssignmentsPreparedByTeacherByCourse(long teacherId, String academicYear, CourseAndClasseIds ids);
 
-    List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, CourseAndClasseIds ids);
+    List<AssignmentDTO> findAllAssignmentsPreparedByTeacher(long teacherId, String academicYear, CourseAndClasseIds ids);
 
     AssignmentDTO findAssignmentById(long id);
 

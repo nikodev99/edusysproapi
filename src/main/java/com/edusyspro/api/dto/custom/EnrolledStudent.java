@@ -23,7 +23,8 @@ public record EnrolledStudent(
         Boolean isArchived,
         BigDecimal monthCost,
         String dadName,
-        String momName
+        String momName,
+        String schoolName
 ) {
 
     public EnrollmentDTO populateStudent() {
@@ -35,6 +36,9 @@ public record EnrolledStudent(
                         .endDate(academicYear.getEndDate())
                         .current(academicYear.getCurrent())
                         .years(academicYear.getYears())
+                        .school(School.builder()
+                                .name(schoolName)
+                                .build())
                         .build())
                 .student(StudentDTO.builder()
                         .id(id)

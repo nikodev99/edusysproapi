@@ -32,10 +32,11 @@ public class ExamController {
     ResponseEntity<?> getClasseExam(
             @PathVariable Long examId,
             @PathVariable Integer classeId,
-            @RequestParam String academicYear
+            @RequestParam String academicYear,
+            @RequestParam(required = false) boolean onlyStat
     ){
         try {
-            return ResponseEntity.ok(examService.findClasseExamWithCalculations(examId, classeId, academicYear));
+            return ResponseEntity.ok(examService.findClasseExamWithCalculations(examId, classeId, academicYear, onlyStat));
         }catch (NotFountException n) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(n.getMessage());
         }
@@ -46,10 +47,11 @@ public class ExamController {
             @PathVariable Long examId,
             @PathVariable Integer classeId,
             @PathVariable String studentId,
-            @RequestParam String academicYear
+            @RequestParam String academicYear,
+            @RequestParam(required = false) boolean onlyStat
     ){
         try {
-            return ResponseEntity.ok(examService.findStudentExamWithCalculations(examId, classeId, academicYear, studentId));
+            return ResponseEntity.ok(examService.findStudentExamWithCalculations(examId, classeId, academicYear, studentId, onlyStat));
         }catch (NotFountException n) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(n.getMessage());
         }
