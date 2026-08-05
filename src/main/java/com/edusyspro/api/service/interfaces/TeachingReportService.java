@@ -12,8 +12,10 @@ import java.util.List;
 public interface TeachingReportService {
     void saveReport(TeachingReportDTO report);
     List<TeachingReportDTO> getBasicReport(String teacherId, LocalDate startDate, LocalDate endDate);
+    List<TeachingReportDTO> getBasicReport(int classeId, LocalDate startDate, LocalDate endDate);
     TeachingReportDTO getDetailedReport(Long reportId);
     long getReportCountByTeacher(String teacherId, String academicYear);
+    long getReportCountByTeacher(int classeId, String academicYear);
 
     /**
      * Calculates the expected number of teaching reports by a specific teacher within a given academic year,

@@ -48,6 +48,15 @@ public class ReportController {
         ));
     }
 
+    @GetMapping("/classe_week/{classeId}")
+    ResponseEntity<?> getWeekReport(@PathVariable int classeId, @RequestParam String startDate, @RequestParam String endDate) {
+        return ResponseEntity.ok(teachingReportService.getBasicReport(
+                classeId,
+                ControllerUtils.parseDate(startDate),
+                ControllerUtils.parseDate(endDate)
+        ));
+    }
+
     @GetMapping("/{reportId}")
     ResponseEntity<TeachingReportDTO> getReport(@PathVariable Long reportId) {
         return ResponseEntity.ok(teachingReportService.getDetailedReport(reportId));

@@ -21,6 +21,7 @@ public record EnrolledStudentBasic (
     String image,
     String reference,
     Boolean isArchived,
+    UUID schoolId,
     String schoolName
 ) {
     public EnrollmentDTO toDTO() {
@@ -30,6 +31,7 @@ public record EnrolledStudentBasic (
                         .id(academicYearId)
                         .years(academicYear)
                         .school(School.builder()
+                                .id(schoolId)
                                 .name(schoolName)
                                 .build())
                         .build())

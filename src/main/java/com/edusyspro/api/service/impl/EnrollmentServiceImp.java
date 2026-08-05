@@ -87,17 +87,26 @@ public class EnrollmentServiceImp implements EnrollmentService {
                 enrollmentEntity.getStudent().setGuardian(guardian);
             }
         }else {
+            String studentId = enrollmentEntity.getStudent().getId().toString();
+            EnrollmentDTO latestEnrollment = lastEnrollment(studentId);
+
+            if (latestEnrollment.getIsArchived() == false) {
+                getStudentSchoolHistory(enrollmentDTO.getStudent().getId().toString(), ArchivedStatus.NOT_ARCHIVED)
+                        .forEach(e -> enrollmentRepository.updateEnrollmentByStudentId(
+                                true,
+                                e.getStudent().getId(),
+                                e.getAcademicYear().getId()
+                        ));
+            }
+
             StudentEntity studentEntity = entityManager.getReference(StudentEntity.class, enrollmentEntity.getStudent().getId());
+            boolean isNewScholl = isNewSchool(latestEnrollment, enrollmentEntity.getStudent().getId());
 
-            getStudentSchoolHistory(studentEntity.getId().toString(), ArchivedStatus.NOT_ARCHIVED)
-                    .forEach(e -> enrollmentRepository.updateEnrollmentByStudentId(
-                            true,
-                            e.getStudent().getId(),
-                            e.getAcademicYear().getId()
-                    ));
+            if (isNewScholl) {
+                String newReference = individualReferenceService.generateReference(IndividualType.STUDENT, school.getId());
+                studentEntity.getPersonalInfo().setReference(newReference);
+            }
 
-            String newReference = individualReferenceService.generateReference(IndividualType.STUDENT, school.getId());
-            studentEntity.getPersonalInfo().setReference(newReference);
             enrollmentEntity.setStudent(studentEntity);
         }
 
@@ -166,9 +175,9 @@ public class EnrollmentServiceImp implements EnrollmentService {
                         .noneMatch(enr -> Boolean.FALSE.equals(enr.getIsArchived())))
                 .map(enrollmentDTOS -> enrollmentDTOS.stream()
                         .peek(e -> {
-                            e.getStudent().setGuardian(studentService.getStudentGuardian(e.getId().toString()));
-                            e.getStudent().setHealthCondition(studentService.getStudentHealthCondition(e.getId().toString()));
-                            e.getStudent().setEnrollmentEntities(getStudentSchoolHistory(e.getId().toString(), ArchivedStatus.ARCHIVED).limit(5).toList());
+                            e.getStudent().setGuardian(studentService.getStudentGuardian(e.getStudent().getId().toString()));
+                            e.getStudent().setHealthCondition(studentService.getStudentHealthCondition(e.getStudent().getId().toString()));
+                            e.getStudent().setEnrollmentEntities(getStudentSchoolHistory(e.getStudent().getId().toString(), ArchivedStatus.ARCHIVED).limit(5).toList());
                         })
                         .max(byDateAndId)
                         .orElse(null))
@@ -195,7 +204,11 @@ public class EnrollmentServiceImp implements EnrollmentService {
             );
 
             ClasseDTO classe = student.getClasse();
-            List<ScheduleDTO> schedules = scheduleService.getAllClasseSchedule(classe.getId(), classe.getGrade().getSection());
+            List<ScheduleDTO> schedules = scheduleService.getAllClasseSchedule(
+                    classe.getId(),
+                    classe.getGrade().getSection(),
+                    student.getAcademicYear().getId().toString()
+            );
 
             student.getStudent().setGuardian(studentService.getStudentGuardian(studentId));
             student.getStudent().setHealthCondition(studentService.getStudentHealthCondition(studentId));
@@ -373,5 +386,15 @@ public class EnrollmentServiceImp implements EnrollmentService {
                 return Stream.empty();
             }
         }
+    }
+
+    private EnrollmentDTO lastEnrollment (String studentId) {
+        return getStudentSchoolHistory(studentId, ArchivedStatus.ALL)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean isNewSchool (EnrollmentDTO enrollment, UUID schoolId) {
+        return enrollment == null || !enrollment.getAcademicYear().getSchool().getId().equals(schoolId);
     }
 }

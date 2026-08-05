@@ -24,6 +24,23 @@ public interface ReprimandRepository extends JpaRepository<Reprimand, Long> {
     """)
     List<ReprimandBasic> findReprimandsByStudentId(UUID student_id);
 
+    //TODO Not used right now. Maybe later it will be implemented
+    @Query("""
+        select new com.edusyspro.api.dto.custom.ReprimandEssential(r.id, s.academicYear.id, s.academicYear.years, s.student.id,
+        s.student.personalInfo.lastName, s.student.personalInfo.firstName, s.student.personalInfo.image, s.student.personalInfo.reference,
+        s.classe.id, s.classe.name, s.classe.grade.section, r.reprimandDate, r.type, r.description, r.issuedBy.id, r.issuedBy.firstName,
+        r.issuedBy.lastName, r.issuedBy.image, r.issuedBy.reference, r.punishment) from Reprimand r join r.student s
+        where s.classe.id = :classeId and s.academicYear.id = :academicYear and ((:status is null or (:operator = 'EQUAL' and r.punishment.status = :status) or
+        (:operator = 'DIFF' and r.punishment.status != :status))) order by r.reprimandDate desc
+    """)
+    Page<ReprimandEssential> findStudentReprimandByClasse(
+            @Param("classeId") long classeId,
+            @Param("academicYear") UUID academicYear,
+            @Param("status") PunishmentStatus status,
+            @Param("operator") String operator,
+            Pageable pageable
+    );
+
     @Query("""
         select new com.edusyspro.api.dto.custom.ReprimandEssential(r.id, s.academicYear.id, s.academicYear.years, s.student.id,
         s.student.personalInfo.lastName, s.student.personalInfo.firstName, s.student.personalInfo.image, s.student.personalInfo.reference,

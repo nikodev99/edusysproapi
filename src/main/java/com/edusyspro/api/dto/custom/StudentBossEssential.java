@@ -10,6 +10,7 @@ import java.util.UUID;
 public record StudentBossEssential(
         int id,
         UUID studentId,
+        String academicYear,
         String lastName,
         String firstName,
         boolean current,

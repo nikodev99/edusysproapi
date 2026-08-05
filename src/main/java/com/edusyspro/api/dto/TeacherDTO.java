@@ -35,19 +35,21 @@ public class TeacherDTO {
     private ZonedDateTime modifyAt;
 
     public static TeacherDTO fromEntity(Teacher teacher){
-        TeacherSchoolAffiliation schoolAffiliation = teacher.getSchoolAffiliations().stream()
-                .findFirst()
-                .orElse(TeacherSchoolAffiliation.builder().build());
+        TeacherSchoolAffiliation schoolAffiliation = teacher.getSchoolAffiliations() != null
+                ? teacher.getSchoolAffiliations().stream()
+                    .findFirst()
+                    .orElse(TeacherSchoolAffiliation.builder().build())
+                : TeacherSchoolAffiliation.builder().build();
 
         return TeacherDTO.builder()
                 .id(teacher.getId())
                 .personalInfo(teacher.getPersonalInfo())
-                .aClasses(SchoolAffiliationDTO.toClasse(schoolAffiliation))
-                .courses(SchoolAffiliationDTO.toCourse(schoolAffiliation))
+                .aClasses(schoolAffiliation.getAClasses() != null ? SchoolAffiliationDTO.toClasse(schoolAffiliation): List.of())
+                .courses(schoolAffiliation.getCourses() != null ? SchoolAffiliationDTO.toCourse(schoolAffiliation): List.of())
                 //.courseProgram(teacher.getCourseProgram().stream().map(CourseProgramDTO::fromEntity).toList())
-                .school(schoolAffiliation.getSchool())
-                .status(schoolAffiliation.getStatus())
-                .contract(SchoolAffiliationDTO.toContract(schoolAffiliation))
+                .school(schoolAffiliation.getSchool() != null ? schoolAffiliation.getSchool(): null)
+                .status(schoolAffiliation.getStatus() != null ? schoolAffiliation.getStatus() : null)
+                .contract(schoolAffiliation.getContract() != null ? SchoolAffiliationDTO.toContract(schoolAffiliation): null)
                 .createdAt(teacher.getCreatedAt())
                 .modifyAt(teacher.getModifyAt())
                 .build();
@@ -59,10 +61,10 @@ public class TeacherDTO {
                 .personalInfo(teacherDTO.getPersonalInfo())
                 .schoolAffiliations(List.of(
                         TeacherSchoolAffiliation.builder()
-                                .contract(teacherDTO.getContract().toEntity())
-                                .aClasses(teacherDTO.getAClasses().stream().map(c -> c.toEntity()).toList())
+                                .contract(teacherDTO.getContract() != null ? teacherDTO.getContract().toEntity() : null)
+                                .aClasses(teacherDTO.getAClasses() != null ? teacherDTO.getAClasses().stream().map(c -> c.toEntity()).toList() : null)
                                 .courses(teacherDTO.getCourses() != null ? teacherDTO.getCourses().stream().map(TeacherCourseDTO::toEntity).toList() : null)
-                                .school(teacherDTO.getSchool())
+                                .school(teacherDTO.getSchool() != null ? teacherDTO.getSchool() : null)
                                 .build()
                         )
                 )

@@ -39,7 +39,7 @@ public class StudentDTO {
                 .personalInfo(student.getPersonalInfo())
                 .dadName(student.getDadName())
                 .momName(student.getMomName())
-                .guardian(GuardianDTO.fromEntity(student.getGuardian()))
+                .guardian(student.getGuardian() != null ? GuardianDTO.fromEntity(student.getGuardian()) : null)
                 .healthCondition(student.getHealthCondition())
                 .build();
     }
@@ -50,7 +50,7 @@ public class StudentDTO {
                 .personalInfo(student.getPersonalInfo())
                 .dadName(student.getDadName())
                 .momName(student.getMomName())
-                .guardian(GuardianEntity.builder()
+                .guardian(student.getGuardian() != null ? GuardianEntity.builder()
                         .id(student.getGuardian().getId())
                         .personalInfo(student.getGuardian().getPersonalInfo())
                         .jobTitle(student.getGuardian().getJobTitle())
@@ -58,7 +58,7 @@ public class StudentDTO {
                         .linkToStudent(student.getGuardian().getLinkToStudent())
                         .createdAt(student.getGuardian().getCreatedAt())
                         .modifyAt(student.getGuardian().getModifyAt())
-                        .build())
+                        .build(): null)
                 .healthCondition(student.getHealthCondition())
                 .build();
     }
@@ -66,6 +66,12 @@ public class StudentDTO {
     public static StudentEntity toMergeEntity(StudentDTO student) {
         return StudentEntity.builder()
                 .id(student.getId())
+                .build();
+    }
+
+    public StudentEntity toMergeEntity() {
+        return StudentEntity.builder()
+                .id(id)
                 .build();
     }
 }

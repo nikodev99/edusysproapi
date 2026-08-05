@@ -2,12 +2,14 @@ package com.edusyspro.api.controller;
 
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.SchoolAffiliationDTO;
+import com.edusyspro.api.dto.TeacherBossDTO;
 import com.edusyspro.api.dto.TeacherDTO;
 import com.edusyspro.api.dto.custom.TeacherClassUpdateRequest;
 import com.edusyspro.api.dto.custom.TeacherCourseUpdateRequest;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.enums.Section;
+import com.edusyspro.api.service.interfaces.ClasseBossService;
 import com.edusyspro.api.service.mod.TeacherService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,12 @@ import java.util.UUID;
 public class TeacherController {
 
     private final TeacherService teacherService;
+    private final ClasseBossService<TeacherBossDTO> classeBossService;
 
     @Autowired
-    public TeacherController(TeacherService teacherService) {
+    public TeacherController(TeacherService teacherService, ClasseBossService<TeacherBossDTO> classeBossService) {
         this.teacherService = teacherService;
+        this.classeBossService = classeBossService;
     }
 
     @PostMapping
@@ -189,5 +193,10 @@ public class TeacherController {
         }catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+    }
+
+    @RequestMapping("/principal/{teacherId}")
+    ResponseEntity<Boolean> checkTeacherIsBoss(@PathVariable String teacherId, @RequestParam int classe) {
+        return ResponseEntity.ok(classeBossService.checkPrincipal(teacherId, classe));
     }
 }

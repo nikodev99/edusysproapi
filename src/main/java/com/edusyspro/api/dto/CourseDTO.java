@@ -27,9 +27,16 @@ public class CourseDTO {
     private ZonedDateTime modifyAt;
 
     public static CourseDTO fromEntity(Course course){
-        CourseDTO copiedCourse = CourseDTO.builder().build();
-        BeanUtils.copyProperties(course, copiedCourse);
-        return copiedCourse;
+        return CourseDTO.builder()
+                .id(course.getId())
+                .course(course.getCourse())
+                .courseType(course.getCourseType())
+                .abbr(course.getAbbr())
+                .discipline(course.getDiscipline())
+                .department(course.getDepartment() != null ? DepartmentDTO.fromEntity(course.getDepartment()) : null)
+                .createdAt(course.getCreatedAt())
+                .modifyAt(course.getModifyAt())
+                .build();
     }
 
     public static Course toEntity(CourseDTO course){
@@ -39,7 +46,7 @@ public class CourseDTO {
                .courseType(course.getCourseType())
                .abbr(course.getAbbr())
                .discipline(course.getDiscipline())
-               .department(DepartmentDTO.toEntity(course.getDepartment()))
+               .department(course.getDepartment() != null ? DepartmentDTO.toEntity(course.getDepartment()) : null)
                .createdAt(course.getCreatedAt())
                .modifyAt(course.getModifyAt())
                .build();

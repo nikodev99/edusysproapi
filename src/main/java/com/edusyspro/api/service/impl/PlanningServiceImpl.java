@@ -1,5 +1,6 @@
 package com.edusyspro.api.service.impl;
 
+import com.edusyspro.api.dto.AcademicYearDTO;
 import com.edusyspro.api.dto.PlanningDTO;
 import com.edusyspro.api.dto.custom.PlanningBasic;
 import com.edusyspro.api.dto.custom.PlanningEssential;
@@ -7,13 +8,13 @@ import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.helper.log.L;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.PlanningRepository;
+import com.edusyspro.api.service.interfaces.AcademicYearService;
 import com.edusyspro.api.service.interfaces.PlanningService;
+import com.edusyspro.api.utils.Datetime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +24,12 @@ import java.util.UUID;
 public class PlanningServiceImpl implements PlanningService {
 
     private final PlanningRepository planningRepository;
+    private final AcademicYearService academicYearService;
 
     @Autowired
-    public PlanningServiceImpl(PlanningRepository planningRepository) {
+    public PlanningServiceImpl(PlanningRepository planningRepository, AcademicYearService academicYearService) {
         this.planningRepository = planningRepository;
+        this.academicYearService = academicYearService;
     }
 
     @Override
@@ -88,6 +91,37 @@ public class PlanningServiceImpl implements PlanningService {
         return planningRepository.findPlanningsByGrade(UUID.fromString(schoolId), section).stream()
                 .map(PlanningEssential::toDto)
                 .toList();
+    }
+
+    @Override
+    public List<PlanningDTO> findBasicPlanningByGradeAndPeriod(int gradeId, String academicYear, ZonedDateTime startDate, ZonedDateTime endDate) {
+        return planningRepository.findPlanningsByGradeByGradeAndPeriod(gradeId, UUID.fromString(academicYear), startDate, endDate).stream()
+                .map(PlanningEssential::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<PlanningDTO> findBasicPlanningByGradeAndPeriod(int gradeId, String academicYear, ZonedDateTime endDate) {
+        return findBasicPlanningByGradeAndPeriod(gradeId, academicYear, ZonedDateTime.now(), endDate);
+    }
+
+    @Override
+    public List<PlanningDTO> findBasicPlanningByGradeOfAMonth(int gradeId, String academicYear) {
+        ZonedDateTime startDate = ZonedDateTime.now();
+        ZonedDateTime endDate = startDate.plusMonths(1L);
+        return findBasicPlanningByGradeAndPeriod(gradeId, academicYear, startDate, endDate);
+    }
+
+    @Override
+    public List<PlanningDTO> findBasicDynamicPlanningByGradeOfAMonth(int gradeId, String academicYear) {
+        AcademicYearDTO year = academicYearService.getAcademicYearById(academicYear);
+        ZonedDateTime startDate = Datetime.getDateReference(year.getStartDate(), year.getEndDate(), true);
+        ZonedDateTime endDate = startDate.plusMonths(1L);
+        System.out.println("----------------------------------");
+        System.out.println("START DATE: " + startDate);
+        System.out.println("END DATE: " + endDate);
+        System.out.println("----------------------------------");
+        return findBasicPlanningByGradeAndPeriod(gradeId, academicYear, startDate, endDate);
     }
 
     @Override

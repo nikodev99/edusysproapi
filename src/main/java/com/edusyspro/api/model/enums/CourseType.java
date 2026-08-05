@@ -20,5 +20,17 @@ public enum CourseType {
     ECONOMICS,
 
     // 6. Mechanics, Electricity, Home Economics (Vocational tracks)
-    TECHNICAL
+    TECHNICAL,
+
+    // 7. Coding, Software, Data, Cyber
+    COMPUTER_SCIENCE,
+
+    // 8. Leadership, Public speaking, Soft skills
+    SOFT_SKILLS,
+
+    // 9. First aid, Nutrition, Health studies
+    HEALTH,
+
+    // 10. General support, Exam prep, Transversal skills
+    GENERAL
 }

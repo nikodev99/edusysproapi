@@ -23,6 +23,10 @@ public class ClasseTeacherBoss {
     private AcademicYear academicYear;
 
     @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "classe_id", referencedColumnName = "id")
+    private ClasseEntity classe;
+
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Teacher principalTeacher;
 

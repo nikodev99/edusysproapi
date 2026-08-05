@@ -30,6 +30,16 @@ public class SchoolServiceImp implements SchoolService {
     }
 
     @Override
+    public School getSchoolByAcademicYear(String academicYear) {
+        return schoolRepository.getSchoolByAcademicYear(UUID.fromString(academicYear)).orElseThrow();
+    }
+
+    @Override
+    public UUID getSchoolIdByAcademicYear(UUID academicYear) {
+        return schoolRepository.getSchoolIdByAcademicYear(academicYear).orElseThrow(() -> new NotFountException("School not found"));
+    }
+
+    @Override
     public List<Section> getSections(String schoolId) {
         return schoolRepository.getSchoolSections(UUID.fromString(schoolId));
     }
@@ -37,5 +47,10 @@ public class SchoolServiceImp implements SchoolService {
     @Override
     public int updateSchoolField(String schoolId, UpdateField fields) {
         return updateContext.updateSchoolField(fields.field(), fields.value(), schoolId);
+    }
+
+    @Override
+    public UUID getSchoolByGrade(Integer gradeId) {
+        return schoolRepository.getSchoolIdByGrade(gradeId);
     }
 }

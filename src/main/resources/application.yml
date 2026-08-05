@@ -85,5 +85,5 @@ app:
       routing-key: ${MAIL_ROT_QUEUE:mail.send}
 
 ui:
-  url: ${URL:'http://localhost:3000;http://localhost:5173'}
-  email-base-url: ${MAIL_URL:http://localhost:5173}
+  cors_url: "${URL:http://localhost:3000;http://localhost:5173;http://localhost:4173}"
+  email-base-url: "${MAIL_URL:http://localhost:5173;http://localhost:4173}"

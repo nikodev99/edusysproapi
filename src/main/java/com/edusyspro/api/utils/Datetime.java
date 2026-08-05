@@ -25,6 +25,19 @@ public class Datetime {
         return zdt.withZoneSameInstant(ZoneId.systemDefault());
     }
 
+    public static ZonedDateTime getDateReference(LocalDate startDate, LocalDate endDate, boolean isMinus) {
+        ZonedDateTime today = Datetime.brazzavilleDatetime();
+        if (startDate == null && endDate == null) return today;
+
+        ZonedDateTime start = startDate.atStartOfDay(BRAZZA_TIME);
+        ZonedDateTime end = endDate.atStartOfDay(BRAZZA_TIME);
+
+        if (today.isAfter(start) && today.isBefore(end)) return today;
+        if (today.isBefore(start)) return start;
+        if (today.isAfter(end)) return isMinus ? end.minusMonths(1L) : end;
+        return today;
+    }
+
     public static ZonedDateTime toZone(LocalDateTime datetime, ZoneId zoneId) {
         return datetime.atZone(zoneId);
     }

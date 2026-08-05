@@ -13,9 +13,9 @@ import java.util.UUID;
 
 public interface ScheduleService extends CustomService<ScheduleDTO, Long> {
 
-    List<ScheduleDTO> getAllClasseSchedule(int classeId);
+    List<ScheduleDTO> getAllClasseSchedule(int classeI, String academicYear);
 
-    List<ScheduleDTO> getAllClasseSchedule(int classeId, Section section);
+    List<ScheduleDTO> getAllClasseSchedule(int classeId, Section section, String academicYear);
 
     /**
      * Retrieves the schedules for a specific teacher in a given academic year.
@@ -28,9 +28,9 @@ public interface ScheduleService extends CustomService<ScheduleDTO, Long> {
 
     List<ScheduleDTO> getTeacherScheduleByDay(String academicYear, String teacherId, boolean allDay);
 
-    List<TeacherDTO> getAllClasseTeachers(int classeId);
+    List<TeacherDTO> getAllClasseTeachers(int classeId, String schoolId, String academicYear);
 
-    List<TeacherClasseDTO> getClasseTeachers(int classeId);
+    List<TeacherClasseDTO> getClasseTeachers(int classeId, String schoolId, String academicYear);
 
     TeacherDTO getOnlyTeacherOfCourseInClasse(int classeId, int courseId, UUID schoolId);
 
@@ -42,4 +42,6 @@ public interface ScheduleService extends CustomService<ScheduleDTO, Long> {
     List<ScheduleHoursBy> getTotalCourseHoursByTeachers(int courseId);
 
     List<Day> getTeacherDays(String teacherId);
+
+    int updateSchedule(ScheduleDTO schedule, Boolean onlyTime);
 }

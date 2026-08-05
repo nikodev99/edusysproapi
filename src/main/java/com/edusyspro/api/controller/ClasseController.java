@@ -1,16 +1,20 @@
 package com.edusyspro.api.controller;
 
+import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.controller.utils.ControllerUtils;
 import com.edusyspro.api.dto.ClasseDTO;
+import com.edusyspro.api.dto.StudentBossDTO;
+import com.edusyspro.api.dto.TeacherBossDTO;
+import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
+import com.edusyspro.api.service.interfaces.ClasseBossService;
 import com.edusyspro.api.service.mod.ClasseService;
-import com.edusyspro.api.data.ConstantUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -19,10 +23,18 @@ import java.util.Map;
 public class ClasseController {
 
     private final ClasseService classeService;
+    private final ClasseBossService<StudentBossDTO> studentBossService;
+    private final ClasseBossService<TeacherBossDTO> teacherBossService;
 
     @Autowired
-    public ClasseController(ClasseService classeService) {
+    public ClasseController(
+            ClasseService classeService,
+            ClasseBossService<StudentBossDTO> studentBossService,
+            ClasseBossService<TeacherBossDTO> teacherBossService
+    ) {
         this.classeService = classeService;
+        this.studentBossService = studentBossService;
+        this.teacherBossService = teacherBossService;
     }
 
     @PostMapping
@@ -46,6 +58,19 @@ public class ClasseController {
         ));
     }
 
+    @GetMapping("/all/{schoolId}/{teacherId}")
+    ResponseEntity<?> getAllClasse(
+            @PathVariable String schoolId,
+            @PathVariable String teacherId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortCriteria
+    ) {
+        return ResponseEntity.ok(
+                classeService.fetchAll(ControllerUtils.setSort(page, size, sortCriteria), teacherId, schoolId)
+        );
+    }
+
     @GetMapping("/search/{schoolId}")
     ResponseEntity<List<ClasseDTO>> getAllClasses(@PathVariable String schoolId, @RequestParam String q) {
         return ResponseEntity.ok(classeService.getAllClassesBySchool(
@@ -53,8 +78,22 @@ public class ClasseController {
         ));
     }
 
+    @GetMapping("/search/{schoolId}/{teacherId}")
+    ResponseEntity<List<ClasseDTO>> getAllClasses(@PathVariable String schoolId, @PathVariable String teacherId, @RequestParam String q) {
+        return ResponseEntity.ok(classeService.fetchAllById(
+                teacherId, schoolId, String.valueOf(q)
+        ));
+    }
+
     @GetMapping("/{classeId}")
-    ResponseEntity<ClasseDTO> getOneClasse(@PathVariable int classeId, @RequestParam String academicYear) {
+    ResponseEntity<ClasseDTO> getOneClasse(
+            @PathVariable int classeId,
+            @RequestParam String academicYear,
+            @RequestParam(required = false, defaultValue = "false") boolean basic
+    ) {
+        if (basic) {
+            return ResponseEntity.ok(classeService.getClasseById(classeId));
+        }
         return ResponseEntity.ok(classeService.getClasseById(classeId, academicYear));
     }
 
@@ -75,6 +114,37 @@ public class ClasseController {
         }catch (AlreadyExistException a) {
             response = Map.of("error", a.getMessage());
             return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PatchMapping("/{classeId}")
+    ResponseEntity<?> updatePrincipalCourse(@PathVariable int classeId, @RequestBody UpdateField field) {
+        return ResponseEntity.ok(classeService.patch(classeId, field));
+    }
+
+    @PostMapping("/student_boss")
+    ResponseEntity<?> addClasseStudentBoss(@RequestBody StudentBossDTO studentBoss) {
+        try {
+            int insertedStudentBossId = studentBossService.saveClasseBoss(studentBoss);
+            return ResponseEntity.ok(MessageResponse.builder()
+                    .message("New teacher " + insertedStudentBossId + " boss successfully added")
+                    .timestamp(Instant.now().toString())
+                    .build());
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/teacher_boss")
+    ResponseEntity<?> addClasseTeacherBoss(@RequestBody TeacherBossDTO studentBoss) {
+        try {
+            int insertedTeacherBossId = teacherBossService.saveClasseBoss(studentBoss);
+            return ResponseEntity.ok(MessageResponse.builder()
+                    .message("New teacher " + insertedTeacherBossId + " boss successfully added")
+                    .timestamp(Instant.now().toString())
+                    .build());
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 }

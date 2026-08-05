@@ -9,6 +9,7 @@ import com.edusyspro.api.model.enums.ReportStatus;
 import com.edusyspro.api.repository.TeachingReportRepository;
 import com.edusyspro.api.service.interfaces.ScheduleService;
 import com.edusyspro.api.service.interfaces.TeachingReportService;
+import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,16 +42,14 @@ public class TeachingReportImp implements TeachingReportService {
 
     @Override
     public List<TeachingReportDTO> getBasicReport(String teacherId, LocalDate startDate, LocalDate endDate) {
-        return teachingReportRepository.findAllWeekReport(UUID.fromString(teacherId), startDate, endDate).stream()
-                .map(t -> TeachingReportDTO.builder()
-                        .id(t.get("id", Long.class))
-                        .schedule(ScheduleDTO.builder().id(t.get("schedule_id", Long.class)).build())
-                        .isLateSubmission(t.get("late", Boolean.class))
-                        .sessionDate(t.get("date", LocalDate.class))
-                        .reportStatus(t.get("status", ReportStatus.class))
-                        .notes(t.get("notes", String.class)).build()
-                )
-                .toList();
+        List<Tuple> reports = teachingReportRepository.findAllWeekReport(UUID.fromString(teacherId), startDate, endDate);
+        return tupleToDto(reports);
+    }
+
+    @Override
+    public List<TeachingReportDTO> getBasicReport(int classeId, LocalDate startDate, LocalDate endDate) {
+        List<Tuple> reports = teachingReportRepository.findAllWeekReport(classeId, startDate, endDate);
+        return tupleToDto(reports);
     }
 
     @Override
@@ -63,6 +62,11 @@ public class TeachingReportImp implements TeachingReportService {
     @Override
     public long getReportCountByTeacher(String teacherId, String academicYear) {
         return teachingReportRepository.countByTeacherId(UUID.fromString(teacherId), UUID.fromString(academicYear));
+    }
+
+    @Override
+    public long getReportCountByTeacher(int classeId, String academicYear) {
+        return teachingReportRepository.countByTeacherId(classeId, UUID.fromString(academicYear));
     }
 
     @Override
@@ -89,6 +93,19 @@ public class TeachingReportImp implements TeachingReportService {
         }
 
         return count;
+    }
+
+    private List<TeachingReportDTO> tupleToDto(List<Tuple> reports) {
+        return reports.stream()
+                .map(t -> TeachingReportDTO.builder()
+                        .id(t.get("id", Long.class))
+                        .schedule(ScheduleDTO.builder().id(t.get("schedule_id", Long.class)).build())
+                        .isLateSubmission(t.get("late", Boolean.class))
+                        .sessionDate(t.get("date", LocalDate.class))
+                        .reportStatus(t.get("status", ReportStatus.class))
+                        .notes(t.get("notes", String.class)).build()
+                )
+                .toList();
     }
 
     private Set<DayOfWeek> resolveDaysOfWeek(Day day) {

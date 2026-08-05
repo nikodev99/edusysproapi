@@ -29,7 +29,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
      * @param uuid the unique identifier of the student whose enrollment is to be updated
      * @return an integer representing the number of records updated in the database
      */
-    @Modifying
+    @Modifying()
     @Transactional
     @Query("update EnrollmentEntity e set e.isArchived = ?1 where e.student.id = ?2 and e.academicYear.id = ?3")
     int updateEnrollmentByStudentId(boolean isArchived, UUID uuid, UUID academicYearId);
@@ -71,7 +71,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
         SELECT new com.edusyspro.api.dto.custom.EnrolledStudent(e.id, e.student.id, e.student.personalInfo, e.academicYear,
         e.enrollmentDate, e.classe.id, e.classe.name, e.classe.category, e.classe.grade.section, e.isArchived, e.classe.monthCost,
         e.student.dadName, e.student.momName, e.academicYear.school.name) from EnrollmentEntity e join e.classe c join c.classTeachers t
-        where e.isArchived = false and e.academicYear.current = true and e.academicYear.school.id = ?1 and t.id = ?2
+        where e.isArchived = false and e.academicYear.current = true and t.affiliation.school.id = ?1 and t.affiliation.teacher.id = ?2
     """)
     Page<EnrolledStudent> findAllStudentByTeacherByAcademicYearAndSchool(UUID schoolId, UUID teacherId, Pageable pageable);
 
@@ -135,7 +135,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     @Query("""
         select new com.edusyspro.api.dto.custom.EnrolledStudentBasic(e.id, e.student.id, e.academicYear.id, e.academicYear.years, e.classe.id, e.classe.name, e.classe.grade.section,
         e.student.personalInfo.id, e.student.personalInfo.firstName, e.student.personalInfo.lastName,
-        e.student.personalInfo.image, e.student.personalInfo.reference, e.isArchived, e.academicYear.school.name) from EnrollmentEntity e where e.student.id = ?1
+        e.student.personalInfo.image, e.student.personalInfo.reference, e.isArchived, e.academicYear.school.id, e.academicYear.school.name) from EnrollmentEntity e where e.student.id = ?1
         order by e.enrollmentDate desc
     """)
     List<EnrolledStudentBasic> findStudentEnrollments(UUID studentId);
@@ -203,7 +203,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     @Query(value = """
         select new com.edusyspro.api.dto.custom.EnrolledStudentBasic(e.id, e.student.id, e.academicYear.id, e.academicYear.years, e.classe.id, e.classe.name, e.classe.grade.section,
         e.student.personalInfo.id, e.student.personalInfo.firstName, e.student.personalInfo.lastName,
-        e.student.personalInfo.image, e.student.personalInfo.reference, e.isArchived, e.academicYear.school.name) from EnrollmentEntity e where e.classe.id = ?1
+        e.student.personalInfo.image, e.student.personalInfo.reference, e.isArchived, e.academicYear.school.id, e.academicYear.school.name) from EnrollmentEntity e where e.classe.id = ?1
         and e.academicYear.id = ?2
    """)
     List<EnrolledStudentBasic> getEnrolledStudentsByClassId(int classeId, UUID academicYear);
@@ -267,7 +267,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
         ad.country, ad.neighborhood, ad.borough, ad.zipCode, g.jobTitle, g.company, g.createdAt, g.modifyAt)
         from EnrollmentEntity e join e.student s join s.guardian g join g.personalInfo p
         left join p.address ad join e.classe c join c.classTeachers t where e.academicYear.school.id = ?1 and e.academicYear.current = true
-        and e.isArchived = false and t.id = ?2
+        and e.isArchived = false and t.affiliation.teacher.id = ?2
     """)
     Page<GuardianEssential> findEnrolledStudentGuardiansByTeacher(UUID schoolId, UUID teacherId, Pageable pageable);
 
@@ -276,7 +276,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
         p.status, p.emailId, p.telephone, p.mobile, p.reference, ad.id, ad.number, ad.street, ad.secondStreet, ad.city,
         ad.country, ad.neighborhood, ad.borough, ad.zipCode, g.jobTitle, g.company, g.createdAt, g.modifyAt)
         from EnrollmentEntity e join e.student s join s.guardian g join g.personalInfo p
-        left join p.address ad join e.classe c join c.classTeachers t where e.academicYear.school.id = ?1 and t.id = ?2
+        left join p.address ad join e.classe c join c.classTeachers t where e.academicYear.school.id = ?1 and t.affiliation.teacher.id = ?2
         and e.academicYear.current = true and e.isArchived = false and (lower(p.lastName) like lower(?3) or lower(p.reference) like lower(?3)
         or lower(p.firstName) like lower(?3)) order by p.lastName asc
     """)

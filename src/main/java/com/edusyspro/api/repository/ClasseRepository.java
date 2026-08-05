@@ -2,6 +2,7 @@ package com.edusyspro.api.repository;
 
 import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.model.ClasseEntity;
+import com.edusyspro.api.model.enums.AffiliationStatus;
 import com.edusyspro.api.model.enums.Section;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -34,12 +35,27 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
     Page<ClasseEssential> findAllClassesBySchool(UUID schoolID, Pageable pageable);
 
     @Query("""
+        SELECT new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection,
+        c.roomNumber, d.name, d.code, c.monthCost, c.createdAt) FROM ClasseEntity c LEFT JOIN c.grade g LEFT JOIN c.department d JOIN c.classTeachers ct
+        JOIN ct.affiliation a WHERE a.teacher.id = ?1 AND a.status = ?2 AND a.school.id = ?3
+    """)
+    Page<ClasseEssential> findAllClasseTeacherContext(UUID teacherId, AffiliationStatus status, UUID schoolId, Pageable pageable);
+
+    @Query("""
         select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection,
         c.roomNumber, d.name, d.code, c.monthCost, c.createdAt) from ClasseEntity c left join c.grade g left join c.department d
         where ((g is null or g.school.id = ?1) or (d is null or d.school.id = ?1)) and (lower(c.name) like lower(?2) or
         lower(c.category) like lower(?2) or lower(g.section) like lower(?2)) order by c.createdAt desc
     """)
     List<ClasseEssential> findAllClassesBySchool(UUID schoolID, String classeName);
+
+    @Query("""
+        SELECT new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection,
+        c.roomNumber, d.name, d.code, c.monthCost, c.createdAt) FROM ClasseEntity c LEFT JOIN c.grade g LEFT JOIN c.department d JOIN c.classTeachers ct
+        JOIN ct.affiliation a WHERE a.teacher.id = ?1 AND a.status = ?2 AND a.school.id = ?3 and (lower(c.name) like lower(?2) or
+        lower(c.category) like lower(?2) or lower(g.section) like lower(?2)) order by c.createdAt desc
+    """)
+    List<ClasseEssential> findAllClasseTeacherContext(UUID teacherId, AffiliationStatus status, UUID schoolId, String classeName);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, c.grade.section, c.grade.subSection,
@@ -49,13 +65,11 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
     ClasseEssential findClasseById(int id);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.CourseEssential(
-            c.id, c.course, c.courseType, c.abbr, c.discipline, c.department.id, c.department.name, c.department.code, c.department.purpose,
-            c.department.boss.d_boss.id, c.department.boss.current, c.department.boss.d_boss.firstName,
-            c.department.boss.d_boss.lastName, c.department.boss.startPeriod, c.department.boss.endPeriod, c.createdAt
+        select new com.edusyspro.api.dto.custom.CourseBasicValue(
+            c.id, c.course, c.courseType, c.abbr, c.discipline
         ) from ClasseEntity cl join cl.principalCourse c where cl.id = ?1
     """)
-    Optional<CourseEssential> findClassePrincipalCourse(int classeId);
+    Optional<CourseBasicValue> findClassePrincipalCourse(int classeId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.GradeBasicValue(c.grade.id, c.grade.section, c.grade.subSection,
@@ -66,26 +80,29 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
     @Modifying
     @Transactional
     @Query("""
-        update ClasseEntity c set c.name = ?1, c.category = ?2, c.grade.id = ?3, c.roomNumber = ?4, c.monthCost = ?5 where c.id = ?6
+        update ClasseEntity c set c.name = ?1, c.category = ?2, c.grade.id = ?3, c.roomNumber = ?4, c.principalCourse.id = ?5, c.monthCost = ?6 where c.id = ?7
     """)
     Optional<Integer> updateClasseValues(
             String classeName,
             String classeCategory,
             int gradeId,
             int roomNumber,
+            int courseId,
             BigDecimal monthCost,
             int classeId
     );
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE ClasseEntity c SET c.principalCourse.id = ?2 WHERE c.id = ?1")
+    Optional<Integer> updateClassePrincipalCourse(int classeId, int courseId);
+
     List<ClasseEntity> getClassesByGradeSection(Section section);
 
     @Query("""
-        select count(c.id) from ClasseEntity c left join c.grade g where g.id = ?1 and c.name = ?2
+        select count(c.id) from ClasseEntity c left join c.grade g where g.id = ?1 and lower(c.name) = lower(?2)
     """ )
     Long countBySchoolAndName(Integer gradeId, String classeName);
-
-    @Query("select count(c) from ClasseEntity c where lower(c.name) = lower(?1) and c.id != ?2")
-    int countByName(String classeName, Integer classeId);
 
     //UPDATE CLASSE:
     @Query("select c.id from ClasseEntity c left join c.grade g left join c.department d " +

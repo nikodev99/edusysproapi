@@ -37,7 +37,7 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
     @Query("""
         SELECT g.id, g.personalInfo.firstName, g.personalInfo.lastName, s.id, s.name, s.abbr, s.websiteURL
         FROM EnrollmentEntity e JOIN e.academicYear a JOIN e.student st JOIN a.school s JOIN st.guardian g
-        WHERE g.personalInfo.id = ?1 AND a.current = true
+        WHERE g.personalInfo.id = ?1
     """)
     List<Object[]> findGuardianIdPersonalInfoId(Long personalInfoId);
 
@@ -50,7 +50,7 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
      *         if a teacher and their school are found; otherwise, an empty {@code Optional}
      */
     @Query("""
-        SELECT t.id, t.personalInfo.firstName, t.personalInfo.lastName, s.id, s.school.name, s.school.abbr, s.school.websiteURL
+        SELECT t.id, t.personalInfo.firstName, t.personalInfo.lastName, s.school.id, s.school.name, s.school.abbr, s.school.websiteURL
         FROM Teacher t LEFT JOIN t.schoolAffiliations s WHERE t.personalInfo.id = ?1
     """)
     List<Object[]> findTeacherIdByPersonalInfoId(long personalInfo);

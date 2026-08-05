@@ -2,6 +2,7 @@ package com.edusyspro.api.dto;
 
 import com.edusyspro.api.model.AcademicYear;
 import com.edusyspro.api.model.ClasseTeacherBoss;
+import com.edusyspro.api.utils.Datetime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 public class TeacherBossDTO {
     private Integer id;
     private AcademicYear academicYear;
+    private ClasseDTO classe;
     private TeacherDTO principalTeacher;
     private Boolean current;
     private LocalDate startPeriod;
@@ -27,9 +29,10 @@ public class TeacherBossDTO {
         return TeacherBossDTO.builder()
                 .id(dto.getId())
                 .academicYear(dto.getAcademicYear())
+                .classe(ClasseDTO.fromEntity(dto.getClasse()))
                 .principalTeacher(TeacherDTO.fromEntity(dto.getPrincipalTeacher()))
                 .current(dto.getCurrent())
-                .startPeriod(dto.getStartPeriod())
+                .startPeriod(dto.getStartPeriod() == null ? Datetime.brazzavilleDatetime().toLocalDate() : dto.getStartPeriod())
                 .endPeriod(dto.getEndPeriod())
                 .build();
     }
@@ -38,9 +41,10 @@ public class TeacherBossDTO {
         return ClasseTeacherBoss.builder()
                 .id(dto.getId())
                 .academicYear(dto.getAcademicYear())
-                .principalTeacher(TeacherDTO.toEntity(dto.getPrincipalTeacher()))
-                .current(dto.getCurrent())
-                .startPeriod(dto.getStartPeriod())
+                .classe(dto.getClasse().toMergeEntity())
+                .principalTeacher(dto.getPrincipalTeacher().toMarge())
+                .current(dto.getCurrent() == null || dto.getCurrent())
+                .startPeriod(dto.getStartPeriod() == null ? Datetime.brazzavilleDatetime().toLocalDate() : dto.getStartPeriod())
                 .endPeriod(dto.getEndPeriod())
                 .build();
     }

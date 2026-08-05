@@ -15,6 +15,10 @@ public interface PlanningService {
     Map<String, Boolean> deletePlanning(long planningId);
     List<PlanningDTO> findBasicPlanningValues(String schoolId, String academicYearId);
     List<PlanningDTO> findBasicPlanningByGrade(String schoolId, Section section);
+    List<PlanningDTO> findBasicPlanningByGradeAndPeriod(int gradeId, String academicYear, ZonedDateTime startDate, ZonedDateTime endDate);
+    List<PlanningDTO> findBasicPlanningByGradeAndPeriod(int gradeId, String academicYear, ZonedDateTime endDate);
+    List<PlanningDTO> findBasicPlanningByGradeOfAMonth(int gradeId, String academicYear);
+    List<PlanningDTO> findBasicDynamicPlanningByGradeOfAMonth(int gradeId, String academicYear);
     PlanningDTO findBasicPlanningById(long planningId);
     List<PlanningDTO> findAllPlanningByClasseThroughoutTheAcademicYear(int classeId, ZonedDateTime startDate, ZonedDateTime endDate);
 }

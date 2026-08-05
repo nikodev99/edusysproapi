@@ -36,6 +36,13 @@ public interface PlanningRepository extends JpaRepository<Planning, Long> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre, p.status)
+        from Planning p where p.grade.id = ?1 and p.semestre.academicYear.id = ?2 and p.termStartDate between ?3 and ?4
+        order by p.termStartDate asc
+    """)
+    List<PlanningEssential> findPlanningsByGradeByGradeAndPeriod(int gradeId, UUID academicYearId, ZonedDateTime startDate, ZonedDateTime endDate);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.PlanningEssential(p.id, p.designation, p.termStartDate, p.termEndDate, p.semestre, p.status)
         from Planning p where p.id = ?1
     """)
     Optional<PlanningEssential> findPlanningById(long planningId);

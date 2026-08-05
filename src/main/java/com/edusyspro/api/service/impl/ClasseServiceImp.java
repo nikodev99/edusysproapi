@@ -3,8 +3,8 @@ package com.edusyspro.api.service.impl;
 import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
+import com.edusyspro.api.model.enums.AffiliationStatus;
 import com.edusyspro.api.repository.ClasseRepository;
-import com.edusyspro.api.repository.GradeRepository;
 import com.edusyspro.api.service.interfaces.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,11 +17,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ClasseServiceImp implements ClasseServiceInterface {
     private final ClasseRepository classeRepository;
-    private final GradeRepository gradeRepository;
+    private final PlanningService planningService;
     private final ScheduleService scheduleService;
-    private final ClasseTeacherBossService classeTeacherBossService;
-    private final ClasseStudentBossService classeStudentBossService;
+    private final ClasseBossService<TeacherBossDTO> classeTeacherBossService;
+    private final ClasseBossService<StudentBossDTO> classeStudentBossService;
     private final EnrollmentService enrollmentService;
+    private final SchoolService schoolService;
 
     @Override
     public ClasseDTO save(ClasseDTO entity) {
@@ -67,7 +68,11 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     @Override
     public Page<ClasseDTO> fetchAll(Pageable pageable, Object... args) {
-        return null;
+        var teacherId = UUID.fromString(String.valueOf(args[0]));
+        var schoolId = UUID.fromString(String.valueOf(args[1]));
+
+        return classeRepository.findAllClasseTeacherContext(teacherId, AffiliationStatus.ACTIVE, schoolId, pageable)
+                .map(ClasseEssential::convertToDTO);
     }
 
     @Override
@@ -77,7 +82,14 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     @Override
     public List<ClasseDTO> fetchAllById(Object... arg) {
-        return List.of();
+        var teacherId = UUID.fromString(String.valueOf(arg[0]));
+        var schoolId = UUID.fromString(String.valueOf(arg[1]));
+        var classeName = "%" + arg[2].toString() + "%";
+
+        return classeRepository.findAllClasseTeacherContext(teacherId, AffiliationStatus.ACTIVE, schoolId, classeName)
+                .stream()
+                .map(ClasseEssential::convertToDTO)
+                .toList();
     }
 
     @Override
@@ -103,21 +115,21 @@ public class ClasseServiceImp implements ClasseServiceInterface {
     @Override
     public ClasseDTO fetchOneById(Integer id, String schoolId) {
         ClasseDTO classe = classeRepository.findClasseById(id).convertToDTO();
+        UUID academicYear = UUID.fromString(schoolId);
+        UUID realSchoolId = schoolService.getSchoolIdByAcademicYear(academicYear);
         if (classe != null && classe.getId() > 0) {
             GradeDTO grade = classeRepository.findGradeByClasseId(classe.getId()).convertToDTO();
-            List<PlanningEssential> plannings = gradeRepository.findPlanningsByGrade(grade.getId(), UUID.fromString(schoolId));
-            List<ScheduleDTO> schedules = scheduleService.getAllClasseSchedule(classe.getId(), grade.getSection());
-            TeacherBossDTO teacherBoss = classeTeacherBossService.fetchTeacherBoss(classe.getId());
-            StudentBossDTO studentBoss = classeStudentBossService.fetchStudentBoss(classe.getId());
+            List<PlanningDTO> plannings = planningService.findBasicDynamicPlanningByGradeOfAMonth(grade.getId(), academicYear.toString());
+            List<ScheduleDTO> schedules = scheduleService.getAllClasseSchedule(classe.getId(), grade.getSection(), academicYear.toString());
+            TeacherBossDTO teacherBoss = classeTeacherBossService.fetchCurrentClasseBoss(classe.getId());
+            StudentBossDTO studentBoss = classeStudentBossService.fetchCurrentClasseBoss(classe.getId());
             CourseDTO principalCourse = getClassePrincipalCourse(classe.getId());
-            List<TeacherClasseDTO> classeTeachers = scheduleService.getClasseTeachers(classe.getId());
+            List<TeacherClasseDTO> classeTeachers = scheduleService.getClasseTeachers(
+                    classe.getId(), realSchoolId.toString(), academicYear.toString()
+            );
             List<EnrollmentDTO> enrolledStudents = enrollmentService.getClasseEnrolledStudents(classe.getId(), 6);
 
-            grade.setPlanning(
-                    plannings.stream()
-                            .map(PlanningEssential::toDto)
-                            .toList()
-            );
+            grade.setPlanning(plannings);
             classe.setGrade(grade);
             classe.setStudents(enrolledStudents);
             classe.setSchedule(schedules);
@@ -161,7 +173,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     @Override
     public Map<String, Boolean> update(ClasseDTO entity, Integer id) {
-        if (countClasseName(entity, id) ) {
+        if (!countClasseName(entity, Operator.GREATER_OR_EQUALS, 1)) {
             throw new AlreadyExistException("La classe " + entity.getName() + " existe déjà");
         }
         int hasUpdated = classeRepository.updateClasseValues(
@@ -169,6 +181,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
                 entity.getCategory(),
                 entity.getGrade().getId(),
                 entity.getRoomNumber(),
+                entity.getPrincipalCourse().getId(),
                 entity.getMonthCost(),
                 id
         ).orElseThrow();
@@ -181,7 +194,7 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     @Override
     public int patch(Integer id, UpdateField field) {
-        return 0;
+        return classeRepository.updateClassePrincipalCourse(id, (int) field.value()).orElseThrow();
     }
 
     @Override
@@ -206,19 +219,27 @@ public class ClasseServiceImp implements ClasseServiceInterface {
 
     private CourseDTO getClassePrincipalCourse(int classeId) {
         return classeRepository.findClassePrincipalCourse(classeId)
-                .map(CourseEssential::toCourse)
+                .map(CourseBasicValue::toCourse)
                 .orElse(null);
     }
 
     private boolean classeAlreadyExists(ClasseDTO entity) {
-        return classeRepository.countBySchoolAndName(
-                entity.getGrade().getId(),
-                entity.getName()
-        ) > 0;
+        return countClasseName(entity, Operator.GREATER, 0);
     }
 
-    private boolean countClasseName(ClasseDTO entity, int classeId) {
-        int count = classeRepository.countByName(entity.getName(), classeId);
-        return count >= 1;
+    private boolean countClasseName(ClasseDTO entity, Operator operator, int count) {
+        Long countClasses = classeRepository.countBySchoolAndName(
+                entity.getGrade().getId(),
+                entity.getName()
+        );
+
+        return switch (operator) {
+            case GREATER -> countClasses > count;
+            case GREATER_OR_EQUALS -> countClasses >= count;
+        };
+    }
+
+    enum Operator {
+        GREATER, GREATER_OR_EQUALS
     }
 }

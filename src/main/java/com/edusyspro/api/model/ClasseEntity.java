@@ -45,12 +45,12 @@ public class ClasseEntity {
 
     private Integer roomNumber;
 
-    @OneToOne(cascade = CascadeType.DETACH)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "principal_teacher_id", referencedColumnName = "id")
     @JsonIgnore
     private ClasseTeacherBoss principalTeacher;
 
-    @OneToOne(cascade = CascadeType.DETACH)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "principal_student_id", referencedColumnName = "id")
     @JsonIgnore
     private ClasseStudentBoss principalStudent;

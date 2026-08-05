@@ -21,6 +21,13 @@ public interface TeachingReportRepository extends JpaRepository<TeachingReport, 
     List<Tuple> findAllWeekReport(UUID teacherId, LocalDate startDate, LocalDate endDate);
 
     @Query("""
+        SELECT tr.id AS id, tr.schedule.id AS schedule_id, tr.isLateSubmission AS late, tr.reportStatus AS status, tr.notes AS notes,
+        tr.sessionDate AS date FROM TeachingReport tr
+        WHERE tr.schedule.classeEntity.id = ?1 AND tr.sessionDate BETWEEN ?2 AND ?3
+    """)
+    List<Tuple> findAllWeekReport(int classeId, LocalDate startDate, LocalDate endDate);
+
+    @Query("""
         SELECT tr.id, tr.courseProgram.name, tr.courseProgramTopic.title, tr.sessionDate, tr.duration_minutes, tr.reportStatus,
         tr.isLateSubmission, tr.notes, tr.createdAt FROM TeachingReport tr WHERE tr.id = ?1
     """)
@@ -28,4 +35,7 @@ public interface TeachingReportRepository extends JpaRepository<TeachingReport, 
 
     @Query("SELECT COUNT(tr.id) FROM TeachingReport tr WHERE tr.teacher.id = ?1 AND tr.schedule.academicYear.id = ?2")
     Long countByTeacherId(UUID teacherId, UUID academicYear);
+
+    @Query("SELECT COUNT(tr.id) FROM TeachingReport tr WHERE tr.schedule.classeEntity.id = ?1 AND tr.schedule.academicYear.id = ?2")
+    Long countByTeacherId(int classeId, UUID academicYear);
 }

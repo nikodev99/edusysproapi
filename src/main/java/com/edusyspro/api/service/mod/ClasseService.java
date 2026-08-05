@@ -1,13 +1,11 @@
 package com.edusyspro.api.service.mod;
 
 import com.edusyspro.api.dto.ClasseDTO;
+import com.edusyspro.api.dto.StudentBossDTO;
+import com.edusyspro.api.dto.TeacherBossDTO;
 import com.edusyspro.api.repository.ClasseRepository;
-import com.edusyspro.api.repository.GradeRepository;
 import com.edusyspro.api.service.impl.ClasseServiceImp;
-import com.edusyspro.api.service.interfaces.ClasseStudentBossService;
-import com.edusyspro.api.service.interfaces.ClasseTeacherBossService;
-import com.edusyspro.api.service.interfaces.EnrollmentService;
-import com.edusyspro.api.service.interfaces.ScheduleService;
+import com.edusyspro.api.service.interfaces.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,19 +17,21 @@ public class ClasseService extends ClasseServiceImp {
 
     public ClasseService(
             ClasseRepository classeRepository,
-            GradeRepository gradeRepository,
+            PlanningService planningService,
             ScheduleService scheduleService,
-            ClasseTeacherBossService classeTeacherBossService,
-            ClasseStudentBossService classeStudentBossService,
-            EnrollmentService enrollmentService
+            ClasseBossService<TeacherBossDTO> classeTeacherBossService,
+            ClasseBossService<StudentBossDTO> classeStudentBossService,
+            EnrollmentService enrollmentService,
+            SchoolService SchoolService
     ) {
         super(
             classeRepository,
-            gradeRepository,
+            planningService,
             scheduleService,
             classeTeacherBossService,
             classeStudentBossService,
-            enrollmentService
+            enrollmentService,
+            SchoolService
         );
     }
 

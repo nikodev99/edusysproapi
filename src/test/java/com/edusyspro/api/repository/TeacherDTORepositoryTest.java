@@ -5,6 +5,7 @@ import com.edusyspro.api.dto.custom.TeacherEssential;
 import com.edusyspro.api.model.ClasseEntity;
 import com.edusyspro.api.model.Course;
 import com.edusyspro.api.model.Teacher;
+import com.edusyspro.api.model.enums.AffiliationStatus;
 import com.edusyspro.api.utils.Fake;
 import com.edusyspro.api.utils.MockUtils;
 import org.junit.jupiter.api.Test;
@@ -134,7 +135,7 @@ class TeacherDTORepositoryTest {
 
     @Test
     public void findAllClasseTeachers () {
-        List<TeacherClasseCourse> teacherEssentials = teacherRepository.findAllClasseTeachers(15);
+        List<TeacherClasseCourse> teacherEssentials = teacherRepository.findAllClasseTeachers(AffiliationStatus.ACTIVE, 15);
         for (TeacherClasseCourse teacherEssential : teacherEssentials) {
             System.out.println(teacherEssential.personalInfo().getFirstName());
         }

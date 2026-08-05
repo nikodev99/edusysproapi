@@ -7,6 +7,7 @@ import com.edusyspro.api.dto.custom.ScheduleEssential;
 import com.edusyspro.api.dto.custom.ScheduleHoursBy;
 import com.edusyspro.api.dto.custom.TeacherClasseCourse;
 import com.edusyspro.api.dto.custom.UpdateField;
+import com.edusyspro.api.model.Schedule;
 import com.edusyspro.api.model.enums.Day;
 import com.edusyspro.api.model.enums.Section;
 import com.edusyspro.api.repository.ScheduleRepository;
@@ -32,22 +33,21 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<ScheduleDTO> getAllClasseSchedule(int classeId) {
-        return scheduleRepository.findAllDayClasseSchedules(classeId).stream()
+    public List<ScheduleDTO> getAllClasseSchedule(int classeId, String academicYear) {
+        return scheduleRepository.findAllDayClasseSchedules(UUID.fromString(academicYear), classeId).stream()
                 .map(ScheduleEssential::toScheduleDto)
                 .toList();
     }
 
     @Override
-    public List<ScheduleDTO> getAllClasseSchedule(int classeId, Section section) {
+    public List<ScheduleDTO> getAllClasseSchedule(int classeId, Section section, String academicYear) {
         Day scheduleDay = currentDay(section);
         List<ScheduleEssential> scheduleEssentials;
         if (scheduleDay == Day.ALL_DAYS) {
-            scheduleEssentials = scheduleRepository.findAllDayClasseSchedules(classeId);
+            scheduleEssentials = scheduleRepository.findAllDayClasseSchedules(UUID.fromString(academicYear), classeId);
         }else {
-            scheduleEssentials =  scheduleRepository.findAllByClasseEntityId(classeId, currentDay(section));
+            scheduleEssentials =  scheduleRepository.findAllByClasseEntityId(classeId, currentDay(section), UUID.fromString(academicYear));
         }
-        System.out.println("scheduleEssentials: " + scheduleEssentials);
         return scheduleEssentials.stream()
                 .map(ScheduleEssential::toScheduleDto)
                 .toList();
@@ -68,15 +68,16 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<TeacherDTO> getAllClasseTeachers(int classeId) {
-        return scheduleRepository.findAllClasseTeachers(classeId).stream()
+    public List<TeacherDTO> getAllClasseTeachers(int classeId, String schoolId, String academicYear) {
+        return scheduleRepository.findAllClasseTeachers(classeId, UUID.fromString(schoolId), UUID.fromString(academicYear)).stream()
                 .map(TeacherClasseCourse::toTeacher)
                 .toList();
     }
 
     @Override
-    public List<TeacherClasseDTO> getClasseTeachers(int classeId) {
-        return scheduleRepository.findAllClasseTeachers(classeId).stream()
+    public List<TeacherClasseDTO> getClasseTeachers(int classeId, String schoolId, String academicYear) {
+        List<TeacherClasseCourse> teachers = scheduleRepository.findAllClasseTeachers(classeId, UUID.fromString(schoolId), UUID.fromString(academicYear));
+        return teachers.stream()
                 .map(TeacherClasseCourse::toTeacherClasse)
                 .toList();
     }
@@ -122,8 +123,30 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public int updateSchedule(ScheduleDTO schedule, Boolean onlyTime) {
+        if (onlyTime)
+            return scheduleRepository.updateScheduleTime(
+                schedule.getDayOfWeek(),
+                schedule.getStartTime(),
+                schedule.getEndTime(),
+                schedule.getId());
+
+        return scheduleRepository.updateSchedule(
+                schedule.getTeacher().getId(),
+                schedule.getCourse() != null ? schedule.getCourse().getId() : null,
+                schedule.getClasse().getId(),
+                schedule.getDesignation(),
+                schedule.getDayOfWeek(),
+                schedule.getStartTime(),
+                schedule.getEndTime(),
+                schedule.getId()
+        );
+    }
+
+    @Override
     public ScheduleDTO save(ScheduleDTO entity) {
-        return null;
+        Schedule saved = scheduleRepository.save(ScheduleDTO.toEntity(entity));
+        return ScheduleDTO.fromEntity(saved);
     }
 
     @Override
@@ -233,7 +256,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public int delete(ScheduleDTO entity) {
-        return 0;
+        try {
+            scheduleRepository.delete(ScheduleDTO.toEntity(entity));
+            return 1;
+        }catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override

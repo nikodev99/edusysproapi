@@ -18,6 +18,7 @@ import java.time.LocalDate;
 public class StudentBossDTO {
     private Integer id;
     private AcademicYear academicYear;
+    private ClasseDTO classe;
     private StudentDTO principalStudent;
     private Boolean current;
     private LocalDate startPeriod;
@@ -27,6 +28,7 @@ public class StudentBossDTO {
         return StudentBossDTO.builder()
                 .id(dto.getId())
                 .academicYear(dto.getAcademicYear())
+                .classe(ClasseDTO.fromEntity(dto.getClasse()))
                 .principalStudent(StudentDTO.fromEntity(dto.getPrincipalStudent()))
                 .current(dto.getCurrent())
                 .startPeriod(dto.getStartPeriod())
@@ -38,7 +40,8 @@ public class StudentBossDTO {
         return ClasseStudentBoss.builder()
                 .id(dto.getId())
                 .academicYear(dto.getAcademicYear())
-                .principalStudent(StudentDTO.toEntity(dto.getPrincipalStudent()))
+                .classe(dto.getClasse().toMergeEntity())
+                .principalStudent(dto.getPrincipalStudent().toMergeEntity())
                 .current(dto.getCurrent())
                 .startPeriod(dto.getStartPeriod())
                 .endPeriod(dto.getEndPeriod())

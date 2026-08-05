@@ -6,10 +6,13 @@ import com.edusyspro.api.dto.custom.TeacherEssential;
 import com.edusyspro.api.model.Schedule;
 import com.edusyspro.api.model.enums.Day;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,18 +24,18 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
             s.course.abbr, s.classeEntity.id, s.classeEntity.name, s.classeEntity.grade.section, s.designation, s.dayOfWeek, s.startTime, s.endTime
         ) from Schedule s left join s.teacher t left join t.personalInfo left join s.course
-        where s.academicYear.current = true and s.classeEntity.id = ?1 and s.dayOfWeek = ?2
+        where s.classeEntity.id = ?1 and s.dayOfWeek = ?2 and s.academicYear.id = ?3
     """)
-    List<ScheduleEssential> findAllByClasseEntityId(int classeId, Day currentDay);
+    List<ScheduleEssential> findAllByClasseEntityId(int classeId, Day currentDay, UUID academicYear);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScheduleEssential(
             s.id, s.academicYear.years, s.teacher.id, s.teacher.personalInfo.id, s.teacher.personalInfo.firstName, s.teacher.personalInfo.lastName, s.course.id, s.course.course,
             s.course.abbr, s.classeEntity.id, s.classeEntity.name, s.classeEntity.grade.section, s.designation, s.dayOfWeek, s.startTime, s.endTime
         ) from Schedule s left join s.teacher t left join t.personalInfo left join s.course
-        where s.academicYear.current = true and s.classeEntity.id = :id
+        where s.academicYear.id = :academicYear and s.classeEntity.id = :id
     """)
-    List<ScheduleEssential> findAllDayClasseSchedules(@Param("id") int classeId);
+    List<ScheduleEssential> findAllDayClasseSchedules(@Param("academicYear") UUID academicYear, @Param("id") int classeId);
 
     @Query("""
         select distinct new com.edusyspro.api.dto.custom.TeacherEssential(t.id, t.personalInfo, sc.contract.id, sc.contract.role,
@@ -52,10 +55,11 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("""
         SELECT DISTINCT new com.edusyspro.api.dto.custom.TeacherClasseCourse(
-            t.id, t.personalInfo, sc.contract.id, sc.contract.startDate, c.id, c.name, co.id, co.course
-        ) FROM Schedule s left join s.teacher t left join t.schoolAffiliations sc left join s.classeEntity c left join s.course co WHERE c.id = ?1
+            t.id, t.personalInfo, tsa.contract.id, tsa.contract.startDate, c.id, c.name, co.id, co.course
+        ) FROM Schedule s join s.classeEntity c join s.course co join s.teacher t join t.schoolAffiliations tsa
+            WHERE c.id = ?1 and tsa.school.id = ?2 and s.academicYear.id = ?3
     """)
-    List<TeacherClasseCourse> findAllClasseTeachers(int classId);
+    List<TeacherClasseCourse> findAllClasseTeachers(int classId, UUID schoolId, UUID academicYear);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ScheduleEssential(
@@ -98,4 +102,23 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("SELECT s.dayOfWeek FROM Schedule s WHERE s.teacher.id = ?1")
     List<Day> getDayBySessionDate(UUID teacherId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Schedule s SET s.teacher.id = ?1, s.course.id = ?2, s.classeEntity.id = ?3, s.designation = ?4, s.dayOfWeek = ?5, s.startTime = ?6, s.endTime = ?7 WHERE s.id = ?8")
+    int updateSchedule(
+            UUID teacherId,
+            Integer courseId,
+            int classeId,
+            String designation,
+            Day dayOfWeek,
+            LocalTime start,
+            LocalTime end,
+            long scheduleId
+    );
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Schedule s SET s.dayOfWeek = ?1, s.startTime = ?2, s.endTime = ?3 WHERE s.id = ?4")
+    int updateScheduleTime(Day dayOfWeek, LocalTime startTime, LocalTime endTime, Long id);
 }
