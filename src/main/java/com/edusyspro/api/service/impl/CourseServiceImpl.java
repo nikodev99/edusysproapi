@@ -136,7 +136,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Map<String, Boolean> update(CourseDTO entity, Integer id) {
-        if (countCourseNames(entity, id))
+        if (countCourseNames(entity, Operator.GREATER_OR_EQUALS, 1))
             throw new AlreadyExistException("La matière " + entity.getCourse() + " existe déjà");
 
         int hasUpdated = courseRepository.updateCourseValues(
@@ -172,14 +172,15 @@ public class CourseServiceImpl implements CourseService {
     }
 
     private boolean courseAlreadyExists(CourseDTO entity) {
-        return courseRepository.existsCourseByCourseAndAbbr(
-          entity.getCourse(),
-          entity.getAbbr()
-        );
+        return countCourseNames(entity, Operator.GREATER, 0);
     }
 
-    private boolean countCourseNames(CourseDTO course, int courseId) {
-        int count = courseRepository.countByCourse(course.getCourse(), course.getAbbr(), courseId);
-        return count >= 1;
+    private boolean countCourseNames(CourseDTO course, Operator operator, int count) {
+        long courseCount = courseRepository.countByCourse(course.getCourse(), course.getDepartment().getId());
+
+        return switch (operator) {
+            case GREATER -> courseCount > count;
+            case GREATER_OR_EQUALS -> courseCount >= count;
+        };
     }
 }

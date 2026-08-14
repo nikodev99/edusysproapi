@@ -87,7 +87,7 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
             String classeCategory,
             int gradeId,
             int roomNumber,
-            int courseId,
+            Integer courseId,
             BigDecimal monthCost,
             int classeId
     );

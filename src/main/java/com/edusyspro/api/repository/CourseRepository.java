@@ -59,8 +59,8 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     boolean existsCourseByCourseAndAbbr(String course, String abbr);
 
-    @Query("select count(c.course) from Course c where (lower(c.course) = lower(?1) or lower(c.abbr) = lower(?2)) and c.id != ?3")
-    int countByCourse(String course, String abbr, int courseId);
+    @Query("select count(c.course) from Course c where lower(c.course) = lower(?1) and c.department.id = ?2")
+    Long countByCourse(String course, int departmentId);
 
     //UPDATE COURSES:
     @Query("select c.id from Course c join c.department d where c.id in :ids and d.school.id = :schoolId")

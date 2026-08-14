@@ -26,7 +26,7 @@ public class Course {
     @Enumerated(EnumType.ORDINAL)
     private CourseType courseType;
 
-    @Column(length = 50, unique = true)
+    @Column(length = 50)
     private String abbr;
 
     @Column(length = 50)

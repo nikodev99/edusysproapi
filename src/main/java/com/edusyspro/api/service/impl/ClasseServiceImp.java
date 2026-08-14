@@ -21,7 +21,6 @@ public class ClasseServiceImp implements ClasseServiceInterface {
     private final ScheduleService scheduleService;
     private final ClasseBossService<TeacherBossDTO> classeTeacherBossService;
     private final ClasseBossService<StudentBossDTO> classeStudentBossService;
-    private final EnrollmentService enrollmentService;
     private final SchoolService schoolService;
 
     @Override
@@ -127,11 +126,9 @@ public class ClasseServiceImp implements ClasseServiceInterface {
             List<TeacherClasseDTO> classeTeachers = scheduleService.getClasseTeachers(
                     classe.getId(), realSchoolId.toString(), academicYear.toString()
             );
-            List<EnrollmentDTO> enrolledStudents = enrollmentService.getClasseEnrolledStudents(classe.getId(), 6);
 
             grade.setPlanning(plannings);
             classe.setGrade(grade);
-            classe.setStudents(enrolledStudents);
             classe.setSchedule(schedules);
             classe.setPrincipalTeacher(teacherBoss);
             classe.setPrincipalStudent(studentBoss);
@@ -237,9 +234,5 @@ public class ClasseServiceImp implements ClasseServiceInterface {
             case GREATER -> countClasses > count;
             case GREATER_OR_EQUALS -> countClasses >= count;
         };
-    }
-
-    enum Operator {
-        GREATER, GREATER_OR_EQUALS
     }
 }

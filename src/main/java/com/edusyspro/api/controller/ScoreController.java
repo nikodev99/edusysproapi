@@ -84,14 +84,15 @@ public class ScoreController {
     }
 
     @GetMapping("/students/{teacherId}/{subjectId}")
-    ResponseEntity<?> getBestStudentByMarks(@PathVariable long teacherId, @PathVariable int subjectId) {
-        return ResponseEntity.ok(scoreService.getBestStudentBySubjectScore(teacherId, subjectId));
+    ResponseEntity<?> getBestStudentByMarks(@PathVariable long teacherId, @PathVariable int subjectId, @RequestParam String academicYear) {
+        return ResponseEntity.ok(scoreService.getBestStudentBySubjectScore(teacherId, subjectId, academicYear));
     }
 
     @GetMapping("/students/{teacherId}")
-    ResponseEntity<?> getBestStudentByMarks(@PathVariable String teacherId) {
+    ResponseEntity<?> getBestStudentByMarks(@PathVariable String teacherId, @RequestParam String academicYear) {
         return ResponseEntity.ok(scoreService.getBestStudentByScore(
-                Long.parseLong(teacherId)
+                Long.parseLong(teacherId),
+                academicYear
         ));
     }
 
@@ -109,19 +110,9 @@ public class ScoreController {
         return ResponseEntity.ok(scoreService.getClasseBestStudentsByCourse(classeId, academicYear, courseId));
     }
 
-    @GetMapping("/classe_poor/{classeId}")
-    ResponseEntity<?> getPoorClasseStudentByMarks(@PathVariable int classeId, @RequestParam String academicYear) {
-        return ResponseEntity.ok(scoreService.getClassePoorStudents(classeId, academicYear));
-    }
-
     @GetMapping("/course_best/{courseId}")
     ResponseEntity<?> getBestCourseStudentByMarks(@PathVariable int courseId, @RequestParam String academicYear) {
-        return ResponseEntity.ok(scoreService.getCourseBestStudents(courseId, academicYear));
-    }
-
-    @GetMapping("/course_poor/{classeId}")
-    ResponseEntity<?> getPoorCourseStudentByMarks(@PathVariable int classeId, @RequestParam String academicYear) {
-        return ResponseEntity.ok(scoreService.getCoursePoorStudents(classeId, academicYear));
+        return ResponseEntity.ok(scoreService.getStudentCourseStats(courseId, academicYear));
     }
 
     @GetMapping("/classe_avg/{classeId}")

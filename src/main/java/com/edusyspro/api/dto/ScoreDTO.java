@@ -15,8 +15,10 @@ import lombok.NoArgsConstructor;
 public class ScoreDTO {
     private Long id;
     private AssignmentDTO assignment;
+    private Long assignmentCount;
     private StudentDTO student;
     private Double obtainedMark;
+    private Double shrinkMark;
     private Boolean isPresent;
 
     public Score toEntity() {

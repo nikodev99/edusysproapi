@@ -60,4 +60,8 @@ public interface CustomService<T, U> {
     Map<String, Long> count(String schoolId);
 
     Map<String, Long> count(Object ...args);
+
+    enum Operator {
+        GREATER, GREATER_OR_EQUALS
+    }
 }

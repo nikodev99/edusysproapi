@@ -1,19 +1,14 @@
 package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.ScoreDTO;
-import com.edusyspro.api.dto.custom.ScoreAvg;
-import com.edusyspro.api.dto.custom.ScoreBasic;
-import com.edusyspro.api.dto.custom.ScoreBasicValue;
-import com.edusyspro.api.dto.custom.ScoreEssential;
+import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.exception.sql.InsertException;
 import com.edusyspro.api.model.Score;
 import com.edusyspro.api.repository.ScoreRepository;
 import com.edusyspro.api.service.interfaces.ScoreService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
 
@@ -23,6 +18,10 @@ import java.util.stream.Collectors;
 @Service
 public class ScoreServiceImpl implements ScoreService {
 
+    private static final int K = 4;               // shrinkage confidence constant
+    private static final int MIN_ASSIGNMENTS = 2;  // eligibility floor
+    private static final int TOP_N = 3;
+    private static final int MAX_RADAR_AXES = 6;
     private final ScoreRepository scoreRepository;
 
     @Autowired
@@ -70,6 +69,14 @@ public class ScoreServiceImpl implements ScoreService {
     public Page<ScoreDTO> getLastScoresByStudent(String studentId, Pageable pageable) {
         return scoreRepository.findLastFiveScoresByStudent(UUID.fromString(studentId), pageable)
                 .map(ScoreEssential::toDTO);
+    }
+
+    @Override
+    public List<RadarAxis> getStudentCourseStats(String studentId, UUID academicYear) {
+        return scoreRepository.findStudentCourseStats(UUID.fromString(studentId), academicYear).stream()
+                .limit(MAX_RADAR_AXES)
+                .map(s -> s.toRadarAxis(MIN_ASSIGNMENTS))
+                .toList();
     }
 
     @Override
@@ -132,57 +139,33 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public List<ScoreDTO> getBestStudentBySubjectScore(long teacherId, int subjectId) {
-        return scoreRepository.findBestStudentByTeacherScores(teacherId, subjectId, PageRequest.of(0, 5))
-                .map(ScoreBasicValue::toDTO)
-                .toList();
+    public List<GradeRanking> getBestStudentBySubjectScore(long teacherId, int subjectId, String academicYear) {
+        List<StudentStats> stats = scoreRepository.findBestStudentByTeacherScores(teacherId, subjectId, UUID.fromString(academicYear));
+        return getGradeRanking(stats);
     }
 
     @Override
-    public List<ScoreDTO> getBestStudentByScore(long teacherId) {
-        return scoreRepository.findBestStudentByTeacherScores(teacherId, PageRequest.of(0, 5))
-                .map(ScoreBasicValue::toDTO)
-                .toList();
+    public List<GradeRanking> getBestStudentByScore(long teacherId, String academicYear) {
+        List<StudentStats> stats =  scoreRepository.findBestStudentByTeacherScores(teacherId, UUID.fromString(academicYear));
+        return getGradeRanking(stats);
     }
 
     @Override
-    public List<ScoreDTO> getClasseBestStudents(int classeId, String academicYearId) {
-        Pageable pageable = PageRequest.of(0, 5, JpaSort.unsafe("sum(s.obtainedMark)").descending());
-        return scoreRepository.findBestStudentByClasseScores(classeId, UUID.fromString(academicYearId), pageable)
-                .map(ScoreBasicValue::toDTO)
-                .toList();
+    public List<ClasseRanking> getClasseBestStudents(int classeId, String academicYearId) {
+        List<StudentStats> stats = scoreRepository.findBestStudentByClasseScores(classeId, UUID.fromString(academicYearId));
+        return getClasseRanking(stats);
     }
 
     @Override
-    public List<ScoreDTO> getClasseBestStudentsByCourse(int classeId, String academicYearId, int courseId) {
-        Pageable pageable = PageRequest.of(0, 5, JpaSort.unsafe("sum(s.obtainedMark)").descending());
-        return scoreRepository.findBestStudentByClasseBySubjectScores(classeId, UUID.fromString(academicYearId), courseId, pageable)
-                .map(ScoreBasicValue::toDTO)
-                .toList();
+    public List<ClasseRanking> getClasseBestStudentsByCourse(int classeId, String academicYearId, int courseId) {
+        List<StudentStats> stats = scoreRepository.findBestStudentByClasseBySubjectScores(classeId, UUID.fromString(academicYearId), courseId);
+        return getClasseRanking(stats);
     }
 
     @Override
-    public List<ScoreDTO> getClassePoorStudents(int classeId, String academicYearId) {
-        Pageable pageable = PageRequest.of(0, 5, JpaSort.unsafe("sum(s.obtainedMark)"));
-        return scoreRepository.findBestStudentByClasseScores(classeId, UUID.fromString(academicYearId), pageable)
-                .map(ScoreBasicValue::toDTO)
-                .toList();
-    }
-
-    @Override
-    public List<ScoreDTO> getCourseBestStudents(int courseId, String academicYearId) {
-        Pageable pageable = PageRequest.of(0, 5, JpaSort.unsafe("sum(s.obtainedMark)").descending());
-        return scoreRepository.findBestStudentByCourseScores(courseId, UUID.fromString(academicYearId), pageable)
-                .map(ScoreBasicValue::toDTO)
-                .toList();
-    }
-
-    @Override
-    public List<ScoreDTO> getCoursePoorStudents(int courseId, String academicYearId) {
-        Pageable pageable = PageRequest.of(0, 5, JpaSort.unsafe("sum(s.obtainedMark)"));
-        return scoreRepository.findBestStudentByCourseScores(courseId, UUID.fromString(academicYearId), pageable)
-                .map(ScoreBasicValue::toDTO)
-                .toList();
+    public List<GradeRanking> getStudentCourseStats(int courseId, String academicYearId) {
+        List<StudentStats> stats = scoreRepository.findStudentCourseStats(courseId, UUID.fromString(academicYearId));
+        return  getGradeRanking(stats);
     }
 
     @Override
@@ -205,8 +188,102 @@ public class ScoreServiceImpl implements ScoreService {
         return scoreRepository.countAssignmentInScores(assignmentId).orElse(0L);
     }
 
+    private List<GradeRanking> getGradeRanking(List<StudentStats> stats) {
+        if (stats.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Map<Integer, List<StudentStats>> byGrade = stats.stream()
+                .collect(Collectors.groupingBy(StudentStats::gradeId));
+
+        List<GradeRanking> result = new ArrayList<>();
+
+        for (List<StudentStats> gradeStats : byGrade.values()) {
+            CohortStats stat = getStats(gradeStats);
+
+            result.add(new GradeRanking(
+                    stat.any().gradeId(),
+                    stat.any().classeName(),
+                    stat.any().section(),
+                    stat.any().subSection(),
+                    stat.bests(),
+                    stat.poors())
+            );
+        }
+
+        result.sort(Comparator.comparingInt(GradeRanking::gradeId).thenComparing(GradeRanking::section));
+
+        return result;
+    }
+
+    private List<ClasseRanking> getClasseRanking(List<StudentStats> stats) {
+        if (stats.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Map<Integer, List<StudentStats>> byClasse = stats.stream()
+                .collect(Collectors.groupingBy(StudentStats::classeId));
+
+        List<ClasseRanking> result = new ArrayList<>();
+        for (List<StudentStats> classeStats : byClasse.values()) {
+            CohortStats stat = getStats(classeStats);
+
+            StudentStats any = stat.any();
+            result.add(new ClasseRanking(any.classeId(), any.classeName(), any.section(), stat.bests(), stat.poors()));
+        }
+        result.sort(Comparator.comparingInt(ClasseRanking::classeId).thenComparing(ClasseRanking::section));
+
+        return result;
+    }
+
+    private CohortStats getStats(List<StudentStats> stats) {
+        double avg = stats.stream()
+                .mapToDouble(StudentStats::weightedAverage)
+                .average()
+                .orElse(0D);
+
+        List<StudentStats> eligible = stats.stream()
+                .filter(s -> s.assignmentCount() >= MIN_ASSIGNMENTS)
+                .toList();
+
+        Comparator<StudentStats> byScore = Comparator.comparingDouble(s -> getShrinkageConfidence(s, avg));
+
+        List<ScoreDTO> bestEligibleStudents = eligible.stream()
+                .sorted(byScore.reversed())
+                .limit(TOP_N)
+                .map(s -> getStudentScore(s, avg))
+                .toList();
+
+        List<ScoreDTO> poorEligibleStudents = eligible.stream()
+                .sorted(byScore)
+                .limit(TOP_N)
+                .map(s -> getStudentScore(s, avg))
+                .toList();
+
+        StudentStats any = stats.get(0);
+
+        return new CohortStats(any, bestEligibleStudents, poorEligibleStudents);
+    }
+
+    private ScoreDTO getStudentScore(StudentStats s, double avg) {
+        ScoreDTO scores = s.toScoreDTO();
+        scores.setShrinkMark(getShrinkageConfidence(s, avg));
+        return scores;
+    }
+
+    private double getShrinkageConfidence(StudentStats s, double avg) {
+        long n = s.assignmentCount();
+        return ((double) n/(n + K)) * s.weightedAverage() + ((double) K/(n + K)) * avg;
+    }
+
     private boolean scoreExists(long assignmentId) {
         return countAssignmentSCores(assignmentId) > 0L;
     }
+
+    public record CohortStats(
+            StudentStats any,
+            List<ScoreDTO> bests,
+            List<ScoreDTO> poors
+    ) {}
 
 }

@@ -1,5 +1,6 @@
 package com.edusyspro.api.dto;
 
+import com.edusyspro.api.dto.custom.RadarAxis;
 import com.edusyspro.api.model.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,6 +28,7 @@ public class StudentDTO {
     private GuardianDTO guardian;
     private HealthCondition healthCondition;
     private List<ScoreDTO> marks;
+    private List<RadarAxis> courseTypeStats;
     private List<AttendanceDTO> attendances;
     private School school;
     private ClasseDTO classe;

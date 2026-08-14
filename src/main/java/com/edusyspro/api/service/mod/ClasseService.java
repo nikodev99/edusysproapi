@@ -21,7 +21,6 @@ public class ClasseService extends ClasseServiceImp {
             ScheduleService scheduleService,
             ClasseBossService<TeacherBossDTO> classeTeacherBossService,
             ClasseBossService<StudentBossDTO> classeStudentBossService,
-            EnrollmentService enrollmentService,
             SchoolService SchoolService
     ) {
         super(
@@ -30,7 +29,6 @@ public class ClasseService extends ClasseServiceImp {
             scheduleService,
             classeTeacherBossService,
             classeStudentBossService,
-            enrollmentService,
             SchoolService
         );
     }

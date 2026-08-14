@@ -1,8 +1,6 @@
 package com.edusyspro.api.repository;
 
-import com.edusyspro.api.dto.custom.ScoreBasic;
-import com.edusyspro.api.dto.custom.ScoreBasicValue;
-import com.edusyspro.api.dto.custom.ScoreEssential;
+import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.model.Score;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -24,6 +22,13 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
             "s.assignment.subject.id, s.assignment.subject.course, s.obtainedMark, s.assignment.coefficient) " +
             "from Score s where s.assignment.semester.academicYear.current = true and s.studentEntity.id = ?1 order by s.assignment.examDate desc")
     Page<ScoreEssential> findLastFiveScoresByStudent(UUID studentId, Pageable pageable);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.CourseTypeStats(c.courseType, sum(s.obtainedMark * a.coefficient),
+        sum(a.coefficient), count(a.id), max(a.examDate)) from Score s join s.assignment a join a.subject c
+        where s.studentEntity.id = ?1 and a.semester.academicYear.id = ?2 group by c.courseType
+    """)
+    List<CourseTypeStats> findStudentCourseStats(UUID studentId, UUID academicYear);
 
     @Query("select new com.edusyspro.api.dto.custom.ScoreEssential(s.id, s.assignment.id, s.assignment.examName, s.assignment.type, s.assignment.examDate, " +
             "s.assignment.startTime, s.assignment.endTime, s.assignment.classeEntity.name, s.assignment.classeEntity.grade.section, " +
@@ -84,44 +89,49 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     List<ScoreBasic> findStudentScoresByAssignmentIds(List<Long> assignmentId, UUID studentId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
-        s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
-        from Score s join s.studentEntity st join st.personalInfo i where s.assignment.preparedBy.id = ?1 and s.assignment.subject.id = ?2
-        and s.assignment.semester.academicYear.current = true group by s.studentEntity order by sum(s.obtainedMark) desc
+        select new com.edusyspro.api.dto.custom.StudentStats(st.id, i.firstName, i.lastName, i.image, i.reference, c.id, c.name,
+        g.id, g.section, g.subSection, sum(s.obtainedMark * a.coefficient), sum(a.coefficient), count(a.id))
+        from Score s join s.studentEntity st join st.personalInfo i join s.assignment a join a.classeEntity c left join c.grade g
+        where a.preparedBy.id = ?1 and a.subject.id = ?2 and a.semester.academicYear.id = ?3
+        group by st.id, i.firstName, i.lastName, i.image, i.reference, c.id, c.name, g.id, g.section, g.subSection
     """)
-    Page<ScoreBasicValue> findBestStudentByTeacherScores(long teacherId, int subjectId, Pageable pageable);
+    List<StudentStats> findBestStudentByTeacherScores(long teacherId, int subjectId, UUID academicYear);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
-        s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
-        from Score s join s.studentEntity st join st.personalInfo i where s.assignment.preparedBy.id = ?1 and s.assignment.semester.academicYear.current = true
-        group by s.studentEntity.id order by sum(s.obtainedMark) desc
+        select new com.edusyspro.api.dto.custom.StudentStats(st.id, i.firstName, i.lastName, i.image, i.reference, c.id, c.name,
+        g.id, g.section, g.subSection, sum(s.obtainedMark * a.coefficient), sum(a.coefficient), count(a.id))
+        from Score s join s.studentEntity st join st.personalInfo i join s.assignment a join a.classeEntity c left join c.grade g
+        where a.preparedBy.id = ?1 and a.semester.academicYear.id = ?2
+        group by st.id, i.firstName, i.lastName, i.image, i.reference, c.id, c.name, g.id, g.section, g.subSection
     """)
-    Page<ScoreBasicValue> findBestStudentByTeacherScores(long teacherId, Pageable pageable);
+    List<StudentStats> findBestStudentByTeacherScores(long teacherId, UUID academicYear);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
-        s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
-        from Score s join s.studentEntity st join st.personalInfo i where s.assignment.classeEntity.id = ?1 and s.assignment.semester.academicYear.id = ?2
-        group by s.studentEntity.id
+        select new com.edusyspro.api.dto.custom.StudentStats(st.id, i.firstName, i.lastName, i.image, i.reference, c.id, c.name,
+        g.id, g.section, g.subSection, sum(s.obtainedMark * a.coefficient), sum(a.coefficient), count(a.id))
+        from Score s join s.studentEntity st join st.personalInfo i join s.assignment a join a.classeEntity c left join c.grade g
+        where c.id = ?1 and a.semester.academicYear.id = ?2
+        group by st.id, i.firstName, i.lastName, i.image, i.reference, c.id, c.name, g.id, g.section, g.subSection
     """)
-    Page<ScoreBasicValue> findBestStudentByClasseScores(int classeId, UUID academicYear, Pageable pageable);
+    List<StudentStats> findBestStudentByClasseScores(int classeId, UUID academicYear);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
-        s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
-        from Score s join s.studentEntity st join st.personalInfo i where s.assignment.classeEntity.id = ?1 and s.assignment.semester.academicYear.id = ?2
-        and s.assignment.subject.id = ?3 group by s.studentEntity.id
+        select new com.edusyspro.api.dto.custom.StudentStats(st.id, i.firstName, i.lastName, i.image, i.reference, c.id, c.name,
+        g.id, g.section, g.subSection, sum(s.obtainedMark * a.coefficient), sum(a.coefficient), count(a.id))
+        from Score s join s.studentEntity st join st.personalInfo i join s.assignment a join a.classeEntity c left join c.grade g
+        where c.id = ?1 and a.semester.academicYear.id = ?2 and a.subject.id = ?3
+        group by st.id, i.firstName, i.lastName, i.image, i.reference, c.id, c.name, g.id, g.section, g.subSection
     """)
-    Page<ScoreBasicValue> findBestStudentByClasseBySubjectScores(int classeId, UUID academicYear, int courseId, Pageable pageable);
+    List<StudentStats> findBestStudentByClasseBySubjectScores(int classeId, UUID academicYear, int courseId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference,
-        s.assignment.classeEntity.name, sum(s.obtainedMark), s.isPresent)
-        from Score s join s.studentEntity st join st.personalInfo i where s.assignment.subject.id = ?1 and s.assignment.semester.academicYear.id = ?2
-        group by s.studentEntity.id
+        select new com.edusyspro.api.dto.custom.StudentStats(st.id, i.firstName, i.lastName, i.image, i.reference, c.id, c.name,
+        g.id, g.section, g.subSection, sum(s.obtainedMark * a.coefficient), sum(a.coefficient), count(a.id))
+        from Score s join s.studentEntity st join st.personalInfo i join s.assignment a join a.classeEntity c left join c.grade g
+        where a.subject.id = ?1 and a.semester.academicYear.id = ?2
+        group by st.id, i.firstName, i.lastName, i.image, i.reference, c.id, c.name, g.id, g.section, g.subSection
     """)
-    Page<ScoreBasicValue> findBestStudentByCourseScores(int courseId, UUID academicYear, Pageable pageable);
+    List<StudentStats> findStudentCourseStats(int courseId, UUID academicYear);
 
     @Transactional
     @Modifying

@@ -57,7 +57,7 @@ public class DepartmentDTO {
                 .id(dto.getId())
                 .name(dto.getName())
                 .boss(dto.getBoss())
-                .grade(dto.grade.toEntity())
+                .grade((dto.getGrade() != null && dto.getGrade().getId() != null) ? dto.grade.toEntity(): null)
                 .code(dto.getCode())
                 .purpose(dto.getPurpose())
                 .school(dto.getSchool())

@@ -45,9 +45,6 @@ public class StudentEntity {
     @JoinColumn(name = "health_condition", referencedColumnName = "id")
     private HealthCondition healthCondition;
 
-    @OneToMany(mappedBy = "studentEntity", cascade = CascadeType.PERSIST)
-    private List<Score> marks;
-
     private ZonedDateTime createdAt;
 
     private ZonedDateTime modifyAt;

@@ -1,11 +1,15 @@
 package com.edusyspro.api.service.interfaces;
 
 import com.edusyspro.api.dto.ScoreDTO;
+import com.edusyspro.api.dto.custom.ClasseRanking;
+import com.edusyspro.api.dto.custom.GradeRanking;
+import com.edusyspro.api.dto.custom.RadarAxis;
 import com.edusyspro.api.dto.custom.ScoreAvg;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ScoreService {
 
@@ -14,6 +18,8 @@ public interface ScoreService {
     boolean updateAllScores(List<ScoreDTO> scores, long assignmentId);
 
     Page<ScoreDTO> getLastScoresByStudent(String studentId, Pageable pageable);
+
+    List<RadarAxis> getStudentCourseStats(String studentId, UUID academicYear);
 
     Page<ScoreDTO> getScoresByStudentPerAcademicYear(String studentId, String academicYearId, Pageable pageable);
 
@@ -29,19 +35,15 @@ public interface ScoreService {
 
     List<ScoreDTO> getAssignmentScoresByStudent(List<Long> assignmentId, String studentId);
 
-    List<ScoreDTO> getBestStudentBySubjectScore(long teacherId, int subjectId);
+    List<GradeRanking> getBestStudentBySubjectScore(long teacherId, int subjectId, String academicYear);
 
-    List<ScoreDTO> getBestStudentByScore(long teacherId);
+    List<GradeRanking> getBestStudentByScore(long teacherId, String academicYear);
 
-    List<ScoreDTO> getClasseBestStudents(int classeId, String academicYearId);
+    List<ClasseRanking> getClasseBestStudents(int classeId, String academicYearId);
 
-    List<ScoreDTO> getClasseBestStudentsByCourse(int classeId, String academicYearId, int courseId);
+    List<ClasseRanking> getClasseBestStudentsByCourse(int classeId, String academicYearId, int courseId);
 
-    List<ScoreDTO> getClassePoorStudents(int classeId, String academicYearId);
-
-    List<ScoreDTO> getCourseBestStudents(int courseId, String academicYearId);
-
-    List<ScoreDTO> getCoursePoorStudents(int courseId, String academicYearId);
+    List<GradeRanking> getStudentCourseStats(int courseId, String academicYearId);
 
     List<ScoreAvg> getClasseAvgScore(int classeId, String academicYearId);
 

@@ -2,12 +2,9 @@ package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.auth.response.MessageResponse;
 import com.edusyspro.api.dto.*;
-import com.edusyspro.api.dto.custom.EnrolledStudentBasic;
-import com.edusyspro.api.dto.custom.GenderCount;
-import com.edusyspro.api.dto.custom.GuardianEssential;
+import com.edusyspro.api.dto.custom.*;
 import com.edusyspro.api.exception.sql.NotFountException;
 import com.edusyspro.api.model.*;
-import com.edusyspro.api.dto.custom.EnrolledStudent;
 import com.edusyspro.api.model.enums.ArchivedStatus;
 import com.edusyspro.api.model.enums.IndividualType;
 import com.edusyspro.api.repository.EnrollmentRepository;
@@ -193,6 +190,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
         if (student != null) {
             Pageable pageable = PageRequest.of(0, 5);
             Page<ScoreDTO> scores = scoreService.getLastScoresByStudent(studentId, pageable);
+            List<RadarAxis> stats = scoreService.getStudentCourseStats(studentId, student.getAcademicYear().getId());
 
             List<EnrollmentDTO> enrollments = getStudentSchoolHistory(studentId, ArchivedStatus.ARCHIVED)
                     .limit(5)
@@ -213,6 +211,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
             student.getStudent().setGuardian(studentService.getStudentGuardian(studentId));
             student.getStudent().setHealthCondition(studentService.getStudentHealthCondition(studentId));
             student.getStudent().setMarks(scores.getContent());
+            student.getStudent().setCourseTypeStats(stats);
             student.getStudent().setEnrollmentEntities(enrollments);
             student.getStudent().setAttendances(attendances.getContent());
             student.getClasse().setSchedule(schedules);
