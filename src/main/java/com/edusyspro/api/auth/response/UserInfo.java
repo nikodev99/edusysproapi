@@ -1,7 +1,5 @@
 package com.edusyspro.api.auth.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public record UserInfo(
         Long id,
         String username,

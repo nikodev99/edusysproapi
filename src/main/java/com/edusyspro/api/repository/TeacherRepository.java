@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -139,10 +140,12 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     @Query(value = "select course_id from teacher_courses where teacher_id = :teacherId", nativeQuery = true)
     List<Integer> findAssignedCourseIds(@Param("teacherId") UUID teacherId);
 
+    @Transactional
     @Modifying
     @Query(value = "insert into teacher_courses (teacher_id, course_id, affiliation_id) values (:teacherId, :courseId, :affiliation)", nativeQuery = true)
     int linkCourse(@Param("teacherId") UUID teacherId, @Param("courseId") Integer courseId, @Param("affiliation") long affiliation);
 
+    @Transactional
     @Modifying
     @Query(value = "delete from teacher_courses where teacher_id = :teacherId and course_id in :courseIds", nativeQuery = true)
     int unlinkCourses(@Param("teacherId") UUID teacherId, @Param("courseIds") List<Integer> courseIds);

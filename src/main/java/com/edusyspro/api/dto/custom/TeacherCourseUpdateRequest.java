@@ -12,7 +12,6 @@ public record TeacherCourseUpdateRequest(
         @NotNull
         List<Integer> courseIds,
 
-        @NotNull
         Long schoolAffiliated
 ) {
 }

@@ -8,10 +8,7 @@ import com.edusyspro.api.auth.token.refresh.RefreshTokenRequest;
 import com.edusyspro.api.auth.token.jwt.JWTUtils;
 import com.edusyspro.api.auth.token.jwt.JwtAuthentificationEntryPoint;
 import com.edusyspro.api.auth.token.refresh.RefreshTokenService;
-import com.edusyspro.api.auth.user.CustomUserDetails;
-import com.edusyspro.api.auth.user.UserSchoolRole;
-import com.edusyspro.api.auth.user.UserSchoolRoleService;
-import com.edusyspro.api.auth.user.UserService;
+import com.edusyspro.api.auth.user.*;
 import com.edusyspro.api.dto.IndividualUser;
 import com.edusyspro.api.service.interfaces.IndividualService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -226,9 +223,16 @@ public class AuthController {
                         .body(MessageResponse.builder().message("Email is already in use").build());
             }
 
-            userService.createUser(signUpRequest);
+            if (userService.existsByPhoneNumber(signUpRequest.getPhoneNumber())) {
+                return ResponseEntity.badRequest()
+                        .body(MessageResponse.builder().message("Email is already in use").build());
+            }
 
+            User user = userService.createUser(signUpRequest);
             logger.info("New user registered: {}", signUpRequest.getUsername());
+
+            userService.sendRegisteredUserInfo(user, signUpRequest.getPassword());
+            logger.info("Email sent to new registered user: {}", signUpRequest.getUsername());
 
             return ResponseEntity.ok(MessageResponse.builder().message("User registered successfully").build());
 

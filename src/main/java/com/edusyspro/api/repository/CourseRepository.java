@@ -1,8 +1,10 @@
 package com.edusyspro.api.repository;
 
+import com.edusyspro.api.dto.CourseDTO;
 import com.edusyspro.api.dto.custom.CourseBasicValue;
 import com.edusyspro.api.dto.custom.CourseEssential;
 import com.edusyspro.api.model.Course;
+import com.edusyspro.api.model.enums.AffiliationStatus;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,6 +63,15 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Query("select count(c.course) from Course c where lower(c.course) = lower(?1) and c.department.id = ?2")
     Long countByCourse(String course, int departmentId);
+
+    @Query("""
+        select new com.edusyspro.api.dto.custom.CourseEssential(
+            c.id, c.course, c.courseType, c.abbr, c.discipline, d.id, d.name, d.code, d.purpose, i.id, b.current, i.firstName,
+            i.lastName, b.startPeriod, b.endPeriod, c.createdAt
+        ) from TeacherCourses tc join tc.course c left join c.department d left join d.boss b left join b.d_boss i join tc.affiliation a
+        where a.school.id = ?1 and a.teacher.id = ?2 and a.status = ?3
+    """)
+    Page<CourseEssential> findAllTeacherCourses(UUID schoolId, UUID teacherId, AffiliationStatus status, Pageable pageable);
 
     //UPDATE COURSES:
     @Query("select c.id from Course c join c.department d where c.id in :ids and d.school.id = :schoolId")

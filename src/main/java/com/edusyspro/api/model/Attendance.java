@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
@@ -40,4 +41,12 @@ public class Attendance {
 
     private AttendanceStatus status;
 
+    private Instant createdDate;
+    private Instant updatedDate;
+
+    @PrePersist
+    public void prePersist() {
+        createdDate = Instant.now();
+        updatedDate = Instant.now();
+    }
 }

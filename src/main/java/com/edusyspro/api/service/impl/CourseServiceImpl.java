@@ -5,6 +5,7 @@ import com.edusyspro.api.dto.custom.CourseEssential;
 import com.edusyspro.api.dto.custom.UpdateField;
 import com.edusyspro.api.dto.CourseDTO;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
+import com.edusyspro.api.model.enums.AffiliationStatus;
 import com.edusyspro.api.repository.CourseRepository;
 import com.edusyspro.api.service.interfaces.CourseService;
 import org.springframework.data.domain.Page;
@@ -66,7 +67,10 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Page<CourseDTO> fetchAll(Pageable pageable, Object... args) {
-        return null;
+        var schoolId = UUID.fromString((String) args[0]);
+        var teacherId = UUID.fromString((String) args[1]);
+        return courseRepository.findAllTeacherCourses(schoolId, teacherId, AffiliationStatus.ACTIVE, pageable)
+                .map(CourseEssential::toCourse);
     }
 
     @Override

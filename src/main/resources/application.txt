@@ -9,7 +9,7 @@ spring:
     name: edusysproapi
 
   #profiles:
-    #active: [postgres, flyway, GMail, RabbitMQ]
+    #active: [postgres, flyway, Gmail, RabbitMQ]
 
   #REST config
   data:

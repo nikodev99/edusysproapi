@@ -1,7 +1,6 @@
 package com.edusyspro.api.controller;
 
 import com.edusyspro.api.controller.utils.ControllerUtils;
-import com.edusyspro.api.data.ConstantUtils;
 import com.edusyspro.api.dto.CourseDTO;
 import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.service.mod.CourseService;
@@ -45,6 +44,20 @@ public class CourseController {
     ) {
         return ResponseEntity.ok(courseService.findAllSchoolCourses(
                 schoolId, ControllerUtils.setSort(page, size, sortCriteria)
+        ));
+    }
+
+    @GetMapping("/teacher/{schoolId}/{teacherId}")
+    ResponseEntity<?> getTeacherCourses(
+            @PathVariable String schoolId,
+            @PathVariable String teacherId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sortCriteria
+    ) {
+        return ResponseEntity.ok(courseService.fetchAll(
+                ControllerUtils.setSort(page, size, sortCriteria),
+                schoolId, teacherId
         ));
     }
 

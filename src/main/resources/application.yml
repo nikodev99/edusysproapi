@@ -9,7 +9,7 @@ spring:
     name: edusysproapi
 
   #profiles:
-    #active: [postgres, flyway, GMail, RabbitMQ]
+    #active: [postgres, flyway, Gmail, RabbitMQ]
 
   #REST config
   data:
@@ -41,10 +41,10 @@ spring:
 
   #Mail config
   mail:
-    host: ${MAIL_HOST:smtp.gmail.com}
+    host: ${MAIL_HOST:smtp.ethereal.email}
     port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:tt9999.tt123@gmail.com}
-    password: ${MAIL_PASSWORD:'vzcj rtse mskr czyj'}
+    username: ${MAIL_USERNAME:katlynn0@ethereal.email}
+    password: ${MAIL_PASSWORD:F5edmghdSbgM5ZzRg9}
     properties:
       mail:
         transport:
@@ -86,4 +86,5 @@ app:
 
 ui:
   cors_url: "${URL:http://localhost:3000;http://localhost:5173;http://localhost:4173}"
-  email-base-url: "${MAIL_URL:http://localhost:5173;http://localhost:4173}"
+  email-base-url: "${MAIL_URL:http://localhost:5173}"
+  support-mail: "support@edusyspro.com"

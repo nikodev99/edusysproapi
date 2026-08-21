@@ -4,11 +4,12 @@ import com.edusyspro.api.auth.exception.UserNotFoundException;
 import com.edusyspro.api.auth.response.UserInfo;
 import com.edusyspro.api.auth.response.UserInfoResponse;
 import com.edusyspro.api.auth.request.SignupRequest;
+import com.edusyspro.api.mail.EmailBodies;
+import com.edusyspro.api.mail.EmailBodyFactory;
 import com.edusyspro.api.mail.EmailRequest;
-import com.edusyspro.api.mail.EmailService;
+import com.edusyspro.api.mail.queue.EmailProducer;
 import com.edusyspro.api.model.School;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,30 +32,25 @@ public class UserService implements UserDetailsService {
 
     private final PasswordResetService passwordResetService;
 
-    /**
-     * A reference to the EmailService, which is responsible for handling
-     * functionalities related to email operations. This service may be used
-     * for sending emails, managing email templates, handling email notifications,
-     * and other related tasks integral to user management or system communication.
-     */
-    private final EmailService emailService;
+    private final EmailProducer emailProducer;
+
+    private final EmailBodyFactory factory;
 
     private static final int FAILED_LOGIN_ATTEMPTS = 5;
-
-    @Value("${ui.email-base-url}")
-    private String UI_BASE_URL;
 
     @Autowired
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             PasswordResetService passwordResetService,
-            EmailService emailService
+            EmailProducer emailProducer,
+            EmailBodyFactory factory
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.passwordResetService = passwordResetService;
-        this.emailService = emailService;
+        this.emailProducer = emailProducer;
+        this.factory = factory;
     }
 
     @Override
@@ -87,19 +83,6 @@ public class UserService implements UserDetailsService {
         user.setSchoolAffiliations(List.of(userRoles));
 
         return userRepository.save(user);
-    }
-
-    @Transactional
-    public User createNewAccount(SignupRequest request) {
-        User user = request.toEntity();
-
-        //TODO Send email and phone message to user
-        User addedUser = userRepository.save(user);
-        if (addedUser.getId() != null) {
-            addedUser.setSchoolAffiliations(request.toUserSchoolRole(addedUser.getId()));
-        }
-
-        return userRepository.save(addedUser);
     }
 
     @Transactional
@@ -137,6 +120,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public Boolean existsByPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null) return true;
         return userRepository.existsByPhoneNumber(phoneNumber);
     }
 
@@ -157,7 +141,7 @@ public class UserService implements UserDetailsService {
         return userRepository.countAllUsersBySchoolId(UUID.fromString(schoolId)).orElseThrow();
     }
 
-    /*public void updateFailedLoginAttempts(Long userId) {
+    /** public void updateFailedLoginAttempts(Long userId) {
         userRepository.findUserById(userId).ifPresent(user -> {
             int attempts = user.getFailedLoginAttempts() + 1;
             userRepository.updateFailedLoginAttempts(user.getId(), attempts);
@@ -171,6 +155,22 @@ public class UserService implements UserDetailsService {
         });
     }*/
 
+    public void sendRegisteredUserInfo(User userInfo, String password) {
+        var e = factory.create(userInfo, "", password).getRegistration();
+        EmailRequest request = EmailRequest.builder()
+                .from("no-reply@edusyspro.com")
+                .to(List.of(userInfo.getEmail()))
+                .subject("Bienvenue sur EduSysPro")
+                .textBody(e.text())
+                .htmlBody(e.html())
+                .build();
+        try {
+            emailProducer.enqueue(request);
+        } catch (Exception exp) {
+            throw new RuntimeException(exp);
+        }
+    }
+
     public List<String> initiatePasswordReset(String email, String phoneNumber) {
         Optional<User> fetchedUser = email != null
                 ? userRepository.findByEmail(email)
@@ -180,18 +180,20 @@ public class UserService implements UserDetailsService {
 
         fetchedUser.ifPresent(user -> {
             PasswordResetToken pass = passwordResetService.generatePasswordResetToken(user.getId());
+            EmailBodies.EmailBody body = factory.create(user, getEmailBodyUrl(pass.getToken(), user.getEmail()))
+                    .getPasswordReset();
+
             EmailRequest request = EmailRequest.builder()
                     .from("no-reply@edusyspro.com")
-                    .to(List.of("gu.edusyspro@gmail.com" /*user.getEmail()*/))
-                    .subject("Password Reset")
-                    .htmlBody("<div>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe.<br>"+
-                            getEmailBodyUrl(pass.getToken(), user.getEmail())+
-                            "<br>Le lien sera expiré dans une heure.</div>")
+                    .to(List.of(user.getEmail()))
+                    .subject("Mot de passe oublié")
+                    .textBody(body.text())
+                    .htmlBody(body.html())
                     .build();
             result.addAll(Arrays.asList(user.getEmail(), pass.getToken(), pass.getExpiryDate().toString()));
 
             try {
-                emailService.send(request);
+                emailProducer.enqueue(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -206,22 +208,44 @@ public class UserService implements UserDetailsService {
         userRepository.findById(userId)
             .ifPresent(user -> {
                 PasswordResetToken pass = passwordResetService.generatePasswordResetToken(user.getId());
+                EmailBodies.EmailBody body = factory.create(user, getEmailBodyUrl(pass.getToken(), user.getEmail()))
+                        .getPasswordReset();
+
                 EmailRequest request = EmailRequest.builder()
                         .from("no-reply@edusyspro.com")
-                        .to(List.of("gu.edusyspro@gmail.com" /*user.getEmail()*/))
+                        .to(List.of(user.getEmail()))
                         .subject("Password Reset")
-                        .htmlBody("<div>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe.<br>"+
-                                getEmailBodyUrl(pass.getToken(), user.getId().toString())+
-                                "<br>Le lien sera expiré dans une heure.</div>")
+                        .textBody(body.text())
+                        .htmlBody(body.html())
                         .build();
                 result.addAll(Arrays.asList(user.getEmail(), pass.getToken(), pass.getExpiryDate().toString()));
                 try {
-                    emailService.send(request);
+                    emailProducer.enqueue(request);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             });
         return result;
+    }
+
+    //TODO a définir a qui et a quel moment envoyé ce mail de confirmation de changement de mot de passe
+    public void confirmPasswordChangeEmail(String username, String email) {
+        EmailBodies.EmailBody body = factory.create(User.builder().username(username).build(), "")
+                .getPasswordChangeConfirmation();
+
+        EmailRequest request = EmailRequest.builder()
+                .from("no-reply@edusyspro.com")
+                .to(List.of(email))
+                .subject("Password Reset")
+                .textBody(body.text())
+                .htmlBody(body.html())
+                .build();
+
+        try {
+            emailProducer.enqueue(request);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public UserInfoResponse validatePasswordResetToken(String token) {
@@ -260,7 +284,6 @@ public class UserService implements UserDetailsService {
     }
 
     private String getEmailBodyUrl(String token, String username) {
-        final String URL_LINK = UI_BASE_URL+"/password-reset/"+token+"/?username="+username;
-        return "<a href=\""+URL_LINK+"\">"+URL_LINK+"</a>";
+        return "password-reset/"+token+"/?username="+username;
     }
 }
