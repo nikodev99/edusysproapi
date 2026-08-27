@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,7 +16,7 @@ import java.util.UUID;
 public interface GradeRepository extends JpaRepository<Grade, Integer> {
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection, g.createdAt, g.modifyAt)
+        select new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection, g.gradingScaleMax, g.gradingPassThreshold, g.createdAt, g.modifyAt)
         from Grade g where g.school.id = ?1
     """)
     List<GradeBasicValue> findAllGradeBySchool(UUID schoolId);
@@ -36,19 +34,19 @@ public interface GradeRepository extends JpaRepository<Grade, Integer> {
     List<PlanningEssential> findPlanningsByGradeId(int gradeId);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection, g.createdAt, g.modifyAt)
+        select new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection,  g.gradingScaleMax, g.gradingPassThreshold, g.createdAt, g.modifyAt)
         from Grade g where g.id= ?1
     """)
     Optional<GradeBasicValue> findGradeById(int gradeId);
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection, g.createdAt, g.modifyAt)
+        SELECT new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection,  g.gradingScaleMax, g.gradingPassThreshold, g.createdAt, g.modifyAt)
         FROM Grade g WHERE g.school.id = ?1 AND g.section = ?2 AND g.subSection = ?3
     """)
     Optional<GradeBasicValue> findBySectionName(UUID schoolId, Section section);
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection, g.createdAt, g.modifyAt)
+        SELECT new com.edusyspro.api.dto.custom.GradeBasicValue(g.id, g.section, g.subSection,  g.gradingScaleMax, g.gradingPassThreshold, g.createdAt, g.modifyAt)
         FROM Grade g WHERE g.school.id = ?1 AND g.section = ?2 AND g.subSection = ?3
     """)
     Optional<GradeBasicValue> gradeExist(UUID schoolId, Section section, String subSection);

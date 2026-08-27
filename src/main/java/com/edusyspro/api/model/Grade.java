@@ -29,6 +29,10 @@ public class Grade {
     @Column(name = "program", length = 50)
     private String subSection;
 
+    private Integer gradingScaleMax;
+
+    private Integer gradingPassThreshold;
+
     @OneToMany(mappedBy = "grade", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Planning> planning;

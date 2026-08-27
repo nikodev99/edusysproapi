@@ -21,6 +21,8 @@ public class GradeDTO {
     private Integer id;
     private Section section;
     private String subSection;
+    private Integer gradingScaleMax;
+    private Integer gradingPassThreshold;
     private List<PlanningDTO> planning;
     private School school;
     private ZonedDateTime createdAt;
@@ -31,6 +33,8 @@ public class GradeDTO {
                 .id(entity.getId())
                 .section(entity.getSection())
                 .subSection(entity.getSubSection())
+                .gradingScaleMax(entity.getGradingScaleMax())
+                .gradingPassThreshold(entity.getGradingPassThreshold())
                 .planning(
                         entity.getPlanning() != null
                                 ? entity.getPlanning().stream().map(PlanningDTO::fromEntity).toList()
@@ -47,6 +51,8 @@ public class GradeDTO {
                 .id(id)
                 .section(section)
                 .subSection(subSection)
+                .gradingScaleMax(gradingScaleMax)
+                .gradingPassThreshold(gradingPassThreshold)
                 .school(school)
                 .createdAt(createdAt)
                 .modifyAt(modifyAt)
