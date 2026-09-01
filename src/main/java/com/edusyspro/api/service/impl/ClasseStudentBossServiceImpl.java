@@ -56,9 +56,15 @@ public class ClasseStudentBossServiceImpl implements ClasseBossService<StudentBo
     }
 
     @Override
-    public boolean checkPrincipal(Object... args) {
+    public boolean checkPrincipalInClasse(Object... args) {
         return false;
     }
+
+    @Override
+    public boolean checkPrincipal(UUID bossId, UUID schoolId) {
+        return false;
+    }
+
 
     private Boolean isStudentInClasse(int classeId, UUID studentId) {
         return classeStudentBossRepository.findStudentInClasse(classeId, studentId).isPresent();

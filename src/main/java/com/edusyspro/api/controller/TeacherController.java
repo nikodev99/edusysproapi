@@ -197,6 +197,6 @@ public class TeacherController {
 
     @RequestMapping("/principal/{teacherId}")
     ResponseEntity<Boolean> checkTeacherIsBoss(@PathVariable String teacherId, @RequestParam int classe) {
-        return ResponseEntity.ok(classeBossService.checkPrincipal(teacherId, classe));
+        return ResponseEntity.ok(classeBossService.checkPrincipalInClasse(teacherId, classe));
     }
 }

@@ -3,6 +3,7 @@ package com.edusyspro.api.repository.spec;
 import com.edusyspro.api.dto.custom.AssignmentEssential;
 import com.edusyspro.api.dto.filters.AssignmentFilter;
 import com.edusyspro.api.model.Assignment;
+import com.edusyspro.api.model.Course;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
@@ -28,6 +29,9 @@ public class AssignmentSpec {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<AssignmentEssential> cq = cb.createQuery(AssignmentEssential.class);
         Root<Assignment> assignment = cq.from(Assignment.class);
+
+        Join<Assignment, Course> subject = assignment.join("subject", JoinType.LEFT);
+
         cq.select(cb.construct(
                 AssignmentEssential.class,
                 assignment.get("id"),
@@ -40,9 +44,9 @@ public class AssignmentSpec {
                 assignment.get("classeEntity").get("id"),
                 assignment.get("classeEntity").get("name"),
                 assignment.get("classeEntity").get("grade").get("section"),
-                assignment.get("subject").get("id"),
-                assignment.get("subject").get("course"),
-                assignment.get("subject").get("abbr"),
+                subject.get("id"),
+                subject.get("course"),
+                subject.get("abbr"),
                 assignment.get("examName"),
                 assignment.get("examDate"),
                 assignment.get("startTime"),

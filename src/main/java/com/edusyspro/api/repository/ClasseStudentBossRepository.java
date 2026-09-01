@@ -46,5 +46,4 @@ public interface ClasseStudentBossRepository extends JpaRepository<ClasseStudent
 
     @Query("select c.id from ClasseStudentBoss c where c.classe.id = ?1 and c.current = true")
     List<Integer> fetchAllBossesIdByClasseId(int classeId);
-
 }

@@ -28,6 +28,9 @@ public class ClasseTeacherBossServiceImpl implements ClasseBossService<TeacherBo
         if (!isTeacherInClasse(classeBossDTO.getClasse().getId(), classeBossDTO.getPrincipalTeacher().getId()))
             throw new RuntimeException("Cet enseignant n'enseigne pas dans cette classe");
 
+        if (checkPrincipal(classeBossDTO.getPrincipalTeacher().getId(), classeBossDTO.getAcademicYear().getId()))
+            throw new RuntimeException("Cet enseignant est déjà principal dans une autre classe de cette école");
+
         classeTeacherBossRepository.fetchAllBossesIdByClasseId(classeBossDTO.getClasse().getId())
                 .forEach(id -> classeTeacherBossRepository.inactivateClasseTeacherBoss(id, Datetime.brazzavilleDatetime().toLocalDate()));
 
@@ -44,9 +47,9 @@ public class ClasseTeacherBossServiceImpl implements ClasseBossService<TeacherBo
     }
 
     @Override
-    public List<TeacherBossDTO> fetchAllClasseBosses(int classeId, String academicYearId) {
+    public List<TeacherBossDTO> fetchAllClasseBosses(int classeId, String schoolId) {
         return classeTeacherBossRepository.findTeacherBossByClasseId(
-                classeId, UUID.fromString(academicYearId)
+                classeId, UUID.fromString(schoolId)
         ).stream().map(TeacherBossEssential::toDTO).collect(Collectors.toList());
     }
 
@@ -58,10 +61,15 @@ public class ClasseTeacherBossServiceImpl implements ClasseBossService<TeacherBo
     }
 
     @Override
-    public boolean checkPrincipal(Object ...args) {
+    public boolean checkPrincipalInClasse(Object ...args) {
         String teacherId = args[0].toString();
         int classeId = (int) args[1];
         return classeTeacherBossRepository.findTeacherIsBoss(UUID.fromString(teacherId), classeId).isPresent();
+    }
+
+    @Override
+    public boolean checkPrincipal(UUID teacherId, UUID schoolId) {
+        return classeTeacherBossRepository.findTeacherIsBoss(teacherId, schoolId).isPresent();
     }
 
     public boolean isTeacherInClasse(int classeId, UUID teacherId) {

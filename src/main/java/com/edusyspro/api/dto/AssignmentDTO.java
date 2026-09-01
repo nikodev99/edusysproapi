@@ -43,7 +43,7 @@ public class AssignmentDTO {
                 .exam(exam.toEntity())
                 .preparedBy(preparedBy)
                 .classeEntity(classe.toMergeEntity())
-                .subject(subject.toMarge())
+                .subject(subject != null ? subject.toMarge(): null)
                 .examName(examName)
                 .examDate(examDate)
                 .startTime(startTime)

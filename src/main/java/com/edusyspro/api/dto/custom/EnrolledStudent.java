@@ -20,6 +20,8 @@ public record EnrolledStudent(
         String classe,
         String classeCategory,
         Section grade,
+        Integer gradeMaxScale,
+        Integer gradePassThreshold,
         Boolean isArchived,
         BigDecimal monthCost,
         String dadName,
@@ -53,6 +55,8 @@ public record EnrolledStudent(
                         .category(classeCategory)
                         .grade(GradeDTO.builder()
                                 .section(grade)
+                                .gradingScaleMax(gradeMaxScale)
+                                .gradingPassThreshold(gradePassThreshold)
                                 .build())
                         .monthCost(monthCost)
                         .build())

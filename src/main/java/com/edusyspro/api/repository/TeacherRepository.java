@@ -46,7 +46,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.CourseBasicValue(c.id, c.course, c.courseType, c.abbr, c.discipline)
-        from Teacher t join t.schoolAffiliations ac join ac.courses co join co.course c where t.id = ?1 AND ac.status = ?2 and ac.school.id = ?3
+        from Teacher t join t.schoolAffiliations ac join ac.courses co left join co.course c where t.id = ?1 AND ac.status = ?2 and ac.school.id = ?3
     """)
     List<CourseBasicValue> findTeacherCourses(UUID teacherId, AffiliationStatus status, UUID schoolId);
 
@@ -54,7 +54,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
         select new com.edusyspro.api.dto.custom.CourseEssential(
             c.id, c.course, c.courseType, c.abbr, c.discipline, d.id, d.name, d.code, d.purpose, b.d_boss.id, b.current, i.firstName,
             i.lastName, b.startPeriod, b.endPeriod, c.createdAt
-        ) from Teacher t join t.schoolAffiliations cs join cs.courses co join co.course c left join c.department d left join d.boss b left join b.d_boss i
+        ) from Teacher t join t.schoolAffiliations cs join cs.courses co left join co.course c left join c.department d left join d.boss b left join b.d_boss i
         where t.id = ?1 AND cs.status = ?2 and cs.school.id = ?3
     """)
     List<CourseEssential> findTeacherEssentialCourses(UUID teacherId, AffiliationStatus status, UUID schoolId);

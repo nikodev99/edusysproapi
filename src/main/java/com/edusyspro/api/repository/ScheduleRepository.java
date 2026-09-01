@@ -56,7 +56,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query("""
         SELECT DISTINCT new com.edusyspro.api.dto.custom.TeacherClasseCourse(
             t.id, t.personalInfo, tsa.contract.id, tsa.contract.startDate, c.id, c.name, co.id, co.course
-        ) FROM Schedule s join s.classeEntity c join s.course co join s.teacher t join t.schoolAffiliations tsa
+        ) FROM Schedule s join s.classeEntity c join s.teacher t join t.schoolAffiliations tsa left join s.course co
             WHERE c.id = ?1 and tsa.school.id = ?2 and s.academicYear.id = ?3
     """)
     List<TeacherClasseCourse> findAllClasseTeachers(int classId, UUID schoolId, UUID academicYear);

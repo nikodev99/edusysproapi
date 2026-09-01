@@ -14,6 +14,8 @@ public record ClasseEssential(
         String category,
         Section section,
         String subSection,
+        Integer gradMaxScale,
+        Integer gradPassThreshold,
         Integer roomNumber,
         String department,
         String code,
@@ -28,6 +30,8 @@ public record ClasseEssential(
                 .grade(GradeDTO.builder()
                         .section(section)
                         .subSection(subSection)
+                        .gradingScaleMax(gradMaxScale)
+                        .gradingPassThreshold(gradPassThreshold)
                         .build())
                 .department(DepartmentDTO.builder()
                         .name(department)

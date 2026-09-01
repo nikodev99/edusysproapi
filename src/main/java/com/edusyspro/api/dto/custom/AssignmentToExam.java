@@ -22,6 +22,8 @@ public record AssignmentToExam(
         Integer classeId,
         String classeName,
         Section classeSection,
+        Integer gradeThreshold,
+        Integer gradePassObtained,
         Integer courseId,
         String courseName,
         String courseAbbr,
@@ -49,6 +51,8 @@ public record AssignmentToExam(
                         .name(classeName)
                         .grade(GradeDTO.builder()
                                 .section(classeSection)
+                                .gradingScaleMax(gradeThreshold)
+                                .gradingPassThreshold(gradePassObtained)
                                 .build())
                         .build())
                 .subject(CourseDTO.builder()

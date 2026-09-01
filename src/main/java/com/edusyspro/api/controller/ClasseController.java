@@ -137,6 +137,9 @@ public class ClasseController {
 
     @PostMapping("/teacher_boss")
     ResponseEntity<?> addClasseTeacherBoss(@RequestBody TeacherBossDTO studentBoss) {
+        System.out.println("--------------------------------");
+        System.out.println("BOSS TO ADD: " + studentBoss);
+        System.out.println("--------------------------------");
         try {
             int insertedTeacherBossId = teacherBossService.saveClasseBoss(studentBoss);
             return ResponseEntity.ok(MessageResponse.builder()

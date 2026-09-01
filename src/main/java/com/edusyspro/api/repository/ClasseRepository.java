@@ -28,21 +28,21 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
     List<ClassBasicValue> findAllBasicValue(UUID schoolID);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection,
+        select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection, g.gradingScaleMax, g.gradingPassThreshold,
         c.roomNumber, d.name, d.code, c.monthCost, c.createdAt) from ClasseEntity c left join c.grade g left join c.department d
         where (g is null or g.school.id = ?1) and (d is null or d.school.id = ?1)
     """)
     Page<ClasseEssential> findAllClassesBySchool(UUID schoolID, Pageable pageable);
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection,
+        SELECT new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection, g.gradingScaleMax, g.gradingPassThreshold,
         c.roomNumber, d.name, d.code, c.monthCost, c.createdAt) FROM ClasseEntity c LEFT JOIN c.grade g LEFT JOIN c.department d JOIN c.classTeachers ct
         JOIN ct.affiliation a WHERE a.teacher.id = ?1 AND a.status = ?2 AND a.school.id = ?3
     """)
     Page<ClasseEssential> findAllClasseTeacherContext(UUID teacherId, AffiliationStatus status, UUID schoolId, Pageable pageable);
 
     @Query("""
-        select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection,
+        select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection, g.gradingScaleMax, g.gradingPassThreshold,
         c.roomNumber, d.name, d.code, c.monthCost, c.createdAt) from ClasseEntity c left join c.grade g left join c.department d
         where ((g is null or g.school.id = ?1) or (d is null or d.school.id = ?1)) and (lower(c.name) like lower(?2) or
         lower(c.category) like lower(?2) or lower(g.section) like lower(?2)) order by c.createdAt desc
@@ -50,7 +50,7 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
     List<ClasseEssential> findAllClassesBySchool(UUID schoolID, String classeName);
 
     @Query("""
-        SELECT new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection,
+        SELECT new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, g.section, g.subSection, g.gradingScaleMax, g.gradingPassThreshold,
         c.roomNumber, d.name, d.code, c.monthCost, c.createdAt) FROM ClasseEntity c LEFT JOIN c.grade g LEFT JOIN c.department d JOIN c.classTeachers ct
         JOIN ct.affiliation a WHERE a.teacher.id = ?1 AND a.status = ?2 AND a.school.id = ?3 and (lower(c.name) like lower(?2) or
         lower(c.category) like lower(?2) or lower(g.section) like lower(?2)) order by c.createdAt desc
@@ -59,8 +59,8 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.ClasseEssential(c.id, c.name, c.category, c.grade.section, c.grade.subSection,
-        c.roomNumber, c.department.name, c.department.code, c.monthCost, c.createdAt) from ClasseEntity c left join c.department
-        where c.id = ?1
+        c.grade.gradingScaleMax, c.grade.gradingPassThreshold, c.roomNumber, c.department.name, c.department.code, c.monthCost, c.createdAt)
+        from ClasseEntity c left join c.department where c.id = ?1
     """)
     ClasseEssential findClasseById(int id);
 
@@ -73,7 +73,8 @@ public interface ClasseRepository extends JpaRepository<ClasseEntity, Integer> {
 
     @Query("""
         select new com.edusyspro.api.dto.custom.GradeBasicValue(c.grade.id, c.grade.section, c.grade.subSection,
-        c.grade.createdAt, c.grade.modifyAt) from ClasseEntity c where c.id = ?1
+        c.grade.gradingScaleMax, c.grade.gradingPassThreshold,c.grade.createdAt, c.grade.modifyAt) from ClasseEntity c
+        where c.id = ?1
     """)
     GradeBasicValue findGradeByClasseId(int classeId);
 

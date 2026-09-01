@@ -27,9 +27,9 @@ public interface ClasseTeacherBossRepository extends JpaRepository<ClasseTeacher
     @Query("""
         select new com.edusyspro.api.dto.custom.TeacherBossEssential(c.id, c.principalTeacher.id, c.principalTeacher.personalInfo.lastName,
         c.principalTeacher.personalInfo.firstName, c.current, c.startPeriod, c.endPeriod) from ClasseTeacherBoss c
-        where c.classe.id = ?1 and c.academicYear.id = ?2
+        where c.classe.id = ?1 and c.academicYear.school.id = ?2
     """)
-    List<TeacherBossEssential> findTeacherBossByClasseId(int classeId, UUID academicYearId);
+    List<TeacherBossEssential> findTeacherBossByClasseId(int classeId, UUID schoolId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.TeacherBossEssential(c.id, c.principalTeacher.id, c.principalTeacher.personalInfo.lastName,
@@ -40,6 +40,9 @@ public interface ClasseTeacherBossRepository extends JpaRepository<ClasseTeacher
 
     @Query("SELECT t.id FROM ClasseTeacherBoss ct JOIN ct.principalTeacher t WHERE t.id = ?1 AND ct.classe.id = ?2 AND ct.current = true")
     Optional<UUID> findTeacherIsBoss(UUID teacherId, int classeId);
+
+    @Query("SELECT t.id FROM ClasseTeacherBoss ct JOIN ct.principalTeacher t WHERE t.id = ?1 AND ct.current = true AND ct.academicYear.school.id = ?2")
+    Optional<UUID> findTeacherIsBoss(UUID teacherId, UUID schoolId);
 
     @Query("select s.id from TeacherSchoolAffiliation s join s.aClasses tc where tc.classe.id = ?1 and s.teacher.id = ?2")
     Optional<Long> findTeacherInClasse(int classeId, UUID teacherId);

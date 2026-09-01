@@ -24,36 +24,36 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester,a.exam.examType,
         a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
-        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
-        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
-        from Assignment a where a.passed = false and a.semester.academicYear.id = ?1
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, s.id, s.course,
+        s.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
+        from Assignment a left join a.subject s where a.passed = false and a.semester.academicYear.id = ?1
     """)
     List<AssignmentEssential> findAllNotCompleteAssignments(UUID academicYearId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester,a.exam.examType,
         a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
-        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
-        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
-        from Assignment a where a.passed = false and a.semester.academicYear.id = ?1 and a.preparedBy.id = ?2
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, s.id, s.course,
+        s.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
+        from Assignment a left join a.subject s where a.passed = false and a.semester.academicYear.id = ?1 and a.preparedBy.id = ?2
     """)
     List<AssignmentEssential> findAllTeacherNotCompleteAssignments(UUID academicYearId, long teacherId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester,a.exam.examType,
         a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
-        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
-        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
-        from Assignment a where a.classeEntity.id = ?1 and a.semester.academicYear.id = ?2
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, s.id, s.course,
+        s.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
+        from Assignment a join a.subject s where a.classeEntity.id = ?1 and a.semester.academicYear.id = ?2
     """)
     List<AssignmentEssential> findAllClasseAssignments(Integer classeId, UUID academicYear);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentToExam(a.id, a.semester, a.semester.academicYear.id,
-        a.exam.id, a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName,
-        a.preparedBy.image, a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
-        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.coefficient)
-        from Assignment a where a.classeEntity.id = ?1 and a.semester.academicYear.id = ?2 and a.exam.id = ?3
+        a.exam.id, a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image, a.classeEntity.id,
+        a.classeEntity.name, a.classeEntity.grade.section, a.classeEntity.grade.gradingScaleMax, a.classeEntity.grade.gradingPassThreshold,
+        s.id, s.course, s.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.coefficient)
+        from Assignment a left join a.subject s where a.classeEntity.id = ?1 and a.semester.academicYear.id = ?2 and a.exam.id = ?3
         and a.passed = true order by a.addedDate asc
     """)
     List<AssignmentToExam> findAllClasseAssignmentsByExam(Integer classeId, UUID academicYear, Long ExamId);
@@ -61,27 +61,27 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester,a.exam.examType,
         a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
-        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
-        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
-        from Assignment a where a.classeEntity.id = ?1 and a.semester.academicYear.id = ?2 and a.subject.id = ?3
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, s.id, s.course,
+        s.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
+        from Assignment a left join a.subject s where a.classeEntity.id = ?1 and a.semester.academicYear.id = ?2 and s.id = ?3
     """)
     List<AssignmentEssential> findAllClasseAssignmentsBySubject(Integer classeId, UUID academicYear, Integer subjectId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester,a.exam.examType,
         a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
-        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
-        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
-        from Assignment a where a.subject.id = ?1 and a.semester.academicYear.id = ?2
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, s.id, s.course,
+        s.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
+        from Assignment a left join a.subject s where s.id = ?1 and a.semester.academicYear.id = ?2
     """)
     List<AssignmentEssential> findAllSubjectAssignments(int courseId, UUID academicYear);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester,a.exam.examType,
         a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
-        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
-        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
-        from Assignment a where a.preparedBy.id = ?1 and a.semester.academicYear.school.id = ?2 and a.passed = false and
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, s.id, s.course,
+        s.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
+        from Assignment a left join a.subject s where a.preparedBy.id = ?1 and a.semester.academicYear.school.id = ?2 and a.passed = false and
         a.semester.academicYear.current = true order by a.examDate desc
     """)
     Page<AssignmentEssential> findAssignmentsByTeacher(Long teacherId, UUID schoolId, Pageable pageable);
@@ -89,18 +89,18 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester,a.exam.examType,
         a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
-        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
-        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
-        from Assignment a where a.preparedBy.id = ?1 and a.semester.academicYear.id = ?2 order by a.examDate desc
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, s.id, s.course,
+        s.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
+        from Assignment a left join a.subject s where a.preparedBy.id = ?1 and a.semester.academicYear.id = ?2 order by a.examDate desc
     """)
     List<AssignmentEssential> findAssignmentsByTeacher(Long teacherId, UUID academicYear);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester,a.exam.examType,
         a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
-        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
-        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
-        from Assignment a where a.preparedBy.id = ?1 and a.semester.academicYear.id = ?2 and a.classeEntity.id = ?3 and a.subject.id = ?4
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, s.id, s.course,
+        s.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
+        from Assignment a left join a.subject s where a.preparedBy.id = ?1 and a.semester.academicYear.id = ?2 and a.classeEntity.id = ?3 and s.id = ?4
         order by a.examDate desc
     """)
     List<AssignmentEssential> findAllAssignmentsByTeacherByCourseByClasse(Long teacherId, UUID academicYear, int classId, int courseId);
@@ -108,9 +108,9 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester,a.exam.examType,
         a.preparedBy.id, a.preparedBy.firstName, a.preparedBy.lastName, a.preparedBy.image,
-        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, a.subject.id, a.subject.course,
-        a.subject.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
-        from Assignment a where a.preparedBy.id = ?1 and a.semester.academicYear.id = ?2 and a.classeEntity.id = ?3
+        a.classeEntity.id, a.classeEntity.name, a.classeEntity.grade.section, s.id, s.course,
+        s.abbr, a.examName, a.examDate, a.startTime, a.endTime, a.type, a.passed, a.addedDate, a.updatedDate)
+        from Assignment a left join a.subject s where a.preparedBy.id = ?1 and a.semester.academicYear.id = ?2 and a.classeEntity.id = ?3
         order by a.examDate desc
     """)
     List<AssignmentEssential> findAllAssignmentsByTeacherByClasse(Long teacherId, UUID schoolId, int classId);
@@ -133,7 +133,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     @Query("select count(a.id) from Assignment a where a.examName = ?1 and a.semester.academicYear.id = ?2 and a.classeEntity.id = ?3")
     Optional<Long> assignmentExists(String examName, UUID academicYear, int classId);
 
-    @Query("select count(a.id) from Assignment a where a.examName = ?1  and a.semester.academicYear.id = ?2 and a.classeEntity.id = ?3 and a.subject.id = ?4")
+    @Query("select count(a.id) from Assignment a left join a.subject s where a.examName = ?1  and a.semester.academicYear.id = ?2 and a.classeEntity.id = ?3 and s.id = ?4")
     Optional<Long> courseAssignmentExists(String examName, UUID academicYear, int classId, int courseId);
 
 }
