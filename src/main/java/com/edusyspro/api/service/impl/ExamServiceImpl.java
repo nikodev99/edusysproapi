@@ -2,8 +2,13 @@ package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.*;
 import com.edusyspro.api.dto.custom.*;
+import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.NotFountException;
+import com.edusyspro.api.model.Exam;
+import com.edusyspro.api.model.ExamType;
 import com.edusyspro.api.repository.ExamRepository;
+import com.edusyspro.api.repository.ExamTypeRepository;
+import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.AssignmentService;
 import com.edusyspro.api.service.interfaces.EnrollmentService;
 import com.edusyspro.api.service.interfaces.ExamService;
@@ -19,21 +24,60 @@ import java.util.stream.Collectors;
 public class ExamServiceImpl implements ExamService {
 
     private final ExamRepository examRepository;
+    private final ExamTypeRepository examTypeRepository;
     private final AssignmentService assignmentService;
     private final ScoreService scoreService;
     private final EnrollmentService enrollmentService;
+    private final UpdateContext updateContext;
 
     @Autowired
     public ExamServiceImpl(
             ExamRepository examRepository,
+            ExamTypeRepository examTypeRepository,
             AssignmentService assignmentService,
             ScoreService scoreService,
-            EnrollmentService enrollmentService
+            EnrollmentService enrollmentService,
+            UpdateContext updateContext
     ) {
         this.examRepository = examRepository;
+        this.examTypeRepository = examTypeRepository;
         this.assignmentService = assignmentService;
         this.scoreService = scoreService;
         this.enrollmentService = enrollmentService;
+        this.updateContext = updateContext;
+    }
+
+    @Override
+    public ExamDTO saveExam(ExamDTO examDTO) {
+        boolean existed = checkExamExistInAcademicYear(examDTO);
+
+        if (existed)
+            throw new AlreadyExistException("Cet examen existe déjà dans cet année académique");
+
+        Exam registeredExam = examRepository.save(examDTO.toEntity());
+
+        return ExamDTO.toDto(registeredExam);
+    }
+
+    @Override
+    public int updateExam(int examId, UpdateField field) {
+        if (field.field().equals("examType")) {
+            examRepository.findById(examId).ifPresent(exam -> {
+                if (examRepository.existsByExamTypeIdAndAcademicYearIdAndIdNot(
+                        exam.getExamType().getId(),
+                        exam.getAcademicYear().getId(),
+                        exam.getId()
+                )) {
+                    throw new AlreadyExistException("Cet examen " + exam.getExamType().getName() + " existe déjà dans cet année académique");
+                }
+            });
+            return updateContext.updateExamField(
+                    field.field(),
+                    ((ExamType) field.value()).getId(),
+                    examId
+            );
+        }
+        return updateContext.updateExamField(field.field(), field.value(), examId);
     }
 
     @Override
@@ -44,7 +88,7 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public ExamDTO findClasseExamsAssignments(Long examId, Integer classeId, String academicYear) {
+    public ExamDTO findClasseExamsAssignments(Integer examId, Integer classeId, String academicYear) {
        ExamDTO examDTO = examRepository.findClasseExamsAssignments(examId, classeId, UUID.fromString(academicYear))
                .orElseThrow(() -> new NotFountException("No Exam Found for ExamID: " + examId))
                .toDto();
@@ -53,11 +97,21 @@ public class ExamServiceImpl implements ExamService {
        return getExamAssignments(examDTO, assignments, null);
     }
 
+    /**
+     * Retrieves and processes the details of an exam for a specific class and academic year, along with
+     * associated calculations such as scores, rankings, and statistics.
+     *
+     * @param examId       The unique identifier of the exam to retrieve.
+     * @param classeId     The unique identifier of the class for which the exam details are required.
+     * @param academicYear The academic year for which the exam details are being fetched, represented as a UUID string.
+     * @param onlyStat     A flag indicating whether to only compute and return statistics without additional details.
+     * @return An {@code ExamResponse} object containing exam details, associated assignments, student exam views,
+     *         and computed statistics.
+     * @throws NotFountException If no exam is found for the provided {@code examId}.
+     */
     @Override
-    public ExamResponse findClasseExamWithCalculations(Long examId, Integer classeId, String academicYear, boolean onlyStat) {
-        ExamDTO exam = examRepository.findClasseExamsAssignments(examId, classeId, UUID.fromString(academicYear))
-                .orElseThrow(() -> new NotFountException("No Exam Found for ExamID: " + examId))
-                .toDto();
+    public ExamResponse findClasseExamWithCalculations(Integer examId, Integer classeId, String academicYear, boolean onlyStat) {
+        ExamDTO exam = findExamById(examId);
 
         //Get all assignments for this exam
         List<AssignmentDTO> assignments = assignmentService.findAllClasseExamAssignments(classeId, academicYear, exam.getId());
@@ -126,7 +180,7 @@ public class ExamServiceImpl implements ExamService {
 
 
     @Override
-    public ExamDTO findStudentExamsAssignments(Long examId, Integer classeId, String academicYear, String studentId) {
+    public ExamDTO findStudentExamsAssignments(Integer examId, Integer classeId, String academicYear, String studentId) {
         ExamDTO exam = examRepository.findClasseExamsAssignments(examId, classeId, UUID.fromString(academicYear))
                 .orElseThrow(() -> new NotFountException("No Exam Found for ExamID: " + examId))
                 .toDto();
@@ -136,13 +190,11 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public ExamResponse findStudentExamWithCalculations(Long examId, Integer classeId, String academicYear, String studentId, boolean onlyStat) {
-        ExamDTO exam = examRepository.findClasseExamsAssignments(examId, classeId, UUID.fromString(academicYear))
-                .orElseThrow(() -> new NotFountException("No Exam Found for ExamID: " + examId))
-                .toDto();
+    public ExamResponse findStudentExamWithCalculations(Integer examId, Integer classeId, String academicYear, String studentId, boolean onlyStat) {
+        ExamDTO exam = findExamById(examId);
 
         //Get all assignments for the student classe exam
-        List<AssignmentDTO> assignments = assignmentService.findAllClasseExamAssignments(classeId, academicYear, examId);
+        List<AssignmentDTO> assignments = assignmentService.findAllClasseExamAssignments(classeId, academicYear, exam.getId());
 
         if (assignments.isEmpty()) {
             return new ExamResponse(exam, List.of(), List.of(),ExamStatistics.builder().build());
@@ -178,18 +230,111 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public ExamDTO findExamById(Long examId) {
+    public ExamDTO findExamById(Integer examId) {
         return examRepository.findExamById(examId)
-                .orElseThrow(() -> new NotFountException("Exam Not found"))
+                .orElseThrow(() -> new NotFountException("No Exam Found for ExamID: " + examId))
                 .toDto();
     }
 
+    /**
+     * Retrieves a list of all school exams for the specified school and academic year.
+     *
+     * @param schoolId the unique identifier of the school, provided as a String.
+     * @param academicYear the unique identifier of the academic year, provided as a String.
+     * @return a list of ExamDTO objects representing the exams associated with the given school and academic year.
+     */
     @Override
     public List<ExamDTO> findAllSchoolExams(String schoolId, String academicYear) {
-        return examRepository.findAllSchoolExams(
-                UUID.fromString(schoolId),
-                UUID.fromString(academicYear)
-        ).stream().map(ExamEssential::toDto).toList();
+        return academicYear != null
+                ? examRepository.findAllSchoolExams(UUID.fromString(schoolId), UUID.fromString(academicYear))
+                    .stream()
+                    .map(ExamEssential::toDto)
+                    .toList()
+                : examRepository.findAllSchoolExams(UUID.fromString(schoolId))
+                    .stream()
+                    .map(ExamEssential::toDto)
+                    .sorted((a, b) -> {
+                        boolean curr1 = Boolean.TRUE.equals(a.getAcademicYear().getCurrent());
+                        boolean curr2 = Boolean.TRUE.equals(b.getAcademicYear().getCurrent());
+
+                        if (curr1 != curr2) return curr1 ? -1 : 1;
+                        if (a.getStartDate() == null || b.getStartDate() == null) return 0;
+
+                        return curr1
+                                ? a.getStartDate().compareTo(b.getStartDate())
+                                : b.getStartDate().compareTo(a.getStartDate());
+
+                    })
+                    .toList();
+
+    }
+
+    @Override
+    public boolean deleteExam(Integer examId) {
+        if (checkExamHasAssignments(examId))
+            throw new SecurityException("Cet examens a déjà des devoirs par conséquent ne peut être supprimé");
+
+        try {
+            examRepository.deleteById(examId);
+            return true;
+        }catch (Exception e) {
+            throw new NotFountException("Cet examens n'existe pas");
+        }
+    }
+
+    @Override
+    public boolean checkExamHasAssignments(Integer examId) {
+        return examRepository.countAssignmentByExam(examId) > 0;
+    }
+
+    @Override
+    public ExamType saveExamType(ExamType examType) {
+        var exists = examTypeRepository.findExistsBySchoolIdAndName(
+                examType.getSchoolId() != null
+                        ? UUID.fromString(examType.getSchoolId())
+                        : examType.getSchool().getId(),
+                examType.getName()
+        );
+        if (exists.isPresent()) {
+            throw new NotFountException("Ce type d'examen existe déjà");
+        }
+
+        return examTypeRepository.save(examType);
+    }
+
+    @Override
+    public int updateExamType(int examTypeId, UpdateField field) {
+        return updateContext.updateExamTypeField(field.field(), field.value(), examTypeId);
+    }
+
+    @Override
+    public List<ExamType> findAllExamTypes(String schoolId) {
+        return examTypeRepository.findAllBySchoolId(UUID.fromString(schoolId));
+    }
+
+    @Override
+    public boolean deleteExamType(int examTypeId) {
+        List<Integer> examIds = examRepository.findExistedExam(examTypeId);
+        var hasExamIds = !examIds.isEmpty();
+
+        if (hasExamIds) {
+            var anyHasAssignments = examIds.stream()
+                    .anyMatch(this::checkExamHasAssignments);
+
+            if (anyHasAssignments)
+                throw new SecurityException("Cette structure a déjà été assignée à un examen qui a des devoirs par conséquent ne peut être supprimé");
+        }
+
+        try {
+            if (hasExamIds)
+                examRepository.deleteAllById(examIds);
+
+            examTypeRepository.deleteById(examTypeId);
+            return true;
+        }catch (Exception e) {
+            throw new NotFountException("Cette structure n'existe pas");
+        }
+
     }
 
     private ExamDTO getExamAssignments(ExamDTO exam, List<AssignmentDTO> assignments, String studentId) {
@@ -358,5 +503,9 @@ public class ExamServiceImpl implements ExamService {
         }
 
         return totalMarks / totalCoefficient;
+    }
+
+    private boolean checkExamExistInAcademicYear(ExamDTO exam) {
+        return examRepository.findExistedExam(exam.getExamType().getId(), exam.getAcademicYear().getId()).isPresent();
     }
 }

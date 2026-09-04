@@ -18,11 +18,12 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExamDTO {
-    private long id;
+    private Integer id;
     private ExamType examType;
     private List<AssignmentDTO> assignments;
     private LocalDate startDate;
     private LocalDate endDate;
+    private AcademicYearDTO academicYear;
 
     public Exam toEntity() {
         return Exam.builder()
@@ -34,6 +35,17 @@ public class ExamDTO {
                 )
                 .startDate(startDate)
                 .endDate(endDate)
+                .academicYear(academicYear.toMergeEntity())
+                .build();
+    }
+
+    public static ExamDTO toDto(Exam exam) {
+        return ExamDTO.builder()
+                .id(exam.getId())
+                .examType(exam.getExamType())
+                .startDate(exam.getStartDate())
+                .endDate(exam.getEndDate())
+                .academicYear(AcademicYearDTO.toDto(exam.getAcademicYear()))
                 .build();
     }
 

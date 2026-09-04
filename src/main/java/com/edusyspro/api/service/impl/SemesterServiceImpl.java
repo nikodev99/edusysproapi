@@ -6,6 +6,7 @@ import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.model.Semester;
 import com.edusyspro.api.model.SemesterTemplate;
 import com.edusyspro.api.repository.SemesterRepository;
+import com.edusyspro.api.repository.context.UpdateContext;
 import com.edusyspro.api.service.interfaces.SemesterService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -22,10 +23,12 @@ import java.util.UUID;
 public class SemesterServiceImpl implements SemesterService {
     private final SemesterRepository semesterRepository;
     private final SemesterTemplateService semesterTemplateService;
+    private final UpdateContext updateContext;
 
-    public SemesterServiceImpl(SemesterRepository semesterRepository, SemesterTemplateService semesterTemplateService) {
+    public SemesterServiceImpl(SemesterRepository semesterRepository, SemesterTemplateService semesterTemplateService, UpdateContext updateContext) {
         this.semesterRepository = semesterRepository;
         this.semesterTemplateService = semesterTemplateService;
+        this.updateContext = updateContext;
     }
 
     @Override
@@ -167,7 +170,7 @@ public class SemesterServiceImpl implements SemesterService {
 
     @Override
     public int patch(Integer id, UpdateField field) {
-        return 0;
+        return updateContext.updateSemesterField(field.field(), field.value(), id);
     }
 
     @Override

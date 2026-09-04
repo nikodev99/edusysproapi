@@ -18,7 +18,7 @@ public class Exam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "exam_type_id", referencedColumnName = "id")

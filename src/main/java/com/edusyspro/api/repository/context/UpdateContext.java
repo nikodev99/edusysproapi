@@ -70,6 +70,24 @@ public class UpdateContext {
 
     @Modifying
     @Transactional
+    public int updateSemesterField(String field, Object value, int semesterId) {
+        return updateEntityField(Semester.class, field, value, semesterId);
+    }
+
+    @Modifying
+    @Transactional
+    public int updateExamField(String field, Object value, int examId) {
+        return updateEntityField(Exam.class, field, value, examId);
+    }
+
+    @Modifying
+    @Transactional
+    public int updateExamTypeField(String field, Object value, int exaTypeId) {
+        return updateEntityField(ExamType.class, field, value, exaTypeId);
+    }
+
+    @Modifying
+    @Transactional
     public int updateGradeField(String field, Object value, int gradeId) {
         return updateEntityField(Grade.class, field, value, gradeId, "modifyAt");
     }

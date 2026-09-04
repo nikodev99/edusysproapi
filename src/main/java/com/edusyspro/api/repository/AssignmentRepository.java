@@ -56,7 +56,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
         from Assignment a left join a.subject s where a.classeEntity.id = ?1 and a.semester.academicYear.id = ?2 and a.exam.id = ?3
         and a.passed = true order by a.addedDate asc
     """)
-    List<AssignmentToExam> findAllClasseAssignmentsByExam(Integer classeId, UUID academicYear, Long ExamId);
+    List<AssignmentToExam> findAllClasseAssignmentsByExam(Integer classeId, UUID academicYear, Integer ExamId);
 
     @Query("""
         select new com.edusyspro.api.dto.custom.AssignmentEssential(a.id, a.semester,a.exam.examType,

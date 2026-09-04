@@ -40,7 +40,7 @@ public class AssignmentDTO {
         return Assignment.builder()
                 .id(id)
                 .semester(semester)
-                .exam(exam.toEntity())
+                .exam(exam.toMerge())
                 .preparedBy(preparedBy)
                 .classeEntity(classe.toMergeEntity())
                 .subject(subject != null ? subject.toMarge(): null)

@@ -14,7 +14,7 @@ public record AssignmentToExam(
         Long id,
         Semester semester,
         UUID academicYearId,
-        Long examId,
+        Integer examId,
         Long teacherId,
         String teacherFirstName,
         String teacherLastName,

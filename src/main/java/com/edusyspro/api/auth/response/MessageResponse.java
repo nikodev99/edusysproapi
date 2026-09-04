@@ -11,9 +11,10 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MessageResponse {
+public class MessageResponse<T> {
     private String message;
     private String description;
     private String timestamp = Instant.now().toString();
     private Boolean isError = false;
+    private T data;
 }

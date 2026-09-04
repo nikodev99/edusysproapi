@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public interface AssignmentService {
 
@@ -21,7 +20,7 @@ public interface AssignmentService {
 
     List<AssignmentDTO> findAllClasseAssignments(Integer classeId, String academicYear);
 
-    List<AssignmentDTO> findAllClasseExamAssignments(Integer classeId, String academicYear, Long examId);
+    List<AssignmentDTO> findAllClasseExamAssignments(Integer classeId, String academicYear, Integer examId);
 
     List<AssignmentDTO> findAllClasseAssignmentsBySubject(Integer classeId, String academicYear, Integer subjectId);
 

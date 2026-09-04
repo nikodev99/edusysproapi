@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
 public record AssignmentExhaustif(
         Long id,
         Integer planningId,
-        Long examId,
+        Integer examId,
         ExamType examType,
         LocalDate examStart,
         LocalDate examEnd,

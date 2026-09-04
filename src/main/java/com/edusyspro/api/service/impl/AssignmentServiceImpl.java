@@ -87,7 +87,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public List<AssignmentDTO> findAllClasseExamAssignments(Integer classeId, String academicYear, Long examId) {
+    public List<AssignmentDTO> findAllClasseExamAssignments(Integer classeId, String academicYear, Integer examId) {
         return assignmentRepository.findAllClasseAssignmentsByExam(classeId, UUID.fromString(academicYear), examId).stream()
                 .map(AssignmentToExam::toDTO)
                 .toList();
