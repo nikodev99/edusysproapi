@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AttendanceService {
+    enum StatsGranularity { DAY, WEEK, MONTH, YEAR }
+
     Boolean saveAllAttendances(List<AttendanceDTO> attendances, int schoolId, LocalDate attendanceDate);
     Boolean updateAllAttendances(List<AttendanceDTO> attendances);
 
@@ -37,6 +39,7 @@ public interface AttendanceService {
 
     List<AttendanceStatusStat> getClasseAttendanceStats(int classeId, String academicYearId, LocalDate startDate, LocalDate endDate);
     List<AttendanceStatusStat> getSchoolAttendanceStats(String schoolId, String academicYearId, LocalDate startDate, LocalDate endDate);
+    List<LocalDate> getSchoolAttendanceDates(int classe, String academicYearId);
 
     Integer getNumberOfClasseDays(int classeId, String academicYearId);
 }

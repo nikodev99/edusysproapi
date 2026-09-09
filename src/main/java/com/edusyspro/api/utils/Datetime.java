@@ -29,7 +29,7 @@ public class Datetime {
         ZonedDateTime today = Datetime.brazzavilleDatetime();
         if (startDate == null && endDate == null) return today;
 
-        ZonedDateTime start = startDate.atStartOfDay(BRAZZA_TIME);
+        ZonedDateTime start = startDate != null ? startDate.atStartOfDay(BRAZZA_TIME) : today;
         ZonedDateTime end = endDate.atStartOfDay(BRAZZA_TIME);
 
         if (today.isAfter(start) && today.isBefore(end)) return today;

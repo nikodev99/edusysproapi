@@ -149,6 +149,12 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     List<LocalDate> findRecentAttendanceDate(UUID schoolId, UUID academicYearId, Pageable pageable);
 
     @Query("""
+        select distinct a.attendanceDate from Attendance a where a.classeEntity.id = ?1 and a.academicYear.id = ?2
+        and a.status is not null order by a.attendanceDate desc
+    """)
+    List<LocalDate> findRecentAttendanceDate(int classeId, UUID academicYearId);
+
+    @Query("""
         select a.status, a.attendanceDate, count(a.status) from Attendance a where a.classeEntity.id = ?1 and
         a.attendanceDate in (?2) and a.academicYear.id = ?3 group by a.attendanceDate, a.status order by a.attendanceDate
     """)

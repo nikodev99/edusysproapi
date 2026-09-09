@@ -228,7 +228,7 @@ public class AttendanceServiceImpl implements AttendanceService {
             List<LocalDate> dates = attendanceRepository.findRecentAttendanceDate(classeId, UUID.fromString(academicYearId), PageRequest.of(0, 10));
 
             List<Object[]> stats = attendanceRepository.findRecentClasseAttendanceStatsPerStatus(classeId, dates, UUID.fromString(academicYearId));
-            return CustomMethod.getStats(stats, "dd/MM");
+            return CustomMethod.getStats(stats, StatsGranularity.DAY);
         }
     }
 
@@ -248,17 +248,22 @@ public class AttendanceServiceImpl implements AttendanceService {
             List<Object[]> stats = attendanceRepository.findRecentSchoolAttendanceStatsPerStatus(
                     UUID.fromString(schoolId), dates, UUID.fromString(academicYearId)
             );
-            return CustomMethod.getStats(stats, "dd/MM");
+            return CustomMethod.getStats(stats, StatsGranularity.DAY);
         }
+    }
+
+    @Override
+    public List<LocalDate> getSchoolAttendanceDates(int classeId, String academicYearId) {
+        return attendanceRepository.findRecentAttendanceDate(classeId, UUID.fromString(academicYearId));
     }
 
     @Override
     public Integer getNumberOfClasseDays(int classeId, String academicYearId) {
         AcademicYearDTO academicYear = academicYearService.getAcademicYearById(academicYearId);
-        ZonedDateTime currentDate = ZonedDateTime.now();
-        ZonedDateTime endDate = currentDate.isBefore(Datetime.toZone(academicYear.getEndDate())) ? currentDate : Datetime.toZone(academicYear.getEndDate());
+        ZonedDateTime referencedDate = Datetime.getDateReference(academicYear.getStartDate(), academicYear.getEndDate(), false);
+
         List<PlanningDTO> plannings = planningService.findAllPlanningByClasseThroughoutTheAcademicYear(
-                classeId, Datetime.toZone(academicYear.getStartDate()), endDate
+                classeId, Datetime.toZone(academicYear.getStartDate()), referencedDate
         );
 
         Map<Integer, List<PlanningDTO>> bySemesters = plannings.stream()
@@ -430,11 +435,11 @@ public class AttendanceServiceImpl implements AttendanceService {
         long months = ChronoUnit.MONTHS.between(startDate.withDayOfMonth(1), endDate.withDayOfMonth(1)) + 1;
 
         if (weeks <= 10) {
-            return CustomMethod.getStats(data, "yyyy'-W");
+            return CustomMethod.getStats(data, StatsGranularity.WEEK);
         }else if (months <= 10) {
-            return CustomMethod.getStats(data, "yyyy-MM");
+            return CustomMethod.getStats(data, StatsGranularity.MONTH);
         }else {
-            return CustomMethod.getStats(data, "yyyy");
+            return CustomMethod.getStats(data, StatsGranularity.YEAR);
         }
     }
 

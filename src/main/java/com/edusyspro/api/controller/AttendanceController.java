@@ -176,4 +176,12 @@ public class AttendanceController {
         return ResponseEntity.ok(attendanceService.getSchoolAttendanceStats(schoolId, academicYear, start, end));
     }
 
+    @GetMapping("/dates/{classeId}")
+    ResponseEntity<?> getSchoolAttendanceDates(
+            @PathVariable int classeId,
+            @RequestParam String academicYear
+    ) {
+        return ResponseEntity.ok(attendanceService.getSchoolAttendanceDates(classeId, academicYear));
+    }
+
 }

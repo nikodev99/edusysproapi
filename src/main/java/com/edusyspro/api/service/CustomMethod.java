@@ -5,16 +5,21 @@ import com.edusyspro.api.dto.custom.GenderCount;
 import com.edusyspro.api.dto.custom.StudentCount;
 import com.edusyspro.api.model.enums.AttendanceStatus;
 import com.edusyspro.api.model.enums.Gender;
+import com.edusyspro.api.service.interfaces.AttendanceService;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.WeekFields;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CustomMethod {
+    private static final Locale FR = Locale.FRENCH;
+    private static final WeekFields WEEK_FIELDS = WeekFields.ISO;
 
     public static GenderCount genderCountInClasse(List<Object[]> fetchedData) {
         Map<Gender, List<LocalDate>> groupedByGender = fetchedData.stream()
@@ -45,9 +50,9 @@ public class CustomMethod {
         );
     }
 
-    public static List<AttendanceStatusStat> getStats(List<Object[]> data, String format) {
+    public static List<AttendanceStatusStat> getStats(List<Object[]> data, AttendanceService.StatsGranularity format) {
         Map<String, Map<AttendanceStatus, Long>> groupedData = data.stream()
-                .collect(Collectors.groupingBy(row -> ((LocalDate) row[1]).format(DateTimeFormatter.ofPattern(format)),
+                .collect(Collectors.groupingBy(row -> label((LocalDate) row[1], format),
                         LinkedHashMap::new,
                         Collectors.toMap(
                                 row -> (AttendanceStatus) row[0],
@@ -69,6 +74,16 @@ public class CustomMethod {
                     );
                 })
                 .toList();
+    }
+
+    private static String label(LocalDate date, AttendanceService.StatsGranularity granularity) {
+        return switch (granularity) {
+            case DAY -> date.format(DateTimeFormatter.ofPattern("dd MMM", FR));
+            case WEEK -> "Sem. " + date.get(WEEK_FIELDS.weekOfWeekBasedYear())
+                    + ", " + date.get(WEEK_FIELDS.weekBasedYear());
+            case MONTH -> date.format(DateTimeFormatter.ofPattern("MMM-yyyy", FR));
+            case YEAR -> date.format(DateTimeFormatter.ofPattern("yyyy", FR));
+        };
     }
 
 }
