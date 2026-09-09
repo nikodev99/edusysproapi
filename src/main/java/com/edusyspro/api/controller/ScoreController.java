@@ -23,13 +23,39 @@ public class ScoreController {
     }
 
     @PostMapping
-    ResponseEntity<Boolean> saveScores(@RequestBody List<ScoreDTO> scoreDTOs, @RequestParam Long assignment) {
-        return ResponseEntity.ok(scoreService.saveAllScores(scoreDTOs, assignment));
+    ResponseEntity<?> saveScores(@RequestBody List<ScoreDTO> scoreDTOs, @RequestParam Long assignment) {
+        try {
+            return ResponseEntity.ok(scoreService.saveAllScores(scoreDTOs, assignment));
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/one")
+    ResponseEntity<?> saveScore(@RequestBody ScoreDTO scoreDTO, @RequestParam Long assignment) {
+        try {
+            return ResponseEntity.ok(scoreService.saveScore(scoreDTO, assignment));
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @PutMapping
-    ResponseEntity<Boolean> modifyingScores(@RequestBody List<ScoreDTO> scoreDTOs, @RequestParam Long assignment) {
-        return ResponseEntity.ok(scoreService.updateAllScores(scoreDTOs, assignment));
+    ResponseEntity<?> modifyingScores(@RequestBody List<ScoreDTO> scoreDTOs, @RequestParam Long assignment) {
+        try {
+            return ResponseEntity.ok(scoreService.updateAllScores(scoreDTOs, assignment));
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/one")
+    ResponseEntity<?> modifyingScore(@RequestBody ScoreDTO scoreDTO, @RequestParam Long assignment) {
+        try {
+            return ResponseEntity.ok(scoreService.updateScore(scoreDTO, assignment));
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @GetMapping({"/all/{studentId}", "/{studentId}"})

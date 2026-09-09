@@ -133,6 +133,8 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
     """)
     List<StudentStats> findStudentCourseStats(int courseId, UUID academicYear);
 
+    List<Score> findAllByIdInAndAssignmentId(List<Long> ids, Long assignmentId);
+
     @Transactional
     @Modifying
     @Query("""
@@ -144,6 +146,9 @@ public interface ScoreRepository extends JpaRepository<Score, Long> {
         select count(s.id) from Score s where s.assignment.id = ?1
     """)
     Optional<Long> countAssignmentInScores(long assignmentId);
+
+    @Query("select s.studentEntity.id from Score s where s.assignment.id = ?1 and s.studentEntity.id = ?2")
+    Optional<Long> countStudentScores(long assignmentId, UUID studentId);
 
     @Query("""
         SELECT new com.edusyspro.api.dto.custom.ScoreBasicValue(s.id, st.id, i.firstName, i.lastName, i.image, st.personalInfo.reference, s.assignment.classeEntity.name,

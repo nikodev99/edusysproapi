@@ -30,4 +30,18 @@ public class ScoreDTO {
                 .studentEntity(StudentDTO.toMergeEntity(student))
                 .build();
     }
+
+    public static ScoreDTO toDto(Score score) {
+        return ScoreDTO.builder()
+                .id(score.getId())
+                .assignment(AssignmentDTO.builder().id(score.getAssignment().getId()).build())
+                .student(StudentDTO.builder()
+                        .id(score.getStudentEntity().getId())
+                        .personalInfo(score.getStudentEntity().getPersonalInfo())
+                        .build()
+                )
+                .obtainedMark(score.getObtainedMark())
+                .isPresent(score.getIsPresent())
+                .build();
+    }
 }

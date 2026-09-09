@@ -2,6 +2,7 @@ package com.edusyspro.api.service.impl;
 
 import com.edusyspro.api.dto.ScoreDTO;
 import com.edusyspro.api.dto.custom.*;
+import com.edusyspro.api.exception.sql.AlreadyExistException;
 import com.edusyspro.api.exception.sql.InsertException;
 import com.edusyspro.api.model.Score;
 import com.edusyspro.api.repository.ScoreRepository;
@@ -49,20 +50,43 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public boolean updateAllScores(List<ScoreDTO> scores, long assignmentId) {
-        List<Integer> updatedIds = new ArrayList<>();
+    public ScoreDTO saveScore(ScoreDTO score, long assignmentId) {
+        if (scoreExists(assignmentId, score.getStudent().getId()))
+            throw new AlreadyExistException("La note existe déjà pour cet apprenant");
 
-        scores.forEach(score -> {
-            int updateId = scoreRepository.updateScoresByAssignmentId(
-                    score.getObtainedMark(),
-                    score.getIsPresent(),
-                    score.getId(),
-                    assignmentId
-            );
-            updatedIds.add(updateId);
+        var savedScore = scoreRepository.save(score.toEntity());
+        return ScoreDTO.toDto(savedScore);
+    }
+
+    @Override
+    public boolean updateAllScores(List<ScoreDTO> scores, long assignmentId) {
+        List<Long> ids = scores.stream().map(ScoreDTO::getId).toList();
+        Map<Long, ScoreDTO> scoreMap = scores.stream().collect(Collectors.toMap(ScoreDTO::getId, s -> s));
+        List<Score> entities = scoreRepository.findAllByIdInAndAssignmentId(ids, assignmentId);
+        if (entities.size() != ids.size()) return false;
+
+        entities.forEach(s -> {
+            ScoreDTO score = scoreMap.get(s.getId());
+            s.setObtainedMark(score.getObtainedMark());
+            s.setIsPresent(score.getIsPresent());
         });
 
-        return updatedIds.stream().allMatch(n -> n > 0);
+        scoreRepository.saveAll(entities);
+        return entities.size() == scores.size();
+    }
+
+    @Override
+    public ScoreDTO updateScore(ScoreDTO score, long assignmentId) {
+        var updateRow = scoreRepository.updateScoresByAssignmentId(
+                score.getObtainedMark(),
+                score.getIsPresent(),
+                score.getId(),
+                assignmentId
+        );
+        if (!(updateRow > 0))
+            throw new IllegalArgumentException("Mis à jour impossible");
+
+        return score;
     }
 
     @Override
@@ -278,6 +302,10 @@ public class ScoreServiceImpl implements ScoreService {
 
     private boolean scoreExists(long assignmentId) {
         return countAssignmentSCores(assignmentId) > 0L;
+    }
+
+    private boolean scoreExists(long assignmentId, UUID studentId) {
+        return scoreRepository.countStudentScores(assignmentId, studentId).isPresent();
     }
 
     public record CohortStats(

@@ -33,6 +33,9 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+          batch_size: 50
+          batch_versioned_data: true
+        order_updates: true
 
   #flyway config
   flyway:
